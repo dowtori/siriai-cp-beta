@@ -90,7 +90,6 @@
   #listCard.can-t thead th{box-shadow:inset 0 -1px 0 #e2e8f0, 0 6px 14px -8px rgba(17,19,24,.34)}
 
   /* 행 — 올리면 살짝 떠오르고, 선정되면 왼쪽에 굵은 기표가 선다 */
-  #tbody tr > td{position:relative}
   #tbody tr:hover > td{box-shadow:inset 0 1px 0 rgba(17,19,24,.05), inset 0 -1px 0 rgba(17,19,24,.05)}
   #tbody tr.on > td.c1{box-shadow:inset 4px 0 0 0 #10b981, inset 0 0 22px -8px rgba(16,185,129,.45)}
   #tbody tr.on:hover > td.c1{box-shadow:inset 4px 0 0 0 #059669, inset 0 0 26px -6px rgba(16,185,129,.55)}
@@ -249,7 +248,7 @@
       <span class="sym w-[25px] h-[25px] text-slate-900 shrink-0" role="img" aria-label="SIRIAI"></span>
       <span class="min-w-0">
         <span class="wm block w-[53px] h-[18px] text-slate-900" role="img" aria-label="Siriai"></span>
-        <span class="block t-label text-[8.5px] text-slate-400 mt-[6px]">Campaign Console</span>
+        <span class="block t-label text-[8.5px] text-slate-500 mt-[6px]">Campaign Console</span>
       </span>
     </div>
 
@@ -269,7 +268,7 @@
 
     <!-- 담당자 -->
     <div class="px-5 py-4 border-t border-slate-100">
-      <div class="t-label text-[9.5px] text-slate-400 num">담당</div>
+      <div class="t-label text-[9.5px] text-slate-500 num">담당</div>
       <div class="text-[12px] font-semibold text-slate-800 mt-1.5">SIRIAI 캠페인팀</div>
       <button onclick="openSheet('sh-booking')" class="mt-2.5 w-full text-[11.5px] font-semibold text-slate-700 btn hover:bg-slate-50 px-3 py-2 rounded-lg transition">
         문의하기
@@ -329,7 +328,7 @@
       </div>
 
       <!-- KPI -->
-      <div class="shrink-0 mt-4 grid grid-cols-2 xl:grid-cols-4 gap-2.5" id="kpis"></div>
+      <div class="shrink-0 mt-4 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-2.5" id="kpis"></div>
 
       <!-- 툴바 -->
       <div class="shrink-0 mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
@@ -374,37 +373,37 @@
 </div>
 
 <!-- ══ 하단 독 ══ -->
-<div id="dock" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 w-[min(940px,calc(100vw-32px))]">
-  <div class="bg-white/95 backdrop-blur rounded-2xl px-4 sm:px-5 py-3 flex items-center gap-3" style="box-shadow:var(--lift-4)">
-    <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 grid place-items-center shrink-0">
-      <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+<div id="dock" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 w-[min(1060px,calc(100vw-32px))]">
+  <div class="bg-white/95 backdrop-blur rounded-2xl px-5 sm:px-6 py-4 flex items-center gap-4" style="box-shadow:var(--lift-4)">
+    <div class="w-12 h-12 rounded-2xl bg-indigo-50 grid place-items-center shrink-0" style="box-shadow:0 0 0 1px rgba(79,70,229,.14)">
+      <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
     </div>
     <div class="min-w-0 flex-1">
-      <div class="text-[13px] font-bold text-slate-900 keep">선정만 하시면 나머지는 저희가 채웁니다</div>
-      <div class="text-[11px] text-slate-500 keep">가이드라인 · 사전 검수 · 파트너십 코드 · 공동작업자 · 원본 인도까지</div>
+      <div class="text-[15.5px] font-bold text-slate-900 keep">선정만 하시면 나머지는 저희가 채웁니다</div>
+      <div class="text-[12.5px] text-slate-500 keep mt-0.5">가이드라인 · 사전 검수 · 파트너십 코드 · 공동작업자 · 원본 인도까지</div>
     </div>
-    <button onclick="openSheet('sh-booking')" class="press shrink-0 text-[13px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-5 sm:px-6 py-3 rounded-xl flex items-center gap-2" style="box-shadow:0 1px 2px rgba(17,19,24,.10), 0 10px 22px -8px rgba(79,70,229,.62)">
+    <button onclick="openSheet('sh-booking')" class="press shrink-0 text-[15px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-7 sm:px-9 py-4 rounded-2xl flex items-center gap-2.5" style="box-shadow:0 1px 2px rgba(17,19,24,.10), 0 10px 22px -8px rgba(79,70,229,.62)">
       문의하기
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M3 12h18"/></svg>
+      <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M3 12h18"/></svg>
     </button>
-    <button onclick="dock(false)" class="shrink-0 w-9 h-9 grid place-items-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="바 내리기" title="잠시 내려두기">
+    <button onclick="dock(false)" class="shrink-0 w-10 h-10 grid place-items-center rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="바 내리기" title="잠시 내려두기">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
     </button>
   </div>
 </div>
 
-<button id="dockTab" onclick="dock(true)" class="fixed bottom-5 left-1/2 z-40 bg-slate-900 text-white text-[12px] font-semibold pl-4 pr-3.5 py-2.5 rounded-full flex items-center gap-2 hover:bg-slate-800 press" style="box-shadow:0 4px 24px rgba(0,0,0,.28)">
+<button id="dockTab" onclick="dock(true)" class="fixed bottom-5 left-1/2 z-40 bg-slate-900 text-white text-[13.5px] font-semibold pl-5 pr-4 py-3.5 rounded-full flex items-center gap-2 hover:bg-slate-800 press" style="box-shadow:0 4px 24px rgba(0,0,0,.28)">
   문의하기 열기
   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
 </button>
 
 <!-- ══ 진입 안내 ══ -->
 <div id="tut" class="fixed inset-0 z-[70] bg-slate-900/55 backdrop-blur-sm flex items-center justify-center p-5" onclick="if(event.target===this)hideTut()">
-  <div class="card bg-white rounded-3xl w-full max-w-[440px] px-7 py-7" style="box-shadow:var(--lift-4)" role="dialog" aria-modal="true" aria-labelledby="tutTitle">
+  <div class="card bg-white rounded-3xl w-full max-w-[472px] px-7 py-7" style="box-shadow:var(--lift-4)" role="dialog" aria-modal="true" aria-labelledby="tutTitle">
     <span class="sym w-8 h-8 text-slate-900" role="img" aria-label="SIRIAI"></span>
 
-    <h2 id="tutTitle" class="text-[24px] font-bold text-slate-900 tracking-[-.025em] leading-[1.35] mt-5 keep">
-      직접 눌러보시는<br>데모 화면입니다
+    <h2 id="tutTitle" class="text-[23px] font-bold text-slate-900 leading-[1.35] mt-5 whitespace-nowrap">
+      직접 눌러보시는 데모 화면입니다
     </h2>
 
     <p class="text-[12.5px] text-slate-500 leading-relaxed mt-3 keep">
@@ -413,7 +412,7 @@
     </p>
 
     <p class="flex items-start gap-2 text-[11.5px] text-slate-500 mt-6 keep bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3">
-      <svg class="w-3.5 h-3.5 shrink-0 mt-[1px] text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <svg class="w-3.5 h-3.5 shrink-0 mt-[1px] text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       저장·내려받기 등 일부 기능은 동작하지 않습니다.
     </p>
 
@@ -431,7 +430,7 @@
         <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">Upload calendar</div>
         <h3 class="text-base font-bold text-slate-900 mt-1">2026년 8월 업로드 일정</h3>
       </div>
-      <button onclick="closeDrawer('dw-calendar')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
+      <button onclick="closeDrawer('dw-calendar')" class="text-slate-500 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
@@ -453,7 +452,7 @@
         <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">Guideline</div>
         <h3 class="text-base font-bold text-slate-900 mt-1">오드타입 8월 가이드라인</h3>
       </div>
-      <button onclick="closeDrawer('dw-guide')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
+      <button onclick="closeDrawer('dw-guide')" class="text-slate-500 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
@@ -474,7 +473,7 @@
         <h3 class="text-base font-bold text-slate-900 mt-1">8월 중간 성과 보고서</h3>
         <p class="text-[11px] text-slate-500 mt-1">업로드 완료분 기준 · 캠페인 종료 후 최종본이 나옵니다</p>
       </div>
-      <button onclick="closeDrawer('dw-report')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
+      <button onclick="closeDrawer('dw-report')" class="text-slate-500 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
@@ -495,7 +494,7 @@
     <div class="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5"></div>
     <div class="flex items-start justify-between gap-4">
       <h2 id="bkTitle" class="text-lg font-bold text-slate-900">문의하기</h2>
-      <button onclick="closeSheet('sh-booking')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1 -mt-0.5" aria-label="닫기">
+      <button onclick="closeSheet('sh-booking')" class="text-slate-500 hover:text-slate-700 p-1 -mr-1 -mt-0.5" aria-label="닫기">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
@@ -503,11 +502,11 @@
     <form onsubmit="book(event)" class="mt-5 space-y-3">
       <div>
         <label for="bkBrand" class="block text-xs font-medium text-slate-600 mb-1.5">브랜드</label>
-        <input id="bkBrand" required placeholder="브랜드명" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition">
+        <input id="bkBrand" required placeholder="브랜드명" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 focus:bg-white transition">
       </div>
       <div>
         <label for="bkContact" class="block text-xs font-medium text-slate-600 mb-1.5">연락처 / 이메일</label>
-        <input id="bkContact" required placeholder="010-0000-0000 또는 name@company.com" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition">
+        <input id="bkContact" required placeholder="010-0000-0000 또는 name@company.com" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 focus:bg-white transition">
       </div>
       <button type="submit" class="w-full text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 py-3.5 rounded-xl transition shadow-sm shadow-indigo-200 mt-1">보내기</button>
       <p class="text-[11px] text-slate-500 text-center keep pt-1">둘러보기 화면이라 실제로 전송되지는 않습니다.</p>
@@ -578,6 +577,9 @@ const ALL = Object.keys(COLS);
 /* 정렬 클래스는 문자열로 조립하지 않는다 — 빌드 스캐너가 못 잡는다 */
 const ALIGN = { left:'text-left', center:'text-center', right:'text-right' };
 
+/* 표시 중인 캠페인 기간 — 캘린더가 여기서 파생된다 */
+const PERIOD = { y: 2026, m: 8 };
+
 const S = {
   order: ALL.slice(),
   visible: new Set(ALL),      /* 진행 전체 열을 처음부터 다 보여준다 */
@@ -614,7 +616,7 @@ function avatar(c, i, size) {
 
 const ICON = {
   check: '<svg class="w-3 h-3 inline-block" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>',
-  grip : '<svg class="w-3 h-3 inline-block text-slate-400" fill="currentColor" viewBox="0 0 12 12"><circle cx="4" cy="2.5" r="1"/><circle cx="8" cy="2.5" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9.5" r="1"/><circle cx="8" cy="9.5" r="1"/></svg>',
+  grip : '<svg class="w-3 h-3 inline-block text-slate-500" fill="currentColor" viewBox="0 0 12 12"><circle cx="4" cy="2.5" r="1"/><circle cx="8" cy="2.5" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9.5" r="1"/><circle cx="8" cy="9.5" r="1"/></svg>',
   copy : '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>',
   down : '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>',
   play : '<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>',
@@ -624,7 +626,7 @@ const ICON = {
 /* ══════════ 좌측 레일 ══════════ */
 function renderNav() {
   const sec = (title, items) => items.length
-    ? '<div class="pt-3 first:pt-1"><div class="px-2 pb-1.5 num t-label text-[9.5px] text-slate-400">' + title + '</div>'
+    ? '<div class="pt-3 first:pt-1"><div class="px-2 pb-1.5 num t-label text-[9.5px] text-slate-500">' + title + '</div>'
       + items.map(cp => {
           const on = cp.id === S.camp, live = cp.state === 'live';
           return '<button onclick="pickCamp(\'' + cp.id + '\')" class="w-full text-left px-3 py-2.5 rounded-xl mb-1 transition '
@@ -635,7 +637,7 @@ function renderNav() {
               + '<span class="text-[12.5px] font-semibold truncate ' + (live ? 'text-slate-900' : 'text-slate-500') + '">' + esc(cp.title) + '</span>'
             + '</span>'
             + '<span class="flex items-center justify-between gap-2 mt-1.5 pl-3.5">'
-              + '<span class="num text-[10.5px] ' + (live ? 'text-slate-500' : 'text-slate-400') + '">' + cp.period + ' · ' + cp.n + '명</span>'
+              + '<span class="num text-[10.5px] ' + (live ? 'text-slate-500' : 'text-slate-500') + '">' + cp.period + ' · ' + cp.n + '명</span>'
               + '<span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded border whitespace-nowrap '
                 + (live ? 'text-amber-700 bg-amber-50 border-amber-200' : 'text-slate-500 bg-slate-100 border-slate-200') + '">' + cp.badge + '</span>'
             + '</span></button>';
@@ -669,11 +671,16 @@ function toggleRail(open) {
 function renderKpis() {
   const sel = selected(), selN = sel.length, up = upList();
   const waiting = sel.filter(c => c.collab !== 'ok').length;
+  const spend = sel.reduce((a, c) => a + c.cost, 0);
+  const er    = selN ? sel.reduce((a, c) => a + c.er, 0) / selN : 0;
+  const unit  = '<span class="text-xs font-normal text-slate-500 ml-1">';
   const cards = [
-    ['선정 확정', selN + '<span class="text-xs font-normal text-slate-500 ml-1">명</span>', '후보 ' + CREATORS.length + '명 중', 'slate'],
-    ['업로드', up.length + ' / ' + selN + '<span class="text-xs font-normal text-slate-500 ml-1">건</span>', (selN - up.length) + '건 예정', 'indigo'],
-    ['공동작업자', (selN - waiting) + ' / ' + selN, waiting ? waiting + '건 수락 대기' : '승인 완료', 'amber'],
-    ['누적 조회수', up.length ? n(up.reduce((a, c) => a + c.views, 0)) : '—', '업로드 완료분 기준', 'slate']
+    ['선정 확정',  selN + unit + '명</span>',                        '후보 ' + CREATORS.length + '명 중', 'slate'],
+    ['집행 예정',  won(spend),                                       '선정 ' + selN + '명 합계', 'slate'],
+    ['업로드',     up.length + ' / ' + selN + unit + '건</span>',     (selN - up.length) + '건 예정', 'indigo'],
+    ['공동작업자', (selN - waiting) + ' / ' + selN,                   waiting ? waiting + '건 수락 대기' : '승인 완료', 'amber'],
+    ['누적 조회수', up.length ? n(up.reduce((a, c) => a + c.views, 0)) : '—', '업로드 완료분 기준', 'slate'],
+    ['평균 참여율', selN ? er.toFixed(1) + unit + '%</span>' : '—',   '선정 ' + selN + '명 기준', 'emerald']
   ];
   const tone = { slate:'text-slate-900', indigo:'text-indigo-600', amber:'text-amber-600', emerald:'text-emerald-600' };
   $('kpis').innerHTML = cards.map(([t, v, s, c]) =>
@@ -701,9 +708,15 @@ function renderColToggles() {
   $('colToggles').innerHTML = groups.map(([title, keys]) =>
     '<div><div class="text-[10.5px] font-semibold text-slate-500 mb-1">' + title + '</div>'
     + keys.map(k =>
-      '<label class="flex items-center gap-2.5 px-1.5 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer text-xs">'
+      '<div class="flex items-center gap-0.5 pr-1 rounded-lg hover:bg-slate-50 group/c">'
+      + '<label class="flex items-center gap-2.5 px-1.5 py-1.5 cursor-pointer text-xs flex-1 min-w-0">'
       + '<input type="checkbox" ' + (S.visible.has(k) ? 'checked' : '') + ' onchange="toggleCol(\'' + k + '\')" class="w-3.5 h-3.5 accent-indigo-600 cursor-pointer">'
-      + '<span class="text-slate-700">' + COLS[k].label + '</span></label>'
+      + '<span class="text-slate-700 truncate">' + COLS[k].label + '</span></label>'
+      + '<button onclick="moveCol(\'' + k + '\',-1)" aria-label="' + COLS[k].label + ' 열을 왼쪽으로" title="왼쪽으로"'
+      + ' class="w-5 h-5 shrink-0 grid place-items-center rounded text-[9px] text-slate-500 hover:text-indigo-600 hover:bg-white opacity-0 group-hover/c:opacity-100 focus-visible:opacity-100">&#9664;</button>'
+      + '<button onclick="moveCol(\'' + k + '\',1)" aria-label="' + COLS[k].label + ' 열을 오른쪽으로" title="오른쪽으로"'
+      + ' class="w-5 h-5 shrink-0 grid place-items-center rounded text-[9px] text-slate-500 hover:text-indigo-600 hover:bg-white opacity-0 group-hover/c:opacity-100 focus-visible:opacity-100">&#9654;</button>'
+      + '</div>'
     ).join('') + '</div>'
   ).join('');
 }
@@ -751,7 +764,7 @@ function cell(c, idx, k) {
   const col = COLS[k];
   const pad = 'py-2.5 px-3 ' + ALIGN[col.align];
   /* 아직 값이 없는 칸 — 비었다는 것 자체가 정보다 */
-  const soon = lbl => '<td class="' + pad + '"><span class="text-[11px] text-slate-400">' + (lbl || '—') + '</span></td>';
+  const soon = lbl => '<td class="' + pad + '"><span class="text-[11px] text-slate-500">' + (lbl || '—') + '</span></td>';
   const numCls = 'num text-[12.5px] font-semibold text-slate-900';
 
   switch (k) {
@@ -763,7 +776,7 @@ function cell(c, idx, k) {
       if (!c.sel) return soon();
       return '<td class="' + pad + '">' + (c.up
         ? '<span class="num text-[12px] font-medium text-slate-800">' + c.due + '</span>'
-        : '<span class="num text-[12px] text-slate-500">' + c.due + '<span class="ml-1 text-[10px] text-slate-400">예정</span></span>') + '</td>';
+        : '<span class="num text-[12px] text-slate-500">' + c.due + '<span class="ml-1 text-[10px] text-slate-500">예정</span></span>') + '</td>';
 
     case 'collab':
       if (!c.sel) return soon('선정 후');
@@ -782,12 +795,12 @@ function cell(c, idx, k) {
       if (!c.sel) return soon('선정 후');
       if (!c.codeOn) {
         return '<td class="' + pad + '"><button onclick="toggleCode(' + idx + ')" title="파트너십 코드를 발급합니다"'
-          + ' class="text-[11px] text-slate-400 hover:text-indigo-600 border border-dashed border-slate-300 hover:border-indigo-300 px-2 py-1 rounded-lg transition">제외됨</button></td>';
+          + ' class="text-[11px] text-slate-500 hover:text-indigo-600 border border-dashed border-slate-300 hover:border-indigo-300 px-2 py-1 rounded-lg transition">제외됨</button></td>';
       }
       return '<td class="' + pad + '"><button onclick="copy(\'' + c.code + '\')" title="코드를 복사합니다"'
         + ' class="group/c inline-flex items-center gap-2 btn hover:bg-indigo-50 pl-2.5 pr-1.5 py-1 press">'
         + '<span class="mono text-[11px] text-slate-700 group-hover/c:text-indigo-700">' + c.code + '</span>'
-        + '<span class="text-slate-400 group-hover/c:text-indigo-500">' + ICON.copy + '</span></button></td>';
+        + '<span class="text-slate-500 group-hover/c:text-indigo-500">' + ICON.copy + '</span></button></td>';
 
     case 'content':
       if (!c.up) return soon(c.sel ? '업로드 전' : '');
@@ -802,7 +815,7 @@ function cell(c, idx, k) {
 
     case 'extra':
       if (!c.up) return soon('');
-      if (!c.extra.length) return '<td class="' + pad + '"><span class="text-slate-300 text-[13px]">&mdash;</span></td>';
+      if (!c.extra.length) return '<td class="' + pad + '"><span class="text-slate-500 text-[13px]">&mdash;</span></td>';
       return '<td class="' + pad + '">' + c.extra.map(p =>
         '<span class="inline-block text-[10.5px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md mr-1 whitespace-nowrap">' + esc(p) + '</span>').join('') + '</td>';
 
@@ -841,6 +854,15 @@ function toggleCode(i) { CREATORS[i].codeOn = !CREATORS[i].codeOn; renderTable()
 function toggleCol(k)  { S.visible.has(k) ? S.visible.delete(k) : S.visible.add(k); renderTable(); }
 function resetCols()   { S.visible = new Set(ALL); S.order = ALL.slice(); renderColToggles(); renderTable(); }
 
+/* 드래그 말고도 순서를 바꿀 길을 둔다. 머리글 드래그는 마우스 전용이라
+   키보드만 쓰는 사람과 터치 기기에서는 아예 닿지 않는다. */
+function moveCol(k, dir) {
+  const i = S.order.indexOf(k), j = i + dir;
+  if (i < 0 || j < 0 || j >= S.order.length) return;
+  S.order[i] = S.order[j]; S.order[j] = k;
+  renderColToggles(); renderTable();
+}
+
 function togglePop(id) {
   const el = $(id), was = el.classList.contains('hidden');
   document.querySelectorAll('[id^="pop"]').forEach(p => p.classList.add('hidden'));
@@ -878,7 +900,34 @@ function clearMarks() { document.querySelectorAll('#thead th').forEach(t => t.cl
 
 /* ══════════ 오버레이 ══════════ */
 let lastFocus = null;
-function lockBody(on) { document.body.style.overflow = on ? 'hidden' : ''; }
+
+/* 오버레이가 떠 있는 동안 뒤쪽은 탭으로도 닿지 않게 한다.
+   시각적으로만 덮어두면 키보드 사용자는 보이지도 않는 버튼을 누르게 된다. */
+function lockBody(on) {
+  document.body.style.overflow = on ? 'hidden' : '';
+  ['shell', 'dock', 'dockTab'].forEach(id => {
+    const el = $(id);
+    if (el) on ? el.setAttribute('inert', '') : el.removeAttribute('inert');
+  });
+}
+
+function openPanel() {
+  const d = document.querySelector('.drawer.open .panel, .sheet.open .panel');
+  if (d) return d;
+  return $('tut').classList.contains('gone') ? null : $('tut').querySelector('.card');
+}
+/* 열린 패널 안에서만 탭이 돌게 한다 */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Tab') return;
+  const box = openPanel();
+  if (!box) return;
+  const f = [...box.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])')]
+    .filter(el => el.offsetWidth || el.offsetHeight);
+  if (!f.length) return;
+  const a = f[0], z = f[f.length - 1];
+  if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+  else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+});
 function closeOthers(id) { document.querySelectorAll('.drawer.open, .sheet.open').forEach(d => { if (d.id !== id) d.classList.remove('open'); }); }
 
 function openDrawer(id) {
@@ -1008,18 +1057,20 @@ function buildReport() {
 }
 
 function buildCal() {
-  /* 2026.08.01 은 토요일이라 앞을 여섯 칸 비운다 */
+  /* 시작 요일과 말일을 기간에서 계산한다. 달을 바꾸면 통째로 어긋나던 자리다 */
+  const first = new Date(PERIOD.y, PERIOD.m - 1, 1).getDay();
+  const days  = new Date(PERIOD.y, PERIOD.m, 0).getDate();
   const marks = {};
   selected().forEach(c => {
     const d = parseInt(c.due.split('.')[1], 10);
     (marks[d] = marks[d] || []).push(c);
   });
   let h = ['일','월','화','수','목','금','토'].map(d => '<div class="text-[10px] font-semibold text-slate-500 py-1.5">' + d + '</div>').join('');
-  h += '<div class="col-span-6"></div>';
-  for (let d = 1; d <= 31; d++) {
+  if (first) h += '<div style="grid-column:span ' + first + '"></div>';
+  for (let d = 1; d <= days; d++) {
     const list = marks[d] || [];
     h += '<div class="min-h-[58px] rounded-lg border p-1.5 text-left ' + (list.length ? 'bg-white border-slate-200' : 'bg-slate-50/60 border-slate-100') + '">'
-      + '<span class="num text-[10.5px] ' + (list.length ? 'text-slate-700 font-semibold' : 'text-slate-400') + '">' + d + '</span>'
+      + '<span class="num text-[10.5px] ' + (list.length ? 'text-slate-700 font-semibold' : 'text-slate-500') + '">' + d + '</span>'
       + list.map(m => '<div class="mt-1 text-[9.5px] font-medium leading-tight px-1 py-1 rounded border '
           + (m.up ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-indigo-50 text-indigo-700 border-indigo-200')
           + '">' + esc(m.name) + '</div>').join('') + '</div>';
