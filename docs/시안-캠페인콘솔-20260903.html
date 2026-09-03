@@ -650,7 +650,10 @@ const kw = v => (v / 10000).toFixed(v >= 100000 ? 0 : 1).replace(/\.0$/, '') + '
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
 const selected = () => CREATORS.filter(c => c.sel);
-const upList   = () => selected().filter(c => c.up);
+/* 선정에서 빠지면 화면에 성과를 안 보이는 게 맞지만, 데이터를 지우면 안 된다.
+   지웠다가 다시 선정하면 되돌릴 방법이 없어 데모가 조작할수록 비어간다. */
+const isUp     = c => c.sel && c.up;
+const upList   = () => CREATORS.filter(isUp);
 const cols     = () => S.order.filter(k => S.visible.has(k));
 
 const AV = ['#4f46e5','#0ea5e9','#7c3aed','#0d9488','#db2777','#ea580c','#65a30d','#2563eb'];
@@ -838,7 +841,7 @@ function cell(c, idx, k) {
 
     case 'up':
       if (!c.sel) return soon();
-      return '<td class="' + pad + '">' + (c.up
+      return '<td class="' + pad + '">' + (isUp(c)
         ? '<span class="num text-[12px] font-medium text-slate-800">' + c.due + '</span>'
         : '<span class="num text-[12px] text-slate-500">' + c.due + '<span class="ml-1 text-[10px] text-slate-500">예정</span></span>') + '</td>';
 
@@ -878,24 +881,24 @@ function cell(c, idx, k) {
         + '</span></td>';
 
     case 'content':
-      if (!c.up) return soon(c.sel ? '업로드 전' : '');
+      if (!isUp(c)) return soon(c.sel ? '업로드 전' : '');
       return '<td class="' + pad + '"><button onclick="na(\'' + esc(c.name) + ' 릴스 열기\', \'실제 화면에서는 인스타그램 게시물이 새 창으로 열립니다.\')"'
         + ' class="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-700 btn hover:bg-slate-50 pl-2 pr-2.5 py-1 rounded-lg transition whitespace-nowrap">'
         + '<span class="text-slate-500">' + ICON.play + '</span>릴스</button></td>';
 
     case 'src':
-      if (!c.up) return soon('');
+      if (!isUp(c)) return soon('');
       return '<td class="' + pad + '"><button onclick="na(\'원본 내려받기\', \'실제 화면에서는 워터마크 없는 원본이 바로 저장됩니다.\')" title="원본 내려받기"'
         + ' class="btn hover:bg-slate-50 inline-flex w-8 h-8 items-center justify-center rounded-lg text-slate-600 press">' + ICON.down + '</button></td>';
 
     case 'extra':
-      if (!c.up) return soon('');
+      if (!isUp(c)) return soon('');
       if (!c.extra.length) return '<td class="' + pad + '"><span class="text-slate-500 text-[13px]">&mdash;</span></td>';
       return '<td class="' + pad + '">' + c.extra.map(p =>
         '<span class="inline-block text-[10.5px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md mr-1 whitespace-nowrap">' + esc(p) + '</span>').join('') + '</td>';
 
     case 'views': case 'likes': case 'cmts': case 'saves':
-      if (!c.up) return soon('');
+      if (!isUp(c)) return soon('');
       return '<td class="' + pad + '"><span class="num text-[12.5px] '
         + (k === 'views' ? 'font-semibold text-slate-900' : 'text-slate-600') + '">' + n(c[k]) + '</span></td>';
   }
@@ -921,7 +924,6 @@ function toggleSel(i) {
   S.nudge = false;
   const c = CREATORS[i];
   c.sel = !c.sel;
-  if (!c.sel) c.up = false;   /* 해제하면 업로드 상태는 내려간다. 코드 제외 판단은 그대로 둔다 */
   renderKpis(); renderToolbar(); renderTable();
   toast(c.sel ? esc(c.name) + '님을 선정했습니다.' : esc(c.name) + '님 선정을 해제했습니다.');
 }
@@ -1167,7 +1169,7 @@ function buildCal() {
     h += '<div class="min-h-[58px] rounded-lg border p-1.5 text-left ' + (list.length ? 'bg-white border-slate-200' : 'bg-slate-50/60 border-slate-100') + '">'
       + '<span class="num text-[10.5px] ' + (list.length ? 'text-slate-700 font-semibold' : 'text-slate-500') + '">' + d + '</span>'
       + list.map(m => '<div class="mt-1 text-[9.5px] font-medium leading-tight px-1 py-1 rounded border '
-          + (m.up ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-indigo-50 text-indigo-700 border-indigo-200')
+          + (isUp(m) ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-indigo-50 text-indigo-700 border-indigo-200')
           + '">' + esc(m.name) + '</div>').join('') + '</div>';
   }
   $('calGrid').innerHTML = h;
