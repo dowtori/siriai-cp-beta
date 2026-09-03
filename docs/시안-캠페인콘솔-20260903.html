@@ -396,8 +396,8 @@
       <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
     </div>
     <div class="min-w-0 flex-1">
-      <div class="text-[15.5px] font-bold text-slate-900 keep">선정만 하시면 나머지는 저희가 채웁니다</div>
-      <div class="text-[12.5px] text-slate-500 keep mt-0.5">가이드라인 · 사전 검수 · 파트너십 코드 · 공동작업자 · 원본 인도까지</div>
+      <div class="text-[15.5px] font-bold text-slate-900 keep">시리아이와 함께 가장 쉽고 감각적인 캠페인을 진행해보세요</div>
+      <div class="text-[12.5px] text-slate-500 keep mt-0.5">간편한 15분 커피챗을 신청할 수 있어요!</div>
     </div>
     <button onclick="openSheet('sh-booking')" class="press shrink-0 text-[15px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-7 sm:px-9 py-4 rounded-2xl flex items-center gap-2.5" style="box-shadow:0 1px 2px rgba(17,19,24,.10), 0 10px 22px -8px rgba(79,70,229,.62)">
       문의하기
@@ -750,8 +750,11 @@ function renderKpis() {
 
 function renderToolbar() {
   const selN = selected().length;
+  const codeN = selected().filter(c => c.codeOn).length;
+  /* 코드를 빼면 집계가 즉시 따라가야 의미가 있다. 요약 문장은 악센트를 쓰지 않는다 */
   $('toolbarInfo').innerHTML = '후보 <strong class="text-slate-900">' + CREATORS.length + '명</strong> 중 '
-    + '<strong class="text-indigo-600">' + selN + '명</strong> 선정 · 업로드 <strong class="text-slate-900">' + upList().length + '건</strong> 반영됨';
+    + '<strong class="text-slate-900">' + selN + '명</strong> 선정 · 업로드 <strong class="text-slate-900">' + upList().length + '건</strong> 반영됨'
+    + ' · 파트너십 코드 <strong class="text-slate-900">' + codeN + '건</strong> 발급';
 }
 
 function renderColToggles() {
@@ -862,10 +865,17 @@ function cell(c, idx, k) {
         return '<td class="' + pad + '"><button onclick="toggleCode(' + idx + ')" title="파트너십 코드를 발급합니다"'
           + ' class="text-[11px] text-slate-500 hover:text-indigo-600 border border-dashed border-slate-300 hover:border-indigo-300 px-2 py-1 rounded-lg transition">제외됨</button></td>';
       }
-      return '<td class="' + pad + '"><button onclick="copy(\'' + c.code + '\')" title="코드를 복사합니다"'
+      return '<td class="' + pad + '"><span class="inline-flex items-center gap-1 group/k">'
+        + '<button onclick="copy(\'' + c.code + '\')" title="코드를 복사합니다"'
         + ' class="inline-flex items-center gap-2 btn hover:bg-slate-50 pl-2.5 pr-1.5 py-1 press">'
         + '<span class="mono text-[11px] text-slate-700">' + c.code + '</span>'
-        + '<span class="text-slate-500">' + ICON.copy + '</span></button></td>';
+        + '<span class="text-slate-500">' + ICON.copy + '</span></button>'
+        /* 쓰지 않을 코드는 여기서 뺀다. 빼는 만큼 비용이 준다 */
+        + '<button onclick="toggleCode(' + idx + ')" title="이 건은 코드를 발급하지 않습니다"'
+        + ' aria-label="' + esc(c.name) + ' 파트너십 코드 제외"'
+        + ' class="w-5 h-5 shrink-0 grid place-items-center rounded text-[13px] leading-none text-slate-400'
+        + ' hover:text-slate-700 hover:bg-slate-100 opacity-0 group-hover/k:opacity-100 focus-visible:opacity-100">&times;</button>'
+        + '</span></td>';
 
     case 'content':
       if (!c.up) return soon(c.sel ? '업로드 전' : '');
@@ -911,11 +921,11 @@ function toggleSel(i) {
   S.nudge = false;
   const c = CREATORS[i];
   c.sel = !c.sel;
-  if (!c.sel) { c.up = false; c.codeOn = true; }   /* 해제하면 진행 상태도 같이 내려간다 */
+  if (!c.sel) c.up = false;   /* 해제하면 업로드 상태는 내려간다. 코드 제외 판단은 그대로 둔다 */
   renderKpis(); renderToolbar(); renderTable();
   toast(c.sel ? esc(c.name) + '님을 선정했습니다.' : esc(c.name) + '님 선정을 해제했습니다.');
 }
-function toggleCode(i) { CREATORS[i].codeOn = !CREATORS[i].codeOn; renderTable(); }
+function toggleCode(i) { CREATORS[i].codeOn = !CREATORS[i].codeOn; renderToolbar(); renderTable(); }
 function toggleCol(k)  { S.visible.has(k) ? S.visible.delete(k) : S.visible.add(k); renderTable(); }
 function resetCols()   { S.visible = new Set(ALL); S.order = ALL.slice(); renderColToggles(); renderTable(); }
 
@@ -1074,7 +1084,7 @@ function book(e) {
 /* ══════════ 드로어 내용 ══════════ */
 $('guideBody').innerHTML = [
   ['필수 소구점',   '워터 틴트 텍스처 발색 컷 3초 이상 노출'],
-  ['공동작업자',    '업로드 시 브랜드 공식 계정 태그 · 공동작업자 수락'],
+  ['공동작업자',    '업로드 시 @oddtype_official 태그 · 공동작업자 수락'],
   ['파트너십 코드', '본문 최상단에 개인 코드 명시 (예: SUBIN_AD3CO15)'],
   ['2차 활용',      '자사몰 상세페이지 · 퍼포먼스 광고 소재 사용 합의'],
   ['사전 검수',     '업로드 48시간 전 초안 공유 · 저희가 확인 후 회신']
