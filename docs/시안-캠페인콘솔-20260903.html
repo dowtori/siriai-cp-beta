@@ -1,0 +1,815 @@
+<title>오드타입 캠페인 콘솔</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+
+<style>
+  html,body{height:100%}
+  body{
+    margin:0; overflow:auto;                /* 리스트만 스크롤한다 — 화면이 아주 낮을 때만 예외 */
+    display:flex; flex-direction:column;
+    font-family:'Noto Sans KR','Arimo','Helvetica Neue',Helvetica,Arial,sans-serif;
+    background:#f8fafc; color:#0f172a;
+    -webkit-font-smoothing:antialiased;
+  }
+  .num{font-family:'Arimo','Helvetica Neue',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+  .won{font-family:'Noto Sans KR',sans-serif;font-weight:400;margin-right:.5px}
+  .keep{word-break:keep-all}
+
+  .scroll::-webkit-scrollbar{width:9px;height:9px}
+  .scroll::-webkit-scrollbar-track{background:#f1f5f9}
+  .scroll::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:5px;border:2px solid #f1f5f9}
+  .scroll::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+  .scroll::-webkit-scrollbar-corner{background:#f1f5f9}
+
+  /* 표 — 머리글은 붙어 있고 본문만 흐른다 */
+  #list thead th{position:sticky;top:0;z-index:2;background:#f4f6f9}
+  .stick{position:sticky;left:0;z-index:1}
+  #list thead .stick{z-index:3}
+
+  /* 선정 버튼 — 처음 본 사람도 누를 것임을 알게 */
+  .selbtn{transition:background .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease}
+  .nudge{animation:nudge 1.9s ease-out infinite}
+  @keyframes nudge{
+    0%   {box-shadow:0 0 0 0 rgba(79,70,229,.42)}
+    60%  {box-shadow:0 0 0 7px rgba(79,70,229,0)}
+    100% {box-shadow:0 0 0 0 rgba(79,70,229,0)}
+  }
+
+  .drawer{visibility:hidden;opacity:0;transition:opacity .22s ease,visibility .22s ease}
+  .drawer.open{visibility:visible;opacity:1}
+  .drawer > .panel{transform:translateX(100%);transition:transform .3s cubic-bezier(.22,.61,.36,1)}
+  .drawer.open > .panel{transform:translateX(0)}
+
+  .sheet{visibility:hidden;opacity:0;transition:opacity .22s ease,visibility .22s ease}
+  .sheet.open{visibility:visible;opacity:1}
+  .sheet > .panel{transform:translateY(100%);transition:transform .3s cubic-bezier(.22,.61,.36,1)}
+  .sheet.open > .panel{transform:translateY(0)}
+
+  .toast{transform:translate(-50%,140%);opacity:0;transition:transform .28s cubic-bezier(.22,.61,.36,1),opacity .28s ease}
+  .toast.show{transform:translate(-50%,0);opacity:1}
+
+  th[draggable="true"]{cursor:grab}
+  th.dragging{opacity:.35}
+  th.drop-left{box-shadow:inset 3px 0 0 0 #4f46e5}
+  th.drop-right{box-shadow:inset -3px 0 0 0 #4f46e5}
+
+  /* 낮은 화면에서 위쪽을 눌러 리스트 높이를 지킨다 */
+  @media (max-height:820px){
+    .tight-h1{font-size:23px !important}
+    .tight-kpi{padding-top:.6rem !important;padding-bottom:.6rem !important}
+    .tight-kpi .num{font-size:19px !important}
+    .tight-rail{padding-top:.6rem !important;padding-bottom:.6rem !important}
+  }
+  /* 모바일은 한 화면에 담을 수 없다 — 여기서만 페이지 스크롤을 허용 */
+  @media (max-width:880px){
+    html,body{height:auto}
+    body{display:block;overflow:auto}
+    main{display:block}
+    #listCard{display:block}
+    #list{max-height:60vh;min-height:300px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition-duration:.001ms !important;animation:none !important}
+  }
+</style>
+
+<!-- ══ 상단 바 ══ -->
+<header class="shrink-0 bg-white border-b border-slate-200">
+  <div class="max-w-[1500px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-2.5">
+      <span class="num text-[17px] font-bold tracking-[.14em] text-slate-900">SIRIAI</span>
+      <span class="hidden sm:inline num text-[10px] font-semibold tracking-[.13em] text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-md">CAMPAIGN CONSOLE</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="openDrawer('dw-calendar')" class="text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M4 11h16M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        캘린더
+      </button>
+      <button onclick="openSheet('sh-booking')" class="text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg transition">커피챗</button>
+    </div>
+  </div>
+</header>
+
+<main class="flex-1 min-h-0 w-full max-w-[1500px] mx-auto px-4 sm:px-6 pt-5 pb-4 flex flex-col">
+
+  <!-- 스크롤해도 그대로 있는 부분 -->
+  <div class="shrink-0 flex flex-col lg:flex-row lg:items-end justify-between gap-3">
+    <div>
+      <div class="num text-[10.5px] font-semibold tracking-[.16em] text-indigo-600 uppercase mb-1.5">Oddtype &middot; 2026.08.01 – 08.31</div>
+      <h1 class="tight-h1 text-[26px] font-bold tracking-[-.02em] text-slate-900 flex flex-wrap items-center gap-2.5 keep">
+        오드타입 26년 8월 인플루언서 캠페인
+        <span id="phaseBadge" class="text-[11px] font-semibold px-2.5 py-1 rounded-full border"></span>
+      </h1>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <button onclick="openDrawer('dw-guide')" class="text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        가이드라인
+      </button>
+      <button onclick="openDrawer('dw-report')" class="text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V9m4 8V5m4 12v-6M4 19h16"/></svg>
+        보고서
+      </button>
+    </div>
+  </div>
+
+  <!-- 진행 트랙 -->
+  <div class="tight-rail shrink-0 mt-4 bg-white border border-slate-200 rounded-2xl px-6 py-4 flex items-center" id="stepRail"></div>
+
+  <!-- KPI -->
+  <div class="shrink-0 mt-3 grid grid-cols-2 lg:grid-cols-4 gap-2.5" id="kpis"></div>
+
+  <!-- 툴바 -->
+  <div class="shrink-0 mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+    <div class="text-xs text-slate-500" id="toolbarInfo"></div>
+    <div class="flex items-center gap-2">
+      <div class="relative">
+        <button onclick="togglePop('popCols')" class="text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          설정
+        </button>
+        <div id="popCols" class="hidden absolute right-0 mt-2 w-[280px] bg-white border border-slate-200 rounded-xl shadow-xl shadow-slate-300/40 z-40 p-3">
+          <div class="flex items-center justify-between mb-2">
+            <span class="num text-[10.5px] font-bold tracking-[.13em] text-slate-400 uppercase">표시할 열</span>
+            <button onclick="resetCols()" class="text-[10.5px] font-medium text-indigo-600 hover:text-indigo-700">단계 기본값</button>
+          </div>
+          <div id="colToggles" class="space-y-3 max-h-[300px] overflow-y-auto scroll pr-1"></div>
+          <p class="mt-2.5 pt-2.5 border-t border-slate-100 text-[10.5px] text-slate-400 keep">머리글을 끌어 순서를 바꿉니다. 크리에이터는 고정</p>
+        </div>
+      </div>
+      <button onclick="openDrawer('dw-more')" class="text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        추가 옵션
+      </button>
+    </div>
+  </div>
+
+  <!-- 이 화면에서 유일하게 스크롤되는 곳 -->
+  <div id="listCard" class="flex-1 min-h-0 mt-2.5 bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col">
+    <div id="list" class="flex-1 min-h-0 overflow-auto scroll" style="min-height:130px">
+      <table class="w-full text-left border-collapse">
+        <thead id="thead"></thead>
+        <tbody id="tbody" class="text-xs"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 사후처리 — 3단계에서만 -->
+  <div id="postBlock" class="hidden"></div>
+
+</main>
+
+<!-- ══ 하단 배너 = 이 단계를 진행시키는 버튼 ══ -->
+<footer class="shrink-0 bg-white border-t border-slate-200">
+  <div class="max-w-[1500px] mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div class="flex items-center gap-3.5 min-w-0">
+      <div id="bannerIcon" class="w-10 h-10 rounded-xl border flex items-center justify-center shrink-0"></div>
+      <div class="min-w-0">
+        <div id="bannerTitle" class="text-sm font-bold text-slate-900 keep"></div>
+        <div id="bannerSub" class="text-[11px] text-slate-500 keep"></div>
+      </div>
+    </div>
+    <button id="mainCta" class="w-full sm:w-auto shrink-0 text-sm font-bold text-white bg-indigo-600 px-7 py-3.5 rounded-2xl flex items-center justify-center gap-2"></button>
+  </div>
+</footer>
+
+<!-- ══ 드로어: 캘린더 ══ -->
+<div id="dw-calendar" class="drawer fixed inset-0 z-50 bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-calendar')">
+  <div class="panel bg-white w-full max-w-[520px] h-full border-l border-slate-200 flex flex-col">
+    <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
+      <div>
+        <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">Upload calendar</div>
+        <h3 class="text-base font-bold text-slate-900 mt-1">2026년 8월 업로드 일정</h3>
+      </div>
+      <button onclick="closeDrawer('dw-calendar')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="px-6 py-5 overflow-y-auto scroll flex-1">
+      <div class="flex items-center gap-4 text-[11px] text-slate-500 mb-4">
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>업로드 완료</span>
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-indigo-500"></span>업로드 예정</span>
+      </div>
+      <div id="calGrid" class="grid grid-cols-7 gap-1 text-center"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 드로어: 가이드라인 ══ -->
+<div id="dw-guide" class="drawer fixed inset-0 z-50 bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-guide')">
+  <div class="panel bg-white w-full max-w-[480px] h-full border-l border-slate-200 flex flex-col">
+    <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
+      <div>
+        <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">Guideline</div>
+        <h3 class="text-base font-bold text-slate-900 mt-1">오드타입 8월 가이드라인</h3>
+      </div>
+      <button onclick="closeDrawer('dw-guide')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="px-6 py-5 overflow-y-auto scroll flex-1 space-y-2.5" id="guideBody"></div>
+    <div class="px-6 py-4 border-t border-slate-100 flex gap-2">
+      <button onclick="dl('오드타입_8월_가이드라인.pdf')" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-3 rounded-xl transition">가이드라인 내려받기</button>
+      <button onclick="closeDrawer('dw-guide')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 드로어: 보고서 ══ -->
+<div id="dw-report" class="drawer fixed inset-0 z-50 bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-report')">
+  <div class="panel bg-white w-full max-w-[560px] h-full border-l border-slate-200 flex flex-col">
+    <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
+      <div>
+        <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">Performance report</div>
+        <h3 class="text-base font-bold text-slate-900 mt-1">26년 8월 통합 성과 보고서</h3>
+      </div>
+      <button onclick="closeDrawer('dw-report')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="px-6 py-5 overflow-y-auto scroll flex-1 space-y-5" id="reportBody"></div>
+    <div class="px-6 py-4 border-t border-slate-100 flex gap-2">
+      <button onclick="dl('26년8월_오드타입_성과보고서.pdf')" class="flex-1 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 py-3 rounded-xl transition shadow-sm shadow-indigo-200 flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+        PDF 내려받기
+      </button>
+      <button onclick="csv()" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">CSV</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 드로어: 추가 옵션 ══ -->
+<div id="dw-more" class="drawer fixed inset-0 z-50 bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-more')">
+  <div class="panel bg-white w-full max-w-[560px] h-full border-l border-slate-200 flex flex-col">
+    <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
+      <div>
+        <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">All options</div>
+        <h3 class="text-base font-bold text-slate-900 mt-1">이 화면에 안 띄운 것들</h3>
+      </div>
+      <button onclick="closeDrawer('dw-more')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="px-6 py-5 overflow-y-auto scroll flex-1 space-y-6" id="moreBody"></div>
+    <div class="px-6 py-4 border-t border-slate-100 flex gap-2">
+      <button onclick="csv()" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-3 rounded-xl transition flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+        전체 항목 CSV 내려받기
+      </button>
+      <button onclick="closeDrawer('dw-more')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 바텀시트: 커피챗 ══ -->
+<div id="sh-booking" class="sheet fixed inset-0 z-50 bg-slate-900/50 flex items-end justify-center" onclick="bgClose(event,'sh-booking')">
+  <div class="panel bg-white w-full max-w-[520px] rounded-t-3xl border-t border-slate-200 px-6 pt-5 pb-7">
+    <div class="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5"></div>
+    <div class="flex items-start justify-between gap-4">
+      <h2 class="text-lg font-bold text-slate-900">커피챗 신청</h2>
+      <button onclick="closeSheet('sh-booking')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1 -mt-0.5" aria-label="닫기">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form onsubmit="book(event)" class="mt-5 space-y-3">
+      <div>
+        <label for="bkBrand" class="block text-xs font-medium text-slate-600 mb-1.5">브랜드</label>
+        <input id="bkBrand" required placeholder="브랜드명" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition">
+      </div>
+      <div>
+        <label for="bkContact" class="block text-xs font-medium text-slate-600 mb-1.5">연락처 / 이메일</label>
+        <input id="bkContact" required placeholder="010-0000-0000 또는 name@company.com" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition">
+      </div>
+      <button type="submit" class="w-full text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 py-3.5 rounded-xl transition shadow-sm shadow-indigo-200 mt-1">보내기</button>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast fixed bottom-24 left-1/2 z-[60] bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 max-w-[92vw]">
+  <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+/* ══════════ 데이터 — 후보 8명, 처음 3명은 이미 선정된 상태 ══════════ */
+const CREATORS = [
+  { name:'전수빈', handle:'@subin_jeon',    roman:'SUBIN',  disc:15, fol:128000, er:6.9, cost:350000, due:'08.06', views:842000, likes:32400, cmts:1120, saves:8900, extra:['틱톡'],           sel:true,  collab:'ok' },
+  { name:'김민지', handle:'@minji_beauty',  roman:'MINJI',  disc:10, fol: 96000, er:7.4, cost:300000, due:'08.09', views:615000, likes:24800, cmts: 860, saves:6400, extra:[],                sel:true,  collab:'ok' },
+  { name:'이아린', handle:'@arin_daily',    roman:'ARIN',   disc:20, fol: 74000, er:5.8, cost:250000, due:'08.12', views:520100, likes:19600, cmts: 610, saves:5100, extra:['틱톡','유튜브'],  sel:true,  collab:'ok' },
+  { name:'최유진', handle:'@eujin_style',   roman:'EUJIN',  disc:15, fol: 58000, er:8.1, cost:200000, due:'08.16', views:320000, likes:15200, cmts: 540, saves:4300, extra:[],                sel:false, collab:'talk' },
+  { name:'박소연', handle:'@soyeon_makeup', roman:'SOYEON', disc:10, fol: 41000, er:6.2, cost:180000, due:'08.18', views:185000, likes: 9100, cmts: 320, saves:2600, extra:['스레드'],        sel:false, collab:'ok' },
+  { name:'한서율', handle:'@seoyul.log',    roman:'SEOYUL', disc:10, fol: 33000, er:5.1, cost:150000, due:'08.21', views:141200, likes: 6400, cmts: 210, saves:1800, extra:[],                sel:false, collab:'ok' },
+  { name:'정다인', handle:'@dain_kit',      roman:'DAIN',   disc:15, fol: 27000, er:4.6, cost:150000, due:'08.25', views: 96300, likes: 4100, cmts: 150, saves:1200, extra:[],                sel:false, collab:'ok' },
+  { name:'오유나', handle:'@yuna_pick',     roman:'YUNA',   disc:10, fol: 22000, er:3.9, cost:150000, due:'08.27', views: 61800, likes: 2600, cmts:  90, saves: 740, extra:[],                sel:false, collab:'ok' }
+];
+CREATORS.forEach(c => { c.code = c.roman + '_AD3CO' + c.disc; c.codeOn = true; });
+
+const STEPS = [
+  { n:1, label:'선정',       sub:'후보 확인 · 코드 선택',   badge:'1단계 · 크리에이터 선정', cls:'text-indigo-700 bg-indigo-50 border-indigo-200' },
+  { n:2, label:'진행',       sub:'업로드 · 공동작업자',     badge:'2단계 · 업로드 진행',     cls:'text-amber-700 bg-amber-50 border-amber-200' },
+  { n:3, label:'완료 · 사후', sub:'콘텐츠 · 원본 · 보고서', badge:'3단계 · 완료',            cls:'text-emerald-700 bg-emerald-50 border-emerald-200' }
+];
+
+/* 열 — phase 는 설정 패널의 묶음 기준 */
+const COLS = {
+  content:{ label:'콘텐츠 링크',  phase:3, align:'center' },
+  fol    :{ label:'팔로워',       phase:1, align:'right'  },
+  er     :{ label:'참여율',       phase:1, align:'right'  },
+  cost   :{ label:'단가',         phase:1, align:'right'  },
+  code   :{ label:'파트너십 코드', phase:3, align:'left'  },
+  collab :{ label:'공동작업자',    phase:2, align:'center' },
+  reuse  :{ label:'2차활용',       phase:2, align:'center' },
+  up     :{ label:'업로드일',      phase:2, align:'center' },
+  src    :{ label:'원본',         phase:3, align:'center' },
+  extra  :{ label:'추가 플랫폼',   phase:3, align:'center' },
+  views  :{ label:'조회수',       phase:3, align:'right'  },
+  likes  :{ label:'좋아요',       phase:3, align:'right'  },
+  cmts   :{ label:'댓글',         phase:3, align:'right'  },
+  saves  :{ label:'저장',         phase:3, align:'right'  }
+};
+
+/* 단계마다 보고 싶은 값이 다르다 — 미리 넣어둔 프리셋 */
+const PRESET = {
+  1: ['fol','er','cost','collab','reuse'],
+  2: ['fol','collab','up','extra','views'],
+  3: ['content','code','collab','src','extra','reuse','views']
+};
+
+const S = {
+  step: 1,
+  order: ['content','fol','er','cost','code','collab','up','src','extra','reuse','views','likes','cmts','saves'],
+  visible: new Set(PRESET[1]),
+  touched: false,
+  nudge: true          /* 선정 버튼을 한 번도 안 눌렀으면 깜빡인다 */
+};
+
+const UPLOADED_IN_STEP2 = 2;   /* 진행 단계 = 선정 인원 중 한두 개만 올라온 상황 */
+
+/* ══════════ 유틸 ══════════ */
+const $ = id => document.getElementById(id);
+const n = v => v.toLocaleString('en-US');
+const won = v => '<span class="won">₩</span>' + n(v);
+const kw = v => (v / 10000).toFixed(v >= 100000 ? 0 : 1).replace(/\.0$/, '') + '만';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+
+const selected = () => CREATORS.filter(c => c.sel);
+const shown    = () => S.step === 1 ? CREATORS : selected();
+const cols     = () => S.order.filter(k => S.visible.has(k));
+const isUp     = c => S.step === 3 ? true : S.step === 2 ? selected().indexOf(c) < UPLOADED_IN_STEP2 : false;
+const upList   = () => selected().filter(isUp);
+
+const AV = ['#4f46e5','#0ea5e9','#7c3aed','#0d9488','#db2777','#ea580c','#65a30d','#2563eb'];
+function avatar(c, i, size) {
+  const s = size || 34, col = AV[i % AV.length];
+  return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 36 36" class="shrink-0" aria-hidden="true">'
+    + '<circle cx="18" cy="18" r="18" fill="' + col + '" fill-opacity=".12"/>'
+    + '<circle cx="18" cy="18" r="17.25" fill="none" stroke="' + col + '" stroke-opacity=".28" stroke-width="1.5"/>'
+    + '<text x="18" y="23" text-anchor="middle" font-size="14" font-weight="600" fill="' + col
+    + '" font-family="Noto Sans KR,sans-serif">' + esc(c.name.charAt(0)) + '</text></svg>';
+}
+
+const ICON = {
+  check: '<svg class="w-3 h-3 inline-block" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>',
+  grip : '<svg class="w-3 h-3 inline-block text-slate-300" fill="currentColor" viewBox="0 0 12 12"><circle cx="4" cy="2.5" r="1"/><circle cx="8" cy="2.5" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9.5" r="1"/><circle cx="8" cy="9.5" r="1"/></svg>',
+  copy : '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>',
+  down : '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>',
+  play : '<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>'
+};
+
+/* ══════════ 렌더 ══════════ */
+function renderRail() {
+  const parts = [];
+  STEPS.forEach((st, i) => {
+    const on = st.n === S.step, past = st.n < S.step;
+    if (i) parts.push('<div class="flex-1 h-[2px] mx-3 sm:mx-5 rounded-full ' + (past ? 'bg-emerald-300' : 'bg-slate-200') + '"></div>');
+    parts.push(
+      '<button onclick="setStep(' + st.n + ')" class="flex items-center gap-2.5 text-left shrink-0 group">'
+      + '<span class="num w-7 h-7 shrink-0 rounded-full grid place-items-center text-[11px] font-bold transition '
+        + (on ? 'bg-indigo-600 text-white ring-4 ring-indigo-100'
+        : past ? 'bg-emerald-500 text-white'
+               : 'bg-white border border-slate-200 text-slate-400 group-hover:border-slate-300') + '">'
+        + (past ? ICON.check : st.n) + '</span>'
+      + '<span class="min-w-0"><span class="block text-xs font-bold transition '
+        + (on ? 'text-slate-900' : past ? 'text-slate-500' : 'text-slate-400') + '">' + st.label + '</span>'
+      + '<span class="hidden sm:block text-[10.5px] text-slate-400 truncate">' + st.sub + '</span></span></button>'
+    );
+  });
+  $('stepRail').innerHTML = parts.join('');
+  const st = STEPS[S.step - 1];
+  $('phaseBadge').className = 'text-[11px] font-semibold px-2.5 py-1 rounded-full border ' + st.cls;
+  $('phaseBadge').textContent = st.badge;
+}
+
+function renderKpis() {
+  const sel = selected(), selN = sel.length;
+  const codeN = sel.filter(c => c.codeOn).length;
+  const up = upList();
+  let cards;
+
+  if (S.step === 1) {
+    cards = [
+      ['후보 크리에이터', CREATORS.length + '<span class="text-xs font-normal text-slate-400 ml-1">명</span>', selN + '명 선정', 'slate'],
+      ['선정 기준 집행가', won(sel.reduce((a, c) => a + c.cost, 0)), '해제하면 즉시 줄어듭니다', 'slate'],
+      ['평균 참여율', selN ? (sel.reduce((a, c) => a + c.er, 0) / selN).toFixed(1) + '<span class="text-xs font-normal text-slate-400 ml-1">%</span>' : '—', '선정 ' + selN + '명 기준', 'indigo'],
+      ['예상 합산 조회수', selN ? kw(sel.reduce((a, c) => a + c.views, 0)) : '—', '직전 3개월 실적 기준', 'slate']
+    ];
+  } else if (S.step === 2) {
+    cards = [
+      ['선정 확정', selN + '<span class="text-xs font-normal text-slate-400 ml-1">명</span>', '변경은 1단계에서', 'slate'],
+      ['업로드', up.length + ' / ' + selN + '<span class="text-xs font-normal text-slate-400 ml-1">건</span>', (selN - up.length) + '건 예정', 'indigo'],
+      ['공동작업자', sel.filter(c => c.collab === 'ok').length + ' / ' + selN, sel.some(c => c.collab !== 'ok') ? '수락 대기 1건' : '전원 승인', 'amber'],
+      ['누적 조회수', up.length ? n(up.reduce((a, c) => a + c.views, 0)) : '—', '업로드분 기준', 'slate']
+    ];
+  } else {
+    cards = [
+      ['총 조회수', n(sel.reduce((a, c) => a + c.views, 0)), '업로드 ' + selN + '건', 'indigo'],
+      ['총 집행가', won(sel.reduce((a, c) => a + c.cost, 0)), '선정 ' + selN + '명 합계', 'slate'],
+      ['추가 플랫폼 게시', sel.filter(c => c.extra.length).length + '<span class="text-xs font-normal text-slate-400 ml-1">명</span>', '틱톡 · 유튜브 · 스레드', 'slate'],
+      ['2차 활용', selN + ' / ' + selN, '자사몰 · 광고 소재', 'emerald']
+    ];
+  }
+  const tone = { slate:'text-slate-900', indigo:'text-indigo-600', amber:'text-amber-600', emerald:'text-emerald-600' };
+  $('kpis').innerHTML = cards.map(([t, v, s, c]) =>
+    '<div class="tight-kpi bg-white border border-slate-200 rounded-2xl px-4 py-3.5">'
+    + '<div class="text-[11px] font-medium text-slate-500">' + t + '</div>'
+    + '<div class="num text-[22px] font-bold tracking-[-.02em] mt-0.5 ' + tone[c] + '">' + v + '</div>'
+    + '<div class="text-[10.5px] text-slate-400 mt-0.5">' + s + '</div></div>'
+  ).join('');
+}
+
+function renderToolbar() {
+  const selN = selected().length, codeN = selected().filter(c => c.codeOn).length;
+  $('toolbarInfo').innerHTML = {
+    1: '후보 <strong class="text-slate-900">' + CREATORS.length + '명</strong> 중 <strong class="text-indigo-600">' + selN + '명</strong> 선정',
+    2: '선정 <strong class="text-slate-900">' + selN + '명</strong> · 업로드 <strong class="text-indigo-600">' + upList().length + '건</strong> 반영됨',
+    3: '업로드 <strong class="text-slate-900">' + selN + '건</strong> 완료 · 사후처리 가능'
+  }[S.step];
+}
+
+function renderBanner() {
+  const selN = selected().length;
+  const B = {
+    1: ['선정만 하시면 나머지는 저희가 채웁니다', '가이드라인 · 사전 검수 · 파트너십 코드 · 공동작업자 · 원본 인도', '선정 확정 (' + selN + '명)'],
+    2: ['업로드가 끝나면 원본과 보고서가 여기 채워집니다', '검수 · 공동작업자 연결 · 추가 플랫폼 게시 요청까지 저희가 진행합니다', '업로드 완료 처리'],
+    3: ['선정부터 보고서까지 이 화면 하나로', '9월 캠페인도 같은 방식으로 굴려보시겠어요?', '커피챗하기']
+  }[S.step];
+
+  $('bannerTitle').textContent = B[0];
+  $('bannerSub').textContent = B[1];
+  $('bannerIcon').className = 'w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 '
+    + (S.step === 3 ? 'bg-emerald-50 border-emerald-100' : 'bg-indigo-50 border-indigo-100');
+  $('bannerIcon').innerHTML = S.step === 3
+    ? '<svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
+    : '<svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
+
+  const cta = $('mainCta');
+  const off = S.step === 1 && selN === 0;
+  cta.disabled = off;
+  cta.onclick = off ? null : advance;
+  cta.innerHTML = B[2] + (S.step === 3 ? '' : '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M3 12h18"/></svg>');
+  cta.className = 'w-full sm:w-auto shrink-0 text-sm font-bold px-7 py-3.5 rounded-2xl transition flex items-center justify-center gap-2 '
+    + (off ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+           : 'text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200');
+}
+
+function renderColToggles() {
+  $('colToggles').innerHTML = [[1,'선정 단계'],[2,'진행 단계'],[3,'완료 · 사후']].map(([p, title]) => {
+    const keys = Object.keys(COLS).filter(k => COLS[k].phase === p);
+    return '<div><div class="text-[10.5px] font-semibold text-slate-400 mb-1">' + title + '</div>'
+      + keys.map(k =>
+        '<label class="flex items-center gap-2.5 px-1.5 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer text-xs">'
+        + '<input type="checkbox" ' + (S.visible.has(k) ? 'checked' : '') + ' onchange="toggleCol(\'' + k + '\')" class="w-3.5 h-3.5 accent-indigo-600 cursor-pointer">'
+        + '<span class="text-slate-700">' + COLS[k].label + '</span></label>'
+      ).join('') + '</div>';
+  }).join('');
+}
+
+function renderTable() {
+  let th = '<tr class="border-b border-slate-200 text-[11px] font-semibold text-slate-500">';
+  th += '<th class="stick py-3 pl-4 pr-2 w-[104px] text-center whitespace-nowrap">선정</th>';
+  th += '<th class="stick py-3 px-3 min-w-[176px] text-left whitespace-nowrap" style="left:104px">크리에이터'
+      + '<span class="text-[9.5px] font-normal text-slate-300 ml-1">고정</span></th>';
+  th += cols().map(k => {
+    const c = COLS[k], on = c.phase === S.step;
+    return '<th draggable="true" data-key="' + k + '" class="py-3 px-3 text-' + c.align
+      + ' whitespace-nowrap select-none ' + (on ? 'text-indigo-700' : 'text-slate-500') + '">'
+      + '<span class="inline-flex items-center gap-1.5">' + ICON.grip + c.label + '</span></th>';
+  }).join('');
+  $('thead').innerHTML = th + '</tr>';
+
+  const list = shown();
+  $('tbody').innerHTML = list.map(c => {
+    const idx = CREATORS.indexOf(c);
+    let tr = '<tr class="group border-b border-slate-100 last:border-0">';
+    tr += '<td class="stick bg-white group-hover:bg-slate-50 transition-colors py-2.5 pl-4 pr-2 text-center">' + selBtn(c, idx) + '</td>';
+    tr += '<td class="stick bg-white group-hover:bg-slate-50 transition-colors py-2.5 px-3" style="left:104px">'
+      + '<div class="flex items-center gap-3">' + avatar(c, idx)
+      + '<div class="min-w-0"><div class="text-[13.5px] font-semibold text-slate-900 truncate">' + esc(c.name) + '</div>'
+      + '<div class="num text-[11px] text-slate-400 truncate">' + esc(c.handle) + '</div></div></div></td>';
+    tr += cols().map(k => cell(c, idx, k)).join('');
+    return tr + '</tr>';
+  }).join('');
+
+  if (!list.length) {
+    $('tbody').innerHTML = '<tr><td colspan="' + (2 + cols().length) + '" class="py-14 text-center text-xs text-slate-400">선정된 크리에이터가 없습니다. 1단계에서 선정 버튼을 누르세요.</td></tr>';
+  }
+  bindDrag();
+}
+
+/* 체크박스가 아니라 버튼 — 처음 세 명은 이미 눌린 상태이고 나머지는 깜빡인다 */
+function selBtn(c, idx) {
+  if (S.step > 1) {
+    return '<span class="inline-flex items-center gap-1 text-[10.5px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1.5 rounded-lg whitespace-nowrap">'
+      + ICON.check + '확정</span>';
+  }
+  if (c.sel) {
+    return '<button onclick="toggleSel(' + idx + ')" class="selbtn inline-flex items-center gap-1 text-[11px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap">'
+      + ICON.check + '선정됨</button>';
+  }
+  return '<button onclick="toggleSel(' + idx + ')" class="selbtn ' + (S.nudge ? 'nudge ' : '')
+    + 'inline-flex items-center text-[11px] font-bold text-indigo-600 bg-white border border-indigo-300 hover:bg-indigo-50 px-3 py-1.5 rounded-lg whitespace-nowrap">선정</button>';
+}
+
+function cell(c, idx, k) {
+  const col = COLS[k];
+  const pad = 'py-2.5 px-3 text-' + col.align;
+  const blank = '<td class="' + pad + ' bg-slate-50/60"><span class="text-slate-300 text-[13px]">&mdash;</span></td>';
+  const quiet = col.phase < S.step;
+  const numCls = 'num text-[12.5px] ' + (quiet ? 'text-slate-500' : 'font-semibold text-slate-900');
+
+  switch (k) {
+    case 'fol':  return '<td class="' + pad + '"><span class="' + numCls + '">' + kw(c.fol) + '</span></td>';
+    case 'er':   return '<td class="' + pad + '"><span class="' + numCls + '">' + c.er.toFixed(1) + '%</span></td>';
+    case 'cost': return '<td class="' + pad + '"><span class="' + numCls + '">' + won(c.cost) + '</span></td>';
+
+    case 'code':
+      if (S.step === 1) {
+        return '<td class="' + pad + '"><label class="inline-flex items-center gap-2 cursor-pointer">'
+          + '<input type="checkbox" ' + (c.codeOn ? 'checked' : '') + ' onchange="toggleCode(' + idx + ')" aria-label="' + esc(c.name) + ' 파트너십 코드" class="w-3.5 h-3.5 accent-indigo-600 cursor-pointer">'
+          + '<span class="text-[11.5px] ' + (c.codeOn ? 'text-slate-700 font-medium' : 'text-slate-400') + '">' + (c.codeOn ? '발급' : '제외') + '</span></label></td>';
+      }
+      if (!c.codeOn) return '<td class="' + pad + '"><span class="text-[11px] text-slate-400">제외</span></td>';
+      return '<td class="' + pad + '"><button onclick="copy(\'' + c.code + '\')" title="복사"'
+        + ' class="group/c inline-flex items-center gap-2 bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 pl-2.5 pr-1.5 py-1 rounded-lg transition">'
+        + '<span class="mono text-[11px] text-slate-700 group-hover/c:text-indigo-700">' + c.code + '</span>'
+        + '<span class="text-slate-300 group-hover/c:text-indigo-500">' + ICON.copy + '</span></button></td>';
+
+    case 'collab':
+      /* 선정 단계에서는 '가능 여부', 이후에는 실제 상태 */
+      if (S.step === 1) {
+        return '<td class="' + pad + '">' + (c.collab === 'ok'
+          ? '<span class="text-[10.5px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">가능</span>'
+          : '<span class="text-[10.5px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">협의</span>') + '</td>';
+      }
+      if (c.collab !== 'ok') {
+        return '<td class="' + pad + '"><span class="inline-flex items-center gap-1.5 text-[10.5px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full whitespace-nowrap">'
+          + '<span class="relative flex w-1.5 h-1.5"><span class="animate-ping absolute inline-flex w-full h-full rounded-full bg-amber-400 opacity-75"></span>'
+          + '<span class="relative inline-flex w-1.5 h-1.5 rounded-full bg-amber-500"></span></span>수락 대기</span></td>';
+      }
+      return '<td class="' + pad + '"><span class="inline-flex items-center gap-1 text-[10.5px] font-semibold border px-2 py-0.5 rounded-full whitespace-nowrap '
+        + (quiet ? 'text-slate-400 bg-slate-50 border-slate-200' : 'text-emerald-700 bg-emerald-50 border-emerald-200') + '">' + ICON.check + '승인</span></td>';
+
+    case 'reuse':
+      if (S.step === 1) {
+        return '<td class="' + pad + '"><span class="text-[10.5px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">가능</span></td>';
+      }
+      return '<td class="' + pad + '"><span class="inline-block text-[10.5px] font-medium border px-2 py-0.5 rounded-md whitespace-nowrap '
+        + (quiet ? 'text-slate-400 bg-slate-50 border-slate-200' : 'text-indigo-700 bg-indigo-50 border-indigo-200') + '">자사몰 · 광고</span></td>';
+
+    case 'up':
+      if (S.step === 1) return blank;
+      return '<td class="' + pad + '">' + (isUp(c)
+        ? '<span class="num text-[12px] ' + (quiet ? 'text-slate-400' : 'text-slate-700 font-medium') + '">' + c.due + '</span>'
+        : '<span class="num text-[12px] text-slate-400">' + c.due + '<span class="ml-1 text-[10px]">예정</span></span>') + '</td>';
+
+    case 'content':
+      if (!isUp(c)) return blank;
+      return '<td class="' + pad + '"><button onclick="toast(\'' + esc(c.name) + ' 릴스를 새 창에서 엽니다.\')"'
+        + ' class="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 pl-2 pr-2.5 py-1 rounded-lg transition whitespace-nowrap">'
+        + '<span class="text-pink-600">' + ICON.play + '</span>릴스</button></td>';
+
+    case 'src':
+      if (!isUp(c)) return blank;
+      return '<td class="' + pad + '"><button onclick="dl(\'' + esc(c.name) + '_오드타입_원본.mp4\')" title="원본 내려받기"'
+        + ' class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100 transition">' + ICON.down + '</button></td>';
+
+    case 'extra':
+      if (!isUp(c)) return blank;
+      if (!c.extra.length) return '<td class="' + pad + '"><span class="text-slate-300 text-[13px]">&mdash;</span></td>';
+      return '<td class="' + pad + '">' + c.extra.map(p =>
+        '<span class="inline-block text-[10.5px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md mr-1 whitespace-nowrap">' + p + '</span>').join('') + '</td>';
+
+    case 'views': case 'likes': case 'cmts': case 'saves':
+      if (!isUp(c)) return blank;
+      return '<td class="' + pad + '"><span class="num text-[12.5px] '
+        + (k === 'views' ? 'font-semibold text-slate-900' : 'text-slate-600') + '">' + n(c[k]) + '</span></td>';
+  }
+  return '<td class="' + pad + '"></td>';
+}
+
+function renderPost() {
+  const box = $('postBlock');
+  if (S.step !== 3) { box.className = 'hidden'; box.innerHTML = ''; return; }
+  const acts = [
+    ['원본 일괄', "dl('오드타입_8월_원본_전체.zip')"],
+    ['2차 활용 신청', "toast('2차 활용 신청이 접수됐어요. 담당자가 확인 후 회신드립니다.')"],
+    ['성과 보고서', "openDrawer('dw-report')"],
+    ['전체 항목 CSV', 'csv()']
+  ];
+  box.className = 'shrink-0 mt-2.5 bg-white border border-slate-200 rounded-2xl px-4 py-3 flex flex-wrap items-center gap-2';
+  box.innerHTML = '<span class="num text-[10px] font-bold tracking-[.14em] text-emerald-600 uppercase mr-1">Post</span>'
+    + '<span class="text-xs font-bold text-slate-900 mr-2">사후처리</span>'
+    + acts.map(([t, fn]) =>
+      '<button onclick="' + fn + '" class="text-[11.5px] font-semibold text-slate-700 bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-300 px-3 py-2 rounded-lg transition whitespace-nowrap">' + t + '</button>'
+    ).join('');
+}
+
+function render() { renderRail(); renderKpis(); renderToolbar(); renderBanner(); renderTable(); renderPost(); }
+
+/* ══════════ 상호작용 ══════════ */
+function setStep(v) {
+  if (v === S.step) return;
+  if (v > 1 && !selected().length) { toast('먼저 1단계에서 크리에이터를 선정해 주세요.'); return; }
+  S.step = v;
+  if (!S.touched) S.visible = new Set(PRESET[v]);
+  render();
+  $('list').scrollTop = 0;
+}
+function advance() {
+  if (S.step === 3) { openSheet('sh-booking'); return; }
+  const selN = selected().length, codeN = selected().filter(c => c.codeOn).length;
+  const to = S.step + 1;
+  setStep(to);
+  toast(to === 2 ? selN + '명 선정 확정 · 파트너십 코드 ' + codeN + '건 발급했어요.'
+                 : '업로드 ' + selN + '건 완료 처리했어요. 사후처리를 열었습니다.');
+}
+function toggleSel(i)  { S.nudge = false; CREATORS[i].sel = !CREATORS[i].sel; renderKpis(); renderToolbar(); renderBanner(); renderTable(); }
+function toggleCode(i) { CREATORS[i].codeOn = !CREATORS[i].codeOn; renderKpis(); renderToolbar(); renderTable(); }
+function toggleCol(k)  { S.touched = true; S.visible.has(k) ? S.visible.delete(k) : S.visible.add(k); renderTable(); }
+function resetCols()   { S.touched = false; S.visible = new Set(PRESET[S.step]); renderColToggles(); renderTable(); }
+
+function togglePop(id) {
+  const el = $(id), was = el.classList.contains('hidden');
+  document.querySelectorAll('[id^="pop"]').forEach(p => p.classList.add('hidden'));
+  if (was) { el.classList.remove('hidden'); renderColToggles(); }
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#popCols') && !e.target.closest('button[onclick*="popCols"]')) $('popCols').classList.add('hidden');
+});
+
+/* 드래그로 열 순서 바꾸기 */
+let dragKey = null;
+function bindDrag() {
+  document.querySelectorAll('#thead th[draggable="true"]').forEach(th => {
+    th.ondragstart = e => { dragKey = th.dataset.key; th.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragKey); };
+    th.ondragend   = () => { dragKey = null; clearMarks(); th.classList.remove('dragging'); };
+    th.ondragover  = e => {
+      if (!dragKey || th.dataset.key === dragKey) return;
+      e.preventDefault(); clearMarks();
+      th.classList.add(S.order.indexOf(dragKey) > S.order.indexOf(th.dataset.key) ? 'drop-left' : 'drop-right');
+    };
+    th.ondragleave = () => th.classList.remove('drop-left', 'drop-right');
+    th.ondrop = e => {
+      e.preventDefault();
+      const target = th.dataset.key;
+      if (!dragKey || target === dragKey) return;
+      const from = S.order.indexOf(dragKey);
+      S.order.splice(from, 1);
+      const at = S.order.indexOf(target);
+      S.order.splice(at + (from > at ? 0 : 1), 0, dragKey);
+      dragKey = null; renderTable();
+    };
+  });
+}
+function clearMarks() { document.querySelectorAll('#thead th').forEach(t => t.classList.remove('drop-left', 'drop-right')); }
+
+/* 드로어 · 시트 */
+function closeOthers(id) { document.querySelectorAll('.drawer.open, .sheet.open').forEach(d => { if (d.id !== id) d.classList.remove('open'); }); }
+function openDrawer(id) {
+  if (id === 'dw-report') buildReport();
+  if (id === 'dw-calendar') buildCal();
+  closeOthers(id); $(id).classList.add('open');
+}
+function closeDrawer(id){ $(id).classList.remove('open'); }
+function openSheet(id)  { closeOthers(id); $(id).classList.add('open'); setTimeout(() => $('bkBrand') && $('bkBrand').focus(), 320); }
+function closeSheet(id) { $(id).classList.remove('open'); }
+function bgClose(e, id) { if (e.target === e.currentTarget) $(id).classList.remove('open'); }
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.drawer.open, .sheet.open').forEach(d => d.classList.remove('open'));
+});
+
+/* 복사 · 내려받기 · 토스트 */
+function copy(code) {
+  const done = () => toast('파트너십 코드 ' + code + ' 복사했어요.');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, done);
+  else done();
+}
+function dl(file) { toast(file + ' 내려받기를 시작했어요.'); }
+function csv() {
+  const head = ['크리에이터','핸들','팔로워','참여율','단가','파트너십코드','공동작업자','업로드일','조회수','좋아요','댓글','저장','추가플랫폼','2차활용'];
+  const rows = shown().map(c => [c.name, c.handle, c.fol, c.er, c.cost, c.codeOn ? c.code : '',
+    c.collab === 'ok' ? '승인' : '수락대기', '2026.' + c.due, c.views, c.likes, c.cmts, c.saves, c.extra.join(' / '), '자사몰·광고']);
+  const body = [head].concat(rows).map(r => r.join(',')).join('\n');
+  toast('CSV ' + rows.length + '행을 내려받아요. (' + (body.length / 1024).toFixed(1) + 'KB)');
+}
+let toastT;
+function toast(msg) {
+  $('toastMsg').textContent = msg;
+  $('toast').classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => $('toast').classList.remove('show'), 2600);
+}
+function book(e) {
+  e.preventDefault();
+  const brand = $('bkBrand').value.trim();
+  closeSheet('sh-booking');
+  e.target.reset();
+  toast((brand || '요청') + ' 커피챗 신청이 접수됐어요. 영업일 기준 하루 안에 회신드립니다.');
+}
+
+/* ══════════ 드로어 내용 ══════════ */
+$('guideBody').innerHTML = [
+  ['필수 소구점',   '워터 틴트 텍스처 발색 컷 3초 이상 노출'],
+  ['공동작업자',    '업로드 시 @oddtype_official 태그 · 공동작업자 수락'],
+  ['파트너십 코드', '본문 최상단에 개인 코드 명시 (예: SUBIN_AD3CO15)'],
+  ['2차 활용',      '자사몰 상세페이지 · 퍼포먼스 광고 소재 사용 합의'],
+  ['사전 검수',     '업로드 48시간 전 초안 공유 · 저희가 확인 후 회신']
+].map(([t, d], i) =>
+  '<div class="flex gap-3.5 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5">'
+  + '<span class="num shrink-0 w-5 h-5 rounded-full bg-white border border-slate-200 grid place-items-center text-[10px] font-bold text-slate-500">' + (i + 1) + '</span>'
+  + '<div><div class="text-xs font-bold text-slate-900">' + t + '</div>'
+  + '<div class="text-[11.5px] text-slate-500 mt-0.5 leading-relaxed keep">' + d + '</div></div></div>'
+).join('');
+
+function buildReport() {
+  const sel = selected();
+  if (!sel.length) { $('reportBody').innerHTML = '<p class="text-xs text-slate-400">선정된 크리에이터가 없습니다.</p>'; return; }
+  const V = sel.reduce((a, c) => a + c.views, 0);
+  const top = sel.slice().sort((a, b) => b.views - a.views).slice(0, 3);
+  const max = top[0].views;
+  const withExtra = sel.filter(c => c.extra.length);
+  $('reportBody').innerHTML =
+    '<div class="grid grid-cols-2 gap-2.5">' + [
+      ['총 조회수', n(V)], ['좋아요', n(sel.reduce((a, c) => a + c.likes, 0))],
+      ['댓글', n(sel.reduce((a, c) => a + c.cmts, 0))], ['저장', n(sel.reduce((a, c) => a + c.saves, 0))]
+    ].map(([t, v]) =>
+      '<div class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5">'
+      + '<div class="text-[10.5px] text-slate-500">' + t + '</div>'
+      + '<div class="num text-lg font-bold text-slate-900 mt-0.5">' + v + '</div></div>').join('') + '</div>'
+    + '<div><div class="text-xs font-bold text-slate-900 mb-2.5">조회수 상위 ' + top.length + '건</div><div class="space-y-2">'
+    + top.map(c =>
+      '<div class="flex items-center gap-3">' + avatar(c, CREATORS.indexOf(c), 30)
+      + '<div class="flex-1 min-w-0"><div class="flex items-baseline justify-between gap-2">'
+      + '<span class="text-xs font-semibold text-slate-900 truncate">' + esc(c.name)
+      + ' <span class="num font-normal text-slate-400">' + esc(c.handle) + '</span></span>'
+      + '<span class="num text-xs font-bold text-slate-900 shrink-0">' + n(c.views) + '</span></div>'
+      + '<div class="h-1.5 bg-slate-100 rounded-full mt-1.5 overflow-hidden"><div class="h-full bg-indigo-500 rounded-full" style="width:'
+      + Math.round(c.views / max * 100) + '%"></div></div></div></div>').join('') + '</div></div>'
+    + '<div><div class="text-xs font-bold text-slate-900 mb-2.5">추가 플랫폼 게시</div><div class="flex flex-wrap gap-1.5">'
+    + (withExtra.length
+        ? withExtra.map(c => '<span class="text-[11px] font-medium text-slate-600 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg">'
+            + esc(c.name) + ' <span class="text-slate-400">' + c.extra.join(' · ') + '</span></span>').join('')
+        : '<span class="text-[11px] text-slate-400">없음</span>')
+    + '</div></div>';
+}
+
+$('moreBody').innerHTML =
+  '<div><div class="text-xs font-bold text-slate-900 mb-2.5">캠페인마다 기본으로 챙기는 것</div><div class="grid grid-cols-2 gap-2">'
+  + ['가이드라인 제작','업로드 전 사전 검수','파트너십 코드 발급','공동작업자 연결','원본 파일 인도',
+     '추가 플랫폼 게시 요청','2차 활용 합의','성과 보고서','업로드 일정 관리','대체 크리에이터 수급']
+    .map(t => '<div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-[11.5px] text-slate-700 keep">'
+      + '<span class="text-emerald-500 shrink-0">' + ICON.check + '</span>' + t + '</div>').join('')
+  + '</div></div>'
+  + '<div><div class="text-xs font-bold text-slate-900 mb-2.5">받아볼 수 있는 지표</div><div class="flex flex-wrap gap-1.5">'
+  + ['조회수','좋아요','댓글','저장','공유','팔로워','참여율','도달','프로필 방문','업로드일','콘텐츠 링크','코드 사용 건수']
+    .map(t => '<span class="text-[11px] font-medium text-slate-600 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg">' + t + '</span>').join('')
+  + '</div><p class="text-[11px] text-slate-400 mt-2.5 keep">설정에서 표시할 열을 고르거나, CSV로 전부 내려받으세요.</p></div>'
+  + '<div class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-4">'
+  + '<div class="text-xs font-bold text-slate-900">파트너십 코드는 필요한 만큼만</div>'
+  + '<p class="text-[11.5px] text-slate-500 mt-1.5 leading-relaxed keep">발행 콘텐츠 전부에 코드를 받아두면 쓰지 않는 코드까지 비용이 됩니다. '
+  + '실제 광고로 돌릴 건에만 붙이시면 되고, 그 범위는 무료 우선 · 최대 5만원으로 협의해요.</p>'
+  + '<div class="text-[11px] text-slate-400 mt-2">설정에서 파트너십 코드 열을 켜면 행별로 해제할 수 있습니다.</div></div>';
+
+function buildCal() {
+  const marks = {};
+  selected().forEach(c => { marks[parseInt(c.due.split('.')[1], 10)] = c; });
+  let h = ['일','월','화','수','목','금','토'].map(d => '<div class="text-[10px] font-semibold text-slate-400 py-1.5">' + d + '</div>').join('');
+  h += '<div class="col-span-6"></div>';               /* 2026.08.01 = 토요일 */
+  for (let d = 1; d <= 31; d++) {
+    const m = marks[d], done = m && isUp(m);
+    h += '<div class="min-h-[58px] rounded-lg border p-1.5 text-left ' + (m ? 'bg-white border-slate-200' : 'bg-slate-50/60 border-slate-100') + '">'
+      + '<span class="num text-[10.5px] ' + (m ? 'text-slate-700 font-semibold' : 'text-slate-300') + '">' + d + '</span>'
+      + (m ? '<div class="mt-1 text-[9.5px] font-medium leading-tight px-1 py-1 rounded border '
+          + (done ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-indigo-50 text-indigo-700 border-indigo-200')
+          + '">' + esc(m.name) + '</div>' : '') + '</div>';
+  }
+  $('calGrid').innerHTML = h;
+}
+
+render();
+buildReport();
+buildCal();
+</script>
