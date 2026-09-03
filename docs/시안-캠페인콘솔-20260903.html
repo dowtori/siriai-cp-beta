@@ -241,6 +241,19 @@
     #listCard{height:auto}
     #list{max-height:62vh;min-height:320px}
   }
+  /* 폰 — 콜드메일 링크는 대부분 여기서 열린다.
+     고정 두 열이 320px 라 390px 화면에서는 데이터가 38px 밖에 안 남는다.
+     고정을 풀어 표 전체를 옆으로 넘겨 보게 하고, 독은 세로로 쌓는다. */
+  @media (max-width:640px){
+    #list .c1,#list .c2{position:static;width:auto;min-width:auto;max-width:auto}
+    #list .c1{min-width:92px} #list .c2{min-width:168px}
+    #list .c2::after{display:none}
+    #dock{bottom:0;width:100%}
+    #dock > div{border-radius:18px 18px 0 0;flex-wrap:wrap;gap:.75rem;padding:1rem}
+    #dock .min-w-0{flex:1 1 100%;order:1}
+    #dock > div > button:first-of-type{flex:1 1 auto;order:2;justify-content:center}
+    #dockIcon{display:none}
+  }
   @media (max-width:1080px){
     #rail{position:fixed;left:0;top:0;bottom:0;z-index:60;transform:translateX(-100%);
           transition:transform .3s cubic-bezier(.22,.61,.36,1);box-shadow:0 0 60px rgba(15,23,42,.18)}
@@ -305,7 +318,7 @@
           <span id="demoChip" class="inline-flex items-center gap-1.5 text-[10.5px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1.5 rounded-full whitespace-nowrap">
             <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>데모 화면
           </span>
-          <button onclick="showTut()" class="text-[11.5px] font-medium text-slate-500 hover:text-slate-800 transition whitespace-nowrap">안내 다시 보기</button>
+          <button onclick="showTut()" class="hidden sm:inline-block text-[11.5px] font-medium text-slate-500 hover:text-slate-800 transition whitespace-nowrap">안내 다시 보기</button>
         </div>
         <div class="flex items-center gap-2 shrink-0">
           <button onclick="openDrawer('dw-calendar')" class="text-xs font-medium text-slate-700 btn hover:bg-slate-50 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
@@ -392,7 +405,7 @@
 <!-- ══ 하단 독 ══ -->
 <div id="dock" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 w-[min(1060px,calc(100vw-32px))]">
   <div class="bg-white/95 backdrop-blur rounded-2xl px-5 sm:px-6 py-4 flex items-center gap-4" style="box-shadow:var(--lift-4)">
-    <div class="w-12 h-12 rounded-2xl bg-indigo-50 grid place-items-center shrink-0" style="box-shadow:0 0 0 1px rgba(79,70,229,.14)">
+    <div id="dockIcon" class="w-12 h-12 rounded-2xl bg-indigo-50 grid place-items-center shrink-0" style="box-shadow:0 0 0 1px rgba(79,70,229,.14)">
       <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
     </div>
     <div class="min-w-0 flex-1">
@@ -419,7 +432,7 @@
   <div class="card bg-white rounded-3xl w-full max-w-[472px] px-7 py-7" style="box-shadow:var(--lift-4)" role="dialog" aria-modal="true" aria-labelledby="tutTitle">
     <span class="sym w-8 h-8 text-slate-900" role="img" aria-label="SIRIAI"></span>
 
-    <h2 id="tutTitle" class="text-[23px] font-bold text-slate-900 leading-[1.35] mt-5 whitespace-nowrap">
+    <h2 id="tutTitle" class="text-[20px] sm:text-[23px] font-bold text-slate-900 leading-[1.35] mt-5 keep sm:whitespace-nowrap">
       직접 눌러보시는 데모 화면입니다
     </h2>
 
