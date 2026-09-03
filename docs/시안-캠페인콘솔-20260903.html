@@ -82,6 +82,11 @@
   #list thead .stick{z-index:3}
   .c1{width:var(--c1);min-width:var(--c1);max-width:var(--c1);left:0}
   .c2{width:var(--c2);min-width:var(--c2);max-width:var(--c2);left:var(--c1)}
+  /* 담당 밴드 — 고정 두 열과 겹치지 않게 별도 클래스를 쓴다(syncEdges 가 .c2 를 찾는다) */
+  .b1{position:sticky;z-index:3;width:var(--c1);min-width:var(--c1);max-width:var(--c1);left:0}
+  .b2{position:sticky;z-index:3;width:var(--c2);min-width:var(--c2);max-width:var(--c2);left:var(--c1)}
+  #list thead tr.band th{top:0;height:24px}
+  #list thead tr.head th{top:24px}
   /* 고정 2열 오른쪽에 실선 하나 — 가로 스크롤 중 경계가 흐려지지 않게 */
   #list .c2::after{content:'';position:absolute;top:0;bottom:0;right:0;width:1px;background:#e2e8f0}
 
@@ -522,7 +527,7 @@ const S = {
 const $ = id => document.getElementById(id);
 const n = v => v.toLocaleString('en-US');
 const won = v => '<span class="won">₩</span>' + n(v);
-const kw = v => (v / 10000).toFixed(v >= 100000 ? 0 : 1).replace(/\.0$/, '') + '만';
+const kw = v => (v / 10000).toFixed(1).replace(/\.0$/, '') + '만';
 /* 작은따옴표까지 막는다 — 결과가 onclick 속성 안으로 들어가기 때문이다 */
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
@@ -619,8 +624,8 @@ function renderKpis() {
 
 function renderToolbar() {
   const selN = selected().length;
-  $('toolbarInfo').innerHTML = '후보 <strong class="text-slate-900">' + CREATORS.length + '명</strong> 중 '
-    + '<strong class="text-indigo-600">' + selN + '명</strong> 선정 · 업로드 <strong class="text-slate-900">' + upList().length + '건</strong> 반영됨';
+  $('toolbarInfo').innerHTML = 'SIRIAI 추천 <strong class="text-slate-900">' + CREATORS.length + '명</strong> · '
+    + '선정 <strong class="text-indigo-600">' + selN + '명</strong> · 업로드 <strong class="text-slate-900">' + upList().length + '건</strong> 반영됨';
 }
 
 function renderColToggles() {
@@ -643,7 +648,13 @@ function renderColToggles() {
 
 /* ══════════ 표 ══════════ */
 function renderTable() {
-  let th = '<tr class="text-[11px] font-semibold text-slate-500">';
+  const band = '<tr class="band num text-[9.5px] font-bold tracking-[.14em] uppercase">'
+    + '<th scope="col" class="b1 bg-indigo-50 text-indigo-700 text-center whitespace-nowrap">브랜드</th>'
+    + '<th scope="col" class="b2 bg-slate-50"></th>'
+    + '<th scope="col" colspan="' + cols().length + '" class="bg-slate-100 text-slate-500 px-3 text-left whitespace-nowrap">SIRIAI</th>'
+    + '</tr>';
+
+  let th = '<tr class="head text-[11px] font-semibold text-slate-500">';
   th += '<th scope="col" class="stick c1 bg-slate-50 py-3 pl-4 pr-2 text-center whitespace-nowrap">선정</th>';
   th += '<th scope="col" class="stick c2 bg-slate-50 py-3 px-3 text-left whitespace-nowrap">크리에이터</th>';
   th += cols().map(k => {
@@ -652,7 +663,7 @@ function renderTable() {
       + ' class="py-3 px-3 ' + ALIGN[c.align] + ' whitespace-nowrap select-none text-slate-500 hover:text-slate-800 transition-colors">'
       + '<span class="inline-flex items-center gap-1.5"><span class="grip">' + ICON.grip + '</span>' + c.label + '</span></th>';
   }).join('');
-  $('thead').innerHTML = th + '</tr>';
+  $('thead').innerHTML = band + th + '</tr>';
 
   $('tbody').innerHTML = CREATORS.map((c, idx) => {
     let tr = '<tr class="group border-b border-slate-100 last:border-0' + (c.sel ? ' on' : '') + '">';
@@ -671,12 +682,14 @@ function renderTable() {
 
 function selBtn(c, idx) {
   if (c.sel) {
-    return '<button onclick="toggleSel(' + idx + ')" title="선정을 해제합니다"'
+    return '<button id="sel' + idx + '" onclick="toggleSel(' + idx + ')" aria-pressed="true"'
+      + ' aria-label="' + esc(c.name) + ' 선정 해제" title="선정을 해제합니다"'
       + ' class="selbtn inline-flex items-center gap-1 text-[11px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap">'
       + ICON.check + '선정됨</button>';
   }
-  return '<button onclick="toggleSel(' + idx + ')" title="이 크리에이터를 선정합니다"'
-    + ' class="selbtn ' + (S.nudge ? 'nudge ' : '')
+  return '<button id="sel' + idx + '" onclick="toggleSel(' + idx + ')" aria-pressed="false"'
+    + ' aria-label="' + esc(c.name) + ' 선정" title="이 크리에이터를 선정합니다"'
+    + ' class="selbtn ' + ((S.nudge && CREATORS.filter(x => !x.sel)[0] === c) ? 'nudge ' : '')
     + 'inline-flex items-center text-[11px] font-bold text-indigo-600 bg-white border border-indigo-300 hover:bg-indigo-50 hover:border-indigo-400 px-3 py-1.5 rounded-lg whitespace-nowrap">선정</button>';
 }
 
@@ -767,6 +780,7 @@ function toggleSel(i) {
   c.sel = !c.sel;
   if (!c.sel) { c.up = false; c.codeOn = true; }   /* 해제하면 진행 상태도 같이 내려간다 */
   renderKpis(); renderToolbar(); renderTable();
+  const b = $('sel' + i); if (b) b.focus();      /* 표를 다시 그려도 누르던 자리를 지킨다 */
   toast(c.sel ? esc(c.name) + '님을 선정했습니다.' : esc(c.name) + '님 선정을 해제했습니다.');
 }
 function toggleCode(i) { CREATORS[i].codeOn = !CREATORS[i].codeOn; renderTable(); }
