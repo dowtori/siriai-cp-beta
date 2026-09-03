@@ -222,7 +222,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
           <span id="demoChip" class="inline-flex items-center gap-1.5 text-[10.5px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1.5 rounded-full whitespace-nowrap">
-            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>둘러보기 화면
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>데모 화면
           </span>
           <button onclick="showTut()" class="text-[11.5px] font-medium text-slate-500 hover:text-slate-800 transition whitespace-nowrap">안내 다시 보기</button>
         </div>
@@ -334,20 +334,22 @@
 <!-- ══ 진입 안내 ══ -->
 <div id="tut" class="fixed inset-0 z-[70] bg-slate-900/55 backdrop-blur-sm flex items-center justify-center p-5" onclick="if(event.target===this)hideTut()">
   <div class="card bg-white rounded-3xl shadow-2xl w-full max-w-[440px] px-7 py-7" role="dialog" aria-modal="true" aria-labelledby="tutTitle">
-    <span class="sym w-9 h-9 text-slate-900" role="img" aria-label="SIRIAI"></span>
-    <h2 id="tutTitle" class="text-[19px] font-bold text-slate-900 mt-4 keep">직접 눌러보시는 화면입니다</h2>
-    <p class="text-[13px] text-slate-600 leading-relaxed mt-2.5 keep">
-      오드타입 <strong class="text-slate-900 font-semibold">8월 캠페인이 진행 중인 시점</strong>의 운영 화면을 그대로 옮겨 두었습니다.
-      실제로 브랜드가 보시게 되는 그 화면입니다.
+    <span class="sym w-8 h-8 text-slate-900" role="img" aria-label="SIRIAI"></span>
+
+    <h2 id="tutTitle" class="text-[24px] font-bold text-slate-900 tracking-[-.025em] leading-[1.35] mt-5 keep">
+      직접 눌러보시는<br>데모 화면입니다
+    </h2>
+
+    <p class="text-[12.5px] text-slate-500 leading-relaxed mt-3 keep">
+      <span class="font-semibold text-slate-700">oddtype · 29apostrophe · OJOS</span> 등
+      트렌드를 이끌어가는 브랜드를 팔로업해보세요!
     </p>
-    <ul class="mt-4 space-y-2">
-      <li class="flex gap-2.5 text-[12.5px] text-slate-700 keep"><span class="text-indigo-500 shrink-0 mt-[3px]">&#9679;</span>인플루언서를 선정하면 행이 즉시 반응합니다</li>
-      <li class="flex gap-2.5 text-[12.5px] text-slate-700 keep"><span class="text-indigo-500 shrink-0 mt-[3px]">&#9679;</span>왼쪽에서 지난 캠페인도 함께 관리됩니다</li>
-      <li class="flex gap-2.5 text-[12.5px] text-slate-700 keep"><span class="text-indigo-500 shrink-0 mt-[3px]">&#9679;</span>열 순서·표시는 끌어서 바꾸실 수 있습니다</li>
-    </ul>
-    <p class="text-[11.5px] text-slate-500 mt-4 keep bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3">
-      둘러보기용이라 저장·내려받기는 동작하지 않습니다. 눌러보시면 실제로는 어떻게 되는지 알려드립니다.
+
+    <p class="flex items-start gap-2 text-[11.5px] text-slate-500 mt-6 keep bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3">
+      <svg class="w-3.5 h-3.5 shrink-0 mt-[1px] text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      저장·내려받기 등 일부 기능은 동작하지 않습니다.
     </p>
+
     <button onclick="hideTut()" class="mt-5 w-full text-[14px] font-bold text-white bg-slate-900 hover:bg-slate-800 py-3.5 rounded-xl transition">
       둘러보기 시작
     </button>
