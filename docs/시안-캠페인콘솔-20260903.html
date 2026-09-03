@@ -335,7 +335,7 @@
           </button>
           <button onclick="openDrawer('dw-report')" class="text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 px-3.5 py-2 rounded-lg transition flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V9m4 8V5m4 12v-6M4 19h16"/></svg>
-            중간 보고서
+            <span id="reportBtnLabel" class="hidden sm:inline">중간 보고서</span><span class="sm:hidden">보고서</span>
           </button>
         </div>
       </div>
@@ -346,13 +346,11 @@
       <!-- 제목 -->
       <div class="shrink-0 flex flex-col xl:flex-row xl:items-end justify-between gap-3">
         <div class="min-w-0">
-          <div class="num t-label text-[10px] text-indigo-600 mb-2">Oddtype &middot; 2026.08.01 – 08.31</div>
+          <div id="eyebrow" class="num t-label text-[10px] text-indigo-600 mb-2"></div>
           <h1 class="tight-h1 text-[26px] font-bold text-slate-900 flex flex-wrap items-center gap-2.5 keep">
-            26년 8월 인플루언서 캠페인
-            <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap text-slate-600"
-                  style="box-shadow:0 0 0 1px rgba(17,19,24,.09)">
-              <span class="w-1.5 h-1.5 rounded-full" style="background:var(--accent)"></span>진행 중
-            </span>
+            <span id="campTitle"></span>
+            <span id="campBadge" class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap text-slate-600"
+                  style="box-shadow:0 0 0 1px rgba(17,19,24,.09)"></span>
           </h1>
         </div>
       </div>
@@ -499,9 +497,9 @@
   <div class="panel bg-white w-full max-w-[560px] h-full border-l border-slate-200 flex flex-col" role="dialog" aria-modal="true" aria-label="중간 성과 보고서">
     <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
       <div>
-        <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">Interim report</div>
-        <h3 class="text-base font-bold text-slate-900 mt-1">8월 중간 성과 보고서</h3>
-        <p class="text-[11px] text-slate-500 mt-1">업로드 완료분 기준 · 캠페인 종료 후 최종본이 나옵니다</p>
+        <div id="reportKicker" class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">Interim report</div>
+        <h3 id="reportTitle" class="text-base font-bold text-slate-900 mt-1">8월 중간 성과 보고서</h3>
+        <p id="reportNote" class="text-[11px] text-slate-500 mt-1">업로드 완료분 기준 · 캠페인 종료 후 최종본이 나옵니다</p>
       </div>
       <button onclick="closeDrawer('dw-report')" class="text-slate-500 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -590,7 +588,7 @@
 /* ══════════ 데이터 ══════════
    진행 시점이다 — 선정 5명 중 3명이 올라왔고 2명은 예정이다.
    up 은 업로드 완료 여부. 인덱스로 유추하지 않고 값으로 갖는다. */
-const CREATORS = [
+const LIVE_ROSTER = [
   { name:'전수빈', handle:'@subin_jeon',    roman:'SUBIN',  disc:15, fol:128000, er:6.9, cost:350000, due:'08.06', views:842000, likes:32400, cmts:1120, saves:8900, extra:['틱톡'],          sel:true,  up:true,  collab:'ok'   },
   { name:'김민지', handle:'@minji_beauty',  roman:'MINJI',  disc:10, fol: 96000, er:7.4, cost:300000, due:'08.09', views:615000, likes:24800, cmts: 860, saves:6400, extra:[],               sel:true,  up:true,  collab:'ok'   },
   { name:'이아린', handle:'@arin_daily',    roman:'ARIN',   disc:20, fol: 74000, er:5.8, cost:250000, due:'08.12', views:520100, likes:19600, cmts: 610, saves:5100, extra:['틱톡','유튜브'], sel:true,  up:true,  collab:'ok'   },
@@ -600,7 +598,6 @@ const CREATORS = [
   { name:'정다인', handle:'@dain_kit',      roman:'DAIN',   disc:15, fol: 27000, er:4.6, cost:150000, due:'08.25', views: 96300, likes: 4100, cmts: 150, saves:1200, extra:[],               sel:false, up:false, collab:'ok'   },
   { name:'오유나', handle:'@yuna_pick',     roman:'YUNA',   disc:10, fol: 22000, er:3.9, cost:150000, due:'08.27', views: 61800, likes: 2600, cmts:  90, saves: 740, extra:[],               sel:false, up:false, collab:'ok'   }
 ];
-CREATORS.forEach(c => { c.code = c.roman + '_AD3CO' + c.disc; c.codeOn = true; });
 
 /* 썸네일 — 수집분에서 무작위로 붙였다. 인덱스 순서대로 CREATORS 에 매칭된다.
    교체하려면 이 배열만 갈면 되고, 비우면 이니셜 아바타로 자동 폴백된다. */
@@ -612,15 +609,53 @@ const PICS = ['data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/7QCEUGhvdG9zaG
   'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/7QCEUGhvdG9zaG9wIDMuMAA4QklNBAQAAAAAAGgcAigAYkZCTUQwYTAwMGE4MzAxMDAwMDZmMDIwMDAwNGQwMzAwMDBhNjAzMDAwMDEyMDQwMDAwYTYwNDAwMDAwYjA2MDAwMDNlMDYwMDAwYTUwNjAwMDAwOTA3MDAwMGZlMDgwMDAwAP/bAIQABQYGCwgLCwsLCw0LCwsNDg4NDQ4ODw0ODg4NDxAQEBEREBAQEA8TEhMPEBETFBQTERMWFhYTFhUVFhkWGRYWEgEFBQUKBwoICQkICwgKCAsKCgkJCgoMCQoJCgkMDQsKCwsKCw0MCwsICwsMDAwNDQwMDQoLCg0MDQ0MExQTExOc/8IAEQgAZABkAwEiAAIRAQMRAf/EAE4AAAEFAQEAAAAAAAAAAAAAAAQAAQIDBQYHEAABAgMEBwYGAgMAAAAAAAABABECITEDEEFRIGFxgZGhsQQSMDLR8AUTIsHh8RQzQlJy/9oADAMBAAIAAwAAAAH0G8cmTM7SdNVbTKPmr52lohWyStgnaaZ6bqWXfGef8jkafsfHePDsuxB5q1lplZRMY6JdPQk06N8LtIW3P2caEvHUyytCSi6UiRb0/e7PDdscMS8JmCPZUovaPfQn8bdpY+izpJPZW6R3W5jWWdxPjDCB+nkFYUEXTdTJvHEnx9JOzpJJ0iNjA3VeZg9Sa7ct3ZbaOXNoyIqFJ3dvJ0fPs72lRfwboPVs2UfG9M+zSCpJjdNVsfdU+VM8BOTrYCDK9NbzNVS9Ky+JU4iTIWqBToiKqfVmcQsHU7Ti0nf/2gAIAQEAAQUCgpoWnkFwDaNnTQtPJFbThDaVlRWlrDZq2+MQQq2+JWloou3WhggtTAv5Nov5Uah7ZEoS6C7hUXxezsxbfGLWNRWpiT3Q3CB1B2SMqy7NDBcEItKzqO1wqGLvC90+lArGOFzEx0G0oV3CnOi+nDbuu+y78SgmvmwBQWkMfgQFQQqOydF1ZWMVorGyFkPAgLqEIMTfZfC4I0fgqPwe0Ci+E2qPwq2R+CiGy/gBWHZ/lKKyB0ezRMrONzf2z+u+GHvL5MSNkQvllQldjM7+2/132FRWISX/2gAIAQMAAT8BuKZq6ZhGQUUUAwB2aVtZAMIRMvjlp2dlME4UVp2WGF/rnsRGrRsosFaWTAkcFHa97ZcDdFQo2hOK7xLBycgvlRZFfKiyKF0dDsus/NDtv//aAAgBAgABPwG4YIR94sMKnSKEUVATsCsrO1P+RhGv0uc6HZ7WIuYjINhnpiJn1odqeTc2QiFHD7dLuPqdWPZhBOpzTKKG6EORtChsYRMBMIXNMyj2iD/YcV/Ig/2HFRY3QeaHaLrfyR7Ebv/aAAgBAQAGPwLRi/5Pixf8nou6K9PB+qIBfQO8qyyCFn3vpCkvN0Xm5BUB5aEniPAKX0DUpl9GQdf6p6nM+FQ8k/iTQGfiwQmoD8fEpdkF5y/BeYcVIv4DXPDPbdLjgup8KUS+uAHXoeYw81K0G+Ff4leTov6zyXeiiPfxGC8yM3dZHPwot3XSoFQXHQi3ddA7EL//2gAIAQEAAT8h0D8L3TI3HwFenvDRA0Qeinan6hAAHc64/kdXFNPZO856ACa8DPtkz4VUsIWZkOFVKS3YAncANmEnm8zUp6lBOLOea1zh6EB4N6MUBsKMAWZwge6Yw+0TM+SfQY4jjVHnIWs3XRIMjVuwCVXQA114BfgWbBQJ7jYqU6fQLAWab1oiqvbKuKaAcA53hDTiY7kx5j7rJS6k7cZS0ANMDllqkWZ4MjsSG4IYOn8EC0xgjACAplQp5OTM8X6omDnaH0qjDGd4ANGsmcuqNTwycG2VZNpmeZnQHRXTWX2YFVAX1go5LLEpAmQJk7z8J9MKqdhqARjQ4eiaXkyDX2P+lSQkE9zuRqYYBxnzU+c3HQlUjdFuoC/AH1IahPbWmtgAEIDCTR9T8VrXD8obwcYKNIKdtqEj+dGYT/f6o/eyIG50YmCDzS4oXOvmcUU5gCnL71K5rpIXyGyP7XDhCmX/2gAMAwEAAgADAAAAEOqXXiLQam2Ed/ScWYAyUaOdXpT+webTL77IZgv+3OwgEQUA8QP/2gAIAQMAAT8QF1B2ItvUaD7nQF9SdoQsaGQfcKqYXidVOqcYpA7NnpkLFUdohn2M6FETBTafi1BtRKuYYtLRlHImpO00NJTJ66ATEyBQJjIdiwaHmPXAcEDekv1RWG7mXS7lF/8A/9oACAECAAE/ECJoBV7QQDFcUHQHPXwQDI3Ep7oUn1hTHvT936XPWtRfsuWgFfaui3DU4CaOQETxOdTuWYSbMfhq6aICaf6l7FtmgGnmgjUjWUXSBi2CAxtxfoCoue4ZoLmN7//aAAgBAQABPxA3C8IY7Oq7MCJk7+cBOJ1nBvMkAGG0kzJOJJxNwuayNw2Jrggr7VRuajbTfYLLpZJ7MkS1mNTNw50CWqWAvF4obEQm9HKY2VOCdvfGhNxCfizfoh9047CriSkqDyFGwT2pSW3k9GtBFK4T2MAhTukRxcjkiF3AFpyfaAeQRJAHWUHWzkfqBH4BgPVdCI+VJCUSN2oi2uKlaZN4Wm9zMhEhMD2DiTOtBCaYCAwRHUKp9x06dGAkpsAA5yliFvNjK/agAAFwJOQJQN5iWI0455b9ECGYgrrQ4DGwNGZGbChfgIXANBnxGi1hPIfDOO3n+0UUikcCp1IAaEHYXQKBuDRIQIxJwdYTxKZvuXbkphaxzdRPfww7PcmQ/JITke+hBWltYTwdc1WA+osUNYaYzBB1quSzJQzFed7lCidMsxXWEyvaAP2DlP3riSJDVgGA43GTXsmUhcYJoCNCaid7ZlSJgb75OI10IAAAAFAAABsAkijouKjhbOUKGbWvZal92797NEZ9rXkQFLjuSIWM6SY9CJ6B3UNNFcoTGqanoqCSCAgDHHDeTB3YPsCNzJggBgaJ7s9pMbpdgKCSfuxMy0gigqno3IIODexgisDeUyxRHF+B9lL8QII9YHmg87ohl9CAjp90G4nl6L//2Q==',
   'data:image/jpeg;base64,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',
   'data:image/jpeg;base64,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'];
-CREATORS.forEach((c, i) => { c.pic = PICS[i] || null; });
+/* 지난 캠페인 명단. 전부 끝난 건이라 선정·업로드가 확정 상태다 */
+const done = (name, handle, roman, disc, fol, er, cost, due, views, likes, cmts, saves, extra) =>
+  ({ name, handle, roman, disc, fol, er, cost, due, views, likes, cmts, saves,
+     extra: extra || [], sel: true, up: true, collab: 'ok' });
+
+const ROSTERS = {
+  '2608': LIVE_ROSTER,
+  '2607': [
+    done('김세인','@sei0iny','SEIN',15,112000,7.1,320000,'07.08',768000,29800,1040,7600,['틱톡']),
+    done('류아나','@uanahada','ANA',10, 87000,6.4,280000,'07.14',541000,20100, 690,5200,[]),
+    done('박재이','@by.jaeyee','JAEYEE',20,64000,8.3,240000,'07.19',498200,23400, 810,6100,['유튜브']),
+    done('윤희진','@yoonssio','HEEJIN',10,38000,5.6,170000,'07.26',212400, 8900, 260,2100,[])
+  ],
+  '2606': [
+    done('김혜빈','@mmercurial','HYEBIN',15,142000,6.6,380000,'06.04',904000,33100,1210,9400,['틱톡','유튜브']),
+    done('이수정','@crystalyxo','SUJUNG',10, 98000,7.8,300000,'06.09',712000,27600, 940,7100,[]),
+    done('공혜원','@koo_oing','HYEWON',15, 71000,6.1,250000,'06.15',466000,17800, 620,4800,['스레드']),
+    done('안예림','@eylimaa','YERIM',20, 55000,7.4,220000,'06.20',389000,16200, 540,4200,[]),
+    done('차미','@chammy_you','CHAMI',10, 43000,5.9,190000,'06.25',276000,10400, 350,2700,[]),
+    done('신도하','@ohdoha_','DOHA',15, 31000,6.8,160000,'06.29',198000, 8100, 280,2000,[])
+  ],
+  '2605': [
+    done('김민주','@mem_nto','MINJU',20,126000,7.9,360000,'05.11',822000,31900,1150,8700,['틱톡']),
+    done('이예지','@yeahh_yes_','YEJI',15, 82000,6.2,270000,'05.18',487000,18300, 640,4900,[]),
+    done('임두리','@kittybunnyvely','DURI',10, 47000,5.4,200000,'05.24',241000, 9200, 300,2400,[])
+  ]
+};
+
+Object.values(ROSTERS).forEach(r => r.forEach((c, i) => {
+  c.code = c.roman + '_AD3CO' + c.disc;
+  if (c.codeOn === undefined) c.codeOn = true;
+  c.pic = PICS[i % PICS.length] || null;
+}));
+
+let CREATORS = ROSTERS['2608'];
 
 /* 브랜드의 캠페인 전체. 지난 건은 회색으로 죽어 있고 상태만 남는다 */
 const CAMPAIGNS = [
-  { id:'2608', title:'26년 8월 인플루언서 캠페인', period:'08.01 – 08.31', state:'live', badge:'진행 중', n:5 },
-  { id:'2607', title:'26년 7월 신제품 리뷰',       period:'07.01 – 07.31', state:'done', badge:'정산 완료', n:4 },
-  { id:'2606', title:'26년 6월 여름 프로모션',     period:'06.01 – 06.30', state:'done', badge:'정산 완료', n:6 },
-  { id:'2605', title:'26년 5월 브랜드 앰배서더',   period:'05.01 – 05.31', state:'done', badge:'종료',      n:3 }
+  { id:'2608', title:'26년 8월 인플루언서 캠페인', period:'08.01 – 08.31', y:2026, m:8, state:'live', badge:'진행 중' },
+  { id:'2607', title:'26년 7월 신제품 리뷰',       period:'07.01 – 07.31', y:2026, m:7, state:'done', badge:'정산 완료' },
+  { id:'2606', title:'26년 6월 여름 프로모션',     period:'06.01 – 06.30', y:2026, m:6, state:'done', badge:'정산 완료' },
+  { id:'2605', title:'26년 5월 브랜드 앰배서더',   period:'05.01 – 05.31', y:2026, m:5, state:'done', badge:'종료'      }
 ];
+CAMPAIGNS.forEach(c => { c.n = ROSTERS[c.id].filter(x => x.sel).length; });
+
+const camp   = () => CAMPAIGNS.find(c => c.id === S.camp);
+const isLive = () => camp().state === 'live';
 
 /* 열 — group 은 설정 패널에서 묶는 기준일 뿐, 값 유무와 무관하다 */
 const COLS = {
@@ -644,10 +679,15 @@ const ALL = Object.keys(COLS);
 /* 정렬 클래스는 문자열로 조립하지 않는다 — 빌드 스캐너가 못 잡는다 */
 const ALIGN = { left:'text-left', center:'text-center', right:'text-right' };
 
-/* 표시 중인 캠페인 기간 — 캘린더가 여기서 파생된다 */
-const PERIOD = { y: 2026, m: 8 };
+/* 숫자 열은 눌러서 정렬한다. 8명이면 눈으로 보지만 20명이 넘으면 필수다 */
+const SORTABLE = new Set(['fol','er','cost','up','views','likes','cmts','saves']);
+const sortVal = (c, k) =>
+  ['views','likes','cmts','saves'].indexOf(k) >= 0 ? (isUp(c) ? c[k] : -1)
+  : k === 'up' ? (c.sel ? c.due : '')
+  : c[k];
 
 const S = {
+  sort: { key: null, dir: 0 },   /* dir: -1 내림 · 1 오름 · 0 없음 */
   order: ALL.slice(),
   visible: new Set(ALL),      /* 진행 전체 열을 처음부터 다 보여준다 */
   nudge: true,
@@ -668,6 +708,25 @@ const selected = () => CREATORS.filter(c => c.sel);
 const isUp     = c => c.sel && c.up;
 const upList   = () => CREATORS.filter(isUp);
 const cols     = () => S.order.filter(k => S.visible.has(k));
+
+/* 표에 그릴 순서. 정렬이 없으면 원래 명단 순서 그대로다 */
+function rowsInOrder() {
+  const { key, dir } = S.sort;
+  if (!key || !dir) return CREATORS.slice();
+  return CREATORS.slice().sort((a, b) => {
+    const x = sortVal(a, key), y = sortVal(b, key);
+    if (typeof x === 'string' || typeof y === 'string') return dir * String(x).localeCompare(String(y));
+    return dir * (x - y);
+  });
+}
+
+function sortBy(k) {
+  if (!SORTABLE.has(k)) return;
+  if (S.sort.key !== k)          S.sort = { key: k, dir: -1 };   /* 큰 값 먼저가 궁금한 게 보통이다 */
+  else if (S.sort.dir === -1)    S.sort.dir = 1;
+  else                           S.sort = { key: null, dir: 0 };
+  renderTable();
+}
 
 const AV = ['#4f46e5','#0ea5e9','#7c3aed','#0d9488','#db2777','#ea580c','#65a30d','#2563eb'];
 function avatar(c, i, size) {
@@ -723,13 +782,32 @@ function renderNav() {
 }
 
 function pickCamp(id) {
-  const cp = CAMPAIGNS.find(c => c.id === id);
-  if (!cp) return;
-  if (cp.state === 'done') {
-    na(esc(cp.title), '실제 화면에서는 지난 캠페인의 최종 보고서와 원본이 그대로 열립니다.');
-    return;
-  }
-  S.camp = id; renderNav(); toggleRail(false);
+  if (!ROSTERS[id] || id === S.camp) { toggleRail(false); return; }
+  S.camp = id;
+  CREATORS = ROSTERS[id];
+  S.nudge = false;
+  render(); buildReport(); buildCal();
+  $('list').scrollTop = 0; $('list').scrollLeft = 0;
+  toggleRail(false);
+  const cp = camp();
+  toast(cp.state === 'live'
+    ? esc(cp.title) + josa(cp.title, '으로', '로') + ' 이동했습니다.'
+    : esc(cp.title) + ' \u2014 ' + cp.badge + '. 최종 성과와 원본이 그대로 남아 있습니다.');
+}
+
+/* 제목 · 기간 · 상태는 선택된 캠페인에서 그린다 */
+function renderHead() {
+  const cp = camp(), live = cp.state === 'live';
+  $('eyebrow').textContent = 'Oddtype \u00b7 ' + cp.y + '.' + cp.period;
+  $('campTitle').textContent = cp.title;
+  $('campBadge').innerHTML = '<span class="w-1.5 h-1.5 rounded-full" style="background:'
+    + (live ? 'var(--accent)' : '#94a3b8') + '"></span>' + cp.badge;
+  $('reportBtnLabel').textContent = live ? '중간 보고서' : '최종 보고서';
+  $('reportTitle').textContent = live ? '8월 중간 성과 보고서' : cp.title + ' 최종 보고서';
+  $('reportKicker').textContent = live ? 'Interim report' : 'Final report';
+  $('reportNote').textContent = live
+    ? '업로드 완료분 기준 · 캠페인 종료 후 최종본이 나옵니다'
+    : cp.badge + ' · 원본과 지표가 그대로 보관됩니다';
 }
 
 function toggleRail(open) {
@@ -744,7 +822,15 @@ function renderKpis() {
   const spend = sel.reduce((a, c) => a + c.cost, 0);
   const er    = selN ? sel.reduce((a, c) => a + c.er, 0) / selN : 0;
   const unit  = '<span class="text-xs font-normal text-slate-500 ml-1">';
-  const cards = [
+  const cards = !isLive() ? [
+    ['참여 크리에이터', selN + unit + '명</span>',                     camp().badge, 'slate'],
+    ['총 집행가',      won(spend),                                    selN + '명 합계', 'slate'],
+    ['총 조회수',      n(up.reduce((a, c) => a + c.views, 0)),        '업로드 ' + up.length + '건', 'slate'],
+    ['좋아요',         n(up.reduce((a, c) => a + c.likes, 0)),        '댓글 ' + n(up.reduce((a, c) => a + c.cmts, 0)) + ' · 저장 ' + n(up.reduce((a, c) => a + c.saves, 0)), 'slate'],
+    ['평균 참여율',    er.toFixed(1) + unit + '%</span>',             selN + '명 기준', 'slate'],
+    ['추가 플랫폼',    up.filter(c => c.extra.length).length + unit + '명</span>',
+      [...new Set(up.flatMap(c => c.extra))].join(' · ') || '없음', 'slate']
+  ] : [
     ['선정 확정',  selN + unit + '명</span>',                        '후보 ' + CREATORS.length + '명 중', 'slate'],
     ['집행 예정',  won(spend),                                       '선정 ' + selN + '명 합계', 'slate'],
     ['업로드',     up.length + ' / ' + selN + unit + '건</span>',     (selN - up.length) + '건 예정', 'indigo'],
@@ -803,14 +889,22 @@ function renderTable() {
   th += '<th scope="col" class="stick c1 bg-slate-50 py-3 pl-4 pr-2 text-center whitespace-nowrap">선정</th>';
   th += '<th scope="col" class="stick c2 bg-slate-50 py-3 px-3 text-left whitespace-nowrap">크리에이터</th>';
   th += cols().map(k => {
-    const c = COLS[k];
-    return '<th scope="col" draggable="true" data-key="' + k + '" title="끌어서 순서를 바꿉니다"'
-      + ' class="py-3 px-3 ' + ALIGN[c.align] + ' whitespace-nowrap select-none text-slate-500 hover:text-slate-800 transition-colors">'
-      + '<span class="inline-flex items-center gap-1.5"><span class="grip">' + ICON.grip + '</span>' + c.label + '</span></th>';
+    const c = COLS[k], can = SORTABLE.has(k), on = S.sort.key === k && S.sort.dir;
+    const mark = !can ? ''
+      : on ? '<span class="ml-0.5" style="color:var(--accent)">' + (S.sort.dir === -1 ? '\u25be' : '\u25b4') + '</span>'
+           : '<span class="ml-0.5 text-slate-300 opacity-0 group-hover/th:opacity-100">\u25be</span>';
+    return '<th scope="col" draggable="true" data-key="' + k + '"'
+      + (can ? ' aria-sort="' + (on ? (S.sort.dir === -1 ? 'descending' : 'ascending') : 'none') + '"' : '')
+      + ' title="' + (can ? '눌러서 정렬 · 끌어서 순서 변경' : '끌어서 순서를 바꿉니다') + '"'
+      + (can ? ' onclick="sortBy(\'' + k + '\')"' : '')
+      + ' class="group/th py-3 px-3 ' + ALIGN[c.align] + ' whitespace-nowrap select-none transition-colors '
+      + (on ? 'text-slate-900 font-semibold' : 'text-slate-500 hover:text-slate-800') + (can ? ' cursor-pointer' : '') + '">'
+      + '<span class="inline-flex items-center gap-1.5"><span class="grip">' + ICON.grip + '</span>' + c.label + mark + '</span></th>';
   }).join('');
   $('thead').innerHTML = th + '</tr>';
 
-  $('tbody').innerHTML = CREATORS.map((c, idx) => {
+  $('tbody').innerHTML = rowsInOrder().map(c => {
+    const idx = CREATORS.indexOf(c);
     let tr = '<tr class="group border-b border-slate-100 last:border-0' + (c.sel ? ' on' : '') + '">';
     tr += '<td class="stick c1 py-2.5 pl-4 pr-2 text-center">' + selBtn(c, idx) + '</td>';
     tr += '<td class="stick c2 py-2.5 px-3">'
@@ -826,6 +920,11 @@ function renderTable() {
 }
 
 function selBtn(c, idx) {
+  /* 끝난 캠페인은 기록이다. 바꿀 수 있는 것처럼 보이면 안 된다 */
+  if (!isLive()) {
+    return '<span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-500 whitespace-nowrap">'
+      + '<span style="color:var(--pick-line)">' + ICON.check + '</span>확정</span>';
+  }
   if (c.sel) {
     /* 이미 된 것 — 확인만 되면 된다. 칠하지 않는다 */
     return '<button onclick="toggleSel(' + idx + ')" title="선정을 해제합니다"'
@@ -918,7 +1017,7 @@ function cell(c, idx, k) {
   return '<td class="' + pad + '"></td>';
 }
 
-function render() { renderNav(); renderKpis(); renderToolbar(); renderTable(); }
+function render() { renderHead(); renderNav(); renderKpis(); renderToolbar(); renderTable(); }
 
 /* ══════════ 스크롤 가장자리 신호 ══════════ */
 function syncEdges() {
@@ -1168,8 +1267,8 @@ function buildReport() {
 
 function buildCal() {
   /* 시작 요일과 말일을 기간에서 계산한다. 달을 바꾸면 통째로 어긋나던 자리다 */
-  const first = new Date(PERIOD.y, PERIOD.m - 1, 1).getDay();
-  const days  = new Date(PERIOD.y, PERIOD.m, 0).getDate();
+  const first = new Date(camp().y, camp().m - 1, 1).getDay();
+  const days  = new Date(camp().y, camp().m, 0).getDate();
   const marks = {};
   selected().forEach(c => {
     const d = parseInt(c.due.split('.')[1], 10);
