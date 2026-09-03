@@ -1,16 +1,28 @@
-<title>오드타입 캠페인 콘솔</title>
+<title>오드타입 캠페인 콘솔 · SIRIAI</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 
 <style>
+  /* ═══════════════════════════════════════════════════════════════
+     오드타입 캠페인 콘솔 — 브랜드가 링크로 여는 운영 화면 (데모)
+     시점: 26년 8월 캠페인이 "진행" 중인 한가운데.
+     단계 전환이 아니라 한 시점을 그대로 보여준다. 시간축은 좌측 레일이 맡는다.
+     ═══════════════════════════════════════════════════════════════ */
+
+  :root{
+    --sym: url("data:image/png;base64,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");
+    --c1: 112px;               /* 고정 1열(선정) 폭 — sticky 오프셋과 반드시 같은 값을 쓴다 */
+    --c2: 208px;               /* 고정 2열(크리에이터) 폭 */
+    --rail: 244px;
+  }
+
   html,body{height:100%}
   body{
-    margin:0; overflow:auto;                /* 리스트만 스크롤한다 — 화면이 아주 낮을 때만 예외 */
-    display:flex; flex-direction:column;
+    margin:0; overflow:hidden;
     font-family:'Noto Sans KR','Arimo','Helvetica Neue',Helvetica,Arial,sans-serif;
-    background:#f8fafc; color:#0f172a;
+    background:#f1f5f9; color:#0f172a;
     -webkit-font-smoothing:antialiased;
   }
   .num{font-family:'Arimo','Helvetica Neue',Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
@@ -18,167 +30,333 @@
   .won{font-family:'Noto Sans KR',sans-serif;font-weight:400;margin-right:.5px}
   .keep{word-break:keep-all}
 
-  .scroll::-webkit-scrollbar{width:9px;height:9px}
-  .scroll::-webkit-scrollbar-track{background:#f1f5f9}
-  .scroll::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:5px;border:2px solid #f1f5f9}
-  .scroll::-webkit-scrollbar-thumb:hover{background:#94a3b8}
-  .scroll::-webkit-scrollbar-corner{background:#f1f5f9}
-
-  /* 표 — 머리글은 붙어 있고 본문만 흐른다 */
-  #list thead th{position:sticky;top:0;z-index:2;background:#f4f6f9}
-  .stick{position:sticky;left:0;z-index:1}
-  #list thead .stick{z-index:3}
-
-  /* 선정 버튼 — 처음 본 사람도 누를 것임을 알게 */
-  .selbtn{transition:background .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease}
-  .nudge{animation:nudge 1.9s ease-out infinite}
-  @keyframes nudge{
-    0%   {box-shadow:0 0 0 0 rgba(79,70,229,.42)}
-    60%  {box-shadow:0 0 0 7px rgba(79,70,229,0)}
-    100% {box-shadow:0 0 0 0 rgba(79,70,229,0)}
+  /* SIRIAI 심볼 — 마스크로 올려 어느 색으로도 쓴다 */
+  .sym{
+    -webkit-mask-image:var(--sym); mask-image:var(--sym);
+    -webkit-mask-size:contain;     mask-size:contain;
+    -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+    -webkit-mask-position:center;  mask-position:center;
+    background:currentColor; display:block;
   }
 
+  /* ── 스크롤바 ────────────────────────────────────────────────
+     기본 바를 그대로 두지 않는다. 트랙을 지우고, 썸은 투명 테두리 +
+     background-clip 으로 안쪽에 떠 있는 알약이 되게 한다.
+     평소에는 거의 안 보이다가 영역에 손이 올라가면 짙어진다. */
+  .scroll{
+    scrollbar-width:thin;
+    scrollbar-color:rgba(100,116,139,.28) transparent;   /* Firefox */
+  }
+  .scroll::-webkit-scrollbar{width:12px;height:12px}
+  .scroll::-webkit-scrollbar-track{background:transparent}
+  .scroll::-webkit-scrollbar-corner{background:transparent}
+  .scroll::-webkit-scrollbar-thumb{
+    background:rgba(100,116,139,.20);
+    border:4px solid transparent;      /* 이 테두리가 썸을 얇게 만든다 */
+    background-clip:content-box;
+    border-radius:999px;
+    transition:background-color .18s ease;
+  }
+  .scroll:hover::-webkit-scrollbar-thumb{background:rgba(100,116,139,.42);background-clip:content-box}
+  .scroll::-webkit-scrollbar-thumb:hover{background:rgba(51,65,85,.68);background-clip:content-box}
+  .scroll::-webkit-scrollbar-thumb:active{background:rgba(30,41,59,.82);background-clip:content-box}
+
+  /* 레일은 더 가늘게 */
+  .scroll-thin::-webkit-scrollbar{width:9px;height:9px}
+  .scroll-thin::-webkit-scrollbar-thumb{border-width:3px}
+
+  /* ── 스크롤 그림자 — 더 볼 게 남았다는 신호 ─────────────────── */
+  .edge{position:relative}
+  .edge::before,.edge::after{
+    content:'';position:absolute;top:0;bottom:0;width:38px;pointer-events:none;z-index:4;
+    opacity:0;transition:opacity .22s ease;
+  }
+  .edge::before{left:var(--stick-w,0px);background:linear-gradient(to right,rgba(15,23,42,.10),transparent)}
+  .edge::after {right:0;background:linear-gradient(to left ,rgba(15,23,42,.10),transparent)}
+  .edge.can-l::before{opacity:1}
+  .edge.can-r::after {opacity:1}
+
+  /* ── 표 ──────────────────────────────────────────────────────── */
+  #list thead th{position:sticky;top:0;z-index:2;background:#f8fafc;box-shadow:inset 0 -1px 0 #e2e8f0}
+  .stick{position:sticky;z-index:1}
+  #list thead .stick{z-index:3}
+  .c1{width:var(--c1);min-width:var(--c1);max-width:var(--c1);left:0}
+  .c2{width:var(--c2);min-width:var(--c2);max-width:var(--c2);left:var(--c1)}
+  /* 고정 2열 오른쪽에 실선 하나 — 가로 스크롤 중 경계가 흐려지지 않게 */
+  #list .c2::after{content:'';position:absolute;top:0;bottom:0;right:0;width:1px;background:#e2e8f0}
+
+  /* 선정된 행 — 버튼만이 아니라 행 전체가 반응한다 */
+  #tbody tr > td{background:#fff;transition:background-color .15s ease}
+  #tbody tr:hover > td{background:#f8fafc}
+  #tbody tr.on > td{background:#f0fdf4}
+  #tbody tr.on:hover > td{background:#dcfce7}
+  #tbody tr.on > td.c1{box-shadow:inset 3px 0 0 0 #10b981}
+
+  /* 선정 버튼 — 안 눌린 것은 처음 한 번 신호를 준다 */
+  .selbtn{transition:background-color .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease}
+  .nudge{animation:nudge 2.1s ease-out infinite}
+  @keyframes nudge{
+    0%  {box-shadow:0 0 0 0 rgba(79,70,229,.40)}
+    60% {box-shadow:0 0 0 7px rgba(79,70,229,0)}
+    100%{box-shadow:0 0 0 0 rgba(79,70,229,0)}
+  }
+
+  /* 머리글 드래그 */
+  th[draggable="true"]{cursor:grab}
+  th[draggable="true"] .grip{opacity:0;transition:opacity .15s ease}
+  th[draggable="true"]:hover .grip{opacity:1}
+  th.dragging{opacity:.35;cursor:grabbing}
+  th.drop-left {box-shadow:inset 3px 0 0 0 #4f46e5, inset 0 -1px 0 #e2e8f0}
+  th.drop-right{box-shadow:inset -3px 0 0 0 #4f46e5, inset 0 -1px 0 #e2e8f0}
+
+  /* ── 오버레이 ─────────────────────────────────────────────── */
   .drawer{visibility:hidden;opacity:0;transition:opacity .22s ease,visibility .22s ease}
   .drawer.open{visibility:visible;opacity:1}
-  .drawer > .panel{transform:translateX(100%);transition:transform .3s cubic-bezier(.22,.61,.36,1)}
+  .drawer > .panel{transform:translateX(100%);transition:transform .32s cubic-bezier(.22,.61,.36,1)}
   .drawer.open > .panel{transform:translateX(0)}
 
   .sheet{visibility:hidden;opacity:0;transition:opacity .22s ease,visibility .22s ease}
   .sheet.open{visibility:visible;opacity:1}
-  .sheet > .panel{transform:translateY(100%);transition:transform .3s cubic-bezier(.22,.61,.36,1)}
+  .sheet > .panel{transform:translateY(100%);transition:transform .32s cubic-bezier(.22,.61,.36,1)}
   .sheet.open > .panel{transform:translateY(0)}
 
-  .toast{transform:translate(-50%,140%);opacity:0;transition:transform .28s cubic-bezier(.22,.61,.36,1),opacity .28s ease}
+  .toast{transform:translate(-50%,150%);opacity:0;transition:transform .3s cubic-bezier(.22,.61,.36,1),opacity .3s ease}
   .toast.show{transform:translate(-50%,0);opacity:1}
 
-  th[draggable="true"]{cursor:grab}
-  th.dragging{opacity:.35}
-  th.drop-left{box-shadow:inset 3px 0 0 0 #4f46e5}
-  th.drop-right{box-shadow:inset -3px 0 0 0 #4f46e5}
+  /* ── 하단 독 — 접으면 튜토리얼에 집중할 수 있다 ─────────────── */
+  #dock{transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .24s ease}
+  #dock.down{transform:translateY(calc(100% + 24px));opacity:0;pointer-events:none}
+  #dockTab{transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .24s ease;transform:translate(-50%,150%);opacity:0;pointer-events:none}
+  #dockTab.up{transform:translate(-50%,0);opacity:1;pointer-events:auto}
 
-  /* 낮은 화면에서 위쪽을 눌러 리스트 높이를 지킨다 */
-  @media (max-height:820px){
-    .tight-h1{font-size:23px !important}
-    .tight-kpi{padding-top:.6rem !important;padding-bottom:.6rem !important}
-    .tight-kpi .num{font-size:19px !important}
-    .tight-rail{padding-top:.6rem !important;padding-bottom:.6rem !important}
+  /* ── 진입 안내 ─────────────────────────────────────────────── */
+  #tut{transition:opacity .3s ease,visibility .3s ease}
+  #tut.gone{opacity:0;visibility:hidden;pointer-events:none}
+  #tut .card{animation:rise .42s cubic-bezier(.22,.61,.36,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+
+  /* ── 초점 — 키보드로 다녀도 길을 잃지 않게 ─────────────────── */
+  a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible{
+    outline:2px solid #4f46e5;outline-offset:2px;border-radius:8px;
   }
-  /* 모바일은 한 화면에 담을 수 없다 — 여기서만 페이지 스크롤을 허용 */
-  @media (max-width:880px){
-    html,body{height:auto}
-    body{display:block;overflow:auto}
-    main{display:block}
-    #listCard{display:block}
-    #list{max-height:60vh;min-height:300px}
-  }
+
   @media (prefers-reduced-motion:reduce){
     *{transition-duration:.001ms !important;animation:none !important}
   }
+
+  /* 낮은 화면 — 위쪽을 눌러 표 높이를 지킨다 */
+  @media (max-height:860px){
+    .tight-h1{font-size:22px !important}
+    .tight-kpi{padding-top:.55rem !important;padding-bottom:.55rem !important}
+    .tight-kpi .num{font-size:18px !important}
+  }
+  /* 세로가 더 짧아지면 한 화면 고정을 포기하고 페이지를 흐르게 둔다.
+     (폭만 보는 분기로는 노트북에서 표가 두 줄만 보이는 문제가 안 풀린다) */
+  @media (max-height:720px), (max-width:1080px){
+    html,body{height:auto}
+    body{overflow:auto}
+    #shell{height:auto;min-height:100%}
+    #main{height:auto}
+    #listCard{height:auto}
+    #list{max-height:62vh;min-height:320px}
+  }
+  @media (max-width:1080px){
+    #rail{position:fixed;left:0;top:0;bottom:0;z-index:60;transform:translateX(-100%);
+          transition:transform .3s cubic-bezier(.22,.61,.36,1);box-shadow:0 0 60px rgba(15,23,42,.18)}
+    #rail.open{transform:translateX(0)}
+    #railScrim{display:block}
+    #railBtn{display:inline-flex}
+  }
 </style>
 
-<!-- ══ 상단 바 ══ -->
-<header class="shrink-0 bg-white border-b border-slate-200">
-  <div class="max-w-[1500px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-    <div class="flex items-center gap-2.5">
-      <span class="num text-[17px] font-bold tracking-[.14em] text-slate-900">SIRIAI</span>
-      <span class="hidden sm:inline num text-[10px] font-semibold tracking-[.13em] text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-md">CAMPAIGN CONSOLE</span>
+<!-- ══════════════════════════════════════════════════════════════
+     껍데기 — 좌측 레일 + 본문
+     ══════════════════════════════════════════════════════════════ -->
+<div id="shell" class="h-full flex">
+
+  <!-- ══ 좌측 레일 — 브랜드의 캠페인 전체가 여기 산다 ══ -->
+  <aside id="rail" class="w-[244px] min-w-[244px] bg-white border-r border-slate-200 flex flex-col">
+
+    <!-- 로고 -->
+    <div class="px-5 pt-5 pb-4 flex items-center gap-2.5">
+      <span class="sym w-[26px] h-[26px] text-slate-900 shrink-0" role="img" aria-label="SIRIAI"></span>
+      <span class="min-w-0">
+        <span class="block num text-[15px] font-bold tracking-[.15em] text-slate-900 leading-none">SIRIAI</span>
+        <span class="block num text-[9px] font-semibold tracking-[.15em] text-slate-400 uppercase mt-[3px]">Campaign Console</span>
+      </span>
     </div>
-    <div class="flex items-center gap-2">
-      <button onclick="openDrawer('dw-calendar')" class="text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
-        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M4 11h16M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        캘린더
+
+    <!-- 브랜드 -->
+    <div class="px-5 pb-4 mb-1 border-b border-slate-100">
+      <div class="flex items-center gap-2.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5">
+        <span class="num w-7 h-7 shrink-0 rounded-lg bg-slate-900 text-white grid place-items-center text-[11px] font-bold">OD</span>
+        <span class="min-w-0">
+          <span class="block text-[12.5px] font-bold text-slate-900 truncate">오드타입</span>
+          <span class="block text-[10.5px] text-slate-500 truncate">뷰티 · 색조</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- 캠페인 목록 -->
+    <nav class="flex-1 min-h-0 overflow-y-auto scroll scroll-thin px-3 pb-3" id="campNav" aria-label="캠페인 목록"></nav>
+
+    <!-- 담당자 -->
+    <div class="px-5 py-4 border-t border-slate-100">
+      <div class="text-[10px] font-semibold tracking-[.13em] text-slate-400 uppercase num">담당</div>
+      <div class="text-[12px] font-semibold text-slate-800 mt-1.5">SIRIAI 캠페인팀</div>
+      <button onclick="openSheet('sh-booking')" class="mt-2.5 w-full text-[11.5px] font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 px-3 py-2 rounded-lg transition">
+        문의하기
       </button>
-      <button onclick="openSheet('sh-booking')" class="text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg transition">커피챗</button>
     </div>
-  </div>
-</header>
+  </aside>
+  <div id="railScrim" class="hidden fixed inset-0 z-50 bg-slate-900/40" onclick="toggleRail(false)"></div>
 
-<main class="flex-1 min-h-0 w-full max-w-[1500px] mx-auto px-4 sm:px-6 pt-5 pb-4 flex flex-col">
+  <!-- ══ 본문 ══ -->
+  <div id="main" class="flex-1 min-w-0 h-full flex flex-col">
 
-  <!-- 스크롤해도 그대로 있는 부분 -->
-  <div class="shrink-0 flex flex-col lg:flex-row lg:items-end justify-between gap-3">
-    <div>
-      <div class="num text-[10.5px] font-semibold tracking-[.16em] text-indigo-600 uppercase mb-1.5">Oddtype &middot; 2026.08.01 – 08.31</div>
-      <h1 class="tight-h1 text-[26px] font-bold tracking-[-.02em] text-slate-900 flex flex-wrap items-center gap-2.5 keep">
-        오드타입 26년 8월 인플루언서 캠페인
-        <span id="phaseBadge" class="text-[11px] font-semibold px-2.5 py-1 rounded-full border"></span>
-      </h1>
-    </div>
-    <div class="flex items-center gap-2 shrink-0">
-      <button onclick="openDrawer('dw-guide')" class="text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
-        <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        가이드라인
-      </button>
-      <button onclick="openDrawer('dw-report')" class="text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V9m4 8V5m4 12v-6M4 19h16"/></svg>
-        보고서
-      </button>
-    </div>
-  </div>
-
-  <!-- 진행 트랙 -->
-  <div class="tight-rail shrink-0 mt-4 bg-white border border-slate-200 rounded-2xl px-6 py-4 flex items-center" id="stepRail"></div>
-
-  <!-- KPI -->
-  <div class="shrink-0 mt-3 grid grid-cols-2 lg:grid-cols-4 gap-2.5" id="kpis"></div>
-
-  <!-- 툴바 -->
-  <div class="shrink-0 mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-    <div class="text-xs text-slate-500" id="toolbarInfo"></div>
-    <div class="flex items-center gap-2">
-      <div class="relative">
-        <button onclick="togglePop('popCols')" class="text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          설정
-        </button>
-        <div id="popCols" class="hidden absolute right-0 mt-2 w-[280px] bg-white border border-slate-200 rounded-xl shadow-xl shadow-slate-300/40 z-40 p-3">
-          <div class="flex items-center justify-between mb-2">
-            <span class="num text-[10.5px] font-bold tracking-[.13em] text-slate-400 uppercase">표시할 열</span>
-            <button onclick="resetCols()" class="text-[10.5px] font-medium text-indigo-600 hover:text-indigo-700">단계 기본값</button>
-          </div>
-          <div id="colToggles" class="space-y-3 max-h-[300px] overflow-y-auto scroll pr-1"></div>
-          <p class="mt-2.5 pt-2.5 border-t border-slate-100 text-[10.5px] text-slate-400 keep">머리글을 끌어 순서를 바꿉니다. 크리에이터는 고정</p>
+    <!-- 상단 바 -->
+    <header class="shrink-0 bg-white border-b border-slate-200">
+      <div class="px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <button id="railBtn" onclick="toggleRail(true)" class="hidden w-9 h-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition shrink-0" aria-label="캠페인 목록 열기">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <span id="demoChip" class="inline-flex items-center gap-1.5 text-[10.5px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1.5 rounded-full whitespace-nowrap">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>둘러보기 화면
+          </span>
+          <button onclick="showTut()" class="text-[11.5px] font-medium text-slate-500 hover:text-slate-800 transition whitespace-nowrap">안내 다시 보기</button>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="openDrawer('dw-calendar')" class="text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M4 11h16M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <span class="hidden sm:inline">캘린더</span>
+          </button>
+          <button onclick="openDrawer('dw-guide')" class="text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span class="hidden sm:inline">가이드라인</span>
+          </button>
+          <button onclick="openDrawer('dw-report')" class="text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 px-3.5 py-2 rounded-lg transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V9m4 8V5m4 12v-6M4 19h16"/></svg>
+            중간 보고서
+          </button>
         </div>
       </div>
-      <button onclick="openDrawer('dw-more')" class="text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
-        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-        추가 옵션
-      </button>
-    </div>
-  </div>
+    </header>
 
-  <!-- 이 화면에서 유일하게 스크롤되는 곳 -->
-  <div id="listCard" class="flex-1 min-h-0 mt-2.5 bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col">
-    <div id="list" class="flex-1 min-h-0 overflow-auto scroll" style="min-height:130px">
-      <table class="w-full text-left border-collapse">
-        <thead id="thead"></thead>
-        <tbody id="tbody" class="text-xs"></tbody>
-      </table>
-    </div>
-  </div>
+    <div class="flex-1 min-h-0 flex flex-col px-4 sm:px-6 pt-5 pb-4">
 
-  <!-- 사후처리 — 3단계에서만 -->
-  <div id="postBlock" class="hidden"></div>
-
-</main>
-
-<!-- ══ 하단 배너 = 이 단계를 진행시키는 버튼 ══ -->
-<footer class="shrink-0 bg-white border-t border-slate-200">
-  <div class="max-w-[1500px] mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
-    <div class="flex items-center gap-3.5 min-w-0">
-      <div id="bannerIcon" class="w-10 h-10 rounded-xl border flex items-center justify-center shrink-0"></div>
-      <div class="min-w-0">
-        <div id="bannerTitle" class="text-sm font-bold text-slate-900 keep"></div>
-        <div id="bannerSub" class="text-[11px] text-slate-500 keep"></div>
+      <!-- 제목 -->
+      <div class="shrink-0 flex flex-col xl:flex-row xl:items-end justify-between gap-3">
+        <div class="min-w-0">
+          <div class="num text-[10.5px] font-semibold tracking-[.16em] text-indigo-600 uppercase mb-1.5">Oddtype &middot; 2026.08.01 – 08.31</div>
+          <h1 class="tight-h1 text-[26px] font-bold tracking-[-.02em] text-slate-900 flex flex-wrap items-center gap-2.5 keep">
+            26년 8월 인플루언서 캠페인
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border text-amber-700 bg-amber-50 border-amber-200 whitespace-nowrap">
+              <span class="relative flex w-1.5 h-1.5">
+                <span class="animate-ping absolute inline-flex w-full h-full rounded-full bg-amber-400 opacity-75"></span>
+                <span class="relative inline-flex w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+              </span>진행 중
+            </span>
+          </h1>
+        </div>
       </div>
+
+      <!-- KPI -->
+      <div class="shrink-0 mt-4 grid grid-cols-2 xl:grid-cols-4 gap-2.5" id="kpis"></div>
+
+      <!-- 툴바 -->
+      <div class="shrink-0 mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div class="text-xs text-slate-600" id="toolbarInfo"></div>
+        <div class="flex items-center gap-2">
+          <div class="relative">
+            <button onclick="togglePop('popCols')" class="text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              열 설정
+            </button>
+            <div id="popCols" class="hidden absolute right-0 mt-2 w-[290px] bg-white border border-slate-200 rounded-xl shadow-xl shadow-slate-300/40 z-40 p-3">
+              <div class="flex items-center justify-between mb-2">
+                <span class="num text-[10.5px] font-bold tracking-[.13em] text-slate-500 uppercase">표시할 열</span>
+                <button onclick="resetCols()" class="text-[10.5px] font-semibold text-indigo-600 hover:text-indigo-700">전체 되돌리기</button>
+              </div>
+              <div id="colToggles" class="space-y-3 max-h-[320px] overflow-y-auto scroll scroll-thin pr-1"></div>
+              <p class="mt-2.5 pt-2.5 border-t border-slate-100 text-[10.5px] text-slate-500 keep">머리글을 끌어 순서를 바꿉니다. 선정·크리에이터는 항상 왼쪽에 고정됩니다.</p>
+            </div>
+          </div>
+          <button onclick="na('전체 항목 CSV', '실제 화면에서는 지금 보이는 열 그대로 CSV가 내려받아집니다.')" class="text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+            CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- 표 -->
+      <div id="listCard" class="flex-1 min-h-0 mt-2.5 bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col edge">
+        <div id="list" class="flex-1 min-h-0 overflow-auto scroll" style="min-height:220px">
+          <table class="text-left border-collapse w-full">
+            <thead id="thead"></thead>
+            <tbody id="tbody" class="text-xs"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="shrink-0 mt-2 text-[10.5px] text-slate-500 keep">
+        표는 좌우·상하로 넘겨 볼 수 있습니다. 선정·크리에이터 열은 왼쪽에 고정됩니다.
+      </p>
     </div>
-    <button id="mainCta" class="w-full sm:w-auto shrink-0 text-sm font-bold text-white bg-indigo-600 px-7 py-3.5 rounded-2xl flex items-center justify-center gap-2"></button>
   </div>
-</footer>
+</div>
+
+<!-- ══ 하단 독 ══ -->
+<div id="dock" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 w-[min(940px,calc(100vw-32px))]">
+  <div class="bg-white/95 backdrop-blur border border-slate-200 shadow-2xl shadow-slate-400/25 rounded-2xl px-4 sm:px-5 py-3 flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 grid place-items-center shrink-0">
+      <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+    </div>
+    <div class="min-w-0 flex-1">
+      <div class="text-[13px] font-bold text-slate-900 keep">선정만 하시면 나머지는 저희가 채웁니다</div>
+      <div class="text-[11px] text-slate-500 keep">가이드라인 · 사전 검수 · 파트너십 코드 · 공동작업자 · 원본 인도까지</div>
+    </div>
+    <button onclick="openSheet('sh-booking')" class="shrink-0 text-[13px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-5 sm:px-6 py-3 rounded-xl transition shadow-lg shadow-indigo-200 flex items-center gap-2">
+      문의하기
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M3 12h18"/></svg>
+    </button>
+    <button onclick="dock(false)" class="shrink-0 w-9 h-9 grid place-items-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="바 내리기" title="잠시 내려두기">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+    </button>
+  </div>
+</div>
+
+<button id="dockTab" onclick="dock(true)" class="fixed bottom-5 left-1/2 z-40 bg-slate-900 text-white text-[12px] font-semibold pl-4 pr-3.5 py-2.5 rounded-full shadow-2xl shadow-slate-500/30 flex items-center gap-2 hover:bg-slate-800 transition">
+  문의하기 열기
+  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+</button>
+
+<!-- ══ 진입 안내 ══ -->
+<div id="tut" class="fixed inset-0 z-[70] bg-slate-900/55 backdrop-blur-sm flex items-center justify-center p-5" onclick="if(event.target===this)hideTut()">
+  <div class="card bg-white rounded-3xl shadow-2xl w-full max-w-[440px] px-7 py-7" role="dialog" aria-modal="true" aria-labelledby="tutTitle">
+    <span class="sym w-9 h-9 text-slate-900" role="img" aria-label="SIRIAI"></span>
+    <h2 id="tutTitle" class="text-[19px] font-bold text-slate-900 mt-4 keep">직접 눌러보시는 화면입니다</h2>
+    <p class="text-[13px] text-slate-600 leading-relaxed mt-2.5 keep">
+      오드타입 <strong class="text-slate-900 font-semibold">8월 캠페인이 진행 중인 시점</strong>의 운영 화면을 그대로 옮겨 두었습니다.
+      실제로 브랜드가 보시게 되는 그 화면입니다.
+    </p>
+    <ul class="mt-4 space-y-2">
+      <li class="flex gap-2.5 text-[12.5px] text-slate-700 keep"><span class="text-indigo-500 shrink-0 mt-[3px]">&#9679;</span>인플루언서를 선정하면 행이 즉시 반응합니다</li>
+      <li class="flex gap-2.5 text-[12.5px] text-slate-700 keep"><span class="text-indigo-500 shrink-0 mt-[3px]">&#9679;</span>왼쪽에서 지난 캠페인도 함께 관리됩니다</li>
+      <li class="flex gap-2.5 text-[12.5px] text-slate-700 keep"><span class="text-indigo-500 shrink-0 mt-[3px]">&#9679;</span>열 순서·표시는 끌어서 바꾸실 수 있습니다</li>
+    </ul>
+    <p class="text-[11.5px] text-slate-500 mt-4 keep bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3">
+      둘러보기용이라 저장·내려받기는 동작하지 않습니다. 눌러보시면 실제로는 어떻게 되는지 알려드립니다.
+    </p>
+    <button onclick="hideTut()" class="mt-5 w-full text-[14px] font-bold text-white bg-slate-900 hover:bg-slate-800 py-3.5 rounded-xl transition">
+      둘러보기 시작
+    </button>
+  </div>
+</div>
 
 <!-- ══ 드로어: 캘린더 ══ -->
-<div id="dw-calendar" class="drawer fixed inset-0 z-50 bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-calendar')">
-  <div class="panel bg-white w-full max-w-[520px] h-full border-l border-slate-200 flex flex-col">
+<div id="dw-calendar" class="drawer fixed inset-0 z-[65] bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-calendar')">
+  <div class="panel bg-white w-full max-w-[520px] h-full border-l border-slate-200 flex flex-col" role="dialog" aria-modal="true" aria-label="업로드 일정">
     <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
       <div>
         <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">Upload calendar</div>
@@ -188,8 +366,8 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
-    <div class="px-6 py-5 overflow-y-auto scroll flex-1">
-      <div class="flex items-center gap-4 text-[11px] text-slate-500 mb-4">
+    <div class="px-6 py-5 overflow-y-auto scroll scroll-thin flex-1">
+      <div class="flex items-center gap-4 text-[11px] text-slate-600 mb-4">
         <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>업로드 완료</span>
         <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-indigo-500"></span>업로드 예정</span>
       </div>
@@ -199,8 +377,8 @@
 </div>
 
 <!-- ══ 드로어: 가이드라인 ══ -->
-<div id="dw-guide" class="drawer fixed inset-0 z-50 bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-guide')">
-  <div class="panel bg-white w-full max-w-[480px] h-full border-l border-slate-200 flex flex-col">
+<div id="dw-guide" class="drawer fixed inset-0 z-[65] bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-guide')">
+  <div class="panel bg-white w-full max-w-[480px] h-full border-l border-slate-200 flex flex-col" role="dialog" aria-modal="true" aria-label="가이드라인">
     <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
       <div>
         <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">Guideline</div>
@@ -210,70 +388,49 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
-    <div class="px-6 py-5 overflow-y-auto scroll flex-1 space-y-2.5" id="guideBody"></div>
+    <div class="px-6 py-5 overflow-y-auto scroll scroll-thin flex-1 space-y-2.5" id="guideBody"></div>
     <div class="px-6 py-4 border-t border-slate-100 flex gap-2">
-      <button onclick="dl('오드타입_8월_가이드라인.pdf')" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-3 rounded-xl transition">가이드라인 내려받기</button>
+      <button onclick="na('가이드라인 내려받기', '실제 화면에서는 PDF가 바로 저장됩니다.')" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-3 rounded-xl transition">가이드라인 내려받기</button>
       <button onclick="closeDrawer('dw-guide')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">닫기</button>
     </div>
   </div>
 </div>
 
-<!-- ══ 드로어: 보고서 ══ -->
-<div id="dw-report" class="drawer fixed inset-0 z-50 bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-report')">
-  <div class="panel bg-white w-full max-w-[560px] h-full border-l border-slate-200 flex flex-col">
+<!-- ══ 드로어: 중간 보고서 ══ -->
+<div id="dw-report" class="drawer fixed inset-0 z-[65] bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-report')">
+  <div class="panel bg-white w-full max-w-[560px] h-full border-l border-slate-200 flex flex-col" role="dialog" aria-modal="true" aria-label="중간 성과 보고서">
     <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
       <div>
-        <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">Performance report</div>
-        <h3 class="text-base font-bold text-slate-900 mt-1">26년 8월 통합 성과 보고서</h3>
+        <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">Interim report</div>
+        <h3 class="text-base font-bold text-slate-900 mt-1">8월 중간 성과 보고서</h3>
+        <p class="text-[11px] text-slate-500 mt-1">업로드 완료분 기준 · 캠페인 종료 후 최종본이 나옵니다</p>
       </div>
       <button onclick="closeDrawer('dw-report')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
-    <div class="px-6 py-5 overflow-y-auto scroll flex-1 space-y-5" id="reportBody"></div>
+    <div class="px-6 py-5 overflow-y-auto scroll scroll-thin flex-1 space-y-5" id="reportBody"></div>
     <div class="px-6 py-4 border-t border-slate-100 flex gap-2">
-      <button onclick="dl('26년8월_오드타입_성과보고서.pdf')" class="flex-1 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 py-3 rounded-xl transition shadow-sm shadow-indigo-200 flex items-center justify-center gap-2">
+      <button onclick="na('보고서 PDF', '실제 화면에서는 표지까지 붙은 PDF가 내려받아집니다.')" class="flex-1 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 py-3 rounded-xl transition shadow-sm shadow-indigo-200 flex items-center justify-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
         PDF 내려받기
       </button>
-      <button onclick="csv()" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">CSV</button>
+      <button onclick="closeDrawer('dw-report')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">닫기</button>
     </div>
   </div>
 </div>
 
-<!-- ══ 드로어: 추가 옵션 ══ -->
-<div id="dw-more" class="drawer fixed inset-0 z-50 bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-more')">
-  <div class="panel bg-white w-full max-w-[560px] h-full border-l border-slate-200 flex flex-col">
-    <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
-      <div>
-        <div class="num text-[10px] font-bold tracking-[.16em] text-indigo-600 uppercase">All options</div>
-        <h3 class="text-base font-bold text-slate-900 mt-1">이 화면에 안 띄운 것들</h3>
-      </div>
-      <button onclick="closeDrawer('dw-more')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1" aria-label="닫기">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <div class="px-6 py-5 overflow-y-auto scroll flex-1 space-y-6" id="moreBody"></div>
-    <div class="px-6 py-4 border-t border-slate-100 flex gap-2">
-      <button onclick="csv()" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-3 rounded-xl transition flex items-center justify-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
-        전체 항목 CSV 내려받기
-      </button>
-      <button onclick="closeDrawer('dw-more')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">닫기</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ 바텀시트: 커피챗 ══ -->
-<div id="sh-booking" class="sheet fixed inset-0 z-50 bg-slate-900/50 flex items-end justify-center" onclick="bgClose(event,'sh-booking')">
-  <div class="panel bg-white w-full max-w-[520px] rounded-t-3xl border-t border-slate-200 px-6 pt-5 pb-7">
+<!-- ══ 바텀시트: 문의 ══ -->
+<div id="sh-booking" class="sheet fixed inset-0 z-[68] bg-slate-900/50 flex items-end justify-center" onclick="bgClose(event,'sh-booking')">
+  <div class="panel bg-white w-full max-w-[520px] rounded-t-3xl border-t border-slate-200 px-6 pt-5 pb-7" role="dialog" aria-modal="true" aria-labelledby="bkTitle">
     <div class="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5"></div>
     <div class="flex items-start justify-between gap-4">
-      <h2 class="text-lg font-bold text-slate-900">커피챗 신청</h2>
+      <h2 id="bkTitle" class="text-lg font-bold text-slate-900">문의하기</h2>
       <button onclick="closeSheet('sh-booking')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1 -mt-0.5" aria-label="닫기">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
+    <p class="text-[12px] text-slate-500 mt-1.5 keep">캠페인 구성과 예산을 함께 잡아 드립니다.</p>
     <form onsubmit="book(event)" class="mt-5 space-y-3">
       <div>
         <label for="bkBrand" class="block text-xs font-medium text-slate-600 mb-1.5">브랜드</label>
@@ -284,86 +441,101 @@
         <input id="bkContact" required placeholder="010-0000-0000 또는 name@company.com" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition">
       </div>
       <button type="submit" class="w-full text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 py-3.5 rounded-xl transition shadow-sm shadow-indigo-200 mt-1">보내기</button>
+      <p class="text-[11px] text-slate-500 text-center keep pt-1">둘러보기 화면이라 실제로 전송되지는 않습니다.</p>
     </form>
   </div>
 </div>
 
-<div id="toast" class="toast fixed bottom-24 left-1/2 z-[60] bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 max-w-[92vw]">
-  <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-  <span id="toastMsg"></span>
+<div id="toast" role="status" aria-live="polite" class="toast fixed bottom-28 left-1/2 z-[80] bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-2xl flex items-start gap-2.5 max-w-[min(460px,92vw)]">
+  <span id="toastIcon" class="shrink-0 mt-[1px]"></span>
+  <span id="toastMsg" class="keep leading-relaxed"></span>
 </div>
 
 <script>
-/* ══════════ 데이터 — 후보 8명, 처음 3명은 이미 선정된 상태 ══════════ */
+/* ══════════ 데이터 ══════════
+   진행 시점이다 — 선정 5명 중 3명이 올라왔고 2명은 예정이다.
+   up 은 업로드 완료 여부. 인덱스로 유추하지 않고 값으로 갖는다. */
 const CREATORS = [
-  { name:'전수빈', handle:'@subin_jeon',    roman:'SUBIN',  disc:15, fol:128000, er:6.9, cost:350000, due:'08.06', views:842000, likes:32400, cmts:1120, saves:8900, extra:['틱톡'],           sel:true,  collab:'ok' },
-  { name:'김민지', handle:'@minji_beauty',  roman:'MINJI',  disc:10, fol: 96000, er:7.4, cost:300000, due:'08.09', views:615000, likes:24800, cmts: 860, saves:6400, extra:[],                sel:true,  collab:'ok' },
-  { name:'이아린', handle:'@arin_daily',    roman:'ARIN',   disc:20, fol: 74000, er:5.8, cost:250000, due:'08.12', views:520100, likes:19600, cmts: 610, saves:5100, extra:['틱톡','유튜브'],  sel:true,  collab:'ok' },
-  { name:'최유진', handle:'@eujin_style',   roman:'EUJIN',  disc:15, fol: 58000, er:8.1, cost:200000, due:'08.16', views:320000, likes:15200, cmts: 540, saves:4300, extra:[],                sel:false, collab:'talk' },
-  { name:'박소연', handle:'@soyeon_makeup', roman:'SOYEON', disc:10, fol: 41000, er:6.2, cost:180000, due:'08.18', views:185000, likes: 9100, cmts: 320, saves:2600, extra:['스레드'],        sel:false, collab:'ok' },
-  { name:'한서율', handle:'@seoyul.log',    roman:'SEOYUL', disc:10, fol: 33000, er:5.1, cost:150000, due:'08.21', views:141200, likes: 6400, cmts: 210, saves:1800, extra:[],                sel:false, collab:'ok' },
-  { name:'정다인', handle:'@dain_kit',      roman:'DAIN',   disc:15, fol: 27000, er:4.6, cost:150000, due:'08.25', views: 96300, likes: 4100, cmts: 150, saves:1200, extra:[],                sel:false, collab:'ok' },
-  { name:'오유나', handle:'@yuna_pick',     roman:'YUNA',   disc:10, fol: 22000, er:3.9, cost:150000, due:'08.27', views: 61800, likes: 2600, cmts:  90, saves: 740, extra:[],                sel:false, collab:'ok' }
+  { name:'전수빈', handle:'@subin_jeon',    roman:'SUBIN',  disc:15, fol:128000, er:6.9, cost:350000, due:'08.06', views:842000, likes:32400, cmts:1120, saves:8900, extra:['틱톡'],          sel:true,  up:true,  collab:'ok'   },
+  { name:'김민지', handle:'@minji_beauty',  roman:'MINJI',  disc:10, fol: 96000, er:7.4, cost:300000, due:'08.09', views:615000, likes:24800, cmts: 860, saves:6400, extra:[],               sel:true,  up:true,  collab:'ok'   },
+  { name:'이아린', handle:'@arin_daily',    roman:'ARIN',   disc:20, fol: 74000, er:5.8, cost:250000, due:'08.12', views:520100, likes:19600, cmts: 610, saves:5100, extra:['틱톡','유튜브'], sel:true,  up:true,  collab:'ok'   },
+  { name:'최유진', handle:'@eujin_style',   roman:'EUJIN',  disc:15, fol: 58000, er:8.1, cost:200000, due:'08.16', views:320000, likes:15200, cmts: 540, saves:4300, extra:[],               sel:true,  up:false, collab:'talk' },
+  { name:'박소연', handle:'@soyeon_makeup', roman:'SOYEON', disc:10, fol: 41000, er:6.2, cost:180000, due:'08.18', views:185000, likes: 9100, cmts: 320, saves:2600, extra:['스레드'],        sel:true,  up:false, collab:'ok'   },
+  { name:'한서율', handle:'@seoyul.log',    roman:'SEOYUL', disc:10, fol: 33000, er:5.1, cost:150000, due:'08.21', views:141200, likes: 6400, cmts: 210, saves:1800, extra:[],               sel:false, up:false, collab:'ok'   },
+  { name:'정다인', handle:'@dain_kit',      roman:'DAIN',   disc:15, fol: 27000, er:4.6, cost:150000, due:'08.25', views: 96300, likes: 4100, cmts: 150, saves:1200, extra:[],               sel:false, up:false, collab:'ok'   },
+  { name:'오유나', handle:'@yuna_pick',     roman:'YUNA',   disc:10, fol: 22000, er:3.9, cost:150000, due:'08.27', views: 61800, likes: 2600, cmts:  90, saves: 740, extra:[],               sel:false, up:false, collab:'ok'   }
 ];
 CREATORS.forEach(c => { c.code = c.roman + '_AD3CO' + c.disc; c.codeOn = true; });
 
-const STEPS = [
-  { n:1, label:'선정',       sub:'후보 확인 · 코드 선택',   badge:'1단계 · 크리에이터 선정', cls:'text-indigo-700 bg-indigo-50 border-indigo-200' },
-  { n:2, label:'진행',       sub:'업로드 · 공동작업자',     badge:'2단계 · 업로드 진행',     cls:'text-amber-700 bg-amber-50 border-amber-200' },
-  { n:3, label:'완료 · 사후', sub:'콘텐츠 · 원본 · 보고서', badge:'3단계 · 완료',            cls:'text-emerald-700 bg-emerald-50 border-emerald-200' }
+/* 썸네일 — 수집분에서 무작위로 붙였다. 인덱스 순서대로 CREATORS 에 매칭된다.
+   교체하려면 이 배열만 갈면 되고, 비우면 이니셜 아바타로 자동 폴백된다. */
+const PICS = ['data:image/jpeg;base64,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',
+  'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/7QCEUGhvdG9zaG9wIDMuMAA4QklNBAQAAAAAAGgcAigAYkZCTUQwYTAwMGFhNTAxMDAwMGI5MDIwMDAwZmQwMzAwMDA1YTA0MDAwMGI4MDQwMDAwODUwNTAwMDA0YTA3MDAwMDdkMDcwMDAwZjEwNzAwMDA0NzA4MDAwMGQwMGEwMDAwAP/bAIQABQYGCwgLCwsLCw0LCwsNDg4NDQ4ODw0ODg4NDxAQEBEREBAQEA8TEhMPEBETFBQTERMWFhYTFhUVFhkWGRYWEgEFBQUKBwoICQkICwgKCAsKCgkJCgoMCQoJCgkMDQsKCwsKCw0MCwsICwsMDAwNDQwMDQoLCg0MDQ0MExQTExOc/8IAEQgAZABkAwEiAAIRAQMRAf/EAHAAAAEFAQEAAAAAAAAAAAAAAAQCAwUGBwEAEAABAwIEBAQFAwUAAAAAAAABAAIDEBEEEiExBSBBURMicZEyQoGh8CMw0TNDYYLBEQACAQMDBAIDAQEAAAAAAAAAAREhMUFRYXEQgZGhsdHB4fDxIP/aAAwDAQACAAMAAAABzUgiTZerThHlo870fqWigWkK3U2ivxhl0j6WcrkiCaF31Wmw9aOZxMPRc/WgcQkRSB2nGOdOYtCU+r50O532yRmcaOI7E7Dl9xIVYMh12lIVloNkIW3TWJ2DWi+6LTj2vZRzvH0OaVmulIXK1+UgmytRHqVnZdpstNxvFF4ffqm8LcWzw48jO2XxpeN5qmUav3uhU/T0sOYJa7plaX7kBF3Md2hMWk1TFbYeqjTsKEeBJg91PLNT53XmXGm/RlYmOsEw9hlmmlQAtjeMFzCk73EkD4jHafnTb8fquY6d32vO4550ecueYeAP1gTMvcTrAWaelI3QBKV5XrbHQfmXKFffeaf/AP/aAAgBAQABBQJwWXRAIChUMxjc2IPa2NFqfK1qOMYnt8xai1WoTXCcTDIzxQuXjmRMw4Qw4Ug874SA5qtQ1ifZFyuCopnRGHHxubIPP4ILMVgrJwsjQ04PHmn4mCZbK6BWI3wrs0b23WKj1IRrwcWOM4e2aMilljGrhkl2P+LGxIR5i7CBTYVzKcFYCONSvuaXUozswkvhuc/MH+YSQWWHHiJ8AsW53YOPI3F+ZpoVmspmWWFxF0zZzdME4NHEcYSsB/W+ef4elJ8G2RScNeFJG6E4OfMp5Mogjs12G8V8GALJP7k2xRQriIBIJMO6ExyeMQNH/poOaU74pMUcxRQNLqWWykKjweVBqljusHhsrcRw8hOwzs8keVGlrrwkS0OijuQ1ELLdFEIhYzCGVPjLDlTNkHZpxTqdAnGhCkia9TtyO//aAAgBAwABPwG26NBos1f5Tm1ugV4icN/dZbhCIlOaRusun3Qo7e6CGindmICLbNqJPqmuQKfYHXdSSAad/wCEaNeE0oP6LFyjQDcJkvfVZg7ZWUfwhM2XQ1Yrr//aAAgBAgABPwG+1XC6MTrlZLVaa9fVEI4YdygdAs1ivECBugfMT9BUdkaM0Bcg7z37m6FSLp+miGYg21GyZESb9kKeGU7ROCwcZ1J6p0W+XRAEbq6duVLum7hNo+n/2gAIAQEABj8C57j8CBN3DfU/8XampC6+37Ia69wvLYLWYe67ral+c6XrdpXmOU9qNRI5m62y3d7JzraHY8raHle7/GX3TfPkDLu2+55Ardl6q/Kbm13afRZAfJ1HIaXFM1D0Cs0XudFY6EI335LfgparrlZW6A/dNTvVHk7FaFXtyWXoUfVHnzN9l6b0zfllnvoi5uo73RGnPf2V+p3q4n5tB6I+Gf8AXovhy9bcu6kB+Wx91md9B257tOo6FWcLHkuagL05bEXCLR0X/9oACAEBAQE/IYXAyjqDoMKzow92uSDK7WWgSrJJsuhYV3E9QreSnyiBi6hsbMHBXGD5BP8AxD9Sr6Qhms88ejQfB7woQx0XAfS2NmaNFBsy1+BXqr7Jg1th8qwrPHuDfdPQhTlFQKaVGXlLBM6H16H3Jo9lBN0YHGOehMPi5QrR2UIRrItRLrGxopbobZehMOOsGm2th0RA6dhLohlgVqmGjZ8ivARA6EabbldiV0tiDuCqQWwKsqbxMbDGRQFRL3Q+GbkTgqX9y1WmojsUDM6hU1xFxj2GZBXGZhTzI0xm5SayR6iV6oXy0YxpV1WhFk6j2eBDZPJEhCbQuettU3Zm6v4JhO4XwdDLlR7izybA2mxPUHmLCVaySL2Ko7uvk7QYguaO2dBvzvgr8Ahd1MdJSG3DcRSxV9Ojk8cX3a5IqlMvYVuIe7ESstb9iIZJOJX4H6KYxiwKMqt0TVsnLdciiQWcAA/5ckTlN3dXDx38komz2QbotHWRt7q9o+RBIlkOV2LTcLLcLLLqNtb8b76l4Vco/qQLaNdSUwQaEy5vYZGEYY+iboPozcfFC4kbnEbEscDbEsYMS6kqsz1w8CbMaFNz/9oADAMBAQIBAwEAABBAYHObkDMkByzmGQEJ6qSJlmSPIOgTSPvYWpc9UTMShDPFEDKP/9oACAEDAQE/EF7up6GJWrolPMlDWciIQyccdFMW+jSDj8SWQpqQVJw23VuiEWlxdEIUGgbbur5KQrJQ63X9HgfR9moeyCuPgmqRtjVW5ASsWJCCZBmZ4X2KaTQuwYuqjemxZtI/or0er0bNVHDHV9GJan//2gAIAQIBAT8QBdIDTyWAanwUNOCUfSnS23ZKwIDRcVYdzL5hkFguHU7WoOczsf8AB3g4PvVbESBiWYYjuTZp49jHViVkrFrv0xuvo9zopKnWqLOpI//aAAgBAQEBPxB2yY1z6JB6YyS0TgnvUlF+bANOj1W4hmNTQWio5kT05ZIS9QQ8Dt0nZPhVGELmVHuCnaFagreBj2KDOWROYGQMZS1qiH+goHK+74BzSSVJ0rTwal/NxJU975Kil0FGZ5cblSbdI1OslXBNebiqTdZ2rB6UBV9D9hU1Bd7t8iJl9rysLLeqquUbsGywopleHqShSE6oGMlWdR6cjiDZItgJiuvW4cSLKKoobDuDRH9wJj1H7EOTNKMRCar8FASthqkpNXpLkDaVi5X8CZg8/wDTAUQ65ZRErjglFOw1Icl3JWdlcgn+gVyrl0zH0QEqrtjnQUXjSviLmzLQibkT7Y0juBXRBk1JgJRS9xc4PEYNYC2isAyVkRWIcLGCTir1jX1Xc8rsytlojMScSr/Bk+K+ZSsqhGalk3LtHwVpBVdxEtqeByaS3Dt+AHHRmDWxb2lGiulZ1bChFE5IaCIs0eNTa+XtNDYZJv7DY4E/2TrWPkNeA1R1Nk/f/wCRkoG2JPY6wThTbjdD8OlLImSrKOcGWFSe9Q3n3tDr3x2BS7yztAloq+hDTpJSxQgxZ2hZHfUlbMkvEvfHkLXIp7LoTsBA6kXXGurgs/6Zv2lansNJGLAcbiWcVYsHuFJvCEadxtBI8FJfkqJpdpaaQNUHggbVIgdZ+koZ/ESfaLyvC5dmdeVAiamo1G3InQhXZDoi7GlWiUfZS3Zguntkh94L+lWKSt00rtPer4RBIpFlSrBcjVKnZ/ZFSCrTddy/YF2pA9IFj4dmt0Tug0oyJnomOaGdFFY9DTJjaBzhxCcXiBDox+QmXqUMUElR5Y9CrFV/QjTg+d1xuCXxv3EN4j4P/9k=',
+  'data:image/jpeg;base64,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',
+  'data:image/jpeg;base64,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',
+  'data:image/jpeg;base64,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',
+  'data:image/jpeg;base64,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',
+  'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/7QCEUGhvdG9zaG9wIDMuMAA4QklNBAQAAAAAAGgcAigAYkZCTUQwYTAwMGFhYjAxMDAwMGI0MDIwMDAwZjkwMzAwMDA3MzA0MDAwMGNjMDQwMDAwZGEwNTAwMDA0MTA4MDAwMDc1MDgwMDAwZjkwODAwMDA0ZTA5MDAwMDM3MGMwMDAwAP/bAIQABQYGCwgLCwsLCw0LCwsNDg4NDQ4ODw0ODg4NDxAQEBEREBAQEA8TEhMPEBETFBQTERMWFhYTFhUVFhkWGRYWEgEFBQUKBwoICQkICwgKCAsKCgkJCgoMCQoJCgkMDQsKCwsKCw0MCwsICwsMDAwNDQwMDQoLCg0MDQ0MExQTExOc/8IAEQgAZABkAwEiAAIRAQMRAf/EAHYAAAAHAQEAAAAAAAAAAAAAAAECAwQFBgcACBAAAQIDBQUGBAUFAAAAAAAAAQACAxARBBIhMUEFUWFxgRMgMpGhsSIjM3IUUoLB8BVCYtHxEQABAwEIAwADAQAAAAAAAAABABEhMUFRYXGBkaGxEMHw0eHxIP/aAAwDAQACAAMAAAABrbqNVRVeLMVwUUUZ2l7HVZSdqwGmkU2bSQkJKLvh29PdXOmB1TQXjSnkV2SgKSdohrGq2JnOj5eqlNMDxzd680DM5EUr/HPGfBUIeWgCKTYCAHts5Nrt1a5Kvkx7KZfqG6bShGkpwa9UbdUSdS6/Nwxhm0eQA+vycbKoi2bv4nhqFAstTcov7LWLwAXevycYAZ22MPKOkiBw7bK0uRbqy1NsNHWQpse7arFkNNzTYExbs2zni5msR0VVmY3GDX5SHkkioJ129m7zqlbausV7teX6gkahTYCYmeuL1xFs/LoXG5afrXJlzzdqZxw7MNP44RtxgOTGwV/uTH//2gAIAQEAAQUCiOoQasQKqmlE/MecGFOcoTw1zra+Iv6e56tWChGraoIlQhDaI8Frk84NKJVkF9zGUVFalZlVBQGdpEdZ6u7EAPQKJUGJQ2WLURPiMfKzHFVxsWd7E0T3VQKJJKs8csIswIflBNHOzVj8DQSm4Juz4D2x4XZP2Q35kV990BtYjMnZVo5+bcS4CgZRdleVndQ7U+qHkIKxfVGAT05XqKE6/DL0HlONDtT6gTStnCrnlAqItCoLPkkCUVwarZH7VyGWyGqJi6qioeErZ8Qdi6IF2gW0LWy7PZDaMMoqZ4XKwMIgMq2W02YHJFWEXYMaNdJTsoXhcrHhBitAAUWB2rHIJwqmi6y0YuK0ghHKwOvQXmq2fabyC2rA7OI0Kyw78WJkIN5FNyg5uWyvpPUN5ZFatsNrCYtnD4oyhsBb/9oACAEDAAE/AW5ytlvbZrt6pLsgBU4KyWtscEt6g5jJaIqi/uErTs5tpDa/CQ6ocM6ajr70UHZ/4UuuuLmvp4swWneKChruRKpJ2iKDqAIm+EdE6Tsk5OGAUJ1E9bpaI5DknObdbXOmiJ3J02rQTMqJq085b0c5/wD/2gAIAQIAAT8BOUoNnMStNFGgllKzvLQyg210FxpiKUppXQ9PZPtZj55jdxnVN1QWbihgZCQzTVqU8VTckdZaoK6au5pg3ydIrVarKRV5Fa+SOafom5T/AP/aAAgBAQAGPwJvAocO4E1Q5tJyBKpCbT/IqrnYo807n3MRePFX24EaaKHyXSVDlT91gKSPIJ3ISKA0zPRZ4KlcU3hPPCmW/qEaCgr5LxUph/OqC5g+k3u4BdSq79UKywWKohIcz6oyfzllRVuZ8SnN3KI7c0Dz/wCJx3koSK6iTeKAGQkVdKP2hGhI6y5Idwc007xIqqvfmYPTCbuXue43lKGBq3NYS+I0G9YeECgm48fZGbZQ+Ancuklw5dyv3H9p9F1lXeSqSa7jTufpHrj3DKH9s3s/MPUYjuU/mA7jpM5U8pOY41I13iR3P+Ifv6oc03hj5SJwxOs3Ir9RkHDP/cgdQ73Q5p3Ie8hyC//aAAgBAQEBPyHMaOVthtCBlVs/CROY6W3BQjI+KMkiSxNABYqflLTQUHJQnYnUme5RaD902bnbyghyc1JqgJm0LjOAoyaqpcKg1lxW2OlAPDDNFwkC1y/CE9hBeKGMRNkbjGgIUpim0JIbAZ8e5PQCSBhw55xRENMEGOYCi0VP2iDLoHBxVQsEC2qo0IB4hvijJ2Z3GqeQ0UskhNtuW5E1zKEmSFrgDcv6R+i5CTg7g2SkXYor5ObTfCj0TAAk4Ak8IvosZm0hEboLRjYirhW82mtplcZTawtn6XITyMk55ixgb2CKEgVvyROLuXX6IEKdoAIe6WVpdk3izhHIH5h+ExHW5TWFUEGpZopZDoScRVEDK8BuU04AYAAuTaEye74opLJ20Uc9OoKPsQmWIPmyOqmJuE7BE0wCeNCFAjLpG5BvClO5DW2DcFvSKaaoghMNqjBCsFG9yaNxchFKfGqfdwjY/CmtEKghnUhO5MKs5p8ozWAQ5KfXL0zKZBfKIJjSn7QJJ1JT18ThYePA+yjMg1QS3mCj5ByijVOh3cBzBMI2S4FjANws1hggiAoAEgAMauiYKFCrF9luKJTygcZocc3MqgoSC3aQB0UwMGFlnKsudRIGCI2MRbqIRyQoVEJuy+xRLPCqQOClgEdfpUKIN3mU+AGJI6WZSARRjMMHCoQRqFQC2N4WogOBG7gAPftCgHyqh+r+1UWQeQyNAmEYpRkFeTseCo/pOID3FHy1cQmDYT8p9soDqUa8AyA7KFVskG3+EEIT5fSVFyjiVDV0oLEOw2BkBfoeAN+0C3l0qRgE+Ip0Bf/aAAwDAQECAQMBAAAQajs+8Lq7/wAq9oSni1Gx544xvOte6cSGkPMI2pcUr6gQwYkYk4v/2gAIAQMBAT8QieIKdOQDBD8Qc1AADi21PPBi0YptejROhz40ze/6inOkMCDRMZNAD5ONDIbRiEqwYYKGMRUuovK3y8XcnjCUaUDxIcF+KIHIh91RmHtVUUlkfCpLgOkSRxglIa/AodgjMv6CsZI18WhguojYlWeKtEbU5VodlC9vAfH/2gAIAQIBAT8QQAoteDm56IiHyqIlDwCgVVaPH/Q9iYGjZN/Ct8MVj4so5YDhQf8AxA0F6sXmArCq1VCSWT8IIo1TI6K1oilaBhHRMCpXolTzpr4//9oACAEBAQE/ECTI6R0nTaw/rBc5TZvKqGvS3RbL3L6CxMSWm5Th1KMNcmDaCao+bTGSoWbHQ5o8wIaFjNgqYadIei6CAGCsAhpmVDZNTiioU5iEZYcpxQ+5ejEhsVtkG0A6uTKF8oOKnkKZD1raN6TTacLhuk+hYC3JvA1RkZXBtwPcQwhwwNYUcEJHgC5keUxo+kR2EDGgWnhRr2tOiQ4kIqnjEZAe12RcLAAH4iQLOFowLBDP9iYIXdi1gFgnO46KQDQUpvBSxCSRqNhsUbdPUBjnE2qVlQKNQ/UHIH1AuvIZWbIYCYLF+xGZJrIF3CcwHUifJ8+DCIA+OENco0oMEVLXtahzGAGAPL0jGSGAendVAVKzA6GR3Ug4EzS9kB6H3EZ7F/crW4Ro8VMCsAIlZAdKDwI1/GW9omx2VjMjoKy/cyA7tvR5AZAZmgZg2ArggzIQGt1D0AEGo9BbIqB/CFQ5nFboOZ/AjdY+TrCRKcHq8NCr/hJTRRA1Wp9IVIIELDaitNyAii7QM6JZzKeTR/QL9yj6hKO5YAMGoKJ3V2mR+hWYOgI3GBTRHsKrg1yMbRZ6HZFqNE/Aq/aDEsCa02T9kcmJBJFjotcyHGVEE4kgWvddKIIEAyCLIuTJyKFiVyDpLhsEpmRcNHwB0QhepBalKrv3OUyqcglR3hNYG1Ta+AhTkqF/t6E4jsCZLYqropH4Ccweh7I90KaqPOdKIfIGDVkGewWMy0JyyTJZQIBKUUwdZH5HiOYEGgFKqrSgjhPJHpBFbrCNl9mIE1bgHeXsmL3OUzroDwmtKLG0An7KYVV4Kczi5CPejbrQDb8dQUO6MkSp0xOuLOxoKHFfnmbqFPWlhDRQ0sRmxdWQXfTFyJwNNjYwoPqYGD9KSOAFQH8c6CcPf+BHDkWZ0Io8ER4gdDcnt4I7BoINR3FEy0AJ2CZ1BlAwBwIKcNyUSwkXJ/1RDKzLGT6XFtTlMQlgHANt2Sv/2Q==',
+  'data:image/jpeg;base64,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'];
+CREATORS.forEach((c, i) => { c.pic = PICS[i] || null; });
+
+/* 브랜드의 캠페인 전체. 지난 건은 회색으로 죽어 있고 상태만 남는다 */
+const CAMPAIGNS = [
+  { id:'2608', title:'26년 8월 인플루언서 캠페인', period:'08.01 – 08.31', state:'live', badge:'진행 중', n:5 },
+  { id:'2607', title:'26년 7월 신제품 리뷰',       period:'07.01 – 07.31', state:'done', badge:'정산 완료', n:4 },
+  { id:'2606', title:'26년 6월 여름 프로모션',     period:'06.01 – 06.30', state:'done', badge:'정산 완료', n:6 },
+  { id:'2605', title:'26년 5월 브랜드 앰배서더',   period:'05.01 – 05.31', state:'done', badge:'종료',      n:3 }
 ];
 
-/* 열 — phase 는 설정 패널의 묶음 기준 */
+/* 열 — group 은 설정 패널에서 묶는 기준일 뿐, 값 유무와 무관하다 */
 const COLS = {
-  content:{ label:'콘텐츠 링크',  phase:3, align:'center' },
-  fol    :{ label:'팔로워',       phase:1, align:'right'  },
-  er     :{ label:'참여율',       phase:1, align:'right'  },
-  cost   :{ label:'단가',         phase:1, align:'right'  },
-  code   :{ label:'파트너십 코드', phase:3, align:'left'  },
-  collab :{ label:'공동작업자',    phase:2, align:'center' },
-  reuse  :{ label:'2차활용',       phase:2, align:'center' },
-  up     :{ label:'업로드일',      phase:2, align:'center' },
-  src    :{ label:'원본',         phase:3, align:'center' },
-  extra  :{ label:'추가 플랫폼',   phase:3, align:'center' },
-  views  :{ label:'조회수',       phase:3, align:'right'  },
-  likes  :{ label:'좋아요',       phase:3, align:'right'  },
-  cmts   :{ label:'댓글',         phase:3, align:'right'  },
-  saves  :{ label:'저장',         phase:3, align:'right'  }
+  fol    :{ label:'팔로워',        group:'후보 판단', align:'right'  },
+  er     :{ label:'참여율',        group:'후보 판단', align:'right'  },
+  cost   :{ label:'제안 단가',      group:'후보 판단', align:'right'  },
+  up     :{ label:'업로드일',      group:'진행',     align:'center' },
+  collab :{ label:'공동작업자',     group:'진행',     align:'center' },
+  reuse  :{ label:'2차 활용',       group:'진행',     align:'center' },
+  code   :{ label:'파트너십 코드',  group:'진행',     align:'left'   },
+  content:{ label:'콘텐츠',        group:'결과물',   align:'center' },
+  src    :{ label:'원본',          group:'결과물',   align:'center' },
+  extra  :{ label:'추가 플랫폼',    group:'결과물',   align:'center' },
+  views  :{ label:'조회수',        group:'성과',     align:'right'  },
+  likes  :{ label:'좋아요',        group:'성과',     align:'right'  },
+  cmts   :{ label:'댓글',          group:'성과',     align:'right'  },
+  saves  :{ label:'저장',          group:'성과',     align:'right'  }
 };
+const ALL = Object.keys(COLS);
 
-/* 단계마다 보고 싶은 값이 다르다 — 미리 넣어둔 프리셋 */
-const PRESET = {
-  1: ['fol','er','cost','collab','reuse'],
-  2: ['fol','collab','up','extra','views'],
-  3: ['content','code','collab','src','extra','reuse','views']
-};
+/* 정렬 클래스는 문자열로 조립하지 않는다 — 빌드 스캐너가 못 잡는다 */
+const ALIGN = { left:'text-left', center:'text-center', right:'text-right' };
 
 const S = {
-  step: 1,
-  order: ['content','fol','er','cost','code','collab','up','src','extra','reuse','views','likes','cmts','saves'],
-  visible: new Set(PRESET[1]),
-  touched: false,
-  nudge: true          /* 선정 버튼을 한 번도 안 눌렀으면 깜빡인다 */
+  order: ALL.slice(),
+  visible: new Set(ALL),      /* 진행 전체 열을 처음부터 다 보여준다 */
+  nudge: true,
+  camp: '2608'
 };
-
-const UPLOADED_IN_STEP2 = 2;   /* 진행 단계 = 선정 인원 중 한두 개만 올라온 상황 */
 
 /* ══════════ 유틸 ══════════ */
 const $ = id => document.getElementById(id);
 const n = v => v.toLocaleString('en-US');
 const won = v => '<span class="won">₩</span>' + n(v);
 const kw = v => (v / 10000).toFixed(v >= 100000 ? 0 : 1).replace(/\.0$/, '') + '만';
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+/* 작은따옴표까지 막는다 — 결과가 onclick 속성 안으로 들어가기 때문이다 */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
 const selected = () => CREATORS.filter(c => c.sel);
-const shown    = () => S.step === 1 ? CREATORS : selected();
+const upList   = () => selected().filter(c => c.up);
 const cols     = () => S.order.filter(k => S.visible.has(k));
-const isUp     = c => S.step === 3 ? true : S.step === 2 ? selected().indexOf(c) < UPLOADED_IN_STEP2 : false;
-const upList   = () => selected().filter(isUp);
 
 const AV = ['#4f46e5','#0ea5e9','#7c3aed','#0d9488','#db2777','#ea580c','#65a30d','#2563eb'];
 function avatar(c, i, size) {
   const s = size || 34, col = AV[i % AV.length];
+  /* 실사진이 있으면 그것을 쓰고, 없으면 이니셜로 떨어진다 */
+  if (c.pic) {
+    return '<img src="' + c.pic + '" alt="" aria-hidden="true" class="shrink-0 rounded-full object-cover ring-1 ring-slate-200/80"'
+      + ' style="width:' + s + 'px;height:' + s + 'px">';
+  }
   return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 36 36" class="shrink-0" aria-hidden="true">'
     + '<circle cx="18" cy="18" r="18" fill="' + col + '" fill-opacity=".12"/>'
     + '<circle cx="18" cy="18" r="17.25" fill="none" stroke="' + col + '" stroke-opacity=".28" stroke-width="1.5"/>'
@@ -372,284 +544,232 @@ function avatar(c, i, size) {
 }
 
 const ICON = {
-  check: '<svg class="w-3 h-3 inline-block" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>',
-  grip : '<svg class="w-3 h-3 inline-block text-slate-300" fill="currentColor" viewBox="0 0 12 12"><circle cx="4" cy="2.5" r="1"/><circle cx="8" cy="2.5" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9.5" r="1"/><circle cx="8" cy="9.5" r="1"/></svg>',
+  check: '<svg class="w-3 h-3 inline-block" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>',
+  grip : '<svg class="w-3 h-3 inline-block text-slate-400" fill="currentColor" viewBox="0 0 12 12"><circle cx="4" cy="2.5" r="1"/><circle cx="8" cy="2.5" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9.5" r="1"/><circle cx="8" cy="9.5" r="1"/></svg>',
   copy : '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>',
   down : '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>',
-  play : '<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>'
+  play : '<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>',
+  lock : '<svg class="w-4 h-4 text-indigo-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>'
 };
 
-/* ══════════ 렌더 ══════════ */
-function renderRail() {
-  const parts = [];
-  STEPS.forEach((st, i) => {
-    const on = st.n === S.step, past = st.n < S.step;
-    if (i) parts.push('<div class="flex-1 h-[2px] mx-3 sm:mx-5 rounded-full ' + (past ? 'bg-emerald-300' : 'bg-slate-200') + '"></div>');
-    parts.push(
-      '<button onclick="setStep(' + st.n + ')" class="flex items-center gap-2.5 text-left shrink-0 group">'
-      + '<span class="num w-7 h-7 shrink-0 rounded-full grid place-items-center text-[11px] font-bold transition '
-        + (on ? 'bg-indigo-600 text-white ring-4 ring-indigo-100'
-        : past ? 'bg-emerald-500 text-white'
-               : 'bg-white border border-slate-200 text-slate-400 group-hover:border-slate-300') + '">'
-        + (past ? ICON.check : st.n) + '</span>'
-      + '<span class="min-w-0"><span class="block text-xs font-bold transition '
-        + (on ? 'text-slate-900' : past ? 'text-slate-500' : 'text-slate-400') + '">' + st.label + '</span>'
-      + '<span class="hidden sm:block text-[10.5px] text-slate-400 truncate">' + st.sub + '</span></span></button>'
-    );
-  });
-  $('stepRail').innerHTML = parts.join('');
-  const st = STEPS[S.step - 1];
-  $('phaseBadge').className = 'text-[11px] font-semibold px-2.5 py-1 rounded-full border ' + st.cls;
-  $('phaseBadge').textContent = st.badge;
+/* ══════════ 좌측 레일 ══════════ */
+function renderNav() {
+  const sec = (title, items) => items.length
+    ? '<div class="pt-3 first:pt-1"><div class="px-2 pb-1.5 num text-[9.5px] font-bold tracking-[.14em] text-slate-400 uppercase">' + title + '</div>'
+      + items.map(cp => {
+          const on = cp.id === S.camp, live = cp.state === 'live';
+          return '<button onclick="pickCamp(\'' + cp.id + '\')" class="w-full text-left px-3 py-2.5 rounded-xl mb-1 transition '
+            + (on ? 'bg-indigo-50 border border-indigo-200'
+                  : 'border border-transparent hover:bg-slate-50') + '">'
+            + '<span class="flex items-center gap-2">'
+              + '<span class="w-1.5 h-1.5 rounded-full shrink-0 ' + (live ? 'bg-amber-500' : 'bg-slate-300') + '"></span>'
+              + '<span class="text-[12.5px] font-semibold truncate ' + (live ? 'text-slate-900' : 'text-slate-500') + '">' + esc(cp.title) + '</span>'
+            + '</span>'
+            + '<span class="flex items-center justify-between gap-2 mt-1.5 pl-3.5">'
+              + '<span class="num text-[10.5px] ' + (live ? 'text-slate-500' : 'text-slate-400') + '">' + cp.period + ' · ' + cp.n + '명</span>'
+              + '<span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded border whitespace-nowrap '
+                + (live ? 'text-amber-700 bg-amber-50 border-amber-200' : 'text-slate-500 bg-slate-100 border-slate-200') + '">' + cp.badge + '</span>'
+            + '</span></button>';
+        }).join('') + '</div>'
+    : '';
+
+  $('campNav').innerHTML =
+    sec('진행 중', CAMPAIGNS.filter(c => c.state === 'live'))
+    + sec('지난 캠페인', CAMPAIGNS.filter(c => c.state === 'done'))
+    + '<button onclick="na(\'새 캠페인 의뢰\', \'실제 화면에서는 여기서 바로 다음 캠페인을 의뢰하실 수 있습니다.\')" '
+    + 'class="w-full mt-3 text-[12px] font-semibold text-indigo-700 bg-white hover:bg-indigo-50 border border-dashed border-indigo-300 px-3 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5">'
+    + '<span class="text-[14px] leading-none">+</span> 새 캠페인 의뢰</button>';
 }
 
-function renderKpis() {
-  const sel = selected(), selN = sel.length;
-  const codeN = sel.filter(c => c.codeOn).length;
-  const up = upList();
-  let cards;
-
-  if (S.step === 1) {
-    cards = [
-      ['후보 크리에이터', CREATORS.length + '<span class="text-xs font-normal text-slate-400 ml-1">명</span>', selN + '명 선정', 'slate'],
-      ['선정 기준 집행가', won(sel.reduce((a, c) => a + c.cost, 0)), '해제하면 즉시 줄어듭니다', 'slate'],
-      ['평균 참여율', selN ? (sel.reduce((a, c) => a + c.er, 0) / selN).toFixed(1) + '<span class="text-xs font-normal text-slate-400 ml-1">%</span>' : '—', '선정 ' + selN + '명 기준', 'indigo'],
-      ['예상 합산 조회수', selN ? kw(sel.reduce((a, c) => a + c.views, 0)) : '—', '직전 3개월 실적 기준', 'slate']
-    ];
-  } else if (S.step === 2) {
-    cards = [
-      ['선정 확정', selN + '<span class="text-xs font-normal text-slate-400 ml-1">명</span>', '변경은 1단계에서', 'slate'],
-      ['업로드', up.length + ' / ' + selN + '<span class="text-xs font-normal text-slate-400 ml-1">건</span>', (selN - up.length) + '건 예정', 'indigo'],
-      ['공동작업자', sel.filter(c => c.collab === 'ok').length + ' / ' + selN, sel.some(c => c.collab !== 'ok') ? '수락 대기 1건' : '전원 승인', 'amber'],
-      ['누적 조회수', up.length ? n(up.reduce((a, c) => a + c.views, 0)) : '—', '업로드분 기준', 'slate']
-    ];
-  } else {
-    cards = [
-      ['총 조회수', n(sel.reduce((a, c) => a + c.views, 0)), '업로드 ' + selN + '건', 'indigo'],
-      ['총 집행가', won(sel.reduce((a, c) => a + c.cost, 0)), '선정 ' + selN + '명 합계', 'slate'],
-      ['추가 플랫폼 게시', sel.filter(c => c.extra.length).length + '<span class="text-xs font-normal text-slate-400 ml-1">명</span>', '틱톡 · 유튜브 · 스레드', 'slate'],
-      ['2차 활용', selN + ' / ' + selN, '자사몰 · 광고 소재', 'emerald']
-    ];
+function pickCamp(id) {
+  const cp = CAMPAIGNS.find(c => c.id === id);
+  if (!cp) return;
+  if (cp.state === 'done') {
+    na(esc(cp.title), '실제 화면에서는 지난 캠페인의 최종 보고서와 원본이 그대로 열립니다.');
+    return;
   }
+  S.camp = id; renderNav(); toggleRail(false);
+}
+
+function toggleRail(open) {
+  $('rail').classList.toggle('open', open);
+  $('railScrim').classList.toggle('hidden', !open);
+}
+
+/* ══════════ KPI · 툴바 ══════════ */
+function renderKpis() {
+  const sel = selected(), selN = sel.length, up = upList();
+  const waiting = sel.filter(c => c.collab !== 'ok').length;
+  const cards = [
+    ['선정 확정', selN + '<span class="text-xs font-normal text-slate-500 ml-1">명</span>', '후보 ' + CREATORS.length + '명 중', 'slate'],
+    ['업로드', up.length + ' / ' + selN + '<span class="text-xs font-normal text-slate-500 ml-1">건</span>', (selN - up.length) + '건 예정', 'indigo'],
+    ['공동작업자', (selN - waiting) + ' / ' + selN, waiting ? waiting + '건 수락 대기' : '승인 완료', 'amber'],
+    ['누적 조회수', up.length ? n(up.reduce((a, c) => a + c.views, 0)) : '—', '업로드 완료분 기준', 'slate']
+  ];
   const tone = { slate:'text-slate-900', indigo:'text-indigo-600', amber:'text-amber-600', emerald:'text-emerald-600' };
   $('kpis').innerHTML = cards.map(([t, v, s, c]) =>
     '<div class="tight-kpi bg-white border border-slate-200 rounded-2xl px-4 py-3.5">'
     + '<div class="text-[11px] font-medium text-slate-500">' + t + '</div>'
     + '<div class="num text-[22px] font-bold tracking-[-.02em] mt-0.5 ' + tone[c] + '">' + v + '</div>'
-    + '<div class="text-[10.5px] text-slate-400 mt-0.5">' + s + '</div></div>'
+    + '<div class="text-[10.5px] text-slate-500 mt-0.5">' + s + '</div></div>'
   ).join('');
 }
 
 function renderToolbar() {
-  const selN = selected().length, codeN = selected().filter(c => c.codeOn).length;
-  $('toolbarInfo').innerHTML = {
-    1: '후보 <strong class="text-slate-900">' + CREATORS.length + '명</strong> 중 <strong class="text-indigo-600">' + selN + '명</strong> 선정',
-    2: '선정 <strong class="text-slate-900">' + selN + '명</strong> · 업로드 <strong class="text-indigo-600">' + upList().length + '건</strong> 반영됨',
-    3: '업로드 <strong class="text-slate-900">' + selN + '건</strong> 완료 · 사후처리 가능'
-  }[S.step];
-}
-
-function renderBanner() {
   const selN = selected().length;
-  const B = {
-    1: ['선정만 하시면 나머지는 저희가 채웁니다', '가이드라인 · 사전 검수 · 파트너십 코드 · 공동작업자 · 원본 인도', '선정 확정 (' + selN + '명)'],
-    2: ['업로드가 끝나면 원본과 보고서가 여기 채워집니다', '검수 · 공동작업자 연결 · 추가 플랫폼 게시 요청까지 저희가 진행합니다', '업로드 완료 처리'],
-    3: ['선정부터 보고서까지 이 화면 하나로', '9월 캠페인도 같은 방식으로 굴려보시겠어요?', '커피챗하기']
-  }[S.step];
-
-  $('bannerTitle').textContent = B[0];
-  $('bannerSub').textContent = B[1];
-  $('bannerIcon').className = 'w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 '
-    + (S.step === 3 ? 'bg-emerald-50 border-emerald-100' : 'bg-indigo-50 border-indigo-100');
-  $('bannerIcon').innerHTML = S.step === 3
-    ? '<svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
-    : '<svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
-
-  const cta = $('mainCta');
-  const off = S.step === 1 && selN === 0;
-  cta.disabled = off;
-  cta.onclick = off ? null : advance;
-  cta.innerHTML = B[2] + (S.step === 3 ? '' : '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M3 12h18"/></svg>');
-  cta.className = 'w-full sm:w-auto shrink-0 text-sm font-bold px-7 py-3.5 rounded-2xl transition flex items-center justify-center gap-2 '
-    + (off ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-           : 'text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200');
+  $('toolbarInfo').innerHTML = '후보 <strong class="text-slate-900">' + CREATORS.length + '명</strong> 중 '
+    + '<strong class="text-indigo-600">' + selN + '명</strong> 선정 · 업로드 <strong class="text-slate-900">' + upList().length + '건</strong> 반영됨';
 }
 
 function renderColToggles() {
-  $('colToggles').innerHTML = [[1,'선정 단계'],[2,'진행 단계'],[3,'완료 · 사후']].map(([p, title]) => {
-    const keys = Object.keys(COLS).filter(k => COLS[k].phase === p);
-    return '<div><div class="text-[10.5px] font-semibold text-slate-400 mb-1">' + title + '</div>'
-      + keys.map(k =>
-        '<label class="flex items-center gap-2.5 px-1.5 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer text-xs">'
-        + '<input type="checkbox" ' + (S.visible.has(k) ? 'checked' : '') + ' onchange="toggleCol(\'' + k + '\')" class="w-3.5 h-3.5 accent-indigo-600 cursor-pointer">'
-        + '<span class="text-slate-700">' + COLS[k].label + '</span></label>'
-      ).join('') + '</div>';
-  }).join('');
+  const groups = [];
+  Object.keys(COLS).forEach(k => {
+    const g = COLS[k].group;
+    let e = groups.find(x => x[0] === g);
+    if (!e) { e = [g, []]; groups.push(e); }
+    e[1].push(k);
+  });
+  $('colToggles').innerHTML = groups.map(([title, keys]) =>
+    '<div><div class="text-[10.5px] font-semibold text-slate-500 mb-1">' + title + '</div>'
+    + keys.map(k =>
+      '<label class="flex items-center gap-2.5 px-1.5 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer text-xs">'
+      + '<input type="checkbox" ' + (S.visible.has(k) ? 'checked' : '') + ' onchange="toggleCol(\'' + k + '\')" class="w-3.5 h-3.5 accent-indigo-600 cursor-pointer">'
+      + '<span class="text-slate-700">' + COLS[k].label + '</span></label>'
+    ).join('') + '</div>'
+  ).join('');
 }
 
+/* ══════════ 표 ══════════ */
 function renderTable() {
-  let th = '<tr class="border-b border-slate-200 text-[11px] font-semibold text-slate-500">';
-  th += '<th class="stick py-3 pl-4 pr-2 w-[104px] text-center whitespace-nowrap">선정</th>';
-  th += '<th class="stick py-3 px-3 min-w-[176px] text-left whitespace-nowrap" style="left:104px">크리에이터'
-      + '<span class="text-[9.5px] font-normal text-slate-300 ml-1">고정</span></th>';
+  let th = '<tr class="text-[11px] font-semibold text-slate-500">';
+  th += '<th scope="col" class="stick c1 bg-slate-50 py-3 pl-4 pr-2 text-center whitespace-nowrap">선정</th>';
+  th += '<th scope="col" class="stick c2 bg-slate-50 py-3 px-3 text-left whitespace-nowrap">크리에이터</th>';
   th += cols().map(k => {
-    const c = COLS[k], on = c.phase === S.step;
-    return '<th draggable="true" data-key="' + k + '" class="py-3 px-3 text-' + c.align
-      + ' whitespace-nowrap select-none ' + (on ? 'text-indigo-700' : 'text-slate-500') + '">'
-      + '<span class="inline-flex items-center gap-1.5">' + ICON.grip + c.label + '</span></th>';
+    const c = COLS[k];
+    return '<th scope="col" draggable="true" data-key="' + k + '" title="끌어서 순서를 바꿉니다"'
+      + ' class="py-3 px-3 ' + ALIGN[c.align] + ' whitespace-nowrap select-none text-slate-500 hover:text-slate-800 transition-colors">'
+      + '<span class="inline-flex items-center gap-1.5"><span class="grip">' + ICON.grip + '</span>' + c.label + '</span></th>';
   }).join('');
   $('thead').innerHTML = th + '</tr>';
 
-  const list = shown();
-  $('tbody').innerHTML = list.map(c => {
-    const idx = CREATORS.indexOf(c);
-    let tr = '<tr class="group border-b border-slate-100 last:border-0">';
-    tr += '<td class="stick bg-white group-hover:bg-slate-50 transition-colors py-2.5 pl-4 pr-2 text-center">' + selBtn(c, idx) + '</td>';
-    tr += '<td class="stick bg-white group-hover:bg-slate-50 transition-colors py-2.5 px-3" style="left:104px">'
+  $('tbody').innerHTML = CREATORS.map((c, idx) => {
+    let tr = '<tr class="group border-b border-slate-100 last:border-0' + (c.sel ? ' on' : '') + '">';
+    tr += '<td class="stick c1 py-2.5 pl-4 pr-2 text-center">' + selBtn(c, idx) + '</td>';
+    tr += '<td class="stick c2 py-2.5 px-3">'
       + '<div class="flex items-center gap-3">' + avatar(c, idx)
       + '<div class="min-w-0"><div class="text-[13.5px] font-semibold text-slate-900 truncate">' + esc(c.name) + '</div>'
-      + '<div class="num text-[11px] text-slate-400 truncate">' + esc(c.handle) + '</div></div></div></td>';
+      + '<div class="num text-[11px] text-slate-500 truncate">' + esc(c.handle) + '</div></div></div></td>';
     tr += cols().map(k => cell(c, idx, k)).join('');
     return tr + '</tr>';
   }).join('');
 
-  if (!list.length) {
-    $('tbody').innerHTML = '<tr><td colspan="' + (2 + cols().length) + '" class="py-14 text-center text-xs text-slate-400">선정된 크리에이터가 없습니다. 1단계에서 선정 버튼을 누르세요.</td></tr>';
-  }
   bindDrag();
+  syncEdges();
 }
 
-/* 체크박스가 아니라 버튼 — 처음 세 명은 이미 눌린 상태이고 나머지는 깜빡인다 */
 function selBtn(c, idx) {
-  if (S.step > 1) {
-    return '<span class="inline-flex items-center gap-1 text-[10.5px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1.5 rounded-lg whitespace-nowrap">'
-      + ICON.check + '확정</span>';
-  }
   if (c.sel) {
-    return '<button onclick="toggleSel(' + idx + ')" class="selbtn inline-flex items-center gap-1 text-[11px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap">'
+    return '<button onclick="toggleSel(' + idx + ')" title="선정을 해제합니다"'
+      + ' class="selbtn inline-flex items-center gap-1 text-[11px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap">'
       + ICON.check + '선정됨</button>';
   }
-  return '<button onclick="toggleSel(' + idx + ')" class="selbtn ' + (S.nudge ? 'nudge ' : '')
-    + 'inline-flex items-center text-[11px] font-bold text-indigo-600 bg-white border border-indigo-300 hover:bg-indigo-50 px-3 py-1.5 rounded-lg whitespace-nowrap">선정</button>';
+  return '<button onclick="toggleSel(' + idx + ')" title="이 크리에이터를 선정합니다"'
+    + ' class="selbtn ' + (S.nudge ? 'nudge ' : '')
+    + 'inline-flex items-center text-[11px] font-bold text-indigo-600 bg-white border border-indigo-300 hover:bg-indigo-50 hover:border-indigo-400 px-3 py-1.5 rounded-lg whitespace-nowrap">선정</button>';
 }
 
 function cell(c, idx, k) {
   const col = COLS[k];
-  const pad = 'py-2.5 px-3 text-' + col.align;
-  const blank = '<td class="' + pad + ' bg-slate-50/60"><span class="text-slate-300 text-[13px]">&mdash;</span></td>';
-  const quiet = col.phase < S.step;
-  const numCls = 'num text-[12.5px] ' + (quiet ? 'text-slate-500' : 'font-semibold text-slate-900');
+  const pad = 'py-2.5 px-3 ' + ALIGN[col.align];
+  /* 아직 값이 없는 칸 — 비었다는 것 자체가 정보다 */
+  const soon = lbl => '<td class="' + pad + '"><span class="text-[11px] text-slate-400">' + (lbl || '—') + '</span></td>';
+  const numCls = 'num text-[12.5px] font-semibold text-slate-900';
 
   switch (k) {
     case 'fol':  return '<td class="' + pad + '"><span class="' + numCls + '">' + kw(c.fol) + '</span></td>';
     case 'er':   return '<td class="' + pad + '"><span class="' + numCls + '">' + c.er.toFixed(1) + '%</span></td>';
     case 'cost': return '<td class="' + pad + '"><span class="' + numCls + '">' + won(c.cost) + '</span></td>';
 
-    case 'code':
-      if (S.step === 1) {
-        return '<td class="' + pad + '"><label class="inline-flex items-center gap-2 cursor-pointer">'
-          + '<input type="checkbox" ' + (c.codeOn ? 'checked' : '') + ' onchange="toggleCode(' + idx + ')" aria-label="' + esc(c.name) + ' 파트너십 코드" class="w-3.5 h-3.5 accent-indigo-600 cursor-pointer">'
-          + '<span class="text-[11.5px] ' + (c.codeOn ? 'text-slate-700 font-medium' : 'text-slate-400') + '">' + (c.codeOn ? '발급' : '제외') + '</span></label></td>';
-      }
-      if (!c.codeOn) return '<td class="' + pad + '"><span class="text-[11px] text-slate-400">제외</span></td>';
-      return '<td class="' + pad + '"><button onclick="copy(\'' + c.code + '\')" title="복사"'
-        + ' class="group/c inline-flex items-center gap-2 bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 pl-2.5 pr-1.5 py-1 rounded-lg transition">'
-        + '<span class="mono text-[11px] text-slate-700 group-hover/c:text-indigo-700">' + c.code + '</span>'
-        + '<span class="text-slate-300 group-hover/c:text-indigo-500">' + ICON.copy + '</span></button></td>';
+    case 'up':
+      if (!c.sel) return soon();
+      return '<td class="' + pad + '">' + (c.up
+        ? '<span class="num text-[12px] font-medium text-slate-800">' + c.due + '</span>'
+        : '<span class="num text-[12px] text-slate-500">' + c.due + '<span class="ml-1 text-[10px] text-slate-400">예정</span></span>') + '</td>';
 
     case 'collab':
-      /* 선정 단계에서는 '가능 여부', 이후에는 실제 상태 */
-      if (S.step === 1) {
-        return '<td class="' + pad + '">' + (c.collab === 'ok'
-          ? '<span class="text-[10.5px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">가능</span>'
-          : '<span class="text-[10.5px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">협의</span>') + '</td>';
-      }
+      if (!c.sel) return soon('선정 후');
       if (c.collab !== 'ok') {
         return '<td class="' + pad + '"><span class="inline-flex items-center gap-1.5 text-[10.5px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full whitespace-nowrap">'
           + '<span class="relative flex w-1.5 h-1.5"><span class="animate-ping absolute inline-flex w-full h-full rounded-full bg-amber-400 opacity-75"></span>'
           + '<span class="relative inline-flex w-1.5 h-1.5 rounded-full bg-amber-500"></span></span>수락 대기</span></td>';
       }
-      return '<td class="' + pad + '"><span class="inline-flex items-center gap-1 text-[10.5px] font-semibold border px-2 py-0.5 rounded-full whitespace-nowrap '
-        + (quiet ? 'text-slate-400 bg-slate-50 border-slate-200' : 'text-emerald-700 bg-emerald-50 border-emerald-200') + '">' + ICON.check + '승인</span></td>';
+      return '<td class="' + pad + '"><span class="inline-flex items-center gap-1 text-[10.5px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full whitespace-nowrap">' + ICON.check + '승인</span></td>';
 
     case 'reuse':
-      if (S.step === 1) {
-        return '<td class="' + pad + '"><span class="text-[10.5px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">가능</span></td>';
-      }
-      return '<td class="' + pad + '"><span class="inline-block text-[10.5px] font-medium border px-2 py-0.5 rounded-md whitespace-nowrap '
-        + (quiet ? 'text-slate-400 bg-slate-50 border-slate-200' : 'text-indigo-700 bg-indigo-50 border-indigo-200') + '">자사몰 · 광고</span></td>';
+      if (!c.sel) return soon('협의');
+      return '<td class="' + pad + '"><span class="inline-block text-[10.5px] font-medium text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-md whitespace-nowrap">자사몰 · 광고</span></td>';
 
-    case 'up':
-      if (S.step === 1) return blank;
-      return '<td class="' + pad + '">' + (isUp(c)
-        ? '<span class="num text-[12px] ' + (quiet ? 'text-slate-400' : 'text-slate-700 font-medium') + '">' + c.due + '</span>'
-        : '<span class="num text-[12px] text-slate-400">' + c.due + '<span class="ml-1 text-[10px]">예정</span></span>') + '</td>';
+    case 'code':
+      if (!c.sel) return soon('선정 후');
+      if (!c.codeOn) {
+        return '<td class="' + pad + '"><button onclick="toggleCode(' + idx + ')" title="파트너십 코드를 발급합니다"'
+          + ' class="text-[11px] text-slate-400 hover:text-indigo-600 border border-dashed border-slate-300 hover:border-indigo-300 px-2 py-1 rounded-lg transition">제외됨</button></td>';
+      }
+      return '<td class="' + pad + '"><button onclick="copy(\'' + c.code + '\')" title="코드를 복사합니다"'
+        + ' class="group/c inline-flex items-center gap-2 bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 pl-2.5 pr-1.5 py-1 rounded-lg transition">'
+        + '<span class="mono text-[11px] text-slate-700 group-hover/c:text-indigo-700">' + c.code + '</span>'
+        + '<span class="text-slate-400 group-hover/c:text-indigo-500">' + ICON.copy + '</span></button></td>';
 
     case 'content':
-      if (!isUp(c)) return blank;
-      return '<td class="' + pad + '"><button onclick="toast(\'' + esc(c.name) + ' 릴스를 새 창에서 엽니다.\')"'
+      if (!c.up) return soon(c.sel ? '업로드 전' : '');
+      return '<td class="' + pad + '"><button onclick="na(\'' + esc(c.name) + ' 릴스 열기\', \'실제 화면에서는 인스타그램 게시물이 새 창으로 열립니다.\')"'
         + ' class="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 pl-2 pr-2.5 py-1 rounded-lg transition whitespace-nowrap">'
         + '<span class="text-pink-600">' + ICON.play + '</span>릴스</button></td>';
 
     case 'src':
-      if (!isUp(c)) return blank;
-      return '<td class="' + pad + '"><button onclick="dl(\'' + esc(c.name) + '_오드타입_원본.mp4\')" title="원본 내려받기"'
+      if (!c.up) return soon('');
+      return '<td class="' + pad + '"><button onclick="na(\'원본 내려받기\', \'실제 화면에서는 워터마크 없는 원본이 바로 저장됩니다.\')" title="원본 내려받기"'
         + ' class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100 transition">' + ICON.down + '</button></td>';
 
     case 'extra':
-      if (!isUp(c)) return blank;
+      if (!c.up) return soon('');
       if (!c.extra.length) return '<td class="' + pad + '"><span class="text-slate-300 text-[13px]">&mdash;</span></td>';
       return '<td class="' + pad + '">' + c.extra.map(p =>
-        '<span class="inline-block text-[10.5px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md mr-1 whitespace-nowrap">' + p + '</span>').join('') + '</td>';
+        '<span class="inline-block text-[10.5px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md mr-1 whitespace-nowrap">' + esc(p) + '</span>').join('') + '</td>';
 
     case 'views': case 'likes': case 'cmts': case 'saves':
-      if (!isUp(c)) return blank;
+      if (!c.up) return soon('');
       return '<td class="' + pad + '"><span class="num text-[12.5px] '
         + (k === 'views' ? 'font-semibold text-slate-900' : 'text-slate-600') + '">' + n(c[k]) + '</span></td>';
   }
   return '<td class="' + pad + '"></td>';
 }
 
-function renderPost() {
-  const box = $('postBlock');
-  if (S.step !== 3) { box.className = 'hidden'; box.innerHTML = ''; return; }
-  const acts = [
-    ['원본 일괄', "dl('오드타입_8월_원본_전체.zip')"],
-    ['2차 활용 신청', "toast('2차 활용 신청이 접수됐어요. 담당자가 확인 후 회신드립니다.')"],
-    ['성과 보고서', "openDrawer('dw-report')"],
-    ['전체 항목 CSV', 'csv()']
-  ];
-  box.className = 'shrink-0 mt-2.5 bg-white border border-slate-200 rounded-2xl px-4 py-3 flex flex-wrap items-center gap-2';
-  box.innerHTML = '<span class="num text-[10px] font-bold tracking-[.14em] text-emerald-600 uppercase mr-1">Post</span>'
-    + '<span class="text-xs font-bold text-slate-900 mr-2">사후처리</span>'
-    + acts.map(([t, fn]) =>
-      '<button onclick="' + fn + '" class="text-[11.5px] font-semibold text-slate-700 bg-slate-50 hover:bg-white border border-slate-200 hover:border-indigo-300 px-3 py-2 rounded-lg transition whitespace-nowrap">' + t + '</button>'
-    ).join('');
-}
+function render() { renderNav(); renderKpis(); renderToolbar(); renderTable(); }
 
-function render() { renderRail(); renderKpis(); renderToolbar(); renderBanner(); renderTable(); renderPost(); }
+/* ══════════ 스크롤 가장자리 신호 ══════════ */
+function syncEdges() {
+  const el = $('list'), card = $('listCard');
+  const maxL = el.scrollWidth - el.clientWidth;
+  card.classList.toggle('can-l', el.scrollLeft > 2);
+  card.classList.toggle('can-r', el.scrollLeft < maxL - 2);
+  /* 왼쪽 그림자는 고정 두 열 바깥에서 시작해야 자연스럽다 */
+  const w = document.querySelector('#thead .c2');
+  card.style.setProperty('--stick-w', w ? (w.offsetLeft + w.offsetWidth) + 'px' : '0px');
+}
 
 /* ══════════ 상호작용 ══════════ */
-function setStep(v) {
-  if (v === S.step) return;
-  if (v > 1 && !selected().length) { toast('먼저 1단계에서 크리에이터를 선정해 주세요.'); return; }
-  S.step = v;
-  if (!S.touched) S.visible = new Set(PRESET[v]);
-  render();
-  $('list').scrollTop = 0;
+function toggleSel(i) {
+  S.nudge = false;
+  const c = CREATORS[i];
+  c.sel = !c.sel;
+  if (!c.sel) { c.up = false; c.codeOn = true; }   /* 해제하면 진행 상태도 같이 내려간다 */
+  renderKpis(); renderToolbar(); renderTable();
+  toast(c.sel ? esc(c.name) + '님을 선정했습니다.' : esc(c.name) + '님 선정을 해제했습니다.');
 }
-function advance() {
-  if (S.step === 3) { openSheet('sh-booking'); return; }
-  const selN = selected().length, codeN = selected().filter(c => c.codeOn).length;
-  const to = S.step + 1;
-  setStep(to);
-  toast(to === 2 ? selN + '명 선정 확정 · 파트너십 코드 ' + codeN + '건 발급했어요.'
-                 : '업로드 ' + selN + '건 완료 처리했어요. 사후처리를 열었습니다.');
-}
-function toggleSel(i)  { S.nudge = false; CREATORS[i].sel = !CREATORS[i].sel; renderKpis(); renderToolbar(); renderBanner(); renderTable(); }
-function toggleCode(i) { CREATORS[i].codeOn = !CREATORS[i].codeOn; renderKpis(); renderToolbar(); renderTable(); }
-function toggleCol(k)  { S.touched = true; S.visible.has(k) ? S.visible.delete(k) : S.visible.add(k); renderTable(); }
-function resetCols()   { S.touched = false; S.visible = new Set(PRESET[S.step]); renderColToggles(); renderTable(); }
+function toggleCode(i) { CREATORS[i].codeOn = !CREATORS[i].codeOn; renderTable(); }
+function toggleCol(k)  { S.visible.has(k) ? S.visible.delete(k) : S.visible.add(k); renderTable(); }
+function resetCols()   { S.visible = new Set(ALL); S.order = ALL.slice(); renderColToggles(); renderTable(); }
 
 function togglePop(id) {
   const el = $(id), was = el.classList.contains('hidden');
@@ -660,7 +780,7 @@ document.addEventListener('click', e => {
   if (!e.target.closest('#popCols') && !e.target.closest('button[onclick*="popCols"]')) $('popCols').classList.add('hidden');
 });
 
-/* 드래그로 열 순서 바꾸기 */
+/* 열 순서 드래그 */
 let dragKey = null;
 function bindDrag() {
   document.querySelectorAll('#thead th[draggable="true"]').forEach(th => {
@@ -686,54 +806,91 @@ function bindDrag() {
 }
 function clearMarks() { document.querySelectorAll('#thead th').forEach(t => t.classList.remove('drop-left', 'drop-right')); }
 
-/* 드로어 · 시트 */
+/* ══════════ 오버레이 ══════════ */
+let lastFocus = null;
+function lockBody(on) { document.body.style.overflow = on ? 'hidden' : ''; }
 function closeOthers(id) { document.querySelectorAll('.drawer.open, .sheet.open').forEach(d => { if (d.id !== id) d.classList.remove('open'); }); }
+
 function openDrawer(id) {
   if (id === 'dw-report') buildReport();
   if (id === 'dw-calendar') buildCal();
-  closeOthers(id); $(id).classList.add('open');
+  lastFocus = document.activeElement;
+  closeOthers(id); $(id).classList.add('open'); lockBody(true);
+  setTimeout(() => { const b = $(id).querySelector('button'); b && b.focus(); }, 60);
 }
-function closeDrawer(id){ $(id).classList.remove('open'); }
-function openSheet(id)  { closeOthers(id); $(id).classList.add('open'); setTimeout(() => $('bkBrand') && $('bkBrand').focus(), 320); }
-function closeSheet(id) { $(id).classList.remove('open'); }
-function bgClose(e, id) { if (e.target === e.currentTarget) $(id).classList.remove('open'); }
+function closeDrawer(id) { $(id).classList.remove('open'); lockBody(false); lastFocus && lastFocus.focus(); }
+function openSheet(id)  {
+  lastFocus = document.activeElement;
+  closeOthers(id); $(id).classList.add('open'); lockBody(true);
+  setTimeout(() => $('bkBrand') && $('bkBrand').focus(), 340);
+}
+function closeSheet(id) { $(id).classList.remove('open'); lockBody(false); lastFocus && lastFocus.focus(); }
+function bgClose(e, id) { if (e.target === e.currentTarget) { $(id).classList.remove('open'); lockBody(false); } }
+
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') document.querySelectorAll('.drawer.open, .sheet.open').forEach(d => d.classList.remove('open'));
+  if (e.key !== 'Escape') return;
+  const open = document.querySelectorAll('.drawer.open, .sheet.open');
+  if (open.length) { open.forEach(d => d.classList.remove('open')); lockBody(false); return; }
+  if (!$('popCols').classList.contains('hidden')) { $('popCols').classList.add('hidden'); return; }
+  if (!$('tut').classList.contains('gone')) { hideTut(); return; }
+  if ($('rail').classList.contains('open')) toggleRail(false);
 });
 
-/* 복사 · 내려받기 · 토스트 */
+/* ══════════ 하단 독 · 진입 안내 ══════════ */
+function dock(open) {
+  $('dock').classList.toggle('down', !open);
+  $('dockTab').classList.toggle('up', !open);
+}
+function hideTut() { $('tut').classList.add('gone'); lockBody(false); }
+function showTut() { $('tut').classList.remove('gone'); }
+
+/* ══════════ 복사 · 토스트 ══════════ */
 function copy(code) {
-  const done = () => toast('파트너십 코드 ' + code + ' 복사했어요.');
-  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, done);
-  else done();
+  const ok = () => toast('파트너십 코드 ' + code + ' 를 복사했습니다.');
+  const no = () => toast('복사에 실패했습니다. 코드를 직접 선택해 복사해 주세요.', 'na');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(ok, no);
+  else no();
 }
-function dl(file) { toast(file + ' 내려받기를 시작했어요.'); }
-function csv() {
-  const head = ['크리에이터','핸들','팔로워','참여율','단가','파트너십코드','공동작업자','업로드일','조회수','좋아요','댓글','저장','추가플랫폼','2차활용'];
-  const rows = shown().map(c => [c.name, c.handle, c.fol, c.er, c.cost, c.codeOn ? c.code : '',
-    c.collab === 'ok' ? '승인' : '수락대기', '2026.' + c.due, c.views, c.likes, c.cmts, c.saves, c.extra.join(' / '), '자사몰·광고']);
-  const body = [head].concat(rows).map(r => r.join(',')).join('\n');
-  toast('CSV ' + rows.length + '행을 내려받아요. (' + (body.length / 1024).toFixed(1) + 'KB)');
+
+/* 받침을 보고 조사를 고른다. '신제품 리뷰 은' 같은 게 한 번 보이면 화면 전체가 싸구려가 된다 */
+function josa(w, withB, noB) {
+  const ch = String(w).trim().slice(-1);
+  const c = ch.charCodeAt(0);
+  const han = c >= 0xac00 && c <= 0xd7a3;
+  const has = han ? (c - 0xac00) % 28 !== 0 : /[lmnrLMNR13678]/.test(ch);
+  return has ? withB : noB;
 }
+
+/* 못 하는 것은 지우지 않는다 — 눌러보게 두고, 실제로는 어떻게 되는지 알려준다 */
+function na(what, upside) {
+  toast('<strong class="font-semibold">' + what + '</strong>' + josa(what, '은', '는')
+    + ' 둘러보기에서는 동작하지 않습니다.<br><span class="text-indigo-200">' + upside + '</span>', 'na');
+}
+
 let toastT;
-function toast(msg) {
-  $('toastMsg').textContent = msg;
+function toast(msg, kind) {
+  $('toastIcon').innerHTML = kind === 'na'
+    ? ICON.lock
+    : '<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
+  $('toastMsg').innerHTML = msg;
   $('toast').classList.add('show');
   clearTimeout(toastT);
-  toastT = setTimeout(() => $('toast').classList.remove('show'), 2600);
+  toastT = setTimeout(() => $('toast').classList.remove('show'), kind === 'na' ? 3800 : 2600);
 }
+
 function book(e) {
   e.preventDefault();
   const brand = $('bkBrand').value.trim();
   closeSheet('sh-booking');
   e.target.reset();
-  toast((brand || '요청') + ' 커피챗 신청이 접수됐어요. 영업일 기준 하루 안에 회신드립니다.');
+  toast('<strong class="font-semibold">문의 접수</strong>는 둘러보기에서는 동작하지 않습니다.<br><span class="text-indigo-200">'
+    + (brand ? esc(brand) + ' 담당자님, ' : '') + '실제 화면에서는 여기서 바로 담당자에게 전달됩니다.</span>', 'na');
 }
 
 /* ══════════ 드로어 내용 ══════════ */
 $('guideBody').innerHTML = [
   ['필수 소구점',   '워터 틴트 텍스처 발색 컷 3초 이상 노출'],
-  ['공동작업자',    '업로드 시 @oddtype_official 태그 · 공동작업자 수락'],
+  ['공동작업자',    '업로드 시 브랜드 공식 계정 태그 · 공동작업자 수락'],
   ['파트너십 코드', '본문 최상단에 개인 코드 명시 (예: SUBIN_AD3CO15)'],
   ['2차 활용',      '자사몰 상세페이지 · 퍼포먼스 광고 소재 사용 합의'],
   ['사전 검수',     '업로드 48시간 전 초안 공유 · 저희가 확인 후 회신']
@@ -741,20 +898,24 @@ $('guideBody').innerHTML = [
   '<div class="flex gap-3.5 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5">'
   + '<span class="num shrink-0 w-5 h-5 rounded-full bg-white border border-slate-200 grid place-items-center text-[10px] font-bold text-slate-500">' + (i + 1) + '</span>'
   + '<div><div class="text-xs font-bold text-slate-900">' + t + '</div>'
-  + '<div class="text-[11.5px] text-slate-500 mt-0.5 leading-relaxed keep">' + d + '</div></div></div>'
+  + '<div class="text-[11.5px] text-slate-600 mt-0.5 leading-relaxed keep">' + d + '</div></div></div>'
 ).join('');
 
 function buildReport() {
-  const sel = selected();
-  if (!sel.length) { $('reportBody').innerHTML = '<p class="text-xs text-slate-400">선정된 크리에이터가 없습니다.</p>'; return; }
-  const V = sel.reduce((a, c) => a + c.views, 0);
-  const top = sel.slice().sort((a, b) => b.views - a.views).slice(0, 3);
+  /* 보고서는 업로드 완료분만 센다 — 표와 KPI와 같은 모수를 쓴다 */
+  const up = upList();
+  if (!up.length) { $('reportBody').innerHTML = '<p class="text-xs text-slate-500">아직 업로드된 콘텐츠가 없습니다.</p>'; return; }
+  const V = up.reduce((a, c) => a + c.views, 0);
+  const top = up.slice().sort((a, b) => b.views - a.views).slice(0, 3);
   const max = top[0].views;
-  const withExtra = sel.filter(c => c.extra.length);
+  const withExtra = up.filter(c => c.extra.length);
+  const plats = [...new Set(up.flatMap(c => c.extra))];
   $('reportBody').innerHTML =
-    '<div class="grid grid-cols-2 gap-2.5">' + [
-      ['총 조회수', n(V)], ['좋아요', n(sel.reduce((a, c) => a + c.likes, 0))],
-      ['댓글', n(sel.reduce((a, c) => a + c.cmts, 0))], ['저장', n(sel.reduce((a, c) => a + c.saves, 0))]
+    '<div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-[11.5px] text-amber-800 keep">'
+    + '캠페인 진행 중입니다. 업로드 완료 ' + up.length + '건 기준이며, 남은 ' + (selected().length - up.length) + '건이 반영되면 수치가 올라갑니다.</div>'
+    + '<div class="grid grid-cols-2 gap-2.5">' + [
+      ['조회수', n(V)], ['좋아요', n(up.reduce((a, c) => a + c.likes, 0))],
+      ['댓글', n(up.reduce((a, c) => a + c.cmts, 0))], ['저장', n(up.reduce((a, c) => a + c.saves, 0))]
     ].map(([t, v]) =>
       '<div class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5">'
       + '<div class="text-[10.5px] text-slate-500">' + t + '</div>'
@@ -764,52 +925,43 @@ function buildReport() {
       '<div class="flex items-center gap-3">' + avatar(c, CREATORS.indexOf(c), 30)
       + '<div class="flex-1 min-w-0"><div class="flex items-baseline justify-between gap-2">'
       + '<span class="text-xs font-semibold text-slate-900 truncate">' + esc(c.name)
-      + ' <span class="num font-normal text-slate-400">' + esc(c.handle) + '</span></span>'
+      + ' <span class="num font-normal text-slate-500">' + esc(c.handle) + '</span></span>'
       + '<span class="num text-xs font-bold text-slate-900 shrink-0">' + n(c.views) + '</span></div>'
       + '<div class="h-1.5 bg-slate-100 rounded-full mt-1.5 overflow-hidden"><div class="h-full bg-indigo-500 rounded-full" style="width:'
       + Math.round(c.views / max * 100) + '%"></div></div></div></div>').join('') + '</div></div>'
     + '<div><div class="text-xs font-bold text-slate-900 mb-2.5">추가 플랫폼 게시</div><div class="flex flex-wrap gap-1.5">'
     + (withExtra.length
         ? withExtra.map(c => '<span class="text-[11px] font-medium text-slate-600 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg">'
-            + esc(c.name) + ' <span class="text-slate-400">' + c.extra.join(' · ') + '</span></span>').join('')
-        : '<span class="text-[11px] text-slate-400">없음</span>')
-    + '</div></div>';
+            + esc(c.name) + ' <span class="text-slate-500">' + c.extra.join(' · ') + '</span></span>').join('')
+        : '<span class="text-[11px] text-slate-500">없음</span>')
+    + '</div>' + (plats.length ? '<p class="text-[10.5px] text-slate-500 mt-2">' + plats.join(' · ') + '</p>' : '') + '</div>';
 }
 
-$('moreBody').innerHTML =
-  '<div><div class="text-xs font-bold text-slate-900 mb-2.5">캠페인마다 기본으로 챙기는 것</div><div class="grid grid-cols-2 gap-2">'
-  + ['가이드라인 제작','업로드 전 사전 검수','파트너십 코드 발급','공동작업자 연결','원본 파일 인도',
-     '추가 플랫폼 게시 요청','2차 활용 합의','성과 보고서','업로드 일정 관리','대체 크리에이터 수급']
-    .map(t => '<div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-[11.5px] text-slate-700 keep">'
-      + '<span class="text-emerald-500 shrink-0">' + ICON.check + '</span>' + t + '</div>').join('')
-  + '</div></div>'
-  + '<div><div class="text-xs font-bold text-slate-900 mb-2.5">받아볼 수 있는 지표</div><div class="flex flex-wrap gap-1.5">'
-  + ['조회수','좋아요','댓글','저장','공유','팔로워','참여율','도달','프로필 방문','업로드일','콘텐츠 링크','코드 사용 건수']
-    .map(t => '<span class="text-[11px] font-medium text-slate-600 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg">' + t + '</span>').join('')
-  + '</div><p class="text-[11px] text-slate-400 mt-2.5 keep">설정에서 표시할 열을 고르거나, CSV로 전부 내려받으세요.</p></div>'
-  + '<div class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-4">'
-  + '<div class="text-xs font-bold text-slate-900">파트너십 코드는 필요한 만큼만</div>'
-  + '<p class="text-[11.5px] text-slate-500 mt-1.5 leading-relaxed keep">발행 콘텐츠 전부에 코드를 받아두면 쓰지 않는 코드까지 비용이 됩니다. '
-  + '실제 광고로 돌릴 건에만 붙이시면 되고, 그 범위는 무료 우선 · 최대 5만원으로 협의해요.</p>'
-  + '<div class="text-[11px] text-slate-400 mt-2">설정에서 파트너십 코드 열을 켜면 행별로 해제할 수 있습니다.</div></div>';
-
 function buildCal() {
+  /* 2026.08.01 은 토요일이라 앞을 여섯 칸 비운다 */
   const marks = {};
-  selected().forEach(c => { marks[parseInt(c.due.split('.')[1], 10)] = c; });
-  let h = ['일','월','화','수','목','금','토'].map(d => '<div class="text-[10px] font-semibold text-slate-400 py-1.5">' + d + '</div>').join('');
-  h += '<div class="col-span-6"></div>';               /* 2026.08.01 = 토요일 */
+  selected().forEach(c => {
+    const d = parseInt(c.due.split('.')[1], 10);
+    (marks[d] = marks[d] || []).push(c);
+  });
+  let h = ['일','월','화','수','목','금','토'].map(d => '<div class="text-[10px] font-semibold text-slate-500 py-1.5">' + d + '</div>').join('');
+  h += '<div class="col-span-6"></div>';
   for (let d = 1; d <= 31; d++) {
-    const m = marks[d], done = m && isUp(m);
-    h += '<div class="min-h-[58px] rounded-lg border p-1.5 text-left ' + (m ? 'bg-white border-slate-200' : 'bg-slate-50/60 border-slate-100') + '">'
-      + '<span class="num text-[10.5px] ' + (m ? 'text-slate-700 font-semibold' : 'text-slate-300') + '">' + d + '</span>'
-      + (m ? '<div class="mt-1 text-[9.5px] font-medium leading-tight px-1 py-1 rounded border '
-          + (done ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-indigo-50 text-indigo-700 border-indigo-200')
-          + '">' + esc(m.name) + '</div>' : '') + '</div>';
+    const list = marks[d] || [];
+    h += '<div class="min-h-[58px] rounded-lg border p-1.5 text-left ' + (list.length ? 'bg-white border-slate-200' : 'bg-slate-50/60 border-slate-100') + '">'
+      + '<span class="num text-[10.5px] ' + (list.length ? 'text-slate-700 font-semibold' : 'text-slate-400') + '">' + d + '</span>'
+      + list.map(m => '<div class="mt-1 text-[9.5px] font-medium leading-tight px-1 py-1 rounded border '
+          + (m.up ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-indigo-50 text-indigo-700 border-indigo-200')
+          + '">' + esc(m.name) + '</div>').join('') + '</div>';
   }
   $('calGrid').innerHTML = h;
 }
 
+/* ══════════ 기동 ══════════ */
+$('list').addEventListener('scroll', syncEdges, { passive: true });
+window.addEventListener('resize', syncEdges);
 render();
 buildReport();
 buildCal();
+lockBody(true);          /* 진입 안내가 떠 있는 동안은 뒤가 안 움직인다 */
 </script>
