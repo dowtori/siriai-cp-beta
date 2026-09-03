@@ -233,7 +233,7 @@
   }
   /* 세로가 더 짧아지면 한 화면 고정을 포기하고 페이지를 흐르게 둔다.
      (폭만 보는 분기로는 노트북에서 표가 두 줄만 보이는 문제가 안 풀린다) */
-  @media (max-height:720px), (max-width:1080px){
+  @media (max-height:880px), (max-width:1080px){
     html,body{height:auto}
     body{overflow:auto}
     #shell{height:auto;min-height:100%}
@@ -258,7 +258,8 @@
     #rail{position:fixed;left:0;top:0;bottom:0;z-index:60;transform:translateX(-100%);
           transition:transform .3s cubic-bezier(.22,.61,.36,1);box-shadow:0 0 60px rgba(15,23,42,.18)}
     #rail.open{transform:translateX(0)}
-    #railScrim{display:block}
+    #railScrim{display:none}
+    #railScrim.open{display:block}
     #railBtn{display:inline-flex}
   }
 </style>
@@ -303,7 +304,7 @@
       </button>
     </div>
   </aside>
-  <div id="railScrim" class="hidden fixed inset-0 z-50 bg-slate-900/40" onclick="toggleRail(false)"></div>
+  <div id="railScrim" class="fixed inset-0 z-50 bg-slate-900/40" onclick="toggleRail(false)"></div>
 
   <!-- ══ 본문 ══ -->
   <div id="main" class="flex-1 min-w-0 h-full flex flex-col">
@@ -321,15 +322,15 @@
           <button onclick="showTut()" class="hidden sm:inline-block text-[11.5px] font-medium text-slate-500 hover:text-slate-800 transition whitespace-nowrap">안내 다시 보기</button>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <button onclick="openDrawer('dw-calendar')" class="text-xs font-medium text-slate-700 btn hover:bg-slate-50 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+          <button onclick="openDrawer('dw-calendar')" aria-label="업로드 캘린더" class="text-xs font-medium text-slate-700 btn hover:bg-slate-50 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M4 11h16M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             <span class="hidden sm:inline">캘린더</span>
           </button>
-          <button onclick="openDrawer('dw-guide')" class="text-xs font-medium text-slate-700 btn hover:bg-slate-50 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+          <button onclick="openDrawer('dw-guide')" aria-label="가이드라인" class="text-xs font-medium text-slate-700 btn hover:bg-slate-50 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             <span class="hidden sm:inline">가이드라인</span>
           </button>
-          <button onclick="openDrawer('dw-more')" class="btn hover:bg-slate-50 text-xs font-medium text-slate-700 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+          <button onclick="openDrawer('dw-more')" aria-label="추가 옵션" class="btn hover:bg-slate-50 text-xs font-medium text-slate-700 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             <span class="hidden sm:inline">추가 옵션</span>
           </button>
@@ -341,7 +342,7 @@
       </div>
     </header>
 
-    <div class="flex-1 min-h-0 flex flex-col px-4 sm:px-6 pt-5 pb-4">
+    <div class="flex-1 min-h-0 flex flex-col px-4 sm:px-6 pt-5 pb-[124px]">
 
       <!-- 제목 -->
       <div class="shrink-0 flex flex-col xl:flex-row xl:items-end justify-between gap-3">
@@ -812,7 +813,7 @@ function renderHead() {
 
 function toggleRail(open) {
   $('rail').classList.toggle('open', open);
-  $('railScrim').classList.toggle('hidden', !open);
+  $('railScrim').classList.toggle('open', open);
 }
 
 /* ══════════ KPI · 툴바 ══════════ */
