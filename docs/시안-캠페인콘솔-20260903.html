@@ -29,6 +29,8 @@
     --accent:#4f46e5; --accent-soft:#eef2ff;
     --warn:#b45309;   --warn-soft:#fffbeb;
     --pick:#f3f8f5;   --pick-hover:#eaf3ee; --pick-line:#9fd0b7;
+  /* 연녹색 면 위에서는 slate-500 이 4.43:1 로 모자란다 */
+  #tbody tr.on td .text-slate-500{color:#475569}
 
     /* 자간 — siriai.co.kr 실측값에서 뽑았다.
        큰 글자는 조이고(-0.02em), 작은 라벨은 넓게(+0.14em) 벌린다.
@@ -368,7 +370,7 @@
               <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
               열 설정
             </button>
-            <div id="popCols" class="hidden absolute right-0 mt-2 w-[290px] bg-white border border-slate-200 rounded-xl shadow-xl shadow-slate-300/40 z-40 p-3">
+            <div id="popCols" class="hidden absolute right-0 mt-2 w-[290px] bg-white border border-slate-200 rounded-xl shadow-xl shadow-slate-300/40 z-50 p-3">
               <div class="flex items-center justify-between mb-2">
                 <span class="num t-label text-[10px] text-slate-500">표시할 열</span>
                 <button onclick="resetCols()" class="text-[10.5px] font-semibold text-indigo-600 hover:text-indigo-700">전체 되돌리기</button>
@@ -386,7 +388,7 @@
 
       <!-- 표 -->
       <div id="listCard" class="flex-1 min-h-0 mt-2.5 surface overflow-hidden flex flex-col edge">
-        <div id="list" class="flex-1 min-h-0 overflow-auto scroll" style="min-height:220px">
+        <div id="list" tabindex="0" role="region" aria-label="크리에이터 표" class="flex-1 min-h-0 overflow-auto scroll" style="min-height:220px">
           <table class="text-left border-collapse w-full">
             <thead id="thead"></thead>
             <tbody id="tbody" class="text-xs"></tbody>
@@ -394,7 +396,7 @@
         </div>
       </div>
 
-      <p class="shrink-0 mt-2 text-[10.5px] text-slate-500 keep">
+      <p id="tableHint" class="shrink-0 mt-2 text-[10.5px] text-slate-500 keep">
         표는 좌우·상하로 넘겨 볼 수 있습니다. 선정·크리에이터 열은 왼쪽에 고정됩니다.
       </p>
     </div>
@@ -763,13 +765,13 @@ function renderNav() {
             + (on ? 'bg-white' : 'hover:bg-white/70') + '" style="'
             + (on ? 'box-shadow:0 0 0 1px rgba(79,70,229,.30), 0 2px 6px rgba(17,19,24,.05), 0 10px 26px -20px rgba(79,70,229,.55)' : '') + '">'
             + '<span class="flex items-center gap-2">'
-              + '<span class="w-1.5 h-1.5 rounded-full shrink-0 ' + (live ? 'bg-amber-500' : 'bg-slate-300') + '"></span>'
+              + '<span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:' + (live ? 'var(--accent)' : '#cbd5e1') + '"></span>'
               + '<span class="text-[12.5px] font-semibold truncate ' + (live ? 'text-slate-900' : 'text-slate-500') + '">' + esc(cp.title) + '</span>'
             + '</span>'
             + '<span class="flex items-center justify-between gap-2 mt-1.5 pl-3.5">'
               + '<span class="num text-[10.5px] ' + (live ? 'text-slate-500' : 'text-slate-500') + '">' + cp.period + ' · ' + cp.n + '명</span>'
               + '<span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded border whitespace-nowrap '
-                + (live ? 'text-amber-700 bg-amber-50 border-amber-200' : 'text-slate-500 bg-slate-100 border-slate-200') + '">' + cp.badge + '</span>'
+                + (live ? 'text-slate-700 bg-white border-slate-200' : 'text-slate-500 bg-slate-100 border-slate-200') + '">' + cp.badge + '</span>'
             + '</span></button>';
         }).join('') + '</div>'
     : '';
@@ -835,8 +837,9 @@ function renderKpis() {
     ['선정 확정',  selN + unit + '명</span>',                        '후보 ' + CREATORS.length + '명 중', 'slate'],
     ['집행 예정',  won(spend),                                       '선정 ' + selN + '명 합계', 'slate'],
     ['업로드',     up.length + ' / ' + selN + unit + '건</span>',     (selN - up.length) + '건 예정', 'indigo'],
-    ['공동작업자', (selN - waiting) + ' / ' + selN,
-      waiting ? '<span style="color:var(--warn)">' + waiting + '건 수락 대기</span>' : '승인 완료', 'amber'],
+    ['공동작업자', selN ? (selN - waiting) + ' / ' + selN : '—',
+      !selN ? '선정 후 진행됩니다'
+            : waiting ? '<span style="color:var(--warn)">' + waiting + '건 수락 대기</span>' : '승인 완료', 'amber'],
     ['누적 조회수', up.length ? n(up.reduce((a, c) => a + c.views, 0)) : '—', '업로드 완료분 기준', 'slate'],
     ['평균 참여율', selN ? er.toFixed(1) + unit + '%</span>' : '—',   '선정 ' + selN + '명 기준', 'emerald']
   ];
@@ -862,7 +865,7 @@ function renderToolbar() {
 
 function renderColToggles() {
   const groups = [];
-  Object.keys(COLS).forEach(k => {
+  S.order.forEach(k => {
     const g = COLS[k].group;
     let e = groups.find(x => x[0] === g);
     if (!e) { e = [g, []]; groups.push(e); }
@@ -885,6 +888,25 @@ function renderColToggles() {
 }
 
 /* ══════════ 표 ══════════ */
+/* innerHTML 로 표를 통째로 갈면 누른 버튼 노드가 사라져 포커스가 body 로 떨어진다.
+   두 명을 연속으로 선정하는 게 사실상 불가능해진다. 자리를 기억했다가 돌려준다. */
+function keepFocus(fn) {
+  const a = document.activeElement;
+  const row = a && a.closest ? a.closest('#tbody tr') : null;
+  const i = row ? [...row.parentNode.children].indexOf(row) : -1;
+  const inHead = a && a.closest && a.closest('#thead');
+  const key = inHead && a.closest('th') ? a.closest('th').dataset.key : null;
+  fn();
+  if (i >= 0) {
+    const tr = $('tbody').children[i];
+    const b = tr && tr.querySelector('button');
+    if (b) b.focus({ preventScroll: true });
+  } else if (key) {
+    const th = $('thead').querySelector('th[data-key="' + key + '"]');
+    if (th) th.focus({ preventScroll: true });
+  }
+}
+
 function renderTable() {
   let th = '<tr class="text-[11px] font-semibold text-slate-500">';
   th += '<th scope="col" class="stick c1 bg-slate-50 py-3 pl-4 pr-2 text-center whitespace-nowrap">선정</th>';
@@ -918,6 +940,7 @@ function renderTable() {
 
   bindDrag();
   syncEdges();
+  $('tableHint').style.display = cols().length ? '' : 'none';
 }
 
 function selBtn(c, idx) {
@@ -1035,22 +1058,35 @@ function syncEdges() {
 /* ══════════ 상호작용 ══════════ */
 function toggleSel(i) {
   S.nudge = false;
+  const _keep = true;
   const c = CREATORS[i];
   c.sel = !c.sel;
-  renderKpis(); renderToolbar(); renderTable();
+  renderKpis(); renderToolbar(); keepFocus(renderTable);
   toast(c.sel ? esc(c.name) + '님을 선정했습니다.' : esc(c.name) + '님 선정을 해제했습니다.');
 }
-function toggleCode(i) { CREATORS[i].codeOn = !CREATORS[i].codeOn; renderToolbar(); renderTable(); }
+function toggleCode(i) {
+  const c = CREATORS[i];
+  c.codeOn = !c.codeOn;
+  renderToolbar(); keepFocus(renderTable);
+  toast(c.codeOn ? esc(c.name) + '님 파트너십 코드를 발급합니다.'
+                 : esc(c.name) + '님은 파트너십 코드를 발급하지 않습니다.');
+}
 function toggleCol(k)  { S.visible.has(k) ? S.visible.delete(k) : S.visible.add(k); renderTable(); }
 function resetCols()   { S.visible = new Set(ALL); S.order = ALL.slice(); renderColToggles(); renderTable(); }
 
 /* 드래그 말고도 순서를 바꿀 길을 둔다. 머리글 드래그는 마우스 전용이라
    키보드만 쓰는 사람과 터치 기기에서는 아예 닿지 않는다. */
 function moveCol(k, dir) {
-  const i = S.order.indexOf(k), j = i + dir;
-  if (i < 0 || j < 0 || j >= S.order.length) return;
-  S.order[i] = S.order[j]; S.order[j] = k;
+  /* 보이는 열 기준으로 옮긴다. 전체 배열 기준으로 하면 숨긴 열과 자리를 바꿔
+     눌러도 화면이 그대로인 일이 생긴다 */
+  const vis = S.order.filter(x => S.visible.has(x));
+  const t = vis[vis.indexOf(k) + dir];
+  if (!t) return;
+  const a = S.order.indexOf(k), b = S.order.indexOf(t);
+  S.order[a] = t; S.order[b] = k;
   renderColToggles(); renderTable();
+  const again = $('colToggles').querySelector('button[onclick*="' + k + "','" + '"]');
+  if (again) again.focus({ preventScroll: true });
 }
 
 function togglePop(id) {
@@ -1059,6 +1095,9 @@ function togglePop(id) {
   if (was) { el.classList.remove('hidden'); renderColToggles(); }
 }
 document.addEventListener('click', e => {
+  /* 다시 그리면서 DOM 에서 떨어져 나간 버튼은 closest 가 전부 null 이라
+     자기가 눌린 팝오버까지 닫아버린다 */
+  if (!e.target.isConnected) return;
   if (!e.target.closest('#popCols') && !e.target.closest('button[onclick*="popCols"]')) $('popCols').classList.add('hidden');
 });
 
@@ -1151,11 +1190,16 @@ function dock(open) {
   $('dockTab').classList.toggle('up', !open);
 }
 function hideTut() { $('tut').classList.add('gone'); lockBody(false); }
-function showTut() { $('tut').classList.remove('gone'); }
+function showTut() {
+  lastFocus = document.activeElement;
+  $('tut').classList.remove('gone');
+  lockBody(true);
+  setTimeout(() => { const b = $('tut').querySelector('button'); b && b.focus(); }, 60);
+}
 
 /* ══════════ 복사 · 토스트 ══════════ */
 function copy(code) {
-  const ok = () => toast('파트너십 코드 ' + code + ' 를 복사했습니다.');
+  const ok = () => toast('파트너십 코드 ' + code + josa(code, '을', '를') + ' 복사했습니다.');
   const no = () => toast('복사에 실패했습니다. 코드를 직접 선택해 복사해 주세요.', 'na');
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(ok, no);
   else no();
@@ -1166,7 +1210,7 @@ function josa(w, withB, noB) {
   const ch = String(w).trim().slice(-1);
   const c = ch.charCodeAt(0);
   const han = c >= 0xac00 && c <= 0xd7a3;
-  const has = han ? (c - 0xac00) % 28 !== 0 : /[lmnrLMNR13678]/.test(ch);
+  const has = han ? (c - 0xac00) % 28 !== 0 : /[lmnrLMNR013678]/.test(ch);
   return has ? withB : noB;
 }
 
@@ -1228,7 +1272,7 @@ $('moreBody').innerHTML =
   + '<div class="text-xs font-bold text-slate-900">파트너십 코드는 필요한 만큼만</div>'
   + '<p class="text-[11.5px] text-slate-600 mt-1.5 leading-relaxed keep">발행 콘텐츠 전부에 코드를 받아두면 쓰지 않는 코드까지 비용이 됩니다. '
   + '실제 광고로 돌릴 건에만 붙이시면 되고, 그 범위는 무료 우선 · 최대 5만원으로 협의해요.</p>'
-  + '<div class="text-[11px] text-slate-500 mt-2">파트너십 코드 칸을 눌러 행별로 해제할 수 있습니다.</div></div>';
+  + '<div class="text-[11px] text-slate-500 mt-2">코드 오른쪽의 &times; 를 눌러 행별로 제외할 수 있습니다.</div></div>';
 
 function buildReport() {
   /* 보고서는 업로드 완료분만 센다 — 표와 KPI와 같은 모수를 쓴다 */
