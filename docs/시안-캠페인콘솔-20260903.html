@@ -1041,8 +1041,9 @@ function cell(c, idx, k) {
     case 'extra':
       if (!isUp(c)) return soon('');
       if (!c.extra.length) return '<td class="' + pad + '"><span class="text-slate-500 text-[13px]">&mdash;</span></td>';
-      return '<td class="' + pad + '">' + c.extra.map(p =>
-        '<span class="inline-block text-[10.5px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md mr-1 whitespace-nowrap">' + esc(p) + '</span>').join('') + '</td>';
+      /* 칩마다 mr-1 을 주면 마지막 칩 뒤에도 여백이 남아 가운데가 밀린다. gap 으로 준다 */
+      return '<td class="' + pad + '"><span class="inline-flex flex-wrap justify-center gap-1">' + c.extra.map(p =>
+        '<span class="text-[10.5px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md whitespace-nowrap">' + esc(p) + '</span>').join('') + '</span></td>';
 
     case 'views': case 'likes': case 'cmts': case 'saves':
       if (!isUp(c)) return soon('');
