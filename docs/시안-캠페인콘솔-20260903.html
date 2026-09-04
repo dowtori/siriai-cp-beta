@@ -188,8 +188,16 @@
 
   /* 머리글 드래그 */
   th[draggable="true"]{cursor:grab}
-  th[draggable="true"] .grip{opacity:0;transition:opacity .15s ease}
-  th[draggable="true"]:hover .grip{opacity:1}
+  /* 정렬 화살표는 흐름 밖에 둔다. 흐름에 있으면 라벨을 밀어 아래 값과 어긋난다.
+     th 가 sticky = 위치 지정 요소라 이게 절대배치의 기준이 된다. */
+  #list thead th .smark{
+    position:absolute; top:50%; transform:translateY(-50%);
+    font-size:9px; line-height:1; pointer-events:none;
+    transition:opacity .15s ease;
+  }
+  #list thead th.text-right  .smark{left:5px}
+  #list thead th.text-left   .smark{right:5px}
+  #list thead th.text-center .smark{right:5px}
   th.dragging{opacity:.35;cursor:grabbing}
   th.drop-left {box-shadow:inset 3px 0 0 0 #4f46e5, inset 0 -1px 0 #e2e8f0}
   th.drop-right{box-shadow:inset -3px 0 0 0 #4f46e5, inset 0 -1px 0 #e2e8f0}
@@ -914,16 +922,18 @@ function renderTable() {
   th += '<th scope="col" class="stick c2 bg-slate-50 py-3 px-3 text-left whitespace-nowrap">크리에이터</th>';
   th += cols().map(k => {
     const c = COLS[k], can = SORTABLE.has(k), on = S.sort.key === k && S.sort.dir;
+    /* 손잡이 아이콘은 뺐다. 흐름에서 라벨을 밀어 값과 어긋나게 만들었고,
+       끌 수 있다는 것은 커서 모양과 표 아래 안내문으로 이미 전해진다. */
     const mark = !can ? ''
-      : on ? '<span class="ml-0.5" style="color:var(--accent)">' + (S.sort.dir === -1 ? '\u25be' : '\u25b4') + '</span>'
-           : '<span class="ml-0.5 text-slate-300 opacity-0 group-hover/th:opacity-100">\u25be</span>';
+      : on ? '<span class="smark" style="color:var(--accent)">' + (S.sort.dir === -1 ? '\u25be' : '\u25b4') + '</span>'
+           : '<span class="smark text-slate-400 opacity-0 group-hover/th:opacity-100">\u25be</span>';
     return '<th scope="col" draggable="true" data-key="' + k + '"'
       + (can ? ' aria-sort="' + (on ? (S.sort.dir === -1 ? 'descending' : 'ascending') : 'none') + '"' : '')
       + ' title="' + (can ? '눌러서 정렬 · 끌어서 순서 변경' : '끌어서 순서를 바꿉니다') + '"'
       + (can ? ' onclick="sortBy(\'' + k + '\')"' : '')
       + ' class="group/th py-3 px-3 ' + ALIGN[c.align] + ' whitespace-nowrap select-none transition-colors '
       + (on ? 'text-slate-900 font-semibold' : 'text-slate-500 hover:text-slate-800') + (can ? ' cursor-pointer' : '') + '">'
-      + '<span class="inline-flex items-center gap-1.5"><span class="grip">' + ICON.grip + '</span>' + c.label + mark + '</span></th>';
+      + c.label + mark + '</th>';
   }).join('');
   $('thead').innerHTML = th + '</tr>';
 
