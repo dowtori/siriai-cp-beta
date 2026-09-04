@@ -10,7 +10,7 @@
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 
-const SRC = 'docs/시안-캠페인콘솔-20260903.html'
+const SRC = 'docs/시안-워크스페이스-20260904.html'
 const OUT = 'dist'
 
 const head = [
