@@ -1044,10 +1044,13 @@ function renderProg() {
       : '<span class="dot on"></span>';
     return '<article class="pcard surface-sm px-2 py-1.5 flex items-center gap-2" draggable="true" data-i="' + i + '"'
       + ' onclick="togglePick(' + i + ', event)" title="눌러서 고르기">'
-      + avatar(c, i, 26)
-      + '<span class="text-[11.5px] font-bold text-slate-900 whitespace-nowrap shrink-0">' + esc(c.name) + '</span>'
-      + '<span class="text-[10px] font-semibold flex items-center gap-1 min-w-0 ' + st.cls.split(' ')[0] + '">'
-      +   mark + '<span class="truncate">' + st.label + (c.up ? '' : ' · ' + c.due) + '</span></span>'
+      + avatar(c, i, 30)
+      + '<span class="shrink-0 leading-tight">'
+      +   '<span class="block text-[11.5px] font-bold text-slate-900 whitespace-nowrap">' + esc(c.name) + '</span>'
+      +   '<span class="block num text-[9.5px] text-slate-500 whitespace-nowrap mt-0.5">' + esc(c.handle) + '</span>'
+      + '</span>'
+      + '<span class="text-[10px] font-semibold flex items-center gap-1 shrink-0 ' + st.cls.split(' ')[0] + '">'
+      +   mark + '<span class="whitespace-nowrap">' + st.label + '</span></span>'
       + '<button class="hbtn shrink-0" onclick="chatAbout(' + i + ', event)" aria-label="'
       +   esc(c.name) + '님 이야기로 대화 열기"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M3 12h18"/></svg></button>'
       + '</article>';
