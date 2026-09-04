@@ -115,10 +115,10 @@
   .pcard.on{box-shadow:0 0 0 1.5px var(--accent), var(--lift-1);background:#f8faff}
 
   /* 진행상황 — 세 줄로 깔고 옆으로 넘긴다. 20~30명이어도 높이가 그대로다 */
-  #prog{display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,minmax(0,1fr));
-        grid-auto-columns:max-content;overflow-x:auto;overflow-y:hidden;
+  #prog{display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,max-content);
+        grid-auto-columns:246px;overflow-x:auto;overflow-y:hidden;
         scroll-behavior:smooth;align-content:start}
-  #prog.few{grid-auto-columns:max-content}
+  #prog.few{grid-auto-columns:246px}
 
   .hbtn{width:24px;height:24px;display:grid;place-items:center;border-radius:7px;color:#94a3b8;
         transition:background-color .17s ease,color .17s ease}
@@ -419,25 +419,14 @@
 
         <div class="flex-1 min-w-0 min-h-0 flex flex-col gap-3">
 
-          <!-- 1 · 대시보드 — 숫자 넉 장. 이 화면의 요약이라 패널로 감싸지 않는다 -->
+          <!-- 1 · 대시보드 — 숫자가 스스로 말한다. 라벨을 얹지 않는다 -->
           <section class="shrink-0">
-            <div class="flex items-center justify-between gap-3 mb-2 px-0.5">
-              <h2 class="text-[12.5px] font-bold text-slate-900">대시보드</h2>
-              <span id="dashNote" class="text-[10.5px] text-slate-500 keep truncate"></span>
-            </div>
             <div id="dash" class="grid grid-cols-2 xl:grid-cols-4 gap-2.5"></div>
           </section>
 
-          <!-- 2 · 에셋 -->
-          <section class="pnl shrink-0">
-            <header>
-              <h2>에셋</h2>
-              <button onclick="na('자료 요청', '실제 화면에서는 요청이 담당자에게 바로 전달되고, 준비되면 여기에 칸이 하나 늘어납니다.')"
-                      class="text-[10.5px] font-semibold text-slate-500 hover:text-slate-900 inline-flex items-center gap-1 transition">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14"/></svg>자료 요청
-              </button>
-            </header>
-            <div id="assets" class="p-2.5 flex flex-wrap gap-2"></div>
+          <!-- 2 · 에셋 — 상자도 라벨도 없이 자료가 그냥 놓여 있다 -->
+          <section class="shrink-0">
+            <div id="assets" class="flex flex-wrap items-center gap-2"></div>
           </section>
 
           <!-- 3 · 진행상황 — 박스 하나에 전원. 20~30명이어도 여기 안에서만 흐른다 -->
@@ -457,7 +446,7 @@
             </header>
             <div id="prog" class="flex-1 min-h-0 scroll scroll-thin p-2.5 gap-2" style="min-height:132px"></div>
           </section>
-          <p class="shrink-0 -mt-1 text-[10.5px] text-slate-500 keep">카드를 눌러 고르고, 끌어다 놓거나 <span class="font-semibold text-slate-700">대화에 담기</span>를 누르면 그 사람들 이야기로 이어집니다.</p>
+          <p class="shrink-0 -mt-1 text-[10.5px] text-slate-500 keep">이름을 누르면 그 사람 정보가, 카드를 누르면 선택이 됩니다. 고른 뒤 끌어다 놓거나 <span class="font-semibold text-slate-700">대화에 담기</span>를 누르세요.</p>
         </div>
 
         <!-- 4 · 대화창 -->
@@ -492,28 +481,28 @@
 
 <!-- ══ 하단 독 ══ -->
 <div id="dock" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 w-[min(1060px,calc(100vw-32px))]">
-  <div class="bg-slate-900 rounded-[20px] pl-5 pr-4 sm:pl-6 py-7 flex items-center gap-4" style="box-shadow:var(--lift-4)">
-    <div id="dockIcon" class="w-12 h-12 rounded-2xl bg-white/10 grid place-items-center shrink-0">
-      <svg class="w-6 h-6 text-indigo-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+  <div class="bg-white rounded-[20px] pl-5 pr-4 sm:pl-6 py-6 flex items-center gap-4" style="box-shadow:var(--lift-4)">
+    <div id="dockIcon" class="w-12 h-12 rounded-2xl bg-indigo-50 grid place-items-center shrink-0">
+      <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
     </div>
 
     <div class="min-w-0 flex-1 hidden md:block">
-      <div class="text-[16.5px] font-bold text-white keep leading-snug">가장 쉽고 감각적인 캠페인, 15분이면 설명드려요</div>
+      <div class="text-[16.5px] font-bold text-slate-900 keep leading-snug">가장 쉽고 감각적인 캠페인, 15분이면 설명드려요</div>
     </div>
 
     <form onsubmit="dockSend(event)" class="hidden lg:flex items-center gap-2 shrink-0">
       <label for="dkBrand" class="sr-only">브랜드명</label>
       <input id="dkBrand" required placeholder="브랜드명" autocomplete="organization"
-             class="w-[150px] bg-white/10 text-white placeholder:text-slate-500 text-[13.5px] px-3.5 py-3.5 rounded-xl focus:outline-none focus:bg-white/[.16] transition">
+             class="w-[150px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[13.5px] px-3.5 py-3.5 rounded-xl focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
       <label for="dkContact" class="sr-only">전화번호 또는 이메일</label>
       <input id="dkContact" required placeholder="전화번호 또는 이메일"
-             class="w-[188px] bg-white/10 text-white placeholder:text-slate-500 text-[13.5px] px-3.5 py-3.5 rounded-xl focus:outline-none focus:bg-white/[.16] transition">
-      <button type="submit" class="press text-[14.5px] font-bold text-slate-900 bg-white hover:bg-slate-100 px-6 py-3.5 rounded-xl whitespace-nowrap">보내기</button>
+             class="w-[188px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[13.5px] px-3.5 py-3.5 rounded-xl focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
+      <button type="submit" class="cta press text-[15.5px] font-bold px-8 py-4 rounded-xl whitespace-nowrap">보내기</button>
     </form>
 
-    <button onclick="openSheet('sh-booking')" class="press lg:hidden text-[14.5px] font-bold text-slate-900 bg-white hover:bg-slate-100 px-5 py-3.5 rounded-xl whitespace-nowrap shrink-0">문의하기</button>
+    <button onclick="openSheet('sh-booking')" class="cta press lg:hidden text-[15.5px] font-bold px-7 py-4 rounded-xl whitespace-nowrap shrink-0">문의하기</button>
 
-    <button onclick="dock(false)" class="shrink-0 w-10 h-10 grid place-items-center rounded-xl text-slate-500 hover:text-white hover:bg-white/10 transition" aria-label="바 내리기" title="잠시 내려두기">
+    <button onclick="dock(false)" class="shrink-0 w-10 h-10 grid place-items-center rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition" aria-label="바 내리기" title="잠시 내려두기">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
     </button>
   </div>
@@ -796,14 +785,15 @@ const S = {
 };
 
 /* 진행 단계 — 사람이 아니라 지금 무슨 일이 돌고 있는지가 기준이다 */
+/* 단계가 진행될수록 색이 노랑에서 초록으로 간다 — 어디까지 왔는지가 색으로 읽힌다 */
 const STAGE = {
-  ship: { label:'제품 배송 중',   cls:'text-slate-700 bg-slate-100'    },
-  make: { label:'콘텐츠 제작 중', cls:'text-indigo-700 bg-indigo-50'   },
-  qa  : { label:'검수 중',        cls:'text-amber-700 bg-amber-50'     },
-  live: { label:'업로드 완료',    cls:'text-emerald-700 bg-emerald-50' }
+  ship: { label:'배송 중',     cls:'text-amber-700 bg-amber-50'     },
+  make: { label:'제작 중',     cls:'text-yellow-700 bg-yellow-50'   },
+  qa  : { label:'검수 중',     cls:'text-lime-700 bg-lime-50'       },
+  live: { label:'업로드 완료', cls:'text-emerald-700 bg-emerald-50' }
 };
 Object.values(ROSTERS).forEach(r => r.forEach((c, i) => {
-  c.stage  = c.up ? 'live' : c.collab === 'talk' ? 'qa' : (i % 2 ? 'ship' : 'make');
+  c.stage  = c.up ? 'live' : c.collab === 'talk' ? 'ship' : 'make';
   c.shares = Math.round(c.saves * 0.42);
 }));
 
@@ -972,7 +962,6 @@ function renderDash() {
     + dashCard('댓글 수',   n(sum(up, 'cmts')),    last ? '+' + n(last.cmts)   : null, who)
     + dashCard('공유 수',   n(sum(up, 'shares')),  last ? '+' + n(last.shares) : null, who);
 
-  $('dashNote').textContent = isLive() ? '콘텐츠가 올라올 때마다 올라갑니다' : '캠페인이 끝나 최종 수치입니다';
 }
 
 /* ══════════ 2 · 에셋 ══════════
@@ -986,7 +975,12 @@ function renderAssets() {
     + '<span class="text-[14px] font-bold text-slate-900 whitespace-nowrap">' + esc(a.t) + '</span>'
     + '<span class="num text-[11.5px] text-slate-500 whitespace-nowrap">' + esc(a.s) + '</span>'
     + '</button>'
-  ).join('');
+  ).join('')
+  + '<button onclick="na(\'자료 요청\', \'실제 화면에서는 요청이 담당자에게 바로 전달되고, 준비되면 여기에 칸이 하나 늘어납니다.\')"'
+  +   ' class="px-3.5 py-3 inline-flex items-center gap-1.5 rounded-xl text-[13px] font-bold text-slate-400 hover:text-slate-800 hover:bg-white transition whitespace-nowrap">'
+  +   '추가 요청'
+  +   '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14"/></svg>'
+  + '</button>';
 }
 
 function openAsset(i) {
@@ -1042,15 +1036,17 @@ function renderProg() {
     const mark = c.stage === 'live'
       ? '<svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
       : '<span class="dot on"></span>';
-    return '<article class="pcard surface-sm px-2 py-1.5 flex items-center gap-2" draggable="true" data-i="' + i + '"'
+    return '<article class="pcard surface-sm pl-2 pr-1.5 py-1.5 flex items-center gap-2" draggable="true" data-i="' + i + '"'
       + ' onclick="togglePick(' + i + ', event)" title="눌러서 고르기">'
-      + avatar(c, i, 30)
-      + '<span class="shrink-0 leading-tight">'
-      +   '<span class="block text-[11.5px] font-bold text-slate-900 whitespace-nowrap">' + esc(c.name) + '</span>'
-      +   '<span class="block num text-[9.5px] text-slate-500 whitespace-nowrap mt-0.5">' + esc(c.handle) + '</span>'
-      + '</span>'
-      + '<span class="text-[10px] font-semibold flex items-center gap-1 shrink-0 ' + st.cls.split(' ')[0] + '">'
-      +   mark + '<span class="whitespace-nowrap">' + st.label + '</span></span>'
+      + '<button class="flex items-center gap-2 min-w-0 text-left rounded-lg hover:bg-slate-100 -m-0.5 p-0.5"'
+      +   ' onclick="openPeek(' + i + ',event)" title="' + esc(c.name) + '님 정보 보기">'
+      +   avatar(c, i, 28)
+      +   '<span class="min-w-0 leading-tight">'
+      +     '<span class="block text-[11.5px] font-bold text-slate-900 truncate">' + esc(c.name) + '</span>'
+      +     '<span class="block num text-[9.5px] text-slate-500 truncate">' + esc(c.handle) + '</span>'
+      +   '</span></button>'
+      + '<span class="text-[10px] font-semibold flex items-center gap-1 shrink-0 ml-auto px-1.5 py-1 rounded-md '
+      +   st.cls + '">' + mark + '<span class="whitespace-nowrap">' + st.label + '</span></span>'
       + '<button class="hbtn shrink-0" onclick="chatAbout(' + i + ', event)" aria-label="'
       +   esc(c.name) + '님 이야기로 대화 열기"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M3 12h18"/></svg></button>'
       + '</article>';
@@ -1134,9 +1130,13 @@ function openPeek(i, ev) {
     +   (c.up ? row('조회수', n(c.views)) : '')
     +   (c.codeOn ? row('파트너십 코드', '<span class="mono text-[10.5px]">' + esc(c.code) + '</span>') : '')
     + '</div>'
-    + (c.up
-       ? '<button onclick="closePeek();na(\'콘텐츠 보기\', \'실제 화면에서는 그 릴스가 새 창에서 열립니다.\')" class="cta mt-2.5 w-full text-[11px] font-bold py-2 rounded-lg">콘텐츠 보기</button>'
-       : '');
+    + '<div class="mt-2.5 flex gap-1.5">'
+    +   '<button onclick="closePeek();na(\'인스타그램\', \'실제 화면에서는 이 크리에이터의 인스타그램 계정이 새 창에서 열립니다.\')"'
+    +     ' class="btn flex-1 text-[11px] font-bold text-slate-700 py-2 rounded-lg">인스타그램</button>'
+    +   (c.up
+        ? '<button onclick="closePeek();na(\'콘텐츠 보기\', \'실제 화면에서는 업로드된 릴스가 새 창에서 열립니다.\')" class="cta flex-1 text-[11px] font-bold py-2 rounded-lg">콘텐츠 보기</button>'
+        : '<span class="flex-1 grid place-items-center text-[11px] font-semibold text-slate-400 bg-slate-50 rounded-lg">업로드 전</span>')
+    + '</div>';
 
   el.classList.remove('hidden');
   const r = (ev && ev.currentTarget ? ev.currentTarget : document.body).getBoundingClientRect();
