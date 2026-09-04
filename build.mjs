@@ -24,6 +24,35 @@ const head = [
 ].join('\n')
 
 const body = await readFile(SRC, 'utf8')
+
+/* 스타일과 스크립트가 파싱되는지 본다.
+   :root{} 안에 규칙을 하나 잘못 넣어 스타일시트가 통째로 깨진 적이 있는데,
+   화면은 그냥 조금 이상해 보일 뿐이라 눈으로는 못 잡는다. */
+function checkCss(css) {
+  let depth = 0, inRoot = -1;
+  const re = /\/\*[\s\S]*?\*\/|[{}]/g;
+  let m, lastSel = '';
+  const flat = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  for (let i = 0; i < flat.length; i++) {
+    const ch = flat[i];
+    if (ch === '{') {
+      const sel = flat.slice(0, i).split(/[{}]/).pop().trim();
+      if (depth === 1 && inRoot >= 0 && !/^@/.test(sel)) {
+        throw new Error(':root 안에 규칙이 들어 있다 -> ' + sel.slice(0, 60));
+      }
+      if (depth === 0 && /:root/.test(sel)) inRoot = depth;
+      depth++;
+    } else if (ch === '}') {
+      depth--;
+      if (depth === 0) inRoot = -1;
+    }
+  }
+  if (depth !== 0) throw new Error('중괄호가 안 맞는다 (depth ' + depth + ')');
+}
+
+const css = (body.match(/<style>([\s\S]*?)<\/style>/) || [])[1] || ''
+checkCss(css)
+
 await mkdir(OUT, { recursive: true })
 await writeFile(`${OUT}/index.html`, head + body, 'utf8')
 console.log(`dist/index.html — ${(head + body).length} bytes`)
