@@ -113,6 +113,8 @@
 
   /* 좌측 레일 — 딱딱한 선 대신 면이 갈라진 느낌으로 */
   #rail{box-shadow:1px 0 0 rgba(17,19,24,.06), 8px 0 24px -20px rgba(17,19,24,.45)}
+  /* 레일 스크림 — 기본은 어느 폭에서도 없다. 좁은 화면에서 레일을 열 때만 나온다 */
+  #railScrim{display:none}
 
   /* SIRIAI 심볼 — 마스크로 올려 어느 색으로도 쓴다 */
   .sym{
@@ -260,7 +262,6 @@
     #rail{position:fixed;left:0;top:0;bottom:0;z-index:60;transform:translateX(-100%);
           transition:transform .3s cubic-bezier(.22,.61,.36,1);box-shadow:0 0 60px rgba(15,23,42,.18)}
     #rail.open{transform:translateX(0)}
-    #railScrim{display:none}
     #railScrim.open{display:block}
     #railBtn{display:inline-flex}
   }
