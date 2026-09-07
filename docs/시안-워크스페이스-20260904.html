@@ -144,14 +144,14 @@
      사진을 받아 흔리고 그 위에 숫자를 흔색으로 올린다 */
   #camBanner.hero #heroDash > div,
   #camBanner.hero #heroChat{
-    background:rgba(255,255,255,.14);
-    -webkit-backdrop-filter:blur(20px) saturate(1.3);
-            backdrop-filter:blur(20px) saturate(1.3);
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.24), 0 14px 36px -20px rgba(0,0,0,.60);
+    background:rgba(255,255,255,.09);
+    -webkit-backdrop-filter:blur(14px) saturate(1.18);
+            backdrop-filter:blur(14px) saturate(1.18);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.17), 0 12px 30px -20px rgba(0,0,0,.50);
     border-radius:14px;
   }
   #camBanner.hero #heroChat{transition:background-color .17s ease}
-  #camBanner.hero #heroChat:hover{background:rgba(255,255,255,.22)}
+  #camBanner.hero #heroChat:hover{background:rgba(255,255,255,.16)}
   /* 유리 위에서는 재료가 바뀌었으니 글자도 같이 바뀐다 */
   #camBanner.hero #heroDash .text-slate-900,
   #camBanner.hero #heroChat .text-slate-900{color:#fff}
@@ -259,18 +259,33 @@
   .pcard > img, .pcard > svg{margin-top:2px}
   .pcard > .pbox{margin-top:5px}
 
-  /* 상세는 맨 오른쪽이 아니라 누른 카드 바로 옆 칸에 선다.
-     그리드 항목이므로 트랙 폭을 그대로 쓰고, 뒤 카드들이 옆으로 밀린다 */
-  #pdet{grid-row:span 5;background:#fff;border-radius:14px;overflow:hidden;
-        box-shadow:0 0 0 1.5px rgba(15,23,42,.10), var(--lift-2);
-        animation:detIn .26s cubic-bezier(.22,.61,.36,1) both}
-  #pdet .din{width:100%;height:100%;overflow-y:auto;padding:14px}
+  /* 카드를 누르면 목록은 한 열로 서고, 남은 두 칸에 정보와 콘텐츠가 선다.
+     맨 오른쪽에 두면 어느 카드의 것인지 알 수 없다 */
+  #pdet, #pemb{background:#fff;border-radius:14px;overflow:hidden;
+               box-shadow:0 0 0 1.5px rgba(15,23,42,.10), var(--lift-2);
+               animation:detIn .26s cubic-bezier(.22,.61,.36,1) both;
+               display:flex;flex-direction:column;min-height:0}
+  #pemb{animation-delay:.06s}
+  #pdet .din, #pemb .din{flex:1 1 auto;min-height:0;overflow-y:auto;padding:14px}
   @keyframes detIn{
     from{opacity:0;transform:translateX(-14px)}
     to  {opacity:1;transform:none}
   }
-  /* 카드 다섯 장 높이가 안 되는 화면에서는 칸 수만큼만 차지한다 */
-  @media (max-height:720px){ #pdet{grid-row:span 4} }
+  /* 콘텐츠 — 올라간 릴스가 그대로 붙는다 */
+  #pemb .din{padding:12px;display:flex;flex-direction:column;gap:10px}
+  .embFrame{flex:1 1 auto;min-height:300px;border-radius:12px;overflow:hidden;
+            background:#0f172a;position:relative}
+  .embFrame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;
+                   background:#fff}
+  .embOff{flex:1 1 auto;min-height:220px;border-radius:12px;
+          background:#f8fafc;border:1px dashed #cbd5e1;display:grid;place-items:center;
+          font-size:11.5px;color:#94a3b8;text-align:center;line-height:1.7}
+  /* 숫자는 한 줄로. 옆 칸이 이미 표로 말하고 있다 */
+  .embStat{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+           padding-top:10px;border-top:1px solid #f1f5f9}
+  .embStat span{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .embStat i{font-style:normal;font-size:9.5px;color:#94a3b8}
+  .embStat b{font-size:12px;font-weight:700;color:#0f172a}
 
   /* 히어로 사진이 접히면서 사이드 배너 자리로 날아간다.
      같은 곡선을 쓰므로 본문이 올라오는 것과 어긋나지 않는다 */
@@ -402,16 +417,36 @@
 
   /* 좌측 레일 — 딱딱한 선 대신 면이 갈라진 느낌으로 */
   #rail{box-shadow:1px 0 0 rgba(17,19,24,.06), 8px 0 24px -20px rgba(17,19,24,.45);
-        width:var(--rail);min-width:var(--rail);
-        transition:width .34s cubic-bezier(.45,.05,.25,1), min-width .34s cubic-bezier(.45,.05,.25,1)}
+        width:var(--rail);min-width:var(--rail)}
+  /* 접고 펴는 동안에만 애니메이션을 건다. 늘 걸어 두면 창 크기를 바꿀 때마다 끌린다 */
+  #rail.anim{transition:width .26s cubic-bezier(.22,.61,.36,1),
+                        min-width .26s cubic-bezier(.22,.61,.36,1);
+             will-change:width}
   /* 접으면 글자는 빠지고 표식만 남는다 */
   #rail.mini .full{display:none}
   #rail:not(.mini) .mini-only{display:none}
   #rail.mini{padding-left:0;padding-right:0}
-  .rbtn{display:flex;align-items:center;justify-content:center;gap:6px;
-        border-radius:10px;color:#64748b;
-        transition:background-color .16s ease, color .16s ease}
+
+  .rbtn{display:flex;align-items:center;gap:8px;border-radius:10px;color:#64748b;
+        transition:background-color .15s ease, color .15s ease}
   .rbtn:hover{background:#f1f5f9;color:#0f172a}
+  .rbtn:active{background:#e2e8f0}
+  #railFoot{display:flex;align-items:center;gap:6px;padding:8px}
+  #railFoot .rbtn{height:38px}
+  #railSet{flex:1 1 auto;min-width:0;padding-left:10px}
+  #railFold{flex:none;width:38px;justify-content:center;
+            box-shadow:inset 0 0 0 1px #e8edf3}
+  #railFold svg{transition:transform .26s cubic-bezier(.22,.61,.36,1)}
+  #rail.mini #railFold svg{transform:scaleX(-1)}
+  /* 접으면 둘 다 아이콘만 남고 세로로 선다 */
+  #rail.mini #railFoot{flex-direction:column;padding:8px 12px}
+  #rail.mini #railFoot .rbtn{width:40px;height:40px;flex:none;padding:0;justify-content:center}
+
+  /* 접힌 캠페인 표식 — 진행 중 하나, 끝난 것 하나. 그 이상은 접힌 폭에서 못 읽는다 */
+  .cmini{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+         position:relative;transition:background-color .15s ease}
+  .cmini:hover{filter:brightness(.97)}
+  .cmini b{font-size:12px;font-weight:700;line-height:1}
   /* 레일 스크림 — 기본은 어느 폭에서도 없다. 좁은 화면에서 레일을 열 때만 나온다 */
   #railScrim{display:none}
 
@@ -572,7 +607,10 @@
      이 아래에서는 단이 좁아 독 내용이 두 줄로 접히므로 뷰포트 중앙 그대로 둔다 */
   @media (min-width:1540px){
     #dock{left:calc(50vw + var(--rail) / 2 - 182px);
-          width:min(1060px,calc(100vw - var(--rail) - 444px))}
+          width:min(1060px,calc(100vw - var(--rail) - 444px));
+          /* 레일이 움직이면 같은 속도로 따라온다. 안 그러면 독만 먼저 튄다 */
+          transition:left .26s cubic-bezier(.22,.61,.36,1),
+                     width .26s cubic-bezier(.22,.61,.36,1)}
   }
   /* 히어로가 화면을 채우는 동안 그 아래로 밀려난 본문은 잘라 둔다 */
   @media (min-width:1280px){ #pad{overflow:hidden} }
@@ -631,14 +669,18 @@
     <nav class="flex-1 min-h-0 overflow-y-auto scroll scroll-thin px-3 pb-3" id="campNav" aria-label="캠페인 목록"></nav>
 
     <!-- 설정 · 접기 -->
-    <div id="railFoot" class="shrink-0 border-t border-slate-100 p-2 flex items-center gap-1">
-      <button onclick="na('설정', '알림 · 표시 항목 · 담당자를 여기서 바꾸실 수 있습니다.')"
-              class="rbtn flex-1 h-10" title="설정" aria-label="설정"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.4 3.6a1 1 0 011-.85h1.2a1 1 0 011 .85l.17 1.2a6.8 6.8 0 011.53.89l1.13-.46a1 1 0 011.22.4l.6 1.04a1 1 0 01-.2 1.25l-.9.83a6.8 6.8 0 010 1.78l.9.83a1 1 0 01.2 1.25l-.6 1.04a1 1 0 01-1.22.4l-1.13-.46a6.8 6.8 0 01-1.53.89l-.17 1.2a1 1 0 01-1 .85h-1.2a1 1 0 01-1-.85l-.17-1.2a6.8 6.8 0 01-1.53-.89l-1.13.46a1 1 0 01-1.22-.4l-.6-1.04a1 1 0 01.2-1.25l.9-.83a6.8 6.8 0 010-1.78l-.9-.83a1 1 0 01-.2-1.25l.6-1.04a1 1 0 011.22-.4l1.13.46a6.8 6.8 0 011.53-.89z"/><circle cx="12" cy="12" r="2.5"/></svg>
+    <div id="railFoot" class="shrink-0 border-t border-slate-100">
+      <button id="railSet" onclick="na('설정', '알림 · 표시 항목 · 담당자를 여기서 바꾸실 수 있습니다.')"
+              class="rbtn" title="설정" aria-label="설정"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.4 3.6a1 1 0 011-.85h1.2a1 1 0 011 .85l.17 1.2a6.8 6.8 0 011.53.89l1.13-.46a1 1 0 011.22.4l.6 1.04a1 1 0 01-.2 1.25l-.9.83a6.8 6.8 0 010 1.78l.9.83a1 1 0 01.2 1.25l-.6 1.04a1 1 0 01-1.22.4l-1.13-.46a6.8 6.8 0 01-1.53.89l-.17 1.2a1 1 0 01-1 .85h-1.2a1 1 0 01-1-.85l-.17-1.2a6.8 6.8 0 01-1.53-.89l-1.13.46a1 1 0 01-1.22-.4l-.6-1.04a1 1 0 01.2-1.25l.9-.83a6.8 6.8 0 010-1.78l-.9-.83a1 1 0 01-.2-1.25l.6-1.04a1 1 0 011.22-.4l1.13.46a6.8 6.8 0 011.53-.89z"/><circle cx="12" cy="12" r="2.5"/></svg>
         <span class="full text-[11.5px] font-semibold">설정</span>
       </button>
-      <button id="railFold" onclick="toggleMini()" class="rbtn w-10 h-10 shrink-0"
+      <button id="railFold" onclick="toggleMini()" class="rbtn"
               title="사이드바 접기" aria-label="사이드바 접기">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path id="railFoldPath" stroke-linecap="round" stroke-linejoin="round" d="M14 6l-6 6 6 6"/></svg>
+        <svg class="w-[17px] h-[17px]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/>
+          <path d="M9.5 4.5v15" stroke-linecap="round"/>
+          <path d="M15.5 9.5L13 12l2.5 2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </button>
     </div>
   </aside>
@@ -743,6 +785,9 @@
                   <button id="vKan" onclick="setView('card')" class="vbtn">카드</button>
                   <button id="vTab" onclick="setView('table')" class="vbtn">표</button>
                 </span>
+                <button id="fCols" onclick="openFilter('cols')" class="fbtn" title="표시할 항목">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.4 3.6a1 1 0 011-.85h1.2a1 1 0 011 .85l.17 1.2a6.8 6.8 0 011.53.89l1.13-.46a1 1 0 011.22.4l.6 1.04a1 1 0 01-.2 1.25l-.9.83a6.8 6.8 0 010 1.78l.9.83a1 1 0 01.2 1.25l-.6 1.04a1 1 0 01-1.22.4l-1.13-.46a6.8 6.8 0 01-1.53.89l-.17 1.2a1 1 0 01-1 .85h-1.2a1 1 0 01-1-.85l-.17-1.2a6.8 6.8 0 01-1.53-.89l-1.13.46a1 1 0 01-1.22-.4l-.6-1.04a1 1 0 01.2-1.25l.9-.83a6.8 6.8 0 010-1.78l-.9-.83a1 1 0 01-.2-1.25l.6-1.04a1 1 0 011.22-.4l1.13.46a6.8 6.8 0 011.53-.89z"/><circle cx="12" cy="12" r="2.5"/></svg>
+                </button>
                 <button id="fExport" onclick="openFilter('export')" class="fbtn" title="목록 내보내기">
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
                   내보내기</button>
@@ -1290,18 +1335,17 @@ function renderNav() {
   const live = CAMPAIGNS.filter(c => c.state === 'live');
   const past = CAMPAIGNS.filter(c => c.state !== 'live');
 
-  /* 접힌 상태 — 지금 보는 달과 지난 달이 몇 개인지, 그것만 */
+  /* 접힌 상태 — 진행 중 하나, 끝난 것 하나. 둘로만 말한다.
+     접힌 폭에서 달 번호 넷을 읽게 하는 건 무리다. 자세한 건 펴서 본다 */
   if (mini) {
-    nav.className = 'flex-1 min-h-0 overflow-y-auto scroll scroll-thin px-2 pb-3 flex flex-col items-center gap-1.5';
-    nav.innerHTML = CAMPAIGNS.map(cp => {
-      const on = cp.id === S.camp;
-      return '<div class="w-10 h-10 rounded-xl grid place-items-center num text-[12.5px] font-bold '
-        + (on ? 'text-slate-900' : 'text-slate-400') + '" style="'
-        + (on ? 'background:#fff;box-shadow:0 0 0 1px rgba(16,185,129,.40), 0 2px 6px rgba(17,19,24,.06)'
-              : 'background:#f1f5f9')
-        + '" title="' + esc(cp.title) + (cp.state === 'live' ? ' · 진행 중' : ' · ' + cp.badge) + '">'
-        + cp.m + '</div>';
-    }).join('');
+    nav.className = 'flex-1 min-h-0 overflow-y-auto scroll scroll-thin px-3 pt-1 pb-3 flex flex-col items-center gap-2';
+    const pill = (n2, color, bg, label) =>
+      '<button onclick="toggleMini()" class="cmini" style="background:' + bg
+      + ';color:' + color + '" title="' + label + ' · 눌러서 펼치기" aria-label="' + label + '">'
+      + '<b class="num">' + n2 + '</b></button>';
+    nav.innerHTML =
+        (live.length ? pill(live.length, '#047857', '#ecfdf5', '진행 중 ' + live.length + '건') : '')
+      + (past.length ? pill(past.length, '#64748b', '#f1f5f9', '지난 캠페인 ' + past.length + '건') : '');
     return;
   }
 
@@ -1335,23 +1379,28 @@ function renderNav() {
     + '<span class="text-[14px] leading-none">+</span> 새 캠페인 의뢰</div>';
 }
 
-/* 사이드바를 접는다. 본문과 하단 CTA 는 --rail 을 보고 따라온다 */
+/* 사이드바를 접는다. 본문과 하단 CTA 는 --rail 을 보고 따라온다.
+   폭이 움직이는 동안 본문을 매 프레임 다시 재면 카드 스무 장이 같이 흔들려
+   프레임이 떨어진다 — 움직이는 동안은 재지 않고 끝나고 한 번만 잰다 */
+let RAIL_BUSY = false, railT;
 function toggleMini() {
   const r = $('rail'), mini = !r.classList.contains('mini');
+  RAIL_BUSY = true;
+  r.classList.add('anim');
   r.classList.toggle('mini', mini);
   document.documentElement.style.setProperty('--rail', mini ? '64px' : '244px');
-  $('railFoot').className = 'shrink-0 border-t border-slate-100 p-2 flex items-center gap-1'
-    + (mini ? ' flex-col' : '');
-  $('railFoldPath').setAttribute('d', mini ? 'M10 6l6 6-6 6' : 'M14 6l-6 6 6 6');
   const t = mini ? '사이드바 펼치기' : '사이드바 접기';
   $('railFold').title = t; $('railFold').setAttribute('aria-label', t);
   renderNav();
-  /* 폭이 바뀌면 배너 높이와 진행상황 높이를 다시 잰다 */
-  setTimeout(() => {
+
+  clearTimeout(railT);
+  railT = setTimeout(function () {
+    RAIL_BUSY = false;
+    r.classList.remove('anim');
     const el = $('camBanner');
     if (el && el.classList.contains('hero')) el.style.height = heroHeight() + 'px';
     fitProgRows();
-  }, 380);
+  }, 300);
 }
 
 function pickCamp(id) {
@@ -1681,8 +1730,38 @@ const STAGE_RANK = { live: 0, qa: 1, make: 2, ship: 3 };
 const STAGE_BANDS = [['all', '전체'], ['ship', '배송 중'], ['make', '제작 중'], ['qa', '검수 중'], ['live', '업로드 완료']];
 const FOL_BANDS  = [['all', '전체'], ['hi', '10만 이상'], ['mid', '5만~10만'], ['lo', '5만 미만']];
 const COST_BANDS = [['all', '전체'], ['hi', '30만 이상'], ['mid', '20만~30만'], ['lo', '20만 미만']];
-const SORTS = [['stage', '진행 단계'], ['due', '업로드일'], ['fol', '팔로워'],
-               ['cost', '제안 단가'], ['views', '조회수'], ['name', '이름']];
+/* 표에 놓을 수 있는 항목 — 우리가 실제로 모으는 것만 둔다.
+   def:1 은 처음부터 켜져 있는 열. 나머지는 톱니에서 켠다 */
+const DASH = '<span class="text-slate-400">\u2014</span>';
+const TCOLS = [
+  { k:'fol',    t:'팔로워',    num:1, def:1, v:c => kw(c.fol),
+                h:c => kw(c.fol) + ' 팔로워' },
+  { k:'er',     t:'참여율',    num:1, def:1, v:c => c.er.toFixed(1) + '%',
+                h:c => c.er.toFixed(1) + '% 참여' },
+  { k:'stage',  t:'단계',      num:0, def:1,
+                v:c => { const st = STAGE[c.stage] || STAGE.make;
+                         return '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ' + st.cls + '">'
+                              + st.label + '</span>'; } },
+  { k:'cost',   t:'단가',      num:1, def:1, v:c => won(c.cost),
+                h:c => won(c.cost) },
+  { k:'views',  t:'조회수',    num:1, def:1, v:c => c.up ? n(c.views) : DASH,
+                h:c => c.up ? n(c.views) + ' 조회' : '업로드 전' },
+  { k:'due',    t:'업로드일',  num:1, def:1, v:c => esc(c.due) },
+  { k:'likes',  t:'좋아요',    num:1, def:0, v:c => c.up ? n(c.likes) : DASH,
+                h:c => c.up ? n(c.likes) + ' 좋아요' : '업로드 전' },
+  { k:'cmts',   t:'댓글',      num:1, def:0, v:c => c.up ? n(c.cmts) : DASH,
+                h:c => c.up ? n(c.cmts) + ' 댓글' : '업로드 전' },
+  { k:'saves',  t:'저장',      num:1, def:0, v:c => c.up ? n(c.saves) : DASH,
+                h:c => c.up ? n(c.saves) + ' 저장' : '업로드 전' },
+  { k:'shares', t:'공유',      num:1, def:0, v:c => c.up ? n(c.shares) : DASH,
+                h:c => c.up ? n(c.shares) + ' 공유' : '업로드 전' }
+];
+const TSHOW = new Set(TCOLS.filter(x => x.def).map(x => x.k));
+const tcol  = k => TCOLS.find(x => x.k === k);
+
+/* 정렬 기준은 표의 열과 같다. 이름만 따로 붙는다 */
+const SORTS = TCOLS.map(x => [x.k, x.k === 'stage' ? '진행 단계' : x.k === 'cost' ? '제안 단가' : x.t])
+  .concat([['name', '이름']]);
 
 const folBand  = v => v >= 100000 ? 'hi' : v >= 50000 ? 'mid' : 'lo';
 const costBand = v => v >= 300000 ? 'hi' : v >= 200000 ? 'mid' : 'lo';
@@ -1702,6 +1781,13 @@ function progList() {
                               || (x.due < y.due ? -1 : x.due > y.due ? 1 : 0);
     else if (k === 'due')  r = x.due < y.due ? -1 : x.due > y.due ? 1 : 0;
     else if (k === 'name') r = x.name.localeCompare(y.name, 'ko');
+    /* 아직 안 올라간 사람의 조회수·좋아요는 0 이 아니라 '없음' 이다. 뒤로 보낸다 */
+    else if (k === 'views' || k === 'likes' || k === 'cmts' || k === 'saves' || k === 'shares') {
+      if (!x.up && !y.up) r = 0;
+      else if (!x.up) return 1;
+      else if (!y.up) return -1;
+      else r = (x[k] || 0) - (y[k] || 0);
+    }
     else                   r = (x[k] || 0) - (y[k] || 0);
     return r * PSTATE.dir;
   });
@@ -1709,15 +1795,12 @@ function progList() {
 }
 
 /* 카드 아래 한 줄은 지금 정렬 기준의 값이다. 무엇으로 줄 세운 건지 카드가 말해 준다 */
+/* 카드 아래 한 줄은 지금 정렬 기준의 값이다.
+   단계·업로드일·이름은 배지와 이름이 이미 말하므로 날짜를 보여 준다 */
 function sortHint(c) {
-  switch (PSTATE.sort) {
-    /* 배지가 이미 '업로드 완료' 라고 말한다. 날짜 뒤에 또 붙이면 칸만 먹고 잘린다 */
-    case 'fol':   return kw(c.fol) + ' 팔로워';
-    case 'cost':  return won(c.cost);
-    case 'views': return c.up ? n(c.views) + ' 조회' : '업로드 전';
-    /* 이름순에서 핸들을 돌려주면 카드 2행과 같은 값이 두 번 찍힌다 */
-    default:      return esc(c.due) + (c.up ? '' : ' 예정');
-  }
+  const col = tcol(PSTATE.sort);
+  if (col && col.h) return col.h(c);
+  return esc(c.due) + (c.up ? '' : ' 예정');
 }
 
 function pcard(c) {
@@ -1793,6 +1876,30 @@ function layoutProgGrid() {
     Math.max(200, Math.floor((availW - (cols - 1) * PGAP - 12) / cols)));
   grid.style.gridTemplateColumns = 'repeat(' + cols + ', ' + track + 'px)';
   grid.style.justifyContent = 'start';
+
+  placeDetail(grid, cols, rows);
+}
+
+/* 카드를 누르면 목록은 한 열로 서고 오른쪽 두 칸이 정보와 콘텐츠가 된다.
+   123 / 456 / 789 이던 것이 1 / 2 / 3 … 으로 서는 이유는,
+   옆에 붙은 상세가 어느 카드의 것인지 한눈에 보이게 하려는 것이다 */
+function placeDetail(grid, cols, rows) {
+  const det = grid.querySelector('#pdet'), emb = grid.querySelector('#pemb');
+  const cards = grid.querySelectorAll('.pcard');
+  if (!det) { cards.forEach(el => { el.style.gridColumn = ''; }); return; }
+
+  /* 두 칸이 안 나오는 폭에서는 억지로 나누지 않는다 — 그냥 아래로 흐른다 */
+  if (cols < 3) {
+    cards.forEach(el => { el.style.gridColumn = ''; });
+    det.style.gridColumn = ''; det.style.gridRow = 'span ' + Math.max(4, rows);
+    if (emb) { emb.style.gridColumn = ''; emb.style.gridRow = 'span ' + Math.max(4, rows); }
+    return;
+  }
+
+  const span = Math.max(5, rows);
+  cards.forEach(el => { el.style.gridColumn = '1'; });
+  det.style.gridColumn = '2'; det.style.gridRow = '1 / span ' + span;
+  if (emb) { emb.style.gridColumn = '3'; emb.style.gridRow = '1 / span ' + span; }
 }
 
 
@@ -1811,7 +1918,8 @@ function renderProg() {
            /* 상세는 누른 카드 바로 뒤에 끼운다 — 맨 오른쪽으로 보내면 어느 카드 것인지 모른다 */
            ? all.map(function (c) {
                const i = CREATORS.indexOf(c);
-               return pcard(c) + (PSTATE.open === i ? '<div id="pdet"></div>' : '');
+               return pcard(c)
+                 + (PSTATE.open === i ? '<div id="pdet"></div><div id="pemb"></div>' : '');
              }).join('')
            : '<div class="pempty">필터에 맞는 사람이 없습니다</div>')
       + '</div>';
@@ -1821,39 +1929,37 @@ function renderProg() {
   paintFilterBtns();
   bindDrag();
   paintPick();
-  if (PSTATE.open !== null) paintDet();
+  if (PSTATE.open !== null) { paintDet(); paintEmb(); }
   fitProgRows();
   layoutProgGrid();
 }
 
 function progTable(list) {
+  const cols = TCOLS.filter(x => TSHOW.has(x.k));
   const th = (k, t, r) => '<th class="' + (r ? 'r' : '') + '"><button onclick="sortBy(\'' + k + '\')">'
-    + t + (PSTATE.sort === k ? '<span class="num">' + (PSTATE.dir > 0 ? '↑' : '↓') + '</span>' : '') + '</button></th>';
+    + t + (PSTATE.sort === k ? '<span class="num">' + (PSTATE.dir > 0 ? '\u2191' : '\u2193') + '</span>' : '')
+    + '</button></th>';
 
   return '<div id="ptable" class="scroll scroll-thin"><table><thead><tr>'
     + '<th style="width:34px"></th>'
-    + th('name', '이름') + '<th><button class="cursor-default">단계</button></th>'
-    + th('fol', '팔로워', 1) + '<th class="r"><button class="cursor-default">참여율</button></th>'
-    + th('cost', '제안 단가', 1) + th('views', '조회수', 1) + th('due', '업로드일', 1)
+    + th('name', '이름')
+    /* 숫자든 단계든 전부 눌러서 정렬된다 — 되는 열과 안 되는 열이 섞여 있었다 */
+    + cols.map(x => th(x.k, x.t, x.num)).join('')
     + '<th style="width:34px"></th></tr></thead><tbody>'
     + (list.length ? list.map(function (c) {
-        const i = CREATORS.indexOf(c), st = STAGE[c.stage] || STAGE.make;
+        const i = CREATORS.indexOf(c);
         return '<tr data-i="' + i + '" class="' + (PSTATE.open === i ? 'on' : '') + '">'
           + '<td><span class="pbox cursor-pointer" data-i="' + i + '" onclick="togglePick(' + i + ', event)">'
           +   box(PICK.has(i)) + '</span></td>'
           + '<td><button onclick="openPeek(' + i + ', event)" class="flex items-center gap-2 text-left">'
           +   avatar(c, i, 24) + '<span class="font-bold text-slate-900">' + esc(c.name) + '</span>'
           +   '<span class="num text-[10.5px] text-slate-500">' + esc(c.handle) + '</span></button></td>'
-          + '<td><span class="text-[10px] font-bold px-1.5 py-0.5 rounded ' + st.cls + '">' + st.label + '</span></td>'
-          + '<td class="r num">' + kw(c.fol) + '</td>'
-          + '<td class="r num">' + c.er.toFixed(1) + '%</td>'
-          + '<td class="r num">' + won(c.cost) + '</td>'
-          + '<td class="r num">' + (c.up ? n(c.views) : '<span class="text-slate-400">—</span>') + '</td>'
-          + '<td class="r num">' + esc(c.due) + '</td>'
+          + cols.map(x => '<td class="' + (x.num ? 'r num' : '') + '">' + x.v(c) + '</td>').join('')
           + '<td><button class="hbtn" onclick="chatAbout(' + i + ', event)" title="대화 열기">'
           +   '<span class="num text-[13px] font-semibold leading-none">@</span></button></td></tr>';
       }).join('')
-      : '<tr><td colspan="9" class="text-center text-slate-400 py-6">필터에 맞는 사람이 없습니다</td></tr>')
+      : '<tr><td colspan="' + (cols.length + 3) + '" class="text-center text-slate-400 py-6">'
+        + '필터에 맞는 사람이 없습니다</td></tr>')
     + '</tbody></table></div>';
 }
 
@@ -1875,7 +1981,7 @@ function paintFilterBtns() {
   $('fCostV').textContent  = label(COST_BANDS, PSTATE.cost);
   $('fSortV').textContent  = label(SORTS, PSTATE.sort);
 
-  ['Stage', 'Fol', 'Cost', 'Sort', 'Export'].forEach(function (n2) {
+  ['Stage', 'Fol', 'Cost', 'Sort', 'Export', 'Cols'].forEach(function (n2) {
     const b = $('f' + n2);
     if (b) b.classList.toggle('on', PSTATE.panel === n2.toLowerCase());
   });
@@ -1905,7 +2011,14 @@ function drawPanel() {
 
   let h = '';
 
-  if (PSTATE.panel === 'export') {
+  if (PSTATE.panel === 'cols') {
+    /* 우리가 실제로 모으는 항목만 둔다. 켜면 표에 열이 하나 늘어난다 */
+    h = '<div class="flex flex-wrap items-center gap-1.5">'
+      + '<span class="t-label text-[9.5px] text-slate-500 mr-1">표에 표시</span>'
+      + TCOLS.map(x => chip(TSHOW.has(x.k), x.t, null, 'toggleCol(\'' + x.k + '\')')).join('')
+      + '</div>';
+
+  } else if (PSTATE.panel === 'export') {
     h = '<div class="flex flex-wrap items-center gap-1.5">'
       + '<button onclick="exportCsv()" class="fbtn">CSV 내려받기 <span class="num">' + progList().length + '</span></button>'
       + '<button onclick="na(\'구글 시트 연결\', \'실제 화면에서는 이 목록이 담긴 시트가 새 창에서 열립니다. 시트는 진행에 맞춰 자동으로 갱신됩니다.\')" class="fbtn">구글 시트로 열기</button>'
@@ -1949,8 +2062,19 @@ function openFilter(k) {
 }
 
 /* 값이 바뀌는 길은 여기 하나. 목록과 패널과 버튼을 같이 갱신한다 */
+/* 열을 켜고 끈다. 마지막 한 열은 남긴다 — 이름만 남은 표는 표가 아니다 */
+function toggleCol(k) {
+  if (TSHOW.has(k)) { if (TSHOW.size <= 1) return; TSHOW.delete(k); }
+  else TSHOW.add(k);
+  /* 껐는데 그 열로 정렬돼 있으면 기준이 안 보인다 */
+  if (!TSHOW.has(PSTATE.sort) && PSTATE.sort !== 'name') PSTATE.sort = 'stage';
+  renderProg();
+}
+
 function setFilter(k, v) {
-  PSTATE[k] = v;
+  /* 같은 값을 다시 누르면 푼다. 걸어 놓고 못 푸는 필터가 제일 답답하다 */
+  const bands = k === 'stage' || k === 'fol' || k === 'cost';
+  PSTATE[k] = (bands && PSTATE[k] === v) ? 'all' : v;
   PSTATE.open = null;
   renderProg();
 }
@@ -1961,6 +2085,8 @@ function resetFilters() {
   renderProg();
 }
 
+/* 데모에 붙이는 실제 릴스. 실제 화면에선 사람마다 자기 주소가 들어간다 */
+const REEL_EMBED = 'https://www.instagram.com/reel/DcatoH1zqC0/embed/';
 const SHEET_URL = 'https://sheets.siriai.co.kr/oddtype/2608';
 
 function copyLink() {
@@ -2087,6 +2213,36 @@ function paintDet() {
     + '</div></div>';
 }
 
+
+/* 콘텐츠 — 올라간 릴스가 여기에 붙는다. 데모라 자리를 보여 주고 실제 화면을 말한다 */
+function paintEmb() {
+  const emb = $('pemb');
+  if (!emb || PSTATE.open === null) return;
+  const c = CREATORS[PSTATE.open];
+  if (!c) return;
+  const st = (k, v) => '<span><i>' + k + '</i><b class="num">' + v + '</b></span>';
+
+  emb.innerHTML = '<div class="din">'
+    + '<div class="flex items-center justify-between gap-2">'
+    +   '<span class="t-label num text-[9.5px] text-slate-500">콘텐츠</span>'
+    +   (c.up ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded text-emerald-700 bg-emerald-50">'
+                + esc(c.due) + ' 업로드</span>'
+             : '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-500 bg-slate-100">'
+                + esc(c.due) + ' 예정</span>')
+    + '</div>'
+    + (c.up
+       ? '<div class="embFrame"><iframe src="' + REEL_EMBED + '" loading="lazy"'
+         + ' title="' + esc(c.name) + '님 콘텐츠" scrolling="no"'
+         + ' allow="encrypted-media; clipboard-write" allowtransparency="true"></iframe></div>'
+       : '<div class="embOff">업로드 전<br>올라오면 여기에서 바로 보입니다</div>')
+    + '<div class="embStat">'
+    +   (c.up
+         ? st('조회수', n(c.views)) + st('좋아요', n(c.likes))
+           + st('댓글', n(c.cmts)) + st('저장', n(c.saves))
+         : st('제안 단가', won(c.cost)) + st('팔로워', kw(c.fol))
+           + st('참여율', c.er.toFixed(1) + '%'))
+    + '</div></div>';
+}
 
 /* ── 높이 ────────────────────────────────────────────────── */
 function fitProgRows() {
@@ -2667,7 +2823,10 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fi
 /* resize 이벤트만 믿으면 탭이 뒤에 있을 때 놓친다. 실제로 칸이 변한 걸 보고 다시 잰다 */
 if (window.ResizeObserver) {
   let t;
-  new ResizeObserver(() => { clearTimeout(t); t = setTimeout(() => { fitProgRows(); progArrows(); }, 60); })
+  new ResizeObserver(() => {
+    if (RAIL_BUSY) return;
+    clearTimeout(t); t = setTimeout(() => { fitProgRows(); progArrows(); }, 60);
+  })
     .observe($('main'));
 }
 render();

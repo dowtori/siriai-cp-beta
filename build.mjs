@@ -10,7 +10,12 @@
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 
-const SRC = 'docs/시안-워크스페이스-20260904.html'
+/* 두 화면이다. 브랜드가 링크로 여는 콘솔과, 우리가 캠페인을 굴리는 어드민.
+   어드민은 /admin 으로 나간다 — 같은 배포 안에 두면 서로를 링크할 수 있다. */
+const PAGES = [
+  { src: 'docs/시안-워크스페이스-20260904.html', out: 'index.html' },
+  { src: 'docs/어드민-캠페인운영-20260907.html', out: 'admin/index.html' },
+]
 const OUT = 'dist'
 
 const head = [
@@ -23,7 +28,7 @@ const head = [
   '',
 ].join('\n')
 
-const body = await readFile(SRC, 'utf8')
+
 
 /* 스타일과 스크립트가 파싱되는지 본다.
    :root{} 안에 규칙을 하나 잘못 넣어 스타일시트가 통째로 깨진 적이 있는데,
@@ -50,9 +55,16 @@ function checkCss(css) {
   if (depth !== 0) throw new Error('중괄호가 안 맞는다 (depth ' + depth + ')');
 }
 
-const css = (body.match(/<style>([\s\S]*?)<\/style>/) || [])[1] || ''
-checkCss(css)
-
-await mkdir(OUT, { recursive: true })
-await writeFile(`${OUT}/index.html`, head + body, 'utf8')
-console.log(`dist/index.html — ${(head + body).length} bytes`)
+for (const page of PAGES) {
+  const body = await readFile(page.src, 'utf8')
+  const css = (body.match(/<style>([\s\S]*?)<\/style>/) || [])[1] || ''
+  try {
+    checkCss(css)
+  } catch (e) {
+    throw new Error(`${page.src} — ${e.message}`)
+  }
+  const dir = page.out.includes('/') ? `${OUT}/${page.out.split('/').slice(0, -1).join('/')}` : OUT
+  await mkdir(dir, { recursive: true })
+  await writeFile(`${OUT}/${page.out}`, head + body, 'utf8')
+  console.log(`dist/${page.out} — ${(head + body).length} bytes`)
+}
