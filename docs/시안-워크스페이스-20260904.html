@@ -103,14 +103,48 @@
   #heroChev{transition:transform .3s cubic-bezier(.22,.61,.36,1)}
   #camBanner.hero #heroChev{transform:rotate(180deg)}
 
-  /* 처음 한 번은 크게 열린다. 몇 초 뒤나 손을 대면 접힌다 */
-  #camBanner.hero{height:clamp(232px,38vh,344px)}
+  /* 처음 한 번은 크게 열린다. 제목 아래로 핵심 지표와 대화가 이미지 위에 얹힌다.
+     아래 화살표를 누르면 접히면서 그 아래 정보가 쭉 나온다 */
+  /* 히어로는 첫 화면이다. 아래 정보가 같이 보이면 첫 화면이 아니게 된다 —
+     높이는 JS 가 남는 공간을 재서 준다(하단 CTA 자리는 남긴다) */
+  #camBanner.hero{min-height:322px;display:flex;flex-direction:column}
   #camBanner.hero #camTop{display:flex}
   #camBanner.hero #camArt{width:100%;max-width:none;
-    background-image:linear-gradient(180deg,rgba(35,31,32,.58) 0%,rgba(35,31,32,.08) 40%,rgba(35,31,32,.93) 100%),var(--od-hero);
-    background-position:center,center 24%}
-  #camBanner.hero #camPad{position:absolute;left:0;right:0;bottom:0}
-  #camBanner.hero #camPad h1{font-size:clamp(26px,3.4vw,38px)}
+    background-image:linear-gradient(180deg,rgba(35,31,32,.52) 0%,rgba(35,31,32,.06) 32%,rgba(35,31,32,.90) 78%,rgba(35,31,32,.96) 100%),var(--od-hero);
+    background-position:center,center 22%}
+  /* 제목은 워드마크 바로 아래. 지표 다섯 칸이 아래를 맡는다 */
+  #camBanner.hero #camPad{padding-top:2px;padding-bottom:10px}
+  #camBanner.hero #heroSlot{margin-top:auto}
+  #camBanner.hero #camPad h1{font-size:clamp(24px,3vw,34px)}
+  /* 다섯 칸이 정확히 같은 폭이어야 한 줄로 읽힌다.
+     대시보드가 네 칸을 차지하고 안쪽 간격도 같게 맞춘다 */
+  #camBanner.hero #heroSlot{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:stretch}
+  #camBanner.hero #dash{grid-column:span 4;grid-template-columns:repeat(4,1fr);gap:10px}
+  #camBanner.hero #heroNudge{display:grid}
+
+  /* 히어로가 첫 화면인 동안 그 아래는 안 보인다.
+     접으면 위에서부터 차례로 내려온다 — 날아다니는 것보다 이쪽이 읽힌다 */
+  #dashSec, #assetPanel, #progSec, #progHint, #chatCol{
+    transition:opacity .34s ease, transform .38s cubic-bezier(.22,.61,.36,1)}
+  #dashSec {transition-delay:.06s}
+  #assetPanel{transition-delay:.14s}
+  #progSec  {transition-delay:.22s}
+  #progHint {transition-delay:.28s}
+  #chatCol  {transition-delay:.10s}
+  #pad.heroOn #dashSec,
+  #pad.heroOn #assetPanel,
+  #pad.heroOn #progSec,
+  #pad.heroOn #progHint,
+  #pad.heroOn #chatCol{
+    opacity:0;transform:translateY(-16px);pointer-events:none;transition-delay:0s;transition-duration:.16s}
+
+  #heroSlot{display:none}
+  #heroNudge{display:none;animation:nudge 2.4s ease-in-out infinite}
+  @keyframes nudge{0%,72%,100%{transform:translate(-50%,0)}82%{transform:translate(-50%,4px)}}
+  @media (prefers-reduced-motion:reduce){ #heroNudge{animation:none} }
+
+  /* 대시보드는 두 자리를 오간다. 폭이 같아야 옮겨 앉는 게 자연스럽다 */
+  #dash{will-change:transform}
   @media (max-width:1279px){ #camBanner.hero #camTop{padding-left:56px} }
 
   /* SIRIAI 워드마크 — 홈페이지에서 쓰는 세리프 로고 그대로 */
@@ -186,8 +220,14 @@
         transition:background-color .17s ease,color .17s ease}
   .hbtn:hover{background:#f1f5f9;color:#0f172a}
   .hbtn[disabled]{opacity:.3;pointer-events:none}
-  #chatPane{transition:box-shadow .18s ease}
-  #chatPane.drop{box-shadow:0 0 0 2px var(--accent), var(--lift-3)}
+  /* 접혀 있을 때 오른쪽은 오드타입 세로 배너다. 누르면 채팅방이 내려온다 */
+  #chatArt{background-image:linear-gradient(180deg,rgba(35,31,32,.10) 0%,rgba(35,31,32,.42) 46%,rgba(35,31,32,.92) 100%),var(--od-hero);
+           background-size:cover;background-position:center 18%;
+           transition:filter .2s ease}
+  #chatArt:hover{filter:brightness(1.06)}
+  #chatPane{transition:transform .48s cubic-bezier(.22,.61,.36,1), opacity .26s ease, box-shadow .18s ease}
+  #chatPane.closed{transform:translateY(-101%);opacity:0;pointer-events:none}
+  #chatCol.drop{box-shadow:0 0 0 2px var(--accent), var(--lift-3) !important}
 
   /* 사람 블록을 누르면 뜨는 작은 팝업 */
   #peek{position:fixed;z-index:75;width:252px}
@@ -199,6 +239,13 @@
   .cta{background:#0f172a;color:#fff;transition:background-color .17s ease,box-shadow .17s ease,transform .14s ease}
   .cta:hover{background:#1e293b;box-shadow:var(--lift-2)}
   .cta:active{transform:translateY(1px)}
+
+  /* 무엇이 일어나는지 항목마다 적는다. 정지 상태에서도 누르는 자리로 읽혀야 한다 */
+  .act{display:inline-flex;align-items:center;gap:5px;flex:none;margin-left:4px;
+       font-size:12px;font-weight:700;color:#334155;background:#fff;
+       padding:7px 10px;border-radius:9px;box-shadow:var(--lift-1);
+       transition:background-color .17s ease,color .17s ease,box-shadow .17s ease}
+  .araise:hover .act{background:#0f172a;color:#fff;box-shadow:none}
 
   .araise  {transition:box-shadow .2s ease, transform .2s ease, background-color .17s ease}
   .araise:hover {box-shadow:var(--lift-2);transform:translateY(-1px)}
@@ -380,6 +427,8 @@
   @media (min-width:1540px){
     #dock{left:calc(50vw - 60px);width:min(1060px,calc(100vw - 688px))}
   }
+  /* 히어로가 화면을 채우는 동안 그 아래로 밀려난 본문은 잘라 둔다 */
+  @media (min-width:1280px){ #pad{overflow:hidden} }
 
   /* 폰 — 콜드메일 링크는 대부분 여기서 열린다.
      고정 두 열이 320px 라 390px 화면에서는 데이터가 38px 밖에 안 남는다.
@@ -470,15 +519,34 @@
                   style="background:rgba(255,255,255,.13)"></span>
           </h1>
         </div>
+
+        <!-- 첫 화면에서 대시보드가 여기로 옮겨 앉는다. 대화는 아직 닫힌 카드다 -->
+        <div id="heroSlot" class="relative z-[2] px-5 sm:px-6 pb-12">
+          <div id="heroChat" onclick="toggleHero(event)" class="surface-sm px-4 py-3.5 flex flex-col cursor-pointer">
+            <div class="text-[11px] font-medium text-slate-500 truncate">캠페인 대화</div>
+            <div class="text-[17px] font-bold text-slate-900 mt-1 truncate">SIRIAI 캠페인팀</div>
+            <div class="mt-1.5 flex items-end justify-between gap-2">
+              <span class="text-[10.5px] text-slate-500 truncate">열어서 바로 요청하세요</span>
+              <span class="inline-flex items-center gap-1.5 text-[10.5px] font-semibold text-emerald-700 shrink-0">
+                <span class="dot on" style="background:#10b981"></span>연결됨</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="heroNudge" onclick="toggleHero(event)" aria-label="접고 자세히 보기" title="접고 자세히 보기"
+                class="absolute left-1/2 bottom-3 z-[3] w-9 h-9 place-items-center rounded-full text-white/85 hover:text-white transition"
+                style="background:rgba(255,255,255,.16);transform:translateX(-50%)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
       </div>
 
       <!-- 본문 2단 — 좌: 대시보드 · 에셋 · 진행상황 / 우: 대화창 -->
-      <div class="flex-1 min-h-0 mt-3 flex flex-col xl:flex-row gap-3">
+      <div id="bodyRow" class="flex-1 min-h-0 mt-3 flex flex-col xl:flex-row gap-3">
 
         <div id="colL" class="flex-1 min-w-0 min-h-0 flex flex-col gap-3">
 
           <!-- 1 · 대시보드 — 숫자가 스스로 말한다. 라벨을 얹지 않는다 -->
-          <section class="shrink-0">
+          <section id="dashSec" class="shrink-0">
             <div id="dash" class="grid grid-cols-2 xl:grid-cols-4 gap-2.5"></div>
           </section>
 
@@ -497,7 +565,7 @@
 
           <!-- 3 · 진행상황 — 박스 하나에 전원. 20~30명이어도 여기 안에서만 흐른다 -->
           <!-- 3 · 진행상황 — 3행 높이에 맞춘다. flex-1 이면 남는 세로를 전부 먹고 안이 텅 빈다 -->
-          <section class="pnl shrink-0">
+          <section id="progSec" class="pnl shrink-0">
             <header>
               <div class="flex items-center gap-2.5 min-w-0">
                 <h2>진행상황</h2>
@@ -519,14 +587,33 @@
           <p id="progHint" class="shrink-0 -mt-1 text-[10.5px] text-slate-500 keep">이름을 누르면 그 사람 정보가, 카드를 누르면 선택이 됩니다. 고른 뒤 끌어다 놓거나 <span class="font-semibold text-slate-700">대화에 담기</span>를 누르세요.</p>
         </div>
 
-        <!-- 4 · 대화창 -->
-        <aside id="chatPane" class="pnl w-full xl:w-[352px] xl:min-w-[352px] shrink-0"
-               ondragover="chatOver(event,true)" ondragleave="chatOver(event,false)" ondrop="chatDrop(event)">
+        <!-- 4 · 대화 — 접혀 있을 때는 세로 배너, 누르면 채팅방이 내려온다 -->
+        <div id="chatCol" class="w-full xl:w-[352px] xl:min-w-[352px] shrink-0 relative rounded-2xl overflow-hidden"
+             style="box-shadow:var(--lift-2)"
+             ondragover="chatOver(event,true)" ondragleave="chatOver(event,false)" ondrop="chatDrop(event)">
+
+        <button id="chatArt" onclick="setChat(true)" class="absolute inset-0 w-full h-full text-left" aria-label="캠페인 대화 열기">
+          <span class="absolute inset-x-0 bottom-0 p-5 flex flex-col items-start gap-1.5">
+            <span class="num t-label text-[10px]" style="color:rgba(255,255,255,.62)">캠페인 대화</span>
+            <span class="text-[17px] font-bold text-white">SIRIAI 캠페인팀</span>
+            <span class="inline-flex items-center gap-1.5 text-[10.5px] font-semibold" style="color:rgba(255,255,255,.78)">
+              <span class="dot on" style="background:#10b981"></span>연결됨</span>
+            <span class="mt-2 inline-flex items-center gap-1.5 text-[11.5px] font-bold text-white px-3 py-2 rounded-full" style="background:rgba(255,255,255,.16)">
+              열기
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </span>
+          </span>
+        </button>
+
+        <aside id="chatPane" class="pnl closed absolute inset-0">
           <header>
             <div class="min-w-0">
               <h2>캠페인 대화</h2>
               <div class="text-[10.5px] text-slate-500 truncate mt-0.5">SIRIAI 캠페인팀</div>
             </div>
+            <button onclick="setChat(false)" class="hbtn shrink-0 order-2" title="접기" aria-label="대화 접기">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+            </button>
             <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-emerald-700 shrink-0">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>연결됨
             </span>
@@ -546,6 +633,7 @@
             </button>
           </form>
         </aside>
+        </div>
       </div>
     </div>
   </div>
@@ -955,7 +1043,7 @@ const ASSETS = [
 
 /* 코드는 앞에서부터 무료로 나간다. 그 뒤는 닫아 두고 필요한 것만 골라 요청한다 —
    전부 받아 두면 안 쓰는 코드까지 비용이 되기 때문이다. */
-const FREE_CODES = 3;
+const FREE_CODES = 15;
 
 const A_ICON = {
   film  : 'M4 6h16v12H4zM9 6v12M15 6v12',
@@ -1095,24 +1183,47 @@ function renderHead() {
    그래서 배너는 언제든 다시 펼쳐진다. */
 let heroT = null, autoT = null, heroAuto = false;
 
+/* 히어로는 남는 세로를 다 쓴다. 하단 CTA 가 앉을 자리만 비운다 */
+function heroHeight() {
+  const pad = $('pad');
+  if (innerWidth < 1280) return Math.round(Math.min(innerHeight * 0.64, 470));
+  const cs = getComputedStyle(pad);
+  const inner = pad.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  return Math.max(322, Math.round(inner - 96));
+}
+
 function setHero(on) {
   const el = $('camBanner');
   if (!el || el.classList.contains('hero') === on) return;
 
-  const from = el.offsetHeight;
-  el.classList.toggle('hero', on);
-  const to = el.offsetHeight;
+  const dash = $('dash');
+  const bFrom = el.offsetHeight;
 
-  el.style.height = from + 'px';
+  el.classList.toggle('hero', on);
+  $('pad').classList.toggle('heroOn', on);
+
+  /* 대시보드는 두 자리를 오간다. 날려 보내지 않고 제자리에서 내려오게 둔다 */
+  if (on) $('heroSlot').insertBefore(dash, $('heroChat'));
+  else    $('dashSec').appendChild(dash);
+
+  if (!on) setChat(false);          /* 접히면 대화는 닫힌 채로 시작한다 */
+
+  el.style.height = '';
+  if (on) el.style.height = heroHeight() + 'px';
+  fitProgRows();
+  const bTo = el.offsetHeight;
+
+  el.style.height = bFrom + 'px';
   void el.offsetHeight;
-  el.style.transition = 'height .5s cubic-bezier(.22,.61,.36,1)';
-  el.style.height = to + 'px';
+  el.style.transition = 'height .46s cubic-bezier(.22,.61,.36,1)';
+  el.style.height = bTo + 'px';
 
   clearTimeout(heroT);
   heroT = setTimeout(function () {
-    el.style.height = ''; el.style.transition = '';
+    el.style.transition = '';
+    el.style.height = on ? heroHeight() + 'px' : '';
     fitProgRows(); progArrows();
-  }, 540);
+  }, 500);
 
   const b = $('heroToggle');
   b.setAttribute('aria-expanded', on ? 'true' : 'false');
@@ -1213,7 +1324,7 @@ function assetSub(a) {
 
 function renderAssets() {
   $('assets').innerHTML = ASSETS.map((a, i) =>
-    '<button class="araise bg-slate-50 border border-slate-200 hover:bg-white rounded-xl pl-4 pr-6 py-4 inline-flex items-center gap-3.5 text-left transition" onclick="openAsset(' + i + ')">'
+    '<button class="araise bg-slate-50 border border-slate-200 hover:bg-white rounded-xl pl-4 pr-3 py-4 inline-flex items-center gap-3.5 text-left transition" onclick="openAsset(' + i + ')">'
     + '<span class="w-12 h-12 rounded-xl grid place-items-center shrink-0 ' + a.c + '">'
     +   '<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">'
     +   '<path stroke-linecap="round" stroke-linejoin="round" d="' + A_ICON[a.ic] + '"/></svg></span>'
@@ -1221,6 +1332,9 @@ function renderAssets() {
     +   '<span class="block text-[16px] font-bold text-slate-900 whitespace-nowrap">' + esc(a.t) + '</span>'
     +   '<span class="block num text-[12.5px] text-slate-500 whitespace-nowrap mt-0.5">' + esc(assetSub(a)) + '</span>'
     + '</span>'
+    + '<span class="act">' + (a.dw === 'dw-files' ? '받기' : '열기')
+    +   '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="'
+    +   (a.dw === 'dw-files' ? 'M12 4v12m0 0l-4-4m4 4l4-4M4 20h16' : 'M9 5l7 7-7 7') + '"/></svg></span>'
     + '</button>'
   ).join('');
 }
@@ -1446,6 +1560,7 @@ function renderChat() {
   ).join('');
   $('chatLog').scrollTop = $('chatLog').scrollHeight;
 
+
   const t = $('chatTopic');
   if (CHAT_TOPIC && CHAT_TOPIC.length) {
     t.classList.remove('hidden');
@@ -1476,6 +1591,7 @@ function chatAbout(i, ev) {
   if (!CREATORS[i]) return;
   CHAT_TOPIC = [i];
   renderChat();
+  setChat(true);
   $('chatInput').focus();
   toast(esc(CREATORS[i].name) + '님 이야기로 대화창을 열었어요.');
 }
@@ -1484,17 +1600,27 @@ function chatAboutPicked() {
   if (!PICK.size) return;
   CHAT_TOPIC = [...PICK];
   renderChat();
+  setChat(true);
   $('chatInput').focus();
   toast(topicLabel(CHAT_TOPIC) + ' 이야기로 대화창을 열었어요.');
 }
 function chatTopicClear() { CHAT_TOPIC = null; clearPick(); renderChat(); }
 
-function chatOver(e, on) { if (!dragging) return; e.preventDefault(); $('chatPane').classList.toggle('drop', on); }
+function chatOver(e, on) { if (!dragging) return; e.preventDefault(); $('chatCol').classList.toggle('drop', on); }
 function chatDrop(e) {
   e.preventDefault();
-  $('chatPane').classList.remove('drop');
+  $('chatCol').classList.remove('drop');
   if (PICK.size) chatAboutPicked();
   dragging = false;
+}
+
+/* 대화는 기본이 닫힘이다. 세로 배너를 누르면 채팅방이 위에서 내려온다 */
+function setChat(on) {
+  const p = $('chatPane');
+  if (!p) return;
+  p.classList.toggle('closed', !on);
+  $('chatArt').setAttribute('aria-expanded', on ? 'true' : 'false');
+  if (on) setTimeout(function () { $('chatLog').scrollTop = $('chatLog').scrollHeight; }, 60);
 }
 
 /* 엔터로 보낸다. 줄을 바꾸려면 Shift+Enter. 메신저와 같은 손놀림이다 */
@@ -1690,6 +1816,13 @@ function askGuide() {
   toast('대화창을 열었어요. 바꿀 내용을 적어 주시면 담당자가 확인합니다.');
 }
 
+/* 서랍 안에서 쓰는 체크박스. 고를 수 있다는 걸 정지 상태에서 말해 준다 */
+function box(on) {
+  return '<span class="shrink-0 w-[18px] h-[18px] rounded-md border-2 grid place-items-center transition '
+    + (on ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-300 text-transparent') + '">'
+    + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>';
+}
+
 /* 원본 — 우리가 받아 둔 것 중에서 필요한 것만 골라 가져간다.
    스무 명이면 전부 내려받을 일이 오히려 드물다. */
 const FILEPICK = new Set();
@@ -1700,10 +1833,11 @@ function buildFiles() {
 
   $('fileBody').innerHTML =
       (up.length
-       ? '<div class="flex items-center justify-between gap-2 pb-1">'
-         + '<span class="text-[10.5px] text-slate-500">업로드 완료 ' + up.length + '건</span>'
-         + '<button onclick="grabAllToggle()" class="text-[10.5px] font-bold text-slate-500 hover:text-slate-900 transition whitespace-nowrap">'
-         + (allOn ? '전체 해제' : '전체 선택') + '</button></div>'
+       ? '<div class="flex items-center justify-between gap-2 pt-1 pb-2">'
+         + '<button onclick="grabAllToggle()" class="flex items-center gap-2 text-[11px] font-bold text-slate-600 hover:text-slate-900 transition">'
+         +   box(allOn) + '전체 선택'
+         + '</button>'
+         + '<span class="num text-[10.5px] text-slate-500">업로드 완료 ' + up.length + '건</span></div>'
        : '')
     + sel.map(c => {
         const i = CREATORS.indexOf(c), ready = isUp(c);
@@ -1712,6 +1846,7 @@ function buildFiles() {
           + (ready ? 'bg-white border-slate-200' : 'bg-slate-50 border-slate-100')
           + (FILEPICK.has(i) ? ' on' : '') + '"'
           + (ready ? ' onclick="toggleFile(' + i + ')" title="눌러서 고르기"' : '') + '>'
+          + (ready ? box(FILEPICK.has(i)) : '<span class="shrink-0 w-[18px]"></span>')
           + avatar(c, i, 32)
           + '<div class="min-w-0 flex-1">'
           +   '<div class="text-xs font-bold ' + (ready ? 'text-slate-900' : 'text-slate-500') + ' truncate">' + esc(c.name) + '</div>'
@@ -1771,7 +1906,19 @@ const CODEPICK = new Set();
 function buildCodes() {
   const sel = selected();
 
-  $('codeBody').innerHTML = sel.map((c, k) => {
+  const paidIdx = sel.slice(FREE_CODES).map(c => CREATORS.indexOf(c));
+  const allPaid  = paidIdx.length > 0 && paidIdx.every(i => CODEPICK.has(i));
+
+  $('codeBody').innerHTML =
+      (paidIdx.length
+       ? '<div class="flex items-center justify-between gap-2 pt-1 pb-2">'
+         + '<button onclick="pickAllCodes()" class="flex items-center gap-2 text-[11px] font-bold text-slate-600 hover:text-slate-900 transition">'
+         +   box(allPaid) + '전체 선택'
+         + '</button>'
+         + '<span class="num text-[10.5px] text-slate-500">무료 ' + Math.min(FREE_CODES, sel.length)
+         +   '건 · 유료 ' + paidIdx.length + '건</span></div>'
+       : '')
+    + sel.map((c, k) => {
     const i = CREATORS.indexOf(c), paid = k >= FREE_CODES;
     return '<div class="flex items-center gap-3 rounded-xl px-3.5 py-3 border '
       + (paid ? 'bg-slate-50 border-slate-100' : 'bg-white border-slate-200') + '">'
@@ -1797,6 +1944,14 @@ function buildCodes() {
   }).join('');
 
   paintCodeAsk();
+}
+
+function pickAllCodes() {
+  const idx = selected().slice(FREE_CODES).map(c => CREATORS.indexOf(c));
+  const allOn = idx.length > 0 && idx.every(i => CODEPICK.has(i));
+  CODEPICK.clear();
+  if (!allOn) idx.forEach(i => CODEPICK.add(i));
+  buildCodes();
 }
 
 function toggleCode(i) {
@@ -1881,7 +2036,11 @@ function buildCal() {
 
 /* ══════════ 기동 ══════════ */
 $('prog').addEventListener('scroll', progArrows, { passive: true });
-window.addEventListener('resize', () => { fitProgRows(); progArrows(); });
+window.addEventListener('resize', () => {
+  const el = $('camBanner');
+  if (el && el.classList.contains('hero')) el.style.height = heroHeight() + 'px';
+  fitProgRows(); progArrows();
+});
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitProgRows(); progArrows(); });
 /* resize 이벤트만 믿으면 탭이 뒤에 있을 때 놓친다. 실제로 칸이 변한 걸 보고 다시 잰다 */
 if (window.ResizeObserver) {
@@ -1890,6 +2049,12 @@ if (window.ResizeObserver) {
     .observe($('main'));
 }
 render();
+/* 첫 화면은 배너가 펼쳐진 상태다. 대시보드를 그 안으로 옮겨 둔 채로 시작한다 */
+if ($('camBanner').classList.contains('hero')) {
+  $('heroSlot').insertBefore($('dash'), $('heroChat'));
+  $('camBanner').style.height = heroHeight() + 'px';
+  $('pad').classList.add('heroOn');
+}
 buildGuide();
 buildReport();
 buildCal();
