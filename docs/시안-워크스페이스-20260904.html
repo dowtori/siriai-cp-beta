@@ -119,14 +119,10 @@
   /* 다섯 칸이 정확히 같은 폭이어야 한 줄로 읽힌다.
      대시보드가 네 칸을 차지하고 안쪽 간격도 같게 맞춘다 */
   /* 이미지는 CTA 밑까지 내려가도 되지만 지표는 가리면 안 된다 */
-  /* 첫 화면에는 CTA 가 없다. 자리를 비울 이유도 없다 */
+  /* 이미지는 CTA 밑까지 내려가도 되지만 지표는 가리면 안 된다 */
   #camBanner.hero #heroSlot{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:stretch;
-                            padding-bottom:64px}
-  #camBanner.hero #heroNudge{bottom:14px}
-
-  /* CTA 는 접고 들어간 뒤에 올라온다 */
-  #dock, #dockTab{transition:opacity .34s ease .12s, transform .42s cubic-bezier(.22,.61,.36,1) .12s}
-  #dock.stowed, #dockTab.stowed{opacity:0;transform:translate(-50%,34px);pointer-events:none;transition-delay:0s}
+                            padding-bottom:170px}
+  #camBanner.hero #heroNudge{bottom:120px}
   #camBanner.hero #heroDash{grid-column:span 4;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
   #camBanner.hero #heroNudge{display:grid}
 
@@ -1246,8 +1242,6 @@ function setHero(on) {
     heroEls().forEach(function (nd) { nd.style.transition = 'none'; nd.style.opacity = 0; });
     el.classList.add('hero');
     $('pad').classList.add('heroOn');
-    $('dock').classList.add('stowed');
-    $('dockTab').classList.add('stowed');
     setChat(false);
 
     const bTo = heroHeight();
@@ -1276,8 +1270,6 @@ function setHero(on) {
       const bFrom = el.getBoundingClientRect().height;
       el.classList.remove('hero');
       $('pad').classList.remove('heroOn');
-      $('dock').classList.remove('stowed');
-      $('dockTab').classList.remove('stowed');
       heroEls().forEach(function (nd) { nd.style.transition = ''; nd.style.opacity = ''; });
       setChat(false);
 
@@ -2145,8 +2137,6 @@ render();
 if ($('camBanner').classList.contains('hero')) {
   $('camBanner').style.height = heroHeight() + 'px';
   $('pad').classList.add('heroOn');
-  $('dock').classList.add('stowed');
-  $('dockTab').classList.add('stowed');
 }
 buildGuide();
 buildReport();
