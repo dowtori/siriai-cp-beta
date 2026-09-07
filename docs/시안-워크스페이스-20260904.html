@@ -139,6 +139,28 @@
                             padding-bottom:170px}
   #camBanner.hero #heroNudge{bottom:120px}
   #camBanner.hero #heroDash{grid-column:span 4;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+  /* 허어로 위에서는 흔 판이 사진을 덮어 사진도 숫자도 안 산다.
+     사진을 받아 흔리고 그 위에 숫자를 흔색으로 올린다 */
+  #camBanner.hero #heroDash > div,
+  #camBanner.hero #heroChat{
+    background:rgba(255,255,255,.14);
+    -webkit-backdrop-filter:blur(20px) saturate(1.3);
+            backdrop-filter:blur(20px) saturate(1.3);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.24), 0 14px 36px -20px rgba(0,0,0,.60);
+    border-radius:14px;
+  }
+  #camBanner.hero #heroChat{transition:background-color .17s ease}
+  #camBanner.hero #heroChat:hover{background:rgba(255,255,255,.22)}
+  /* 유리 위에서는 재료가 바뀌었으니 글자도 같이 바뀐다 */
+  #camBanner.hero #heroDash .text-slate-900,
+  #camBanner.hero #heroChat .text-slate-900{color:#fff}
+  #camBanner.hero #heroDash .text-slate-500,
+  #camBanner.hero #heroChat .text-slate-500{color:rgba(255,255,255,.74)}
+  #camBanner.hero #heroDash .text-emerald-700,
+  #camBanner.hero #heroChat .text-emerald-700{color:#6ee7b7}
+  /* 배너가 진토니 숫자 밑 새로 향하는 섬유는 한 단 밝게 */
+  #camBanner.hero #heroDash svg{opacity:.92}
   #camBanner.hero #heroNudge{display:grid}
 
   /* 히어로가 첫 화면인 동안 그 아래는 안 보인다.
@@ -237,17 +259,26 @@
   .pcard > img, .pcard > svg{margin-top:2px}
   .pcard > .pbox{margin-top:5px}
 
-  /* 상세는 떠 있는 팝업이 아니라 옆 칸을 밀며 열린다 */
-  #pdet{flex:0 0 0;min-width:0;overflow:hidden;background:#fff;border-radius:14px;
-        transition:flex-basis .4s cubic-bezier(.45,.05,.25,1);box-shadow:var(--lift-2)}
-  #pdet.open{flex:0 0 296px}
-  #pdet .din{width:296px;height:100%;overflow-y:auto;padding:14px}
-  /* 폰 폭에서는 옆으로 밀 자리가 없다. 목록 아래로 내려 놓는다 —
-     밀어내면 카드 열이 22px 까지 짜부라져 이름이 사라진다 */
-  @media (max-width:640px){
-    #prog{flex-direction:column}
-    #pdet .din{width:100%}
+  /* 상세는 맨 오른쪽이 아니라 누른 카드 바로 옆 칸에 선다.
+     그리드 항목이므로 트랙 폭을 그대로 쓰고, 뒤 카드들이 옆으로 밀린다 */
+  #pdet{grid-row:span 5;background:#fff;border-radius:14px;overflow:hidden;
+        box-shadow:0 0 0 1.5px rgba(15,23,42,.10), var(--lift-2);
+        animation:detIn .26s cubic-bezier(.22,.61,.36,1) both}
+  #pdet .din{width:100%;height:100%;overflow-y:auto;padding:14px}
+  @keyframes detIn{
+    from{opacity:0;transform:translateX(-14px)}
+    to  {opacity:1;transform:none}
   }
+  /* 카드 다섯 장 높이가 안 되는 화면에서는 칸 수만큼만 차지한다 */
+  @media (max-height:720px){ #pdet{grid-row:span 4} }
+
+  /* 히어로 사진이 접히면서 사이드 배너 자리로 날아간다.
+     같은 곡선을 쓰므로 본문이 올라오는 것과 어긋나지 않는다 */
+  #artGhost{position:absolute;z-index:6;pointer-events:none;overflow:hidden;border-radius:16px}
+  #artGhost > span{position:absolute;inset:0;display:block;
+                   background-position:center;background-size:cover;background-repeat:no-repeat}
+  #artGhost .gs{background-image:var(--od-side)}
+  #artGhost .gh{background-image:var(--od-hero);transition:opacity 360ms ease}
 
   /* 필터 · 보기 전환 */
   .fbtn{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;
@@ -938,8 +969,8 @@
     <div class="px-6 py-5 overflow-y-auto scroll scroll-thin flex-1 space-y-2" id="codeBody"></div>
     <div class="px-6 py-4 border-t border-slate-100">
       <div class="flex gap-2">
+        <button id="codeCopy" onclick="copyCodes()" class="flex-1 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 disabled:bg-slate-50 disabled:text-slate-300 py-3 rounded-xl transition"></button>
         <button id="codeAsk" onclick="askCodes()" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 py-3 rounded-xl transition"></button>
-        <button onclick="closeDrawer('dw-code')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">닫기</button>
       </div>
     </div>
   </div>
@@ -1327,7 +1358,7 @@ function pickCamp(id) {
   if (!ROSTERS[id] || id === S.camp) { toggleRail(false); return; }
   S.camp = id;
   CREATORS = ROSTERS[id];
-  CODEPICK.clear(); FILEPICK.clear();
+  CODEPICK.clear(); CODECOPY.clear(); FILEPICK.clear();
   S.nudge = false;
   render(); buildReport(); buildCal();
   toggleRail(false);
@@ -1376,6 +1407,38 @@ const HERO_EASE = 'cubic-bezier(.45,.05,.25,1)';
 
 function heroEls() { return [$('camTop'), $('heroSlot'), $('heroNudge')]; }
 
+/* 히어로 컷이 사이드 배너 자리로 날아가며 사이드 컷으로 바뀐다.
+   고스트를 대화 칸 안에 넣어 두면 본문이 올라오는 움직임을 그대로 타므로
+   따로 맞출 것이 없다. dy 는 본문이 아직 내려가 있는 만큼이다 */
+function artFlight(a0, cTo, dy) {
+  const col = $('chatCol');
+  if (!col || !a0 || !cTo || innerWidth < 1280) return;
+  const old = $('artGhost');
+  if (old) old.remove();
+
+  const g = document.createElement('div');
+  g.id = 'artGhost';
+  g.style.left   = (a0.left - cTo.left) + 'px';
+  g.style.top    = (a0.top - cTo.top - dy) + 'px';
+  g.style.width  = a0.width + 'px';
+  g.style.height = a0.height + 'px';
+  g.innerHTML = '<span class="gs"></span><span class="gh"></span>';
+  col.appendChild(g);
+  void g.offsetWidth;
+
+  const T = 440;
+  g.style.transition = ['left', 'top', 'width', 'height']
+    .map(function (k) { return k + ' ' + T + 'ms ' + HERO_EASE; }).join(',');
+  g.style.left = '0px'; g.style.top = '0px';
+  g.style.width = cTo.width + 'px'; g.style.height = cTo.height + 'px';
+  g.querySelector('.gh').style.opacity = 0;
+
+  setTimeout(function () {
+    g.style.transition = 'opacity 180ms ease'; g.style.opacity = 0;
+    setTimeout(function () { if (g.parentNode) g.remove(); }, 220);
+  }, T);
+}
+
 function heroLabel(on) {
   const b = $('heroToggle');
   b.setAttribute('aria-expanded', on ? 'true' : 'false');
@@ -1405,6 +1468,7 @@ function setHero(on) {
     const bFrom = el.offsetHeight;
     heroEls().forEach(function (nd) { nd.style.transition = 'none'; nd.style.opacity = 0; });
     if ($('camArt')) { $('camArt').style.transition = 'none'; $('camArt').style.opacity = ''; }
+    if ($('artGhost')) $('artGhost').remove();
     el.classList.add('hero');
     $('pad').classList.add('heroOn');
     setChat(false);
@@ -1433,9 +1497,14 @@ function setHero(on) {
   /* 사진도 함깘 내린다. .hero 가 벼기는 프레임엔 배너가 아직 처서
      기본 그칙(bottom:0 + cover)이 물어오면 사진이 1.8배로 확대되며 잔다 —
      높이가 다 줄어든 뒤에 다시 살린다 */
-    if ($('camArt')) { $('camArt').style.transition = 'opacity .18s ease'; $('camArt').style.opacity = 0; }
+    /* 사진은 그대로 둔다 — 190ms 뒤에 고스트로 넘겨 사이드 배너 자리로 날린다 */
 
     heroT2 = setTimeout(function () {
+      /* 사진의 마지막 자리를 재 두고, 실물은 즉시 감춘다 — 고스트가 이어받는다 */
+      const art = $('camArt');
+      const a0 = art ? art.getBoundingClientRect() : null;
+      if (art) { art.style.transition = 'none'; art.style.opacity = 0; }
+
       const bFrom = el.getBoundingClientRect().height;
       el.classList.remove('hero');
       $('pad').classList.remove('heroOn');
@@ -1445,17 +1514,20 @@ function setHero(on) {
       el.style.transition = 'none'; el.style.height = '';
       fitProgRows();
       const bTo = el.offsetHeight;
+      /* 사이드 배너의 최종 자리. 접힌 배치에서 재야 정확하다 */
+      const cTo = $('chatCol') ? $('chatCol').getBoundingClientRect() : null;
 
       el.style.height = bFrom + 'px';
       void el.offsetHeight;
       el.style.transition = 'height 440ms ' + HERO_EASE;
       el.style.height = bTo + 'px';
       glue(row, bFrom, bTo, 440);
+      artFlight(a0, cTo, bFrom - bTo);
 
       heroT = setTimeout(function () {
         el.style.transition = ''; el.style.height = '';
         row.style.transition = ''; row.style.transform = '';
-        if ($('camArt')) { $('camArt').style.transition = 'opacity .28s ease'; $('camArt').style.opacity = ''; }
+        if (art) { art.style.transition = 'opacity .28s ease'; art.style.opacity = ''; }
         fitProgRows(); progArrows();
       }, 480);
     }, 190);
@@ -1685,17 +1757,13 @@ const PCARD_MIN = 292;   /* 이보다 좁아지면 이름과 단계가 붙는다
 const PCARD_MAX = 420;   /* 이보다 넓어지면 오른쪽이 텅 빈다 */
 const PCARD_H   = 90;
 const PGAP      = 8;
-const PDET_W    = 296;
-const PROW_GAP  = 10;    /* #prog 의 flex gap — 상세가 닫혀 있어도 자리를 먹는다 */
+const PCOL_MAX  = 3;     /* 이보다 늘리면 카드가 다시 작아진다 */
 
 function layoutProgGrid() {
   const box = $('prog'), grid = $('pgrid');
   if (!box || !grid) return;
-  const det  = $('pdet');
-  /* 폰 폭에서는 상세가 아래로 내려가므로 폭을 가져가지 않는다 */
-  const side = innerWidth > 640;
-  const detW = side && det && det.classList.contains('open') ? PDET_W : 0;
-  const availW = box.clientWidth - 20 - PROW_GAP - detW;
+  /* 상세가 그리드 안으로 들어왔으므로 폭을 따로 뺄 것이 없다 */
+  const availW = box.clientWidth - 20;
   /* 1280 미만에서는 박스 높이가 카드 20장에 끌려간다 — 자기 키를 자기로 재면
      rows 가 언제나 n 이 되어 '인원이 넘치면 열을 더' 라는 규칙이 죽는다 */
   const availH = (innerWidth < 1280 ? innerHeight : box.clientHeight) - 20;
@@ -1705,8 +1773,6 @@ function layoutProgGrid() {
   if (!n) {
     grid.style.gridTemplateColumns = 'minmax(0,1fr)';
     grid.style.justifyContent = 'stretch';
-    grid.classList.remove('anim');
-    grid.style.flex = '';
     return;
   }
 
@@ -1718,7 +1784,7 @@ function layoutProgGrid() {
   /* 사람이 적어도 박스가 최대 톰이면 한 열은 더 채운다 —
      안 그러면 넓은 화면에서 오른쪽이 통짜로 떠버린다 */
   const fitAtMax = Math.max(1, Math.floor((availW + PGAP) / (PCARD_MAX + PGAP)));
-  const cols     = Math.max(1, Math.min(byWidth, Math.max(byCount, fitAtMax)));
+  const cols     = Math.max(1, Math.min(PCOL_MAX, byWidth, Math.max(byCount, fitAtMax)));
 
   /* 트랙을 미리 항해 둔다. minmax 로 맡기면 상세가 열리는 첫 프레임에
      아직 넓은 폭을 나눠 420 까지 벌어진다 — 카드 폭이 뒤바뀌어보인다.
@@ -1727,20 +1793,6 @@ function layoutProgGrid() {
     Math.max(200, Math.floor((availW - (cols - 1) * PGAP - 12) / cols)));
   grid.style.gridTemplateColumns = 'repeat(' + cols + ', ' + track + 'px)';
   grid.style.justifyContent = 'start';
-
-  /* 폭을 못 박아 둔다 — 그래야 열 수와 폭이 같이 움직인다 */
-  grid.style.flex = side ? '0 0 ' + Math.max(0, availW) + 'px' : '';
-}
-
-/* 상세를 여닫는 동엄에만 폭을 부드럽게 움직인다.
-   필터·정렬·리사이즈는 여기 해당하지 않는다 — 끌듬거리면 느려진다 */
-let gridT;
-function animGrid() {
-  const g = $('pgrid');
-  if (!g || innerWidth <= 640) return;
-  g.classList.add('anim');
-  clearTimeout(gridT);
-  gridT = setTimeout(function () { g.classList.remove('anim'); }, 460);
 }
 
 
@@ -1755,10 +1807,14 @@ function renderProg() {
     $('prog').className = 'flex-1 min-h-0';
     $('prog').innerHTML =
         '<div id="pgrid" class="scroll scroll-thin">'
-      +   (all.length ? all.map(pcard).join('')
-                      : '<div class="pempty">필터에 맞는 사람이 없습니다</div>')
-      + '</div>'
-      + '<div id="pdet"' + (PSTATE.open === null ? '' : ' class="open"') + '></div>';
+      +   (all.length
+           /* 상세는 누른 카드 바로 뒤에 끼운다 — 맨 오른쪽으로 보내면 어느 카드 것인지 모른다 */
+           ? all.map(function (c) {
+               const i = CREATORS.indexOf(c);
+               return pcard(c) + (PSTATE.open === i ? '<div id="pdet"></div>' : '');
+             }).join('')
+           : '<div class="pempty">필터에 맞는 사람이 없습니다</div>')
+      + '</div>';
   }
 
   drawPanel();
@@ -1978,25 +2034,13 @@ function openPeek(i, ev) {
   if (!CREATORS[i]) return;
   if (PSTATE.open === i) { closePeek(); return; }
   PSTATE.open = i;
-  if (PSTATE.view === 'table') { renderProg(); return; }
-  const det = $('pdet');
-  animGrid();
-  paintDet();
-  det.classList.add('open');
-  document.querySelectorAll('#prog .pcard').forEach(el =>
-    el.setAttribute('data-open', +el.dataset.i === i ? '1' : '0'));
-  fitProgRows();
-  layoutProgGrid();
+  renderProg();
 }
 
 function closePeek() {
+  if (PSTATE.open === null) return;
   PSTATE.open = null;
-  const det = $('pdet');
-  animGrid();
-  if (det) { det.classList.remove('open'); }
-  document.querySelectorAll('#prog .pcard').forEach(el => el.setAttribute('data-open', '0'));
-  document.querySelectorAll('#ptable tr.on').forEach(el => el.classList.remove('on'));
-  layoutProgGrid();
+  renderProg();
 }
 
 function paintDet() {
@@ -2239,7 +2283,7 @@ function openDrawer(id) {
   if (id === 'dw-calendar') buildCal();
   if (id === 'dw-guide')    buildGuide();
   if (id === 'dw-files')    { FILEPICK.clear(); upList().forEach(c => FILEPICK.add(CREATORS.indexOf(c))); buildFiles(); }
-  if (id === 'dw-code')     { CODEPICK.clear(); buildCodes(); }
+  if (id === 'dw-code')     { CODEPICK.clear(); CODECOPY.clear(); buildCodes(); }
   lastFocus = document.activeElement;
   closeOthers(id); $(id).classList.add('open'); lockBody(true);
   setTimeout(() => { const b = $(id).querySelector('button'); b && b.focus(); }, 60);
@@ -2453,57 +2497,63 @@ function grabPicked() {
 }
 
 
-/* 코드 — 무료분은 열려 있고, 유료분은 닫아 둔 채 필요한 것만 고른다 */
-const CODEPICK = new Set();
+/* 코드 — 무료분은 골라서 복사하고, 유료분은 골라서 발급을 요청한다.
+   원고료가 아니라 코드 이야기이므로 브랜드가 봐도 되는 정보다 */
+const CODEPICK = new Set();   /* 유료 — 요청할 것 */
+const CODECOPY = new Set();   /* 무료 — 복사할 것 */
+
+const freeCodes = () => selected().slice(0, FREE_CODES).map(c => CREATORS.indexOf(c));
+const paidCodes = () => selected().slice(FREE_CODES).map(c => CREATORS.indexOf(c));
 
 function buildCodes() {
   const sel = selected();
+  const freeIdx = freeCodes(), paidIdx = paidCodes();
+  const allFree = freeIdx.length > 0 && freeIdx.every(i => CODECOPY.has(i));
 
-  const paidIdx = sel.slice(FREE_CODES).map(c => CREATORS.indexOf(c));
-  const allPaid  = paidIdx.length > 0 && paidIdx.every(i => CODEPICK.has(i));
+  const cbox = (on, act, label) =>
+    '<button onclick="' + act + '" class="shrink-0 w-[18px] h-[18px] rounded-md border-2 grid place-items-center transition '
+    + (on ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-300 text-transparent')
+    + '" aria-label="' + label + '">'
+    + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24">'
+    + '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></button>';
 
   $('codeBody').innerHTML =
-      (paidIdx.length
-       ? '<div class="flex items-center justify-between gap-2 pt-1 pb-2">'
-         + '<button onclick="pickAllCodes()" class="flex items-center gap-2 text-[11px] font-bold text-slate-600 hover:text-slate-900 transition">'
-         +   box(allPaid) + '전체 선택'
-         + '</button>'
-         + '<span class="num text-[10.5px] text-slate-500">무료 ' + Math.min(FREE_CODES, sel.length)
-         +   '건 · 유료 ' + paidIdx.length + '건</span></div>'
-       : '')
+      '<div class="flex items-center justify-between gap-2 pt-1 pb-2">'
+    +   '<button onclick="pickAllCodes()" class="flex items-center gap-2 text-[11px] font-bold text-slate-600 hover:text-slate-900 transition">'
+    +     box(allFree) + '무료 전체 선택'
+    +   '</button>'
+    +   '<span class="num text-[10.5px] text-slate-500">무료 ' + freeIdx.length
+    +     '건 · 유료 ' + paidIdx.length + '건</span></div>'
     + sel.map((c, k) => {
-    const i = CREATORS.indexOf(c), paid = k >= FREE_CODES;
-    return '<div class="flex items-center gap-3 rounded-xl px-3.5 py-3 border '
-      + (paid ? 'bg-slate-50 border-slate-100' : 'bg-white border-slate-200') + '">'
-      + (paid
-         ? '<button onclick="toggleCode(' + i + ')" class="shrink-0 w-[18px] h-[18px] rounded-md border-2 grid place-items-center transition '
-           + (CODEPICK.has(i) ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-300 text-transparent')
-           + '" aria-label="' + esc(c.name) + '님 코드 요청에 넣기">'
-           + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
-           + '</button>'
-         : '')
-      + avatar(c, i, 30)
-      + '<div class="min-w-0 flex-1">'
-      +   '<div class="text-xs font-bold text-slate-900 truncate">' + esc(c.name) + '</div>'
-      +   '<div class="num text-[10.5px] text-slate-500 truncate">' + esc(c.handle) + '</div>'
-      + '</div>'
-      + (paid
-         ? '<span class="num shrink-0 text-[11px] font-bold text-slate-400 tracking-[.14em]">••••••</span>'
-           + '<span class="shrink-0 text-[9.5px] font-bold text-slate-500 bg-slate-100 px-1.5 py-1 rounded-md whitespace-nowrap">유료</span>'
-         : '<button onclick="copy(\'' + esc(c.code) + '\')" class="shrink-0 mono text-[10.5px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-2 rounded-lg transition whitespace-nowrap">'
-           + esc(c.code) + '</button>'
-           + '<span class="shrink-0 text-[9.5px] font-bold text-white bg-slate-900 px-1.5 py-1 rounded-md whitespace-nowrap">무료</span>')
-      + '</div>';
-  }).join('');
+        const i = CREATORS.indexOf(c), paid = k >= FREE_CODES;
+        return '<div class="flex items-center gap-3 rounded-xl px-3.5 py-3 border '
+          + (paid ? 'bg-slate-50 border-slate-100' : 'bg-white border-slate-200') + '">'
+          + cbox(paid ? CODEPICK.has(i) : CODECOPY.has(i),
+                 (paid ? 'toggleCode(' : 'toggleCopy(') + i + ')',
+                 esc(c.name) + '님 ' + (paid ? '코드 요청에 넣기' : '코드 복사에 넣기'))
+          + avatar(c, i, 30)
+          + '<div class="min-w-0 flex-1">'
+          +   '<div class="text-xs font-bold text-slate-900 truncate">' + esc(c.name) + '</div>'
+          +   '<div class="num text-[10.5px] text-slate-500 truncate">' + esc(c.handle) + '</div>'
+          + '</div>'
+          + (paid
+             ? '<span class="num shrink-0 text-[11px] font-bold text-slate-400 tracking-[.14em]">••••••</span>'
+               + '<span class="shrink-0 text-[9.5px] font-bold text-slate-500 bg-slate-100 px-1.5 py-1 rounded-md whitespace-nowrap">유료</span>'
+             : '<button onclick="copy(\'' + esc(c.code) + '\')" class="shrink-0 mono text-[10.5px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-2 rounded-lg transition whitespace-nowrap">'
+               + esc(c.code) + '</button>'
+               + '<span class="shrink-0 text-[9.5px] font-bold text-white bg-slate-900 px-1.5 py-1 rounded-md whitespace-nowrap">무료</span>')
+          + '</div>';
+      }).join('');
 
   paintCodeAsk();
 }
 
+/* 전체 선택은 무료분을 잡는다. 유료분은 필요한 것만 골라야 한다 */
 function pickAllCodes() {
-  const idx = selected().slice(FREE_CODES).map(c => CREATORS.indexOf(c));
-  const allOn = idx.length > 0 && idx.every(i => CODEPICK.has(i));
-  CODEPICK.clear();
-  if (!allOn) idx.forEach(i => CODEPICK.add(i));
+  const idx = freeCodes();
+  const allOn = idx.length > 0 && idx.every(i => CODECOPY.has(i));
+  CODECOPY.clear();
+  if (!allOn) idx.forEach(i => CODECOPY.add(i));
   buildCodes();
 }
 
@@ -2512,10 +2562,30 @@ function toggleCode(i) {
   buildCodes();
 }
 
+function toggleCopy(i) {
+  CODECOPY.has(i) ? CODECOPY.delete(i) : CODECOPY.add(i);
+  buildCodes();
+}
+
+/* 고른 무료 코드를 한 번에 가져간다 — 시트에 붙일 수 있게 이름과 나란히 준다 */
+function copyCodes() {
+  const list = [...CODECOPY].map(i => CREATORS[i]).filter(Boolean);
+  if (!list.length) return;
+  const text = list.map(c => c.name + '\t' + c.code).join('\n');
+  const ok = () => toast('코드 ' + list.length + '건을 복사했습니다. 이름과 코드가 나란히 담겨 있어요.');
+  const no = () => toast('복사에 실패했습니다. 코드를 직접 선택해 복사해 주세요.', 'na');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, no);
+  else no();
+}
+
 function paintCodeAsk() {
-  const b = $('codeAsk'), n = CODEPICK.size;
-  b.textContent = n ? n + '건 발급 요청' : '요청할 코드를 고르세요';
-  b.disabled = !n;
+  const a = $('codeAsk'), n = CODEPICK.size;
+  a.textContent = n ? '유료 ' + n + '건 요청' : '유료 코드 요청';
+  a.disabled = !n;
+
+  const c = $('codeCopy'), m = CODECOPY.size;
+  c.textContent = m ? '무료 ' + m + '건 복사' : '무료 코드 복사';
+  c.disabled = !m;
 }
 
 function askCodes() {
