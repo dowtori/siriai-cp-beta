@@ -13,7 +13,7 @@
 
   :root{
     /* 오드타입 브랜드 — 클라이언트 자산이라 그쪽 초대 페이지 값을 그대로 쓴다 */
-    --rail:244px;
+    --rail:244px; --pgap:8px;
     /* 오드타입 공식 워드마크 (474:118) — 마스크로 써서 색은 글자색을 따른다 */
     --odw: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNDc0IiBoZWlnaHQ9IjExOCIgdmlld0JveD0iMCAwIDQ3NCAxMTgiPjxkZWZzPjxjbGlwUGF0aCBpZD0iYSI+PHJlY3Qgd2lkdGg9IjQ3My4zMTEiIGhlaWdodD0iMTE3LjQ0MSIgZmlsbD0iI2ZmZiIvPjwvY2xpcFBhdGg+PGNsaXBQYXRoIGlkPSJjIj48cmVjdCB3aWR0aD0iNDc0IiBoZWlnaHQ9IjExOCIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGlkPSJiIiBjbGlwLXBhdGg9InVybCgjYykiPjxnIGNsaXAtcGF0aD0idXJsKCNhKSI+PHBhdGggZD0iTTQ3NS4xNTYsNDEuNTU4YTI4Ljc2MywyOC43NjMsMCwwLDAtMTAuNzQ3LTExLjI4NywzMC40NzEsMzAuNDcxLDAsMCwwLTE1LjgtNC4wODIsMzIuNTYsMzIuNTYsMCwwLDAtMjguNzMsMTYuMzY2LDMzLjQzOSwzMy40MzksMCwwLDAtNC40LDE3LjAyLDMzLjMxLDMzLjMxLDAsMCwwLDQuNDY2LDE3LjE1NkEzMi43NjksMzIuNzY5LDAsMCwwLDQzMi4xMTUsODguN2EzNC4zOTMsMzQuMzkzLDAsMCwwLDE3LjI3LDQuMzkyLDM2LjE3LDM2LjE3LDAsMCwwLDE0LjIxLTIuODMxLDMwLjE2OCwzMC4xNjgsMCwwLDAsMTEuMzMyLTguMjgybC44MTMtLjk1Ni05LjQ0Ni05LjYwNy0uOTczLDEuMTM1YTE4LjQ1MSwxOC40NTEsMCwwLDEtNi45MzgsNS4wNzEsMjMuMjQ0LDIzLjI0NCwwLDAsMS05LDEuNzA3LDIxLjA5MSwyMS4wOTEsMCwwLDEtMTAuMzUxLTIuNDg1LDE2LjkzOCwxNi45MzgsMCwwLDEtNi44NDItNi45NjIsMTkuNjU3LDE5LjY1NywwLDAsMS0xLjcxNy00LjUyNmg0Ny42NDJsLjIyMS0xLjFhMzMuMzE4LDMzLjMxOCwwLDAsMCwuNTM5LTMuNTg2Yy4wOS0xLjAzNS4xMzUtMi4wMTIuMTM1LTIuOWEzMy44MTcsMzMuODE3LDAsMCwwLTMuODU3LTE2LjJtLTQ0LjY0MiwxMS4zM2ExOC43MTMsMTguNzEzLDAsMCwxLDEuNTUxLTQuMDc4LDE2LjQ0NSwxNi40NDUsMCwwLDEsNi40NjctNi43MDcsMTkuNTI5LDE5LjUyOSwwLDAsMSw5LjgxNy0yLjQxMSwxNy4zNzUsMTcuMzc1LDAsMCwxLDkuMDE2LDIuMiwxNC45MiwxNC45MiwwLDAsMSw1LjcsNi4xODEsMTguMjM5LDE4LjIzOSwwLDAsMSwxLjU5Myw0LjgxMVoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC01LjcwMiAtMC4zNTkpIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTMyNC44MTQsMjcuMzQ3bC0xOC44LDQxLjVMMjg3LjU2MSwyNy42OTFsLS4xNTMtLjM0NEgyNjQuNFYxLjU1NmgtMTQuNDFWMjcuMzQ3aC0xMi42VjQwLjcyMWgxMi42VjkxLjY1aDE0LjMyN2wuMDg3LTE0LjQyNCwwLTM2LjUwNWgxMy4yODNsMzQuMjksNzYuMzg0LjE1NS4zNDNIMzI3LjhMMzEzLjU5LDg1Ljc1NmwyNi43Ny01OC40MDlaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMy4yNTggLTAuMDIxKSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0zODAuNzM3LDI2LjE4OWMtOC41MjksMC0xNS40MzIsMy41NTctMTkuOTYyLDEwLjI4NWwtLjM2OC41NDhWMjcuNjcxSDM0NS43NDVWMTE3LjhIMzYwLjlWODIuMjc3bC4zNjguNTI1YzQuNDksNi40MTUsMTEuMDQsOS42NjcsMTkuNDY5LDkuNjY3LDE3LjU0OCwwLDI4LjQ0Ny0xMi43LDI4LjQ0Ny0zMy4xNHMtMTAuOS0zMy4xNC0yOC40NDctMzMuMTRtMTMuNiwzMy4xNGMwLDEzLjE1Ni02LjA2LDIwLjctMTYuNjI2LDIwLjctMTAuMzMzLDAtMTYuNS03LjkyMy0xNi41LTIxLjE5MiwwLTEyLjg0Myw2LjAxNS0yMC4yMSwxNi41LTIwLjIxLDEwLjU2NiwwLDE2LjYyNiw3LjU0NSwxNi42MjYsMjAuNyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQuNzQ1IC0wLjM1OSkiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNzcuOTQzLDEzLjQyMkE0NC43NzYsNDQuNzc2LDAsMCwwLDYzLjQsMy41Miw0NS41NDUsNDUuNTQ1LDAsMCwwLDQ1LjQ4OCwwLDQ1LjUyOSw0NS41MjksMCwwLDAsMjcuNTcsMy41MmE0My45OCw0My45OCwwLDAsMC0xNC40NzksOS45MDdBNDYuNDQ4LDQ2LjQ0OCwwLDAsMCwzLjQ1MywyOC4yLDQ3LjQyMSw0Ny40MjEsMCwwLDAsMCw0Ni4zMzksNDcuNTgxLDQ3LjU4MSwwLDAsMCwzLjQ1MSw2NC40MTVhNDYuNSw0Ni41LDAsMCwwLDkuNywxNC45QTQ0Ljc5Myw0NC43OTMsMCwwLDAsNDUuNzQxLDkyLjkzMiw0NC41LDQ0LjUsMCwwLDAsNzguMDEsNzkuMzc5YTQ4LjAxNiw0OC4wMTYsMCwwLDAsOS43LTUxLjEyNSw0Ni42ODMsNDYuNjgzLDAsMCwwLTkuNzY4LTE0LjgzM003Ni4yNTUsNDYuMzM5YTM0Ljc2OSwzNC43NjksMCwwLDEtNC4wMDcsMTYuODU1LDMwLjE4OSwzMC4xODksMCwwLDEtMTAuODM1LDExLjUsMzAuMTA5LDMwLjEwOSwwLDAsMS0xNS45MjQsNC4xNjEsMzAuOTgyLDMwLjk4MiwwLDAsMS0xMi4zLTIuNDE2LDI4Ljg0NSwyOC44NDUsMCwwLDEtOS42NjYtNi43LDMwLjIyMiwzMC4yMjIsMCwwLDEtNi4yOTEtMTAuMjg0LDM3LjI4OCwzNy4yODgsMCwwLDEtMi4yNTUtMTMuMTEyQTM0Ljg0MywzNC44NDMsMCwwLDEsMTguOTIsMjkuNTQ1LDI5LjM1MywyOS4zNTMsMCwwLDEsMjkuNjgzLDE4LjE4MmEzMC4xODgsMzAuMTg4LDAsMCwxLDE1LjgwNS00LjEsMzEuNTQ3LDMxLjU0NywwLDAsMSwxMi4zNywyLjM1NywyOC41MjQsMjguNTI0LDAsMCwxLDkuNjYyLDYuNywzMS42NDcsMzEuNjQ3LDAsMCwxLDYuNDI3LDEwLjI0MiwzNS40NTEsMzUuNDUxLDAsMCwxLDIuMzA5LDEyLjk2NSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0xNDYuMiwzNi44NjZsLS4zNjctLjUyNWMtNC40OTItNi40MTYtMTEuMDQxLTkuNjY4LTE5LjQ3MS05LjY2OC0xNy41NDcsMC0yOC40NDcsMTIuNy0yOC40NDcsMzMuMTRzMTAuOSwzMy4xNCwyOC40NDgsMzMuMTRjOC41MywwLDE1LjQzMi0zLjU1NiwxOS45NjItMTAuMjgzbC4zNjktLjU0OFY5MS40N2gxNC42NjJWMS41NTVIMTQ2LjJabS4zNywyMi45NDdjMCwxMy4xNTYtNi4wNiwyMC43LTE2LjYyNiwyMC43LTEwLjQ4NiwwLTE2LjUtNy4zNjYtMTYuNS0yMC4yMDcsMC0xMy4yNzIsNi4xNjgtMjEuMiwxNi41LTIxLjIsMTAuNTY2LDAsMTYuNjI2LDcuNTQ1LDE2LjYyNiwyMC43IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMS4zNDQgLTAuMDIxKSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0yMTUuOTM2LDM2Ljg2NmwtLjM2Ny0uNTI1Yy00LjQ5Mi02LjQxNi0xMS4wNDEtOS42NjgtMTkuNDY5LTkuNjY4LTE3LjU0OCwwLTI4LjQ0OCwxMi43LTI4LjQ0OCwzMy4xNHMxMC45LDMzLjE0LDI4LjQ0OCwzMy4xNGM4LjUyOSwwLDE1LjQzMS0zLjU1NiwxOS45NjEtMTAuMjgzbC4zNjktLjU0OFY5MS40N2gxNC42NjJWMS41NTVIMjE1LjkzNlptLjM3LDIyLjk0N2MwLDEzLjE1Ni02LjA2LDIwLjctMTYuNjI2LDIwLjctMTAuNDg2LDAtMTYuNS03LjM2Ni0xNi41LTIwLjIwNywwLTEzLjI3Miw2LjE2OC0yMS4yLDE2LjUtMjEuMiwxMC41NjYsMCwxNi42MjYsNy41NDUsMTYuNjI2LDIwLjciIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yLjMwMSAtMC4wMjEpIiBmaWxsPSIjZmZmIi8+PC9nPjwvZz48L3N2Zz4=");
     --od-ink:#231f20; --od-red:#dc272d; --od-red-dark:#b81e23;
@@ -106,7 +106,9 @@
   /* 접혀 있을 때는 박스 하단에 붙는다. 펼치면 우상단으로 올라간다 */
   #heroToggle{position:absolute;right:10px;bottom:8px;z-index:3;
               transition:top .3s ease, bottom .3s ease}
-  #camBanner.hero #heroToggle{top:10px;bottom:auto}
+  /* 사진의 가장 밝은 우상단에 겹친다 — 밑에 어두운 알약을 깐다 */
+  #camBanner.hero #heroToggle{top:10px;bottom:auto;
+                              background:rgba(35,31,32,.45);border-radius:10px}
   #heroChev{transition:transform .3s cubic-bezier(.22,.61,.36,1)}
   #camBanner.hero #heroChev{transform:rotate(180deg)}
 
@@ -116,14 +118,16 @@
      높이는 JS 가 남는 공간을 재서 준다(하단 CTA 자리는 남긴다) */
   #camBanner.hero{min-height:322px;display:flex;flex-direction:column}
   #camBanner.hero #camTop{display:flex}
-  /* 원본이 세로 사진이라 가로로 늘리면 얼굴만 남는다.
-     사진은 우측에 제 비율로 세우고 왼쪽은 검은 면 — 가로 그라데이션으로 잇는다 */
-  #camBanner.hero #camArt{width:40%;max-width:600px;
-    background-image:linear-gradient(90deg,var(--od-ink) 0%,rgba(35,31,32,.92) 14%,rgba(35,31,32,.46) 42%,rgba(35,31,32,.10) 72%,rgba(35,31,32,0) 100%),
-      linear-gradient(180deg,rgba(35,31,32,0) 44%,rgba(35,31,32,.42) 74%,rgba(35,31,32,.78) 100%),
+  /* 원본은 1040x717 — 가로 사진이다. 세로로 긴 칸에 cover 로 넣으면 좌우를 700px 넘게
+     잘라내고 눈만 남았다. 칸 자체를 원본 비율로 만들어 우측 상단에 붙인다.
+     그러면 어디도 잘리지 않는다. 좌·하단 모서리는 그라데이션으로 검은 면에 녹인다 */
+  #camBanner.hero #camArt{top:0;bottom:auto;right:0;
+    width:min(62%,1400px);max-width:none;aspect-ratio:1040 / 717;max-height:100%;
+    background-image:linear-gradient(90deg,var(--od-ink) 0%,rgba(35,31,32,.74) 11%,rgba(35,31,32,.26) 28%,rgba(35,31,32,.06) 40%,rgba(35,31,32,0) 52%),
+      linear-gradient(180deg,rgba(35,31,32,.22) 0%,rgba(35,31,32,0) 14%,rgba(35,31,32,0) 52%,rgba(35,31,32,.52) 80%,var(--od-ink) 100%),
       var(--od-hero);
-    background-size:cover,cover,cover;
-    background-position:center,center,center 14%}
+    background-size:cover,cover,contain;
+    background-position:center,center,right top}
   /* 제목은 지표 바로 위, 아래쪽에 붙는다 */
   #camBanner.hero #camPad{margin-top:auto;padding-bottom:10px}
   #camBanner.hero #camPad h1{font-size:clamp(24px,3vw,34px)}
@@ -209,24 +213,41 @@
   /* 진행상황 — 열이 사람을 가두지 않는다. 한 판에 놓고 폭에 따라 칸이 늘고 준다.
      단계는 카드의 배지가 말한다. 스크롤은 아래로 하나뿐이다 */
   #prog{display:flex;gap:10px;padding:10px;min-height:0;overflow:hidden}
+  /* 열 수는 화면 폭이 아니라 layoutProgGrid() 가 정한다 — 박스 크기를 먼저 지키고,
+     한 열에 담을 수 있는 인원을 넘을 때만 열을 하나 더 쓴다 */
   #pgrid{flex:1 1 0;min-width:0;overflow-y:auto;padding-right:2px;
-         display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));
-         gap:8px;align-content:start}
+         display:grid;grid-template-columns:minmax(0,1fr);
+         gap:var(--pgap);align-content:start}
+  /* 열 수는 상세가 열리기 전에 바뀌는데 폭은 0.4초 뒤에 좁아진다.
+     그 사이 카드가 420 까지 벌어졌다 되돌아왔다 — 폭도 같은 곡선으로 움직인다 */
+  #pgrid.anim{transition:flex-basis .4s cubic-bezier(.45,.05,.25,1)}
   /* 카드 20장이 박스 높이를 밀어올리면 안 된다 — 높이는 박스가 정하고 넘치면 스크롤한다.
      좁은 화면에서는 세로로 쭉 쌓이는 게 맞으니 이 규칙을 걸지 않는다 */
   @media (min-width:1280px){ #pgrid{height:0;min-height:100%} }
   #pgrid .pempty{grid-column:1/-1;padding:28px 10px;text-align:center;
                  font-size:11.5px;color:#94a3b8}
   .pcard[data-open="1"]{box-shadow:0 0 0 1.5px var(--accent), var(--lift-2);background:#fff}
-  /* 단계 배지 — 열이 하던 말을 카드가 대신 한다 */
-  .pstage{font-size:9.5px;font-weight:700;padding:1px 5px;border-radius:5px;
-          white-space:nowrap;flex:none}
+  /* 단계는 배지가 아니라 누를 수 있는 버튼이다 — 누르면 진행 플로우가 열린다 */
+  .pstage{display:inline-flex;align-items:center;gap:4px;flex:none;
+          font-size:10.5px;font-weight:700;padding:3px 7px;border-radius:7px;
+          white-space:nowrap;transition:filter .16s ease}
+  .pstage:hover{filter:brightness(.94)}
+  .pcard{padding:14px 10px 14px 12px}
+  /* 아바타는 이름 줄에 맞춰 한 칸 내린다 */
+  .pcard > img, .pcard > svg{margin-top:2px}
+  .pcard > .pbox{margin-top:5px}
 
   /* 상세는 떠 있는 팝업이 아니라 옆 칸을 밀며 열린다 */
   #pdet{flex:0 0 0;min-width:0;overflow:hidden;background:#fff;border-radius:14px;
         transition:flex-basis .4s cubic-bezier(.45,.05,.25,1);box-shadow:var(--lift-2)}
   #pdet.open{flex:0 0 296px}
   #pdet .din{width:296px;height:100%;overflow-y:auto;padding:14px}
+  /* 폰 폭에서는 옆으로 밀 자리가 없다. 목록 아래로 내려 놓는다 —
+     밀어내면 카드 열이 22px 까지 짜부라져 이름이 사라진다 */
+  @media (max-width:640px){
+    #prog{flex-direction:column}
+    #pdet .din{width:100%}
+  }
 
   /* 필터 · 보기 전환 */
   .fbtn{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;
@@ -292,8 +313,12 @@
            background-size:cover;background-position:center top;
            transition:filter .22s ease}
   #chatArt:hover{filter:brightness(1.05)}
-  #chatArt .open-row{transition:background-color .17s ease}
-  #chatArt:hover .open-row{background:#fff;color:var(--od-ink)}
+  /* 버튼은 한 장이니 처음부터 분명하게 보이게 둔다 */
+  #chatArt .open-row{background:#fff;color:var(--od-ink);
+                     box-shadow:0 10px 30px -12px rgba(0,0,0,.55);
+                     transition:transform .17s ease, box-shadow .17s ease}
+  #chatArt:hover .open-row{transform:translateY(-1px);
+                           box-shadow:0 14px 34px -12px rgba(0,0,0,.62)}
   #chatPane{transition:transform .48s cubic-bezier(.22,.61,.36,1), opacity .26s ease, box-shadow .18s ease}
   #chatPane.closed{transform:translateY(-101%);opacity:0;pointer-events:none}
   #chatCol.drop{box-shadow:0 0 0 2px var(--accent), var(--lift-3) !important}
@@ -706,20 +731,12 @@
              style="box-shadow:var(--lift-2)"
              ondragover="chatOver(event,true)" ondragleave="chatOver(event,false)" ondrop="chatDrop(event)">
 
-        <button id="chatArt" onclick="setChat(true)" class="absolute inset-0 w-full h-full text-left" aria-label="캠페인 대화 열기">
-          <span class="absolute inset-x-0 px-4 flex flex-col gap-2.5" style="top:50%;transform:translateY(-50%)">
-            <span class="flex items-center justify-between gap-2">
-              <span class="num t-label text-[10px]" style="color:rgba(255,255,255,.62)">캠페인 대화</span>
-              <span class="inline-flex items-center gap-1.5 text-[10.5px] font-semibold" style="color:rgba(255,255,255,.82)">
-                <span class="dot on" style="background:#10b981"></span>연결됨</span>
-            </span>
-            <span class="text-[17px] font-bold text-white leading-snug">SIRIAI 캠페인팀</span>
-            <span id="chatArtLast" class="text-[11.5px] leading-relaxed text-white px-3 py-2.5 rounded-2xl rounded-bl-md keep"
-                  style="background:rgba(255,255,255,.18)"></span>
-            <span class="open-row mt-0.5 flex items-center justify-between gap-2 text-[12.5px] font-bold text-white px-3.5 py-3 rounded-xl"
-                  style="background:rgba(255,255,255,.15)">
-              대화 열기
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        <button id="chatArt" onclick="setChat(true)" class="absolute inset-0 w-full h-full text-left" aria-label="대화창 열기">
+          <span class="absolute inset-x-0 px-4 flex flex-col gap-4" style="top:50%;transform:translateY(-50%)">
+            <span class="text-[20px] font-bold text-white leading-snug text-center keep">Siriai 팀과 대화</span>
+            <span class="open-row flex items-center justify-center gap-2 text-[15px] font-bold px-4 py-4 rounded-2xl">
+              대화창 열기
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
             </span>
           </span>
         </button>
@@ -1387,6 +1404,7 @@ function setHero(on) {
     /* 펼치기 — 상자를 먼저 키우고 내용은 살짝 늦게 들어온다 */
     const bFrom = el.offsetHeight;
     heroEls().forEach(function (nd) { nd.style.transition = 'none'; nd.style.opacity = 0; });
+    if ($('camArt')) { $('camArt').style.transition = 'none'; $('camArt').style.opacity = ''; }
     el.classList.add('hero');
     $('pad').classList.add('heroOn');
     setChat(false);
@@ -1412,6 +1430,10 @@ function setHero(on) {
   } else {
     /* 접기 — 히어로 내용을 먼저 지운다. 안 그러면 빈 검은 상자만 남아 줄어든다 */
     heroEls().forEach(function (nd) { nd.style.transition = 'opacity .18s ease'; nd.style.opacity = 0; });
+  /* 사진도 함깘 내린다. .hero 가 벼기는 프레임엔 배너가 아직 처서
+     기본 그칙(bottom:0 + cover)이 물어오면 사진이 1.8배로 확대되며 잔다 —
+     높이가 다 줄어든 뒤에 다시 살린다 */
+    if ($('camArt')) { $('camArt').style.transition = 'opacity .18s ease'; $('camArt').style.opacity = 0; }
 
     heroT2 = setTimeout(function () {
       const bFrom = el.getBoundingClientRect().height;
@@ -1433,6 +1455,7 @@ function setHero(on) {
       heroT = setTimeout(function () {
         el.style.transition = ''; el.style.height = '';
         row.style.transition = ''; row.style.transform = '';
+        if ($('camArt')) { $('camArt').style.transition = 'opacity .28s ease'; $('camArt').style.opacity = ''; }
         fitProgRows(); progArrows();
       }, 480);
     }, 190);
@@ -1616,34 +1639,108 @@ function progList() {
 /* 카드 아래 한 줄은 지금 정렬 기준의 값이다. 무엇으로 줄 세운 건지 카드가 말해 준다 */
 function sortHint(c) {
   switch (PSTATE.sort) {
-    case 'stage': return esc(c.due) + (c.up ? ' 업로드' : ' 예정');
+    /* 배지가 이미 '업로드 완료' 라고 말한다. 날짜 뒤에 또 붙이면 칸만 먹고 잘린다 */
     case 'fol':   return kw(c.fol) + ' 팔로워';
     case 'cost':  return won(c.cost);
     case 'views': return c.up ? n(c.views) + ' 조회' : '업로드 전';
-    case 'name':  return esc(c.handle);
-    default:      return esc(c.due) + (c.up ? ' 업로드' : ' 예정');
+    /* 이름순에서 핸들을 돌려주면 카드 2행과 같은 값이 두 번 찍힌다 */
+    default:      return esc(c.due) + (c.up ? '' : ' 예정');
   }
 }
 
 function pcard(c) {
   const i = CREATORS.indexOf(c), st = STAGE[c.stage] || STAGE.make;
-  return '<article class="pcard surface-sm pl-2.5 pr-2 py-2.5 flex items-center gap-2.5"'
+  /* 업로드가 끝난 사람은 체크, 아직인 사람은 도는 점 — 한눈에 갈린다 */
+  const mark = c.stage === 'live'
+    ? '<svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24">'
+      + '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
+    : '<span class="dot on"></span>';
+  return '<article class="pcard surface-sm flex items-start gap-3"'
     + ' draggable="true" data-i="' + i + '"' + (PSTATE.open === i ? ' data-open="1"' : '')
     + ' onclick="openPeek(' + i + ', event)" title="눌러서 정보 보기">'
     + '<span class="pbox shrink-0 cursor-pointer" data-i="' + i + '" onclick="togglePick(' + i + ', event)"'
     +   ' title="' + esc(c.name) + '님 고르기">' + box(PICK.has(i)) + '</span>'
-    + avatar(c, i, 38)
+    + avatar(c, i, 48)
     + '<span class="min-w-0 flex-1 leading-tight">'
-    +   '<span class="block text-[13px] font-bold text-slate-900 truncate">' + esc(c.name) + '</span>'
-    +   '<span class="flex items-center gap-1.5 mt-1 min-w-0">'
-    +     '<span class="pstage ' + st.cls + '">' + st.label + '</span>'
+    +   '<span class="block text-[15px] font-bold text-slate-900 truncate">' + esc(c.name) + '</span>'
+    +   '<span class="block num text-[11.5px] text-slate-500 truncate mt-0.5">' + esc(c.handle) + '</span>'
+    +   '<span class="flex items-center gap-2 mt-2 min-w-0">'
+    +     '<button class="pstage ' + st.cls + '" onclick="openPeek(' + i + ', event)"'
+    +       ' title="진행 단계 보기">' + mark + st.label + '</button>'
     +     '<span class="num text-[10.5px] text-slate-500 truncate">' + sortHint(c) + '</span>'
     +   '</span>'
     + '</span>'
     + '<button class="hbtn shrink-0" onclick="chatAbout(' + i + ', event)" title="이 사람 이야기로 대화 열기"'
     +   ' aria-label="' + esc(c.name) + '님 이야기로 대화 열기">'
-    +   '<span class="num text-[14px] font-semibold leading-none">@</span></button>'
+    +   '<span class="num text-[15px] font-semibold leading-none">@</span></button>'
     + '</article>';
+}
+
+/* ── 열 수 ──────────────────────────────────────────────────
+   화면이 넓으니 열을 늘리는 게 아니다. 박스 크기를 먼저 지키고,
+   한 열에 담을 수 있는 인원을 넘을 때만 열을 하나 더 쓴다.
+   상세가 열려 있으면 그만큼 좁아진 폭으로 센다 — 애니메이션 중에 재면
+   중간값을 읽으니 폭은 재지 말고 계산한다 */
+const PCARD_MIN = 292;   /* 이보다 좁아지면 이름과 단계가 붙는다 */
+const PCARD_MAX = 420;   /* 이보다 넓어지면 오른쪽이 텅 빈다 */
+const PCARD_H   = 90;
+const PGAP      = 8;
+const PDET_W    = 296;
+const PROW_GAP  = 10;    /* #prog 의 flex gap — 상세가 닫혀 있어도 자리를 먹는다 */
+
+function layoutProgGrid() {
+  const box = $('prog'), grid = $('pgrid');
+  if (!box || !grid) return;
+  const det  = $('pdet');
+  /* 폰 폭에서는 상세가 아래로 내려가므로 폭을 가져가지 않는다 */
+  const side = innerWidth > 640;
+  const detW = side && det && det.classList.contains('open') ? PDET_W : 0;
+  const availW = box.clientWidth - 20 - PROW_GAP - detW;
+  /* 1280 미만에서는 박스 높이가 카드 20장에 끌려간다 — 자기 키를 자기로 재면
+     rows 가 언제나 n 이 되어 '인원이 넘치면 열을 더' 라는 규칙이 죽는다 */
+  const availH = (innerWidth < 1280 ? innerHeight : box.clientHeight) - 20;
+  const n = grid.querySelectorAll('.pcard').length;
+
+  /* 아무도 없으면 안내문 한 줄뿐이다. 트랙에 가두지 말고 박스 전폭을 쓴다 */
+  if (!n) {
+    grid.style.gridTemplateColumns = 'minmax(0,1fr)';
+    grid.style.justifyContent = 'stretch';
+    grid.classList.remove('anim');
+    grid.style.flex = '';
+    return;
+  }
+
+  /* 넣을 수 있는 최대 열(박스가 즐어들기 진전까지) */
+  const byWidth  = Math.max(1, Math.floor((availW + PGAP) / (PCARD_MIN + PGAP)));
+  /* 한 열에 몇 사람 들어가는지 — 이걸 넘으면 열을 하나 더 열다 */
+  const rows     = Math.max(1, Math.floor((availH + PGAP) / (PCARD_H + PGAP)));
+  const byCount  = Math.max(1, Math.ceil(n / rows));
+  /* 사람이 적어도 박스가 최대 톰이면 한 열은 더 채운다 —
+     안 그러면 넓은 화면에서 오른쪽이 통짜로 떠버린다 */
+  const fitAtMax = Math.max(1, Math.floor((availW + PGAP) / (PCARD_MAX + PGAP)));
+  const cols     = Math.max(1, Math.min(byWidth, Math.max(byCount, fitAtMax)));
+
+  /* 트랙을 미리 항해 둔다. minmax 로 맡기면 상세가 열리는 첫 프레임에
+     아직 넓은 폭을 나눠 420 까지 벌어진다 — 카드 폭이 뒤바뀌어보인다.
+     12px 는 스크롤바와 오른쪽 여백 몰이다 */
+  const track = Math.min(PCARD_MAX,
+    Math.max(200, Math.floor((availW - (cols - 1) * PGAP - 12) / cols)));
+  grid.style.gridTemplateColumns = 'repeat(' + cols + ', ' + track + 'px)';
+  grid.style.justifyContent = 'start';
+
+  /* 폭을 못 박아 둔다 — 그래야 열 수와 폭이 같이 움직인다 */
+  grid.style.flex = side ? '0 0 ' + Math.max(0, availW) + 'px' : '';
+}
+
+/* 상세를 여닫는 동엄에만 폭을 부드럽게 움직인다.
+   필터·정렬·리사이즈는 여기 해당하지 않는다 — 끌듬거리면 느려진다 */
+let gridT;
+function animGrid() {
+  const g = $('pgrid');
+  if (!g || innerWidth <= 640) return;
+  g.classList.add('anim');
+  clearTimeout(gridT);
+  gridT = setTimeout(function () { g.classList.remove('anim'); }, 460);
 }
 
 
@@ -1670,6 +1767,7 @@ function renderProg() {
   paintPick();
   if (PSTATE.open !== null) paintDet();
   fitProgRows();
+  layoutProgGrid();
 }
 
 function progTable(list) {
@@ -1882,19 +1980,23 @@ function openPeek(i, ev) {
   PSTATE.open = i;
   if (PSTATE.view === 'table') { renderProg(); return; }
   const det = $('pdet');
+  animGrid();
   paintDet();
   det.classList.add('open');
   document.querySelectorAll('#prog .pcard').forEach(el =>
     el.setAttribute('data-open', +el.dataset.i === i ? '1' : '0'));
   fitProgRows();
+  layoutProgGrid();
 }
 
 function closePeek() {
   PSTATE.open = null;
   const det = $('pdet');
+  animGrid();
   if (det) { det.classList.remove('open'); }
   document.querySelectorAll('#prog .pcard').forEach(el => el.setAttribute('data-open', '0'));
   document.querySelectorAll('#ptable tr.on').forEach(el => el.classList.remove('on'));
+  layoutProgGrid();
 }
 
 function paintDet() {
@@ -1946,7 +2048,7 @@ function paintDet() {
 function fitProgRows() {
   const sec = $('progSec');
   if (!sec) return;
-  if (innerWidth < 1280) { sec.style.height = ''; fitChatHeight(); return; }
+  if (innerWidth < 1280) { sec.style.height = ''; layoutProgGrid(); fitChatHeight(); return; }
   const pad = $('pad'), cs = getComputedStyle(pad);
   /* pad 가 내용에 밀려 화면보다 길어진 순간에 재면 박스가 그만큼 길어져 버린다.
      바닥은 언제나 화면 아래끝이다 */
@@ -1955,6 +2057,7 @@ function fitProgRows() {
   const hint = $('progHint');
   const h = floorY - sec.getBoundingClientRect().top - (hint ? hint.offsetHeight + 12 : 0);
   sec.style.height = Math.max(240, Math.round(h)) + 'px';
+  layoutProgGrid();
   fitChatHeight();
 }
 
@@ -2018,9 +2121,6 @@ function renderChat() {
   ).join('');
   $('chatLog').scrollTop = $('chatLog').scrollHeight;
 
-  /* 닫힌 세로 배너에는 마지막 한 줄만 말풍선으로 보인다 — 채팅방이라는 걸 말해 준다 */
-  const lastMsg = CHAT[CHAT.length - 1];
-  if ($('chatArtLast')) $('chatArtLast').textContent = lastMsg ? lastMsg.text : '';
 
 
   const t = $('chatTopic');
