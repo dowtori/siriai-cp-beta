@@ -116,11 +116,24 @@
 
   /* 진행상황 — 세 줄로 깔고 옆으로 넘긴다. 20~30명이어도 높이가 그대로다 */
   #prog{display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,max-content);
-        grid-auto-columns:246px;overflow-x:auto;overflow-y:hidden;
+        grid-auto-columns:288px;overflow-x:auto;overflow-y:hidden;
         scroll-behavior:smooth;align-content:start}
-  #prog.few{grid-auto-columns:246px}
+  #prog.few{grid-auto-columns:288px}
+  /* 세로 짧은 노트북(1366x768 · 1280x800)에서는 3행이 하단 CTA 밑으로 들어간다.
+     사람은 어차피 옆으로 흐르므로, 그 높이에서만 두 줄로 내린다 */
+  @media (max-height:820px){
+    #prog{grid-template-rows:repeat(2,max-content)}
+    /* 세로만 조인다. 배치는 그대로 둔다 */
+    #pad{padding-top:12px}
+    #colL{gap:8px}
+    #dash > div{padding-top:10px;padding-bottom:10px}
+    #assetPanel > header{padding:6px 13px}
+    #assets{padding:6px;gap:8px}
+    #assets > button{padding-top:8px;padding-bottom:8px}
+    #assets > button > span:first-child{width:40px;height:40px}
+  }
 
-  .hbtn{width:24px;height:24px;display:grid;place-items:center;border-radius:7px;color:#94a3b8;
+  .hbtn{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;color:#94a3b8;
         transition:background-color .17s ease,color .17s ease}
   .hbtn:hover{background:#f1f5f9;color:#0f172a}
   .hbtn[disabled]{opacity:.3;pointer-events:none}
@@ -135,6 +148,9 @@
   .cta:hover{background:#1e293b;box-shadow:var(--lift-2)}
   .cta:active{transform:translateY(1px)}
 
+  .araise  {transition:box-shadow .2s ease, transform .2s ease, background-color .17s ease}
+  .araise:hover {box-shadow:var(--lift-2);transform:translateY(-1px)}
+  .araise:active{box-shadow:var(--lift-1);transform:translateY(0)}
   .raise   {transition:box-shadow .2s ease, transform .2s ease}
   .raise:hover{box-shadow:var(--lift-3);transform:translateY(-1px)}
   .raise:active{box-shadow:var(--lift-1);transform:translateY(0)}
@@ -295,13 +311,24 @@
   }
   /* 세로가 더 짧아지면 한 화면 고정을 포기하고 페이지를 흐르게 둔다.
      (폭만 보는 분기로는 노트북에서 표가 두 줄만 보이는 문제가 안 풀린다) */
-  /* 좁은 화면에서만 세로로 푼다. 높이로 풀면 노트북에서 화면이 만들다 만 것처럼 남는다 */
-  @media (max-width:1080px){
+  /* 좁은 화면에서만 세로로 푼다. 높이로 풀면 노트북에서 화면이 만들다 만 것처럼 남는다.
+     경계는 본문이 2단에서 1단으로 바뀌는 xl(1280) 과 같아야 한다.
+     1080 이면 1081~1279 구간에서 1단인 채로 높이만 고정돼 대화창이 짓눌린다. */
+  @media (max-width:1279px){
     html,body{height:auto}
     body{overflow:auto}
     #shell{height:auto;min-height:100%}
-    #main{height:auto}
+    /* 세로로 쌓이면 고정 CTA 바가 끝까지 스크롤해도 마지막 103px 를 계속 가린다.
+       화면을 '약간 덮는' 것과 '못 보게 막는' 것은 다르다 */
+    #main{height:auto;padding-bottom:116px}
   }
+  /* 1540px 이상에서만 독을 좌측 작업 단 중앙에 세운다.
+     레일 244 + 여백 24 부터 대화창 앞까지가 그 단이고, 중앙은 50vw - 60px 이다.
+     이 아래에서는 단이 좁아 독 내용이 두 줄로 접히므로 뷰포트 중앙 그대로 둔다 */
+  @media (min-width:1540px){
+    #dock{left:calc(50vw - 60px);width:min(1060px,calc(100vw - 688px))}
+  }
+
   /* 폰 — 콜드메일 링크는 대부분 여기서 열린다.
      고정 두 열이 320px 라 390px 화면에서는 데이터가 38px 밖에 안 남는다.
      고정을 풀어 표 전체를 옆으로 넘겨 보게 하고, 독은 세로로 쌓는다. */
@@ -400,7 +427,7 @@
       </div>
     </header>
 
-    <div class="flex-1 min-h-0 flex flex-col px-4 sm:px-6 pt-5 pb-4">
+    <div id="pad" class="flex-1 min-h-0 flex flex-col px-4 sm:px-6 pt-5 pb-4">
 
       <!-- 제목 -->
       <div class="shrink-0 flex flex-col xl:flex-row xl:items-end justify-between gap-3">
@@ -417,20 +444,29 @@
       <!-- 본문 2단 — 좌: 대시보드 · 에셋 · 진행상황 / 우: 대화창 -->
       <div class="flex-1 min-h-0 mt-3 flex flex-col xl:flex-row gap-3">
 
-        <div class="flex-1 min-w-0 min-h-0 flex flex-col gap-3">
+        <div id="colL" class="flex-1 min-w-0 min-h-0 flex flex-col gap-3">
 
           <!-- 1 · 대시보드 — 숫자가 스스로 말한다. 라벨을 얹지 않는다 -->
           <section class="shrink-0">
             <div id="dash" class="grid grid-cols-2 xl:grid-cols-4 gap-2.5"></div>
           </section>
 
-          <!-- 2 · 에셋 — 상자도 라벨도 없이 자료가 그냥 놓여 있다 -->
-          <section class="shrink-0">
-            <div id="assets" class="flex flex-wrap items-center gap-2"></div>
+          <!-- 2 · 에셋 — 브랜드가 실제로 가져가는 것들. 회색 바닥에 떠 있으면 보조로 읽힌다 -->
+          <section id="assetPanel" class="pnl shrink-0">
+            <header>
+              <h2>받아보실 자료</h2>
+              <button onclick="na('자료 요청', '실제 화면에서는 요청이 담당자에게 바로 전달되고, 준비되면 여기에 칸이 하나 늘어납니다.')"
+                      class="shrink-0 inline-flex items-center gap-1 text-[11.5px] font-bold text-slate-500 hover:text-slate-900 transition whitespace-nowrap">
+                추가 요청
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </header>
+            <div id="assets" class="flex flex-wrap items-center gap-2.5 p-2.5"></div>
           </section>
 
           <!-- 3 · 진행상황 — 박스 하나에 전원. 20~30명이어도 여기 안에서만 흐른다 -->
-          <section class="pnl flex-1 min-h-0">
+          <!-- 3 · 진행상황 — 3행 높이에 맞춘다. flex-1 이면 남는 세로를 전부 먹고 안이 텅 빈다 -->
+          <section class="pnl shrink-0">
             <header>
               <div class="flex items-center gap-2.5 min-w-0">
                 <h2>진행상황</h2>
@@ -444,7 +480,7 @@
                 </div>
               </div>
             </header>
-            <div id="prog" class="flex-1 min-h-0 scroll scroll-thin p-2.5 gap-2" style="min-height:132px"></div>
+            <div id="prog" class="scroll scroll-thin p-2.5 gap-2.5"></div>
           </section>
           <p class="shrink-0 -mt-1 text-[10.5px] text-slate-500 keep">이름을 누르면 그 사람 정보가, 카드를 누르면 선택이 됩니다. 고른 뒤 끌어다 놓거나 <span class="font-semibold text-slate-700">대화에 담기</span>를 누르세요.</p>
         </div>
@@ -462,7 +498,7 @@
             </span>
           </header>
 
-          <div id="chatLog" class="flex-1 min-h-0 overflow-y-auto scroll scroll-thin px-4 py-3.5 flex flex-col gap-2.5" style="min-height:240px"></div>
+          <div id="chatLog" class="flex-1 min-h-0 overflow-y-auto scroll scroll-thin px-4 py-3.5 flex flex-col justify-end gap-2.5" style="min-height:240px"></div>
 
           <div id="chatTopic" class="hidden shrink-0 px-3 pb-1.5 flex flex-wrap items-center gap-1.5"></div>
 
@@ -800,9 +836,9 @@ Object.values(ROSTERS).forEach(r => r.forEach((c, i) => {
 /* 브랜드가 가져가는 것들. 실제로는 드라이브 · 리포트 링크로 바로 연결된다 */
 const ASSETS = [
   { t:'원본 콘텐츠',   s:'영상 3건', ic:'film',  c:'bg-indigo-50 text-indigo-600'   },
-  { t:'가이드라인',    s:'PDF 1건',  ic:'doc',   c:'bg-sky-50 text-sky-600'         },
+  { t:'가이드라인',    s:'PDF 1건',  ic:'doc',   c:'bg-sky-50 text-sky-600',        dw:'dw-guide'  },
   { t:'파트너십 코드', s:'5건',      ic:'tag',   c:'bg-amber-50 text-amber-600'     },
-  { t:'성과 보고서',   s:'08.31',    ic:'chart', c:'bg-emerald-50 text-emerald-600' }
+  { t:'성과 보고서',   s:'08.31',    ic:'chart', c:'bg-emerald-50 text-emerald-600', dw:'dw-report' }
 ];
 
 const A_ICON = {
@@ -909,7 +945,6 @@ function pickCamp(id) {
   CREATORS = ROSTERS[id];
   S.nudge = false;
   render(); buildReport(); buildCal();
-  $('list').scrollTop = 0; $('list').scrollLeft = 0;
   toggleRail(false);
   const cp = camp();
   toast(cp.state === 'live'
@@ -946,45 +981,61 @@ function dashCard(label, val, delta, note) {
   return '<div class="surface-sm px-4 py-3.5 flex flex-col">'
     + '<div class="text-[11px] font-medium text-slate-500 truncate">' + label + '</div>'
     + '<div class="num text-[24px] font-bold text-slate-900 mt-1" style="letter-spacing:var(--tr-display)">' + val + '</div>'
-    + '<div class="mt-1.5 flex items-end justify-between gap-2">'
+    + '<div class="mt-1.5 flex items-end gap-2">'
     +   '<span class="text-[10.5px] text-slate-500 truncate">' + note + '</span>'
-    +   (delta ? '<span class="num text-[11px] font-bold text-emerald-600 shrink-0 inline-flex items-center gap-0.5"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"/></svg>' + delta + '</span>' : '')
+    +   (delta ? '<span class="num text-[11px] font-bold text-emerald-700 shrink-0 inline-flex items-center gap-0.5"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"/></svg>' + delta + '</span>' : '')
     + '</div></div>';
 }
 
 function renderDash() {
-  const sel = selected(), up = upList(), last = lastUp();
-  const who = last ? esc(last.name) + '님 업로드 반영' : '업로드를 기다리는 중';
+  const sel = selected(), up = upList(), last = lastUp(), live = isLive();
+  const rest = sel.length - up.length;
+
+  /* 반응은 세 가지를 따로 세면 조회수 옆에서 전부 반올림 오차처럼 보인다. 한 숫자로 합친다 */
+  const react = sum(up, 'likes') + sum(up, 'cmts') + sum(up, 'shares');
+
+  /* 초록 화살표는 화면에 하나만 둔다. 총 비용은 선정 때 확정되므로 업로드로 오르지 않고,
+     캠페인이 끝난 달에는 '오르는 중'이라는 표시 자체가 틀린 말이 된다 */
+  const rising = live && last;
 
   $('dash').innerHTML =
-      dashCard('총 조회수', n(sum(up, 'views')),  last ? '+' + n(last.views)  : null, who)
-    + dashCard('총 비용',   won(sum(sel, 'cost')), last ? '+' + won(last.cost) : null, '선정 ' + sel.length + '명 확정')
-    + dashCard('댓글 수',   n(sum(up, 'cmts')),    last ? '+' + n(last.cmts)   : null, who)
-    + dashCard('공유 수',   n(sum(up, 'shares')),  last ? '+' + n(last.shares) : null, who);
+      dashCard('총 조회수', n(sum(up, 'views')),
+               rising ? '+' + n(last.views) : null,
+               /* 초록 숫자와 설명을 한 줄에 같이 두면 1280px 에서 설명이 잘린다.
+                  누가 방금 올렸는지는 바로 아래 진행상황에 이미 있다 */
+               rising ? '' : (up.length ? '캠페인 종료 기준' : '업로드를 기다리는 중'))
 
+    + dashCard('반응 수', n(react), null, '좋아요·댓글·공유')
+
+    + dashCard('총 비용', won(sum(sel, 'cost')), null, '선정 ' + sel.length + '명 확정')
+
+    + dashCard('업로드 완료',
+               up.length + '<span class="text-slate-500"> / ' + sel.length + '</span>',
+               null,
+               rest > 0 ? rest + '명 진행 중' : '모두 업로드 완료');
 }
 
 /* ══════════ 2 · 에셋 ══════════
    태스크 중심의 핵심. 누르면 그 자료가 바로 열린다. */
 function renderAssets() {
   $('assets').innerHTML = ASSETS.map((a, i) =>
-    '<button class="btn raise px-3.5 py-3 inline-flex items-center gap-3 text-left" onclick="openAsset(' + i + ')">'
-    + '<span class="w-10 h-10 rounded-xl grid place-items-center shrink-0 ' + a.c + '">'
-    +   '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">'
+    '<button class="araise bg-slate-50 border border-slate-200 hover:bg-white rounded-xl pl-4 pr-6 py-4 inline-flex items-center gap-3.5 text-left transition" onclick="openAsset(' + i + ')">'
+    + '<span class="w-12 h-12 rounded-xl grid place-items-center shrink-0 ' + a.c + '">'
+    +   '<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">'
     +   '<path stroke-linecap="round" stroke-linejoin="round" d="' + A_ICON[a.ic] + '"/></svg></span>'
-    + '<span class="text-[14px] font-bold text-slate-900 whitespace-nowrap">' + esc(a.t) + '</span>'
-    + '<span class="num text-[11.5px] text-slate-500 whitespace-nowrap">' + esc(a.s) + '</span>'
+    + '<span class="leading-tight">'
+    +   '<span class="block text-[16px] font-bold text-slate-900 whitespace-nowrap">' + esc(a.t) + '</span>'
+    +   '<span class="block num text-[12.5px] text-slate-500 whitespace-nowrap mt-0.5">' + esc(a.s) + '</span>'
+    + '</span>'
     + '</button>'
-  ).join('')
-  + '<button onclick="na(\'자료 요청\', \'실제 화면에서는 요청이 담당자에게 바로 전달되고, 준비되면 여기에 칸이 하나 늘어납니다.\')"'
-  +   ' class="px-3.5 py-3 inline-flex items-center gap-1.5 rounded-xl text-[13px] font-bold text-slate-400 hover:text-slate-800 hover:bg-white transition whitespace-nowrap">'
-  +   '추가 요청'
-  +   '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14"/></svg>'
-  + '</button>';
+  ).join('');
 }
 
+/* 화면에서 제일 큰 버튼이 알림만 띄우면 다음 클릭이 없다.
+   이미 만들어 둔 서랍이 있는 것은 진짜로 연다. */
 function openAsset(i) {
   const a = ASSETS[i];
+  if (a.dw) return openDrawer(a.dw);
   na(a.t, '실제 화면에서는 누르는 즉시 ' + a.t + ' 폴더가 새 창에서 열립니다.');
 }
 
@@ -1036,16 +1087,16 @@ function renderProg() {
     const mark = c.stage === 'live'
       ? '<svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
       : '<span class="dot on"></span>';
-    return '<article class="pcard surface-sm pl-2 pr-1.5 py-1.5 flex items-center gap-2" draggable="true" data-i="' + i + '"'
+    return '<article class="pcard surface-sm pl-2.5 pr-2 py-2.5 flex items-center gap-2.5" draggable="true" data-i="' + i + '"'
       + ' onclick="togglePick(' + i + ', event)" title="눌러서 고르기">'
       + '<button class="flex items-center gap-2 min-w-0 text-left rounded-lg hover:bg-slate-100 -m-0.5 p-0.5"'
       +   ' onclick="openPeek(' + i + ',event)" title="' + esc(c.name) + '님 정보 보기">'
-      +   avatar(c, i, 28)
+      +   avatar(c, i, 36)
       +   '<span class="min-w-0 leading-tight">'
-      +     '<span class="block text-[11.5px] font-bold text-slate-900 truncate">' + esc(c.name) + '</span>'
-      +     '<span class="block num text-[9.5px] text-slate-500 truncate">' + esc(c.handle) + '</span>'
+      +     '<span class="block text-[13px] font-bold text-slate-900 truncate">' + esc(c.name) + '</span>'
+      +     '<span class="block num text-[10.5px] text-slate-500 truncate mt-0.5">' + esc(c.handle) + '</span>'
       +   '</span></button>'
-      + '<span class="text-[10px] font-semibold flex items-center gap-1 shrink-0 ml-auto px-1.5 py-1 rounded-md '
+      + '<span class="text-[11px] font-semibold flex items-center gap-1 shrink-0 ml-auto px-2 py-1.5 rounded-lg '
       +   st.cls + '">' + mark + '<span class="whitespace-nowrap">' + st.label + '</span></span>'
       + '<button class="hbtn shrink-0" onclick="chatAbout(' + i + ', event)" aria-label="'
       +   esc(c.name) + '님 이야기로 대화 열기"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M3 12h18"/></svg></button>'
