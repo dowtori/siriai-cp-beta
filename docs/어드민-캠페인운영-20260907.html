@@ -1,0 +1,441 @@
+<title>SIRIAI 캠페인 어드민</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════
+     SIRIAI 캠페인 어드민 — 우리가 캠페인을 굴리는 쪽 화면 (데모)
+
+     브랜드 화면(콘솔)의 반대편이다. 같은 대화, 같은 사람, 같은 단계를
+     우리 쪽에서 본다. 여기서 단계를 옮기면 브랜드 화면의 진행상황이 바뀐다.
+
+     ★ 원고료는 이 화면에만 있다. 브랜드 화면에는 제안 단가만 나간다.
+       열 머리에 그렇게 적어 둔 이유가 그것이다 — 실수로 캡쳐해 보내는 걸 막는다.
+     ═══════════════════════════════════════════════════════════════ */
+
+  :root{
+    --ink:#0f172a; --ink-2:#475569; --ink-3:#94a3b8;
+    --line:#e8edf3; --paper:#f1f5f9;
+    --od-red:#dc272d;
+    --lift-1:0 1px 2px rgba(17,19,24,.05), 0 0 0 1px rgba(17,19,24,.05);
+    --lift-2:0 2px 6px rgba(17,19,24,.06), 0 10px 26px -18px rgba(17,19,24,.30);
+    --ring:0 0 0 1px rgba(17,19,24,.09);
+    --tr-body:-.005em;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font-family:'Inter Tight','Noto Sans KR',system-ui,-apple-system,sans-serif;
+       letter-spacing:var(--tr-body);-webkit-font-smoothing:antialiased}
+  .num{font-family:'JetBrains Mono','Inter Tight',ui-monospace,monospace;
+       font-feature-settings:'tnum' 1;font-variant-numeric:tabular-nums}
+  .t-label{font-family:'JetBrains Mono',ui-monospace,monospace;
+           text-transform:uppercase;letter-spacing:.16em;font-weight:500}
+  .keep{word-break:keep-all}
+  button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+  input,textarea,select{font:inherit;color:inherit}
+
+  .scroll::-webkit-scrollbar{width:8px;height:8px}
+  .scroll::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:99px}
+  .scroll::-webkit-scrollbar-track{background:transparent}
+
+  .pnl{background:#fff;border-radius:16px;box-shadow:var(--lift-2);
+       display:flex;flex-direction:column;overflow:hidden}
+  .pnl > header{flex:none;display:flex;align-items:center;justify-content:space-between;
+                gap:12px;padding:12px 14px;border-bottom:1px solid #f1f5f9}
+  .pnl h2{font-size:12.5px;font-weight:700;margin:0;white-space:nowrap}
+
+  /* 단계 — 브랜드 화면과 같은 농도 체계를 쓴다. 색을 늘리지 않는다 */
+  .stg{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;
+       padding:4px 8px;border-radius:8px;white-space:nowrap;transition:filter .15s ease}
+  .stg:hover{filter:brightness(.95)}
+  .stg-ship{color:#64748b;background:#f1f5f9}
+  .stg-make{color:#475569;background:#e8edf3}
+  .stg-qa  {color:#1e293b;background:#cbd5e1}
+  .stg-live{color:#047857;background:#ecfdf5}
+
+  .btn{background:#fff;box-shadow:var(--lift-1);border-radius:9px;
+       transition:box-shadow .16s ease,color .16s ease}
+  .btn:hover{box-shadow:var(--lift-2)}
+  .cta{background:var(--ink);color:#fff;transition:background-color .16s ease}
+  .cta:hover{background:#1e293b}
+  .cta:disabled{background:#e2e8f0;color:#94a3b8;cursor:default}
+
+  /* 표 */
+  #tw{flex:1 1 auto;min-height:0;overflow:auto}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}
+  thead th{position:sticky;top:0;z-index:2;background:#fff;text-align:left;
+           font-size:10px;font-weight:700;color:var(--ink-3);white-space:nowrap;
+           padding:8px 10px;border-bottom:1px solid var(--line)}
+  thead th.r{text-align:right}
+  /* 원고료 칸은 눈에 보이게 갈라 둔다 — 브랜드 화면엔 없는 열이다 */
+  thead th.own, tbody td.own{background:#fffaf5;box-shadow:inset 1px 0 0 #fde9d7, inset -1px 0 0 #fde9d7}
+  thead th.own{color:#b45309}
+  tbody td{padding:8px 10px;border-bottom:1px solid #f4f7fa;vertical-align:middle}
+  tbody td.r{text-align:right}
+  tbody tr:hover td{background:#fafcfe}
+  tbody tr:hover td.own{background:#fff6ec}
+  tbody tr.on td{background:#f8fafc}
+
+  .av{width:26px;height:26px;border-radius:99px;display:grid;place-items:center;
+      font-size:10.5px;font-weight:700;flex:none}
+  .cell-in{width:100%;background:#f8fafc;border-radius:8px;padding:5px 8px;
+           font-size:11px;box-shadow:var(--ring);outline:0;min-width:96px}
+  .cell-in:focus{background:#fff;box-shadow:0 0 0 1.5px var(--ink)}
+  .cell-in::placeholder{color:#cbd5e1}
+
+  /* 대화 */
+  .bub{max-width:84%;font-size:12px;line-height:1.62;padding:9px 12px;border-radius:14px}
+  .them{background:#f1f5f9;color:var(--ink);border-bottom-left-radius:5px;align-self:flex-start}
+  .us{background:var(--ink);color:#fff;border-bottom-right-radius:5px;align-self:flex-end}
+  .who{font-size:9.5px;color:var(--ink-3);margin-bottom:3px}
+
+  .tab{font-size:11.5px;font-weight:700;color:var(--ink-3);padding:6px 10px;border-radius:9px;
+       transition:background-color .15s ease,color .15s ease;white-space:nowrap}
+  .tab:hover{color:var(--ink)}
+  .tab.on{background:var(--ink);color:#fff}
+  .badge{font-size:9.5px;font-weight:700;padding:1px 5px;border-radius:99px;
+         background:var(--od-red);color:#fff;margin-left:5px}
+
+  .req{border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+  .req.done{opacity:.5}
+
+  #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(14px);
+         background:var(--ink);color:#fff;font-size:12px;font-weight:600;
+         padding:11px 16px;border-radius:12px;box-shadow:var(--lift-2);
+         opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;z-index:80;
+         max-width:min(560px,calc(100vw - 32px))}
+  #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (max-width:1279px){
+    #body{flex-direction:column}
+    #side{width:100%;min-width:0}
+  }
+</style>
+
+<div class="h-full flex flex-col p-4 sm:p-5 gap-3">
+
+  <!-- 머리 — 여기가 우리 쪽 화면이라는 걸 먼저 말한다 -->
+  <header class="flex items-center justify-between gap-4 shrink-0">
+    <div class="flex items-center gap-3 min-w-0">
+      <span class="w-8 h-8 rounded-xl grid place-items-center text-white text-[11px] font-bold shrink-0"
+            style="background:var(--ink)">SI</span>
+      <div class="min-w-0">
+        <div class="flex items-center gap-2">
+          <h1 class="text-[15px] font-bold m-0 truncate">SIRIAI 캠페인 어드민</h1>
+          <span class="t-label text-[8.5px] px-1.5 py-0.5 rounded"
+                style="background:#fee2e2;color:#b91c1c">데모</span>
+        </div>
+        <div class="num text-[10.5px] mt-0.5" style="color:var(--ink-2)">
+          오드타입 · 26년 8월 인플루언서 캠페인 · 08.01 – 08.31
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="../" class="btn text-[11.5px] font-bold px-3 py-2 rounded-lg" style="color:var(--ink-2)"
+         title="브랜드가 보는 화면">브랜드 화면 보기</a>
+      <button onclick="na('설정','실제 화면에서는 담당자 · 알림 · 시트 연결을 여기서 바꿉니다.')"
+              class="btn text-[11.5px] font-bold px-3 py-2 rounded-lg" style="color:var(--ink-2)">설정</button>
+    </div>
+  </header>
+
+  <!-- 요약 — 지금 어디가 막혀 있는지 한 줄로 -->
+  <div id="sum" class="shrink-0 grid gap-2" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
+
+  <div id="body" class="flex-1 min-h-0 flex gap-3">
+
+    <!-- 진행 관리 -->
+    <section class="pnl flex-1 min-w-0">
+      <header>
+        <div class="flex items-center gap-2.5 min-w-0">
+          <h2>진행 관리</h2>
+          <span id="selLbl" class="num text-[10.5px]" style="color:var(--ink-3)"></span>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button onclick="bump()" id="bumpBtn"
+                  class="cta text-[11px] font-bold px-3 py-2 rounded-lg" disabled></button>
+          <button onclick="na('내보내기','실제 화면에서는 이 표가 정산 시트로 그대로 나갑니다.')"
+                  class="btn text-[11px] font-bold px-2.5 py-2 rounded-lg" style="color:var(--ink-2)">내보내기</button>
+        </div>
+      </header>
+      <div id="tw" class="scroll"></div>
+    </section>
+
+    <!-- 대화 · 요청함 -->
+    <aside id="side" class="pnl w-[400px] min-w-[400px] shrink-0">
+      <header>
+        <div class="flex items-center gap-1">
+          <button id="tabChat" class="tab on" onclick="setTab('chat')">브랜드 대화</button>
+          <button id="tabReq"  class="tab" onclick="setTab('req')">요청함<span id="reqN" class="badge"></span></button>
+        </div>
+        <span class="num text-[10px]" style="color:var(--ink-3)">오드타입 이수연 매니저</span>
+      </header>
+
+      <div id="paneChat" class="flex-1 min-h-0 flex flex-col">
+        <div id="log" class="scroll flex-1 min-h-0 overflow-y-auto px-3.5 py-3.5 flex flex-col justify-end gap-2.5"></div>
+        <form onsubmit="send(event)" class="shrink-0 px-3 py-3 border-t border-slate-100 flex items-end gap-2">
+          <label for="msg" class="sr-only">보낼 내용</label>
+          <textarea id="msg" rows="1" placeholder="브랜드에 답하기"
+            class="flex-1 min-w-0 resize-none text-[12.5px] bg-slate-50 rounded-xl px-3 py-2.5 focus:outline-none focus:bg-white"
+            style="box-shadow:var(--ring);max-height:104px" oninput="grow(this)" onkeydown="key(event)"></textarea>
+          <button type="submit" class="cta shrink-0 w-10 h-10 grid place-items-center rounded-xl" title="보내기 (Enter)" aria-label="보내기">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <div id="paneReq" class="scroll flex-1 min-h-0 overflow-y-auto px-3.5 py-3.5 flex flex-col gap-2.5 hidden"></div>
+    </aside>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const n   = v => Number(v).toLocaleString('ko-KR');
+const won = v => '₩' + n(v);
+const kw  = v => v >= 10000 ? (v / 10000).toFixed(v >= 100000 ? 0 : 1).replace(/\.0$/, '') + '만' : n(v);
+
+let toastT;
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600);
+}
+const na = (t, d) => toast(t + ' — ' + d);
+
+/* ── 단계 ────────────────────────────────────────────────────
+   우리가 실제로 옮기는 순서다. 뒤로도 갈 수 있어야 한다 —
+   검수에서 반려하면 제작으로 돌아간다 */
+const FLOW = [
+  { k:'ship', t:'배송 중',  cls:'stg-ship' },
+  { k:'make', t:'제작 중',  cls:'stg-make' },
+  { k:'qa',   t:'검수 중',  cls:'stg-qa'   },
+  { k:'live', t:'업로드 완료', cls:'stg-live' }
+];
+const stg  = k => FLOW.find(f => f.k === k) || FLOW[1];
+const rank = k => FLOW.findIndex(f => f.k === k);
+
+/* ── 사람 ────────────────────────────────────────────────────
+   브랜드 화면과 같은 20명이다. 원고료는 여기에만 있다 */
+const P = (name, handle, roman, fol, er, cost, due, stage, views) => ({
+  name, handle, roman, fol, er, cost, due, stage,
+  /* 원고료 = 실제 지급액. 제안 단가와 다르다 */
+  own: Math.round(cost * 0.72 / 1000) * 1000,
+  views: views || 0, ship:'', link:'', memo:''
+});
+
+const PEOPLE = [
+  P('전수빈','@subin_jeon','SUBIN',128000,6.9,350000,'08.02','live',842000),
+  P('윤채원','@chaewon_yn','CHAEWON',112000,6.2,320000,'08.04','live',694000),
+  P('김민지','@minji_beauty','MINJI',96000,7.4,300000,'08.05','live',611000),
+  P('강예린','@yerin.kang','YERIN',88000,7.1,290000,'08.06','live',528000),
+  P('이아린','@arin_daily','ARIN',74000,5.8,250000,'08.07','live',447000),
+  P('백서진','@seojin_bk','SEOJIN',67000,6.5,240000,'08.08','live',392000),
+  P('임하늘','@haneul_lim','HANEUL',54000,8.2,220000,'08.09','live',356000),
+  P('노아름','@areum_no','AREUM',46000,5.4,200000,'08.11','live',288000),
+  P('문가온','@gaon_moon','GAON',39000,6.7,190000,'08.12','live',242000),
+  P('최유진','@eujin_style','EUJIN',58000,8.1,200000,'08.14','qa'),
+  P('하지원','@jiwon_ha','JIWON',52000,6.9,200000,'08.15','qa'),
+  P('서지호','@jiho.seo','JIHO',48000,7.3,190000,'08.16','qa'),
+  P('권소미','@somi_kwon','SOMI',44000,6.1,180000,'08.17','qa'),
+  P('박소연','@soyeon_makeup','SOYEON',41000,6.2,180000,'08.18','make'),
+  P('배다현','@dahyun_bae','DAHYUN',37000,5.9,170000,'08.19','make'),
+  P('유은채','@eunchae_yu','EUNCHAE',34000,6.4,170000,'08.20','make'),
+  P('신유리','@yuri_shin','YURI',31000,5.7,160000,'08.21','make'),
+  P('조미르','@mireu_jo','MIREU',28000,6.8,160000,'08.23','ship'),
+  P('남시연','@siyeon_nam','SIYEON',25000,5.2,150000,'08.24','ship'),
+  P('한서율','@seoyul.log','SEOYUL',23000,5.1,150000,'08.25','ship')
+];
+/* 배송 중인 사람은 송장이 이미 찍혀 있다 */
+PEOPLE.forEach((c, i) => { if (c.stage === 'ship') c.ship = '6' + (417200000 + i * 137) + ''; });
+
+const AVC = ['#0f172a','#334155','#475569','#1e293b','#64748b'];
+const av = (c, i) => '<span class="av" style="background:' + AVC[i % AVC.length]
+  + '18;color:' + AVC[i % AVC.length] + '">' + esc(c.name.charAt(0)) + '</span>';
+
+const PICK = new Set();
+
+/* ── 요약 ──────────────────────────────────────────────────── */
+function renderSum() {
+  const by = {};
+  PEOPLE.forEach(c => { by[c.stage] = (by[c.stage] || 0) + 1; });
+  const own = PEOPLE.reduce((a, c) => a + c.own, 0);
+  const cost = PEOPLE.reduce((a, c) => a + c.cost, 0);
+  const open = REQ.filter(r => !r.done).length;
+
+  /* 단계마다 지금 우리가 할 일이 다르다. 같은 말을 세 번 쓰면 아무 말도 아니다 */
+  const NOTE = { ship:'송장 확인', make:'초안 대기', qa:'우리 확인 차례' };
+  const tile = (label, val, note, tone) =>
+    '<div class="pnl" style="padding:12px 14px;border-radius:14px;box-shadow:var(--lift-1)">'
+    + '<div class="text-[10.5px] font-medium" style="color:var(--ink-3)">' + label + '</div>'
+    + '<div class="num text-[19px] font-bold mt-1"' + (tone ? ' style="color:' + tone + '"' : '') + '>' + val + '</div>'
+    + '<div class="text-[10px] mt-0.5" style="color:var(--ink-3)">' + note + '</div></div>';
+
+  $('sum').innerHTML =
+      FLOW.map(f => tile(f.t, (by[f.k] || 0) + '명',
+                 f.k === 'live' ? '진행률 ' + Math.round((by.live || 0) / PEOPLE.length * 100) + '%' : NOTE[f.k],
+                 f.k === 'live' ? '#047857' : '')).join('')
+    + tile('원고료 합계', won(own), '내부 전용', '#b45309')
+    + tile('제안 단가 합계', won(cost), '브랜드에 나가는 금액')
+    + tile('미처리 요청', open + '건', open ? '요청함에서 확인' : '다 처리됨',
+           open ? 'var(--od-red)' : '');
+}
+
+/* ── 표 ────────────────────────────────────────────────────── */
+function renderTable() {
+  const th = (t, cls) => '<th class="' + (cls || '') + '">' + t + '</th>';
+  $('tw').innerHTML = '<table><thead><tr>'
+    + '<th style="width:34px"></th>'
+    + th('사람') + th('단계')
+    + th('원고료 · 내부', 'r own')
+    + th('제안 단가', 'r')
+    + th('팔로워', 'r') + th('조회수', 'r')
+    + th('업로드일', 'r')
+    + th('송장 / 콘텐츠 링크')
+    + '</tr></thead><tbody>'
+    + PEOPLE.map(function (c, i) {
+        const f = stg(c.stage);
+        return '<tr class="' + (PICK.has(i) ? 'on' : '') + '">'
+          + '<td><button onclick="pick(' + i + ')" class="w-[17px] h-[17px] rounded-[5px] border-2 grid place-items-center transition '
+          +   (PICK.has(i) ? 'text-white' : 'bg-white text-transparent')
+          +   '" style="' + (PICK.has(i) ? 'background:var(--ink);border-color:var(--ink)' : 'border-color:#cbd5e1')
+          +   '" aria-label="' + esc(c.name) + '님 고르기">'
+          +   '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
+          +   '</button></td>'
+          + '<td><span class="flex items-center gap-2">' + av(c, i)
+          +   '<span class="min-w-0"><b class="block text-[12px] font-bold">' + esc(c.name) + '</b>'
+          +   '<span class="num block text-[10px]" style="color:var(--ink-3)">' + esc(c.handle) + '</span></span></span></td>'
+          + '<td><button class="stg ' + f.cls + '" onclick="step(' + i + ', 1)" oncontextmenu="step(' + i + ', -1); return false"'
+          +   ' title="누르면 다음 단계 · 오른쪽 버튼은 되돌리기">' + f.t + '</button></td>'
+          + '<td class="r num own" style="color:#b45309;font-weight:700">' + won(c.own) + '</td>'
+          + '<td class="r num">' + won(c.cost) + '</td>'
+          + '<td class="r num">' + kw(c.fol) + '</td>'
+          + '<td class="r num">' + (c.stage === 'live' ? n(c.views) : '<span style="color:#cbd5e1">—</span>') + '</td>'
+          + '<td class="r num">' + esc(c.due) + '</td>'
+          + '<td>' + (c.stage === 'live'
+              ? '<input class="cell-in num" value="' + esc(c.link) + '" placeholder="릴스 링크 붙이기" oninput="setF(' + i + ',\'link\',this.value)">'
+              : '<input class="cell-in num" value="' + esc(c.ship) + '" placeholder="송장번호" oninput="setF(' + i + ',\'ship\',this.value)">')
+            + '</td></tr>';
+      }).join('')
+    + '</tbody></table>';
+  paintPick();
+}
+
+function setF(i, k, v) { PEOPLE[i][k] = v; }
+
+function pick(i) { PICK.has(i) ? PICK.delete(i) : PICK.add(i); renderTable(); }
+function paintPick() {
+  $('selLbl').textContent = PICK.size ? PICK.size + '명 고름' : PEOPLE.length + '명';
+  const b = $('bumpBtn');
+  b.textContent = PICK.size ? PICK.size + '명 다음 단계로' : '고른 사람 단계 이동';
+  b.disabled = !PICK.size;
+}
+
+/* 단계를 옮긴다. 옮기면 브랜드 화면의 진행상황이 같이 바뀐다 —
+   그래서 옮겼다는 사실을 대화에도 한 줄 남긴다 */
+function step(i, d) {
+  const c = PEOPLE[i], r = rank(c.stage) + d;
+  if (r < 0 || r >= FLOW.length) return;
+  c.stage = FLOW[r].k;
+  if (c.stage === 'live' && !c.views) c.views = Math.round((c.fol * c.er / 100) * 38 / 1000) * 1000;
+  renderSum(); renderTable();
+  toast(c.name + '님을 ' + stg(c.stage).t + '으로 옮겼어요. 브랜드 화면에도 그대로 바뀝니다.');
+}
+
+function bump() {
+  if (!PICK.size) return;
+  const names = [];
+  [...PICK].sort((a, b) => a - b).forEach(function (i) {
+    const c = PEOPLE[i], r = rank(c.stage) + 1;
+    if (r >= FLOW.length) return;
+    c.stage = FLOW[r].k;
+    if (c.stage === 'live' && !c.views) c.views = Math.round((c.fol * c.er / 100) * 38 / 1000) * 1000;
+    names.push(c.name);
+  });
+  PICK.clear();
+  renderSum(); renderTable();
+  if (!names.length) { toast('이미 마지막 단계에 있어요.'); return; }
+  toast(names.length + '명을 다음 단계로 옮겼어요 — ' + names.slice(0, 3).join(' · ')
+    + (names.length > 3 ? ' 외 ' + (names.length - 3) + '명' : ''));
+}
+
+/* ── 요청함 — 브랜드가 화면에서 누른 것들이 여기로 온다 ──── */
+const REQ = [
+  { t:'파트너십 코드 발급', d:'유료분 5건 — 박소연 · 배다현 · 유은채 · 신유리 · 조미르', at:'09.06 17:20', done:false },
+  { t:'가이드라인 수정 요청', d:'해시태그에 #허그유어오드 를 넣어 달라는 요청', at:'09.06 11:04', done:false },
+  { t:'원본 콘텐츠 전달', d:'업로드 완료 9건 원본 받기 누름', at:'09.05 19:41', done:false },
+  { t:'중간 보고서 확인', d:'08.31 기준 보고서 열어봄', at:'09.05 09:12', done:true }
+];
+
+function renderReq() {
+  $('reqN').textContent = REQ.filter(r => !r.done).length || '';
+  $('reqN').style.display = REQ.some(r => !r.done) ? '' : 'none';
+  $('paneReq').innerHTML = REQ.map(function (r, i) {
+    return '<div class="req' + (r.done ? ' done' : '') + '">'
+      + '<div class="flex items-start justify-between gap-3">'
+      +   '<div class="min-w-0"><div class="text-[12px] font-bold">' + esc(r.t) + '</div>'
+      +   '<div class="text-[11px] leading-relaxed keep mt-1" style="color:var(--ink-2)">' + esc(r.d) + '</div>'
+      +   '<div class="num text-[9.5px] mt-1.5" style="color:var(--ink-3)">' + esc(r.at) + '</div></div>'
+      +   (r.done
+           ? '<span class="text-[10px] font-bold px-1.5 py-1 rounded shrink-0" style="background:#ecfdf5;color:#047857">처리됨</span>'
+           : '<button onclick="doReq(' + i + ')" class="cta text-[11px] font-bold px-2.5 py-2 rounded-lg shrink-0">처리</button>')
+      + '</div></div>';
+  }).join('');
+}
+
+/* 처리하면 브랜드에게 알린다. 처리했다고 우리끼리만 아는 건 처리한 게 아니다 */
+function doReq(i) {
+  const r = REQ[i];
+  if (r.done) return;
+  r.done = true;
+  renderReq(); renderSum();
+  CHAT.push({ me:1, text: r.t + ' 처리해 드렸어요. 화면 새로고침하시면 바로 보입니다.', at:'지금' });
+  renderChat();
+  toast(r.t + ' — 처리하고 브랜드에 알렸어요.');
+}
+
+/* ── 대화 — 콘솔의 그 대화, 우리 쪽에서 본다 ───────────────── */
+const CHAT = [
+  { me:0, text:'이번 달 업로드분 생각보다 반응이 좋네요. 감사합니다!', at:'09.05 09:10' },
+  { me:1, text:'이수연 매니저님, 생각보다 쉽게 가고 있어요. 지금 업로드 9건 · 검수 4건이고, 나머지는 이번 주 안에 다 끝납니다.', at:'09.05 09:24' },
+  { me:0, text:'유료 코드 5건만 더 발급 부탁드리고 싶어요. 화면에서 골라서 보냈습니다.', at:'09.06 17:20' }
+];
+
+function renderChat() {
+  $('log').innerHTML = CHAT.map(m =>
+      '<div class="flex flex-col ' + (m.me ? 'items-end' : 'items-start') + '">'
+    + (m.me ? '' : '<span class="who">오드타입 · 이수연</span>')
+    + '<div class="bub ' + (m.me ? 'us' : 'them') + '">' + esc(m.text) + '</div>'
+    + '<span class="num text-[9px] mt-1" style="color:var(--ink-3)">' + esc(m.at) + '</span></div>'
+  ).join('');
+  $('log').scrollTop = $('log').scrollHeight;
+}
+
+function grow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 104) + 'px'; }
+function key(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(e); } }
+function send(e) {
+  if (e) e.preventDefault();
+  const t = $('msg').value.trim();
+  if (!t) return;
+  CHAT.push({ me:1, text:t, at:'지금' });
+  $('msg').value = ''; grow($('msg'));
+  renderChat();
+  toast('브랜드 화면에 바로 들어가요.');
+}
+
+function setTab(k) {
+  const chat = k === 'chat';
+  $('tabChat').classList.toggle('on', chat);
+  $('tabReq').classList.toggle('on', !chat);
+  $('paneChat').classList.toggle('hidden', !chat);
+  $('paneReq').classList.toggle('hidden', chat);
+}
+
+renderSum(); renderTable(); renderReq(); renderChat();
+</script>
