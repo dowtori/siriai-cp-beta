@@ -525,6 +525,16 @@
              white-space:nowrap}
   #ptable tr:last-child td{border-bottom:0}
   #ptable tr.on td{background:#f8fafc}
+  #ptable tbody tr{cursor:pointer}
+  /* 펼침 — 표 안이라 카드 옆에 서던 때와 달리 아래로 열린다 */
+  #ptable tr.pexp > td{padding:0;background:#f1f5f9;border-bottom:1px solid #e2e8f0}
+  /* 카드 보기에서 상세가 서는 키와 맞춘다 — 같은 것이 두 화면에서 달리 보이면 안 된다.
+     세로 영상이라 이 키가 곧 콘텐츠 크기를 정한다 */
+  .pexpIn{display:grid;grid-template-columns:minmax(0,1fr) 264px;gap:10px;padding:10px;
+          height:440px;animation:pexpIn .26s cubic-bezier(.22,.61,.36,1) both}
+  .pexpIn > div{height:100%;animation:none}
+  @keyframes pexpIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){ .pexpIn{animation:none} }
   #ptable td.r{text-align:right}
   /* 세로가 줄면 여백부터 조이고, 그래도 모자라면 그 다음에 줄 수를 내린다.
      순서가 반대면 노트북에서 진행상황이 먼저 얇아진다 */
@@ -2845,7 +2855,9 @@ function progTable(list) {
     + '<th style="width:54px" class="tg">태그</th></tr></thead><tbody>'
     + (list.length ? list.map(function (c) {
         const i = CREATORS.indexOf(c);
-        return '<tr data-i="' + i + '" class="' + (PSTATE.open === i ? 'on' : '') + '">'
+        const opened = PSTATE.open === i;
+        return '<tr data-i="' + i + '" class="' + (opened ? 'on' : '')
+          + '" onclick="openPeek(' + i + ', event)">'
           + '<td><span class="pbox cursor-pointer" data-i="' + i + '" onclick="togglePick(' + i + ', event)">'
           +   box(PICK.has(i)) + '</span></td>'
           + '<td><button onclick="openPeek(' + i + ', event)" class="flex items-center gap-2 text-left">'
@@ -2854,7 +2866,13 @@ function progTable(list) {
           + cols.map(x => '<td class="' + (x.num ? 'r num' : '') + '">' + x.v(c) + '</td>').join('')
           + '<td class="tg"><button class="hbtn" onclick="chatAbout(' + i + ', event)"'
           +   ' title="' + esc(c.name) + '님을 걸고 대화 열기">'
-          +   '<span class="num text-[13px] font-semibold leading-none">@</span></button></td></tr>';
+          +   '<span class="num text-[13px] font-semibold leading-none">@</span></button></td></tr>'
+          /* 누른 사람은 그 자리에서 열린다 — 위아래 사람이 그대로 남아야 견줄 수 있다 */
+          + (opened
+             ? '<tr class="pexp"><td colspan="' + (cols.length + 3) + '">'
+               + '<div class="pexpIn"><div id="pdet"></div><div id="pemb"></div></div>'
+               + '</td></tr>'
+             : '');
       }).join('')
       : '<tr><td colspan="' + (cols.length + 3) + '" class="text-center text-slate-400 py-6">'
         + '필터에 맞는 사람이 없습니다</td></tr>')
@@ -3202,8 +3220,8 @@ function paintEmb() {
          + ' allow="encrypted-media; clipboard-write" allowtransparency="true"></iframe></div>'
        : '<div class="embOff">업로드 전<br>올라오면 여기에서 바로 보입니다</div>')
     + '</div>';
-  /* 칸 크기가 정해진 다음에 담아야 한다 */
-  requestAnimationFrame(fitEmb);
+  /* 칸 크기가 정해진 다음에 담아야 한다 — 표에서 아래로 열릴 때도 같다 */
+  requestAnimationFrame(function () { requestAnimationFrame(fitEmb); });
 }
 
 /* ── 높이 ────────────────────────────────────────────────── */
