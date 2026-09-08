@@ -309,25 +309,23 @@
                display:flex;flex-direction:column;min-height:0}
   #pemb{animation-delay:.06s}
   #pdet .din, #pemb .din{flex:1 1 auto;min-height:0;overflow-y:auto;padding:14px}
+  /* 칸이 넓어지면 라벨과 값 사이가 텅 빈다 — 한 줄이 너무 길어지기 전에 두 줄로 나눈다 */
+  #pdet .dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 24px}
   @keyframes detIn{
     from{opacity:0;transform:translateX(-14px)}
     to  {opacity:1;transform:none}
   }
   /* 콘텐츠 — 올라간 릴스가 그대로 붙는다 */
-  #pemb .din{padding:12px;display:flex;flex-direction:column;gap:10px}
-  .embFrame{flex:1 1 auto;min-height:300px;border-radius:12px;overflow:hidden;
-            background:#0f172a;position:relative}
-  .embFrame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;
-                   background:#fff}
+  #pemb .din{padding:12px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+  /* 릴스는 세로다. 칸에 100%/100% 로 밀어 넣으면 위아래가 잘린다 —
+     임베드가 갖고 나오는 크기를 그대로 두고 칸에 맞게 줄인다 */
+  .embFrame{flex:1 1 auto;min-height:220px;border-radius:12px;overflow:hidden;
+            background:#f1f5f9;position:relative}
+  .embFrame iframe{position:absolute;left:0;top:0;border:0;background:#fff;
+                   transform-origin:0 0}
   .embOff{flex:1 1 auto;min-height:220px;border-radius:12px;
           background:#f8fafc;border:1px dashed #cbd5e1;display:grid;place-items:center;
           font-size:11.5px;color:#94a3b8;text-align:center;line-height:1.7}
-  /* 숫자는 한 줄로. 옆 칸이 이미 표로 말하고 있다 */
-  .embStat{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
-           padding-top:10px;border-top:1px solid #f1f5f9}
-  .embStat span{display:flex;flex-direction:column;gap:2px;min-width:0}
-  .embStat i{font-style:normal;font-size:9.5px;color:#94a3b8}
-  .embStat b{font-size:12px;font-weight:700;color:#0f172a}
 
   /* 히어로 사진이 접히면서 사이드 배너 자리로 날아간다.
      같은 곡선을 쓰므로 본문이 올라오는 것과 어긋나지 않는다 */
@@ -348,43 +346,56 @@
   .dbar{flex:1 1 auto;min-width:28px;height:4px;border-radius:999px;background:#e8edf3;
         overflow:hidden;display:block}
   .dbar > span{display:block;height:100%;border-radius:999px;transition:width .5s cubic-bezier(.22,.61,.36,1)}
+  /* 변화 알약 — 작게 적으면 아무도 안 본다 */
+  .dpill{display:inline-flex;align-items:center;gap:3px;flex:none;
+         padding:3px 9px 3px 7px;border-radius:999px;line-height:1.15;
+         font-size:19px;font-weight:800;letter-spacing:-.03em;
+         background:#e8edf3;color:#41506a}
+  .dpill.up{background:#c9f5e1;color:#04674a}
+  .dpill svg{width:14px;height:14px;stroke-width:3;flex:none}
   /* 유리 위에서는 선과 바닥도 같이 밝아진다 */
   #camBanner.hero #heroDash .border-slate-100{border-color:rgba(255,255,255,.18)}
   #camBanner.hero #heroDash .dbar{background:rgba(255,255,255,.22)}
+  #camBanner.hero #heroDash .dpill{background:rgba(255,255,255,.15);color:rgba(255,255,255,.90)}
+  #camBanner.hero #heroDash .dpill.up{background:rgba(16,185,129,.22);color:#6ee7b7}
   #camBanner.hero #heroDash .text-slate-800{color:#fff}
   #camBanner.hero #heroDash .text-slate-400{color:rgba(255,255,255,.55)}
   #camBanner.hero #heroDash .text-slate-300{color:rgba(255,255,255,.35)}
   #camBanner.hero #heroDash .dico{opacity:.72}
 
-  /* 진행 흐름 — 꼭지점 네 개. 원 크기가 곧 그 단계에 있는 인원이다.
-     사이는 가는 선으로만 잇는다 — 선에 두께를 주면 그림이 되고 정보가 아니게 된다 */
-  #flow{display:flex;align-items:flex-start;padding:20px 26px 18px}
-  .fstep{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:11px;
+  /* 진행 흐름 — 바닥에 기준선을 깔고 위로만 자란다.
+     원을 키워 인원을 말하면 아래위로 함께 부풀어 중심이 흔들린다.
+     크기는 막대가 말하고, 꼭지점은 그 끝을 짚는 작은 점이면 된다 */
+  #flow{display:flex;align-items:flex-end;padding:14px 26px 12px}
+  .fstep{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;
          cursor:pointer;position:relative}
-  .fwrap{position:relative;width:100%;height:60px;display:flex;align-items:center;justify-content:center}
-  .fline{position:absolute;top:50%;left:-50%;right:50%;height:2px;background:#e8edf3;
-         transform:translateY(-50%)}
-  .fstep:first-child .fline{display:none}
-  .fdot{position:relative;z-index:1;border-radius:999px;display:grid;place-items:center;
-        color:#fff;font-weight:700;letter-spacing:-.02em;
-        box-shadow:0 0 0 4px #fff, 0 6px 16px -6px rgba(15,23,42,.30);
-        transition:transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s ease}
-  .fdot.zero{background:#f1f5f9 !important;color:#cbd5e1;box-shadow:0 0 0 4px #fff, inset 0 0 0 2px #e2e8f0}
-  /* 마감 표식 — 사람 수를 세는 원과 섞이면 안 된다. 좁게 서고 점선으로 이어진다 */
-  .fstep.fend{flex:0 0 78px}
-  .fend .fline{background:none;border-top:2px dashed #e2e8f0;height:0}
-  .fdot.rep{width:36px;height:36px;background:#fff;color:#cbd5e1;
-            box-shadow:0 0 0 4px #fff, inset 0 0 0 2px #e2e8f0}
-  .fdot.rep svg{width:17px;height:17px}
-  .fdot.rep.open{background:var(--od-ink);color:#fff;box-shadow:0 0 0 4px #fff}
-  .flab{font-size:11.5px;font-weight:700;color:#94a3b8;white-space:nowrap;transition:color .15s ease}
-  .fsub{font-size:10px;color:#cbd5e1;white-space:nowrap;margin-top:-6px}
+  .fwrap{position:relative;width:100%;height:62px;display:flex;align-items:flex-end;
+         justify-content:center;border-bottom:1.5px solid #e8edf3}
+  .fbar{position:relative;width:26px;border-radius:13px 13px 3px 3px;
+         transition:height .34s cubic-bezier(.22,.61,.36,1), opacity .16s ease}
+  .fbar.zero{background:#eef2f7 !important}
+   .flab{margin-top:9px;font-size:11px;font-weight:700;color:#94a3b8;white-space:nowrap;
+        transition:color .15s ease}
+  .fnum{margin-top:1px;font-size:13.5px;font-weight:800;color:#334155;letter-spacing:-.02em;
+        transition:color .15s ease}
+  /* 마감 표식 — 인원을 세는 자리가 아니다. 좁게 서고 기준선이 점선으로 바뀐다 */
+  .fstep.fend{flex:0 0 76px}
+  .fend .fwrap{border-bottom-style:dashed}
+  .frep{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+        background:#fff;color:#cbd5e1;box-shadow:inset 0 0 0 1.5px #e2e8f0;margin-bottom:6px}
+  .frep svg{width:16px;height:16px}
+  .frep.open{background:var(--od-ink);color:#fff;box-shadow:none}
+  .fend .fnum{color:#cbd5e1;font-size:11px;font-weight:700}
   /* 짚은 곳만 살아난다 */
-  #flow.hit .fdot{opacity:.42}
-  #flow.hit .fstep.on .fdot{opacity:1;transform:scale(1.06)}
+  #flow.hit .fbar, #flow.hit .frep{opacity:.34}
+  #flow.hit .fstep.on .fbar, #flow.hit .fstep.on .frep{opacity:1}
   #flow.hit .fstep.on .flab{color:#0f172a}
+  #flow.hit .fstep.on .fnum{color:#0f172a}
+  /* 흐름에서 한 단계를 짚으면 아래 진행상황에서 그 사람들만 남는다 */
+  .pcard{transition:box-shadow .18s ease,background-color .18s ease,opacity .16s ease}
+  .pcard.dim{opacity:.26}
   #flowTip{position:absolute;z-index:5;pointer-events:none;opacity:0;top:0;
-           transform:translate(-50%,-100%) translateY(-4px);
+           transform:translate(-50%,-100%) translateY(-6px);
            transition:opacity .14s ease;background:#0f172a;color:#fff;
            border-radius:12px;padding:9px 11px;box-shadow:var(--lift-3);white-space:nowrap}
   #flowTip.on{opacity:1}
@@ -483,6 +494,18 @@
   /* 대화가 오른쪽 열이던 시절엔 위로 붙여야 했다. 지금 자식은 왼쪽 열 하나뿐이고,
      그 열이 화면 바닥까지 자라야 진행상황이 남는 높이를 받는다 */
   @media (min-width:1280px){ #bodyRow{align-items:stretch} }
+
+  /* 셋이 같은 간격 · 같은 테두리면 무엇을 먼저 볼지 알 수 없다.
+     '지금 상태'(지표 + 흐름)를 붙여 한 덩어리로 두고, '작업'(진행상황)을 떼어 놓는다 */
+  #dashSec{margin-bottom:10px}
+  #flowRow{margin-bottom:20px}
+  /* 흐름은 두 덩어리를 잇는 다리다 — 같은 흰 카드로 세우면 셋이 나란해진다.
+     카드를 벗겨 바탕에 얹으면 '카드 · 바탕 · 카드' 로 눈에 나뉜다 */
+  #flowSec{background:transparent;box-shadow:none;border-radius:0}
+  #flowSec > header{border-bottom:0;padding:0 4px 2px}
+  #flow{padding:8px 4px 2px}
+  /* 바탕 위에 놓이므로 기준선이 곧 축이 된다 */
+  .fwrap{border-bottom-color:#dde4ec}
 
   /* 줄 수는 fitProgRows() 가 남는 높이를 재서 정한다 — 폭·높이 조합이 너무 많다 */
   @media (max-height:820px){
@@ -983,7 +1006,7 @@
       <!-- 본문 2단 — 좌: 대시보드 · 에셋 · 진행상황 / 우: 대화창 -->
       <div id="bodyRow" class="flex-1 min-h-0 mt-3 flex flex-col xl:flex-row gap-3">
 
-        <div id="colL" class="flex-1 min-w-0 min-h-0 flex flex-col gap-3">
+        <div id="colL" class="flex-1 min-w-0 min-h-0 flex flex-col">
 
           <!-- 1 · 대시보드 — 숫자가 스스로 말한다. 라벨을 얹지 않는다 -->
 
@@ -1419,6 +1442,11 @@ const PICS = ['data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/7QCEUGhvdG9zaG
 /* collab 을 안 적은 사람은 협의가 끝난 것으로 본다 */
 LIVE_ROSTER.forEach(c => { if (!c.collab) c.collab = 'ok'; });
 
+/* 함께한 횟수 — 실제로는 지난 캠페인 명단에서 센다.
+   데모라 몇 사람만 재협업으로 둔다. 처음인 사람이 대부분인 게 정상이다 */
+const REPEATS = [4, 2, 1, 3, 1, 2, 1, 5, 1, 2, 1, 1, 3, 1, 1, 2, 1, 1, 1, 2, 1, 1];
+LIVE_ROSTER.forEach(function (c, i) { c.works = REPEATS[i] || 1; });
+
 /* 이번 캠페인의 사건 기록 — 실제로는 어드민이 찍는다.
    0~8 올라왔고 · 9~16 만드는 중 · 17~18 가는 중 · 19 보낼 차례 · 20~21 고르기 전 */
 LIVE_ROSTER.forEach(function (c, i) {
@@ -1540,6 +1568,7 @@ const STAGE = {
   live: { label:'업로드 완료', cls:'text-emerald-700 bg-emerald-50' }
 };
 Object.values(ROSTERS).forEach(r => r.forEach((c, i) => {
+  if (!c.works) c.works = 1;
   /* 지난 캠페인은 전부 올라간 뒤라 업로드일이 곧 사건이다 */
   if (c.up && !c.upAt) { c.upAt = c.due; c.gotAt = dshift(c.due, -7); c.sentAt = dshift(c.due, -9); }
   /* 저장하지 않는다 — 읽을 때마다 사건을 보고 답한다.
@@ -2151,7 +2180,8 @@ function dashCard(o) {
     +   o.val + '</span>'
     +   (o.unit ? '<span class="text-[11px] text-slate-400">' + o.unit + '</span>' : '')
     + '</div>'
-    + '<div class="mt-2.5 pt-2.5 border-t border-slate-100 flex items-center gap-1.5 min-w-0">'
+    + (o.bar ? '<div class="mt-2">' + o.bar + '</div>' : '')
+    + '<div class="mt-2.5 pt-2.5 border-t border-slate-100 flex items-center gap-2 min-w-0">'
     +   (o.foot || '')
     + '</div></div>';
 }
@@ -2163,6 +2193,11 @@ const dUp = t => '<span class="num text-[11px] font-bold text-emerald-700 inline
 const dMuted = t => '<span class="text-[10.5px] text-slate-500 truncate">' + t + '</span>';
 const dStrong = t => '<span class="num text-[11px] font-bold text-slate-800 shrink-0">' + t + '</span>';
 const dDot = c => '<span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:' + c + '"></span>';
+/* 변화는 이 화면에서 값 다음으로 큰 글자다. 늘었는지 그대로인지가 색으로 먼저 읽힌다 */
+const dPill = (t, up) => '<span class="dpill' + (up ? ' up' : '') + '">'
+  + (up ? '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">'
+        + '<path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"/></svg>' : '')
+  + '<span class="num">' + t + '</span></span>';
 /* 얇은 막대 하나. 숫자 두 개를 비교하는 데 이보다 싼 그림이 없다 */
 const dBar = (p, c) => '<span class="dbar"><span style="width:' + Math.max(2, Math.min(100, p))
   + '%;background:' + c + '"></span></span>';
@@ -2187,34 +2222,39 @@ function renderDash() {
   const dayPct = views && last ? (last.views / (views - last.views) * 100) : 0;
   const done = Math.round(up.length / Math.max(1, sel.length) * 100);
 
+  /* 반응도 조회수와 같은 셈법으로 — 마지막 업로드분이 오늘 얹은 몫 */
+  const lastReact = last ? (last.likes + last.cmts + last.saves) : 0;
+  const reactPct = react > lastReact && lastReact ? (lastReact / (react - lastReact) * 100) : 0;
+  /* 어제까지 올라와 있던 수 — 마지막 한 사람이 오늘 올린 몫이 곧 변화다 */
+  const upAdd = rising ? 1 : 0;
+
   const html =
       dashCard({
         label: '총 누적 조회수', val: n(views), unit: '회', icon: DICO.eye, tone: 'ico-v',
         foot: rising
-          ? dUp('+' + n(last.views)) + dMuted('전일 대비 +' + dayPct.toFixed(1) + '%')
-          : dMuted(up.length ? '캠페인 종료 기준' : '업로드를 기다리는 중')
+          ? dPill('+' + dayPct.toFixed(1) + '%', true) + dMuted('전일 +' + n(last.views))
+          : dPill('\u2014', false) + dMuted(up.length ? '캠페인 종료 기준' : '업로드를 기다리는 중')
       })
 
     + dashCard({
         label: '총 반응 수', val: n(react), unit: '건', icon: DICO.heart, tone: 'ico-r',
         /* 무엇으로 이루어진 숫자인지 밝히지 않으면 비교가 안 된다 */
-        foot: dStrong('평균 반응률 ' + er.toFixed(2) + '%')
-            + '<span class="text-slate-300">|</span>' + dMuted('좋아요·댓글·저장')
+        foot: (reactPct ? dPill('+' + reactPct.toFixed(1) + '%', true) : dPill('\u2014', false))
+            + dMuted('반응률 ' + er.toFixed(2) + '%')
       })
 
     + dashCard({
         label: '총 집행 예산', val: won(sum(sel, 'cost')), icon: DICO.won, tone: 'ico-w',
-        /* 브랜드가 실제로 걱정하는 것은 "여기서 더 나가나" 다 */
-        foot: dDot('#a78bfa') + dMuted('확정 ' + sel.length + '명 · 추가 비용 없음')
+        /* 브랜드가 실제로 걱정하는 것은 "여기서 더 나가나" 다 — 안 늘었다는 게 좋은 소식이다 */
+        foot: dPill('+0원', false) + dMuted('확정 ' + sel.length + '명 · 추가 비용 없음')
       })
 
     + dashCard({
         label: '업로드 완료', val: up.length + '<span class="text-slate-400"> / ' + sel.length + '</span>',
         icon: DICO.play, tone: 'ico-p',
-        /* 남은 수를 말로만 쓰면 얼마나 남았는지 감이 안 온다. 막대를 같이 둔다 */
-        foot: dBar(done, done === 100 ? '#10b981' : '#0f172a')
-            + dStrong(done + '%')
-            + dMuted(rest > 0 ? '남은 ' + rest + '명' : '모두 완료')
+        bar: dBar(done, done === 100 ? '#10b981' : '#0f172a'),
+        foot: (upAdd ? dPill('+' + upAdd + '명', true) : dPill(done + '%', false))
+            + dMuted(rest > 0 ? '남은 ' + rest + '명 · ' + done + '%' : '모두 완료')
       });
 
   /* 히어로와 본문 두 곳에 같은 카드를 그린다. DOM 을 옮기면 애니메이션이 끊긴다 */
@@ -2255,6 +2295,9 @@ const FCOLOR = ['#cbd5e1', '#aab8c6', '#8fa0b2', '#5c6f85', '#10b981'];
 
 /* 꼭지점 네 개. 원 크기가 곧 인원이라 어디에 몰려 있는지가 크기로 읽힌다.
    사이는 가는 선으로만 잇는다 — 선을 두껍게 하면 그림이 되고 정보가 아니게 된다 */
+/* 막대가 쓸 수 있는 키. 기준선 위로만 자란다 */
+const FBAR_H = 56;
+
 function renderFlow() {
   const box = $('flow');
   if (!box) return;
@@ -2264,14 +2307,18 @@ function renderFlow() {
 
   box.innerHTML = FLOW.map(function (f, k) {
     const n2 = by[k].length;
-    /* 28 ~ 58px. 0 명이면 가장 작게, 빈 원으로 */
-    const d = n2 ? Math.round(28 + (n2 / max) * 30) : 26;
-    const fs = n2 ? Math.max(12, Math.round(d * 0.42)) : 11;
+    /* 아무도 없으면 자리만 남긴다 — 0 을 큰 빈 원으로 그리면 있는 것처럼 보인다.
+       인원 차이가 크면(1 대 9) 곧이곧대로 비례해서는 작은 쪽이 아예 안 보인다.
+       수위처럼 제곱근으로 눌러 준다 — 많고 적음은 그대로 읽히고 적은 쪽도 보인다 */
+    const h = n2 ? Math.max(14, Math.round(Math.sqrt(n2 / max) * FBAR_H)) : 3;
     return '<div class="fstep" data-k="' + k + '">'
-      + '<span class="fwrap"><span class="fline"></span>'
-      +   '<span class="fdot num' + (n2 ? '' : ' zero') + '" style="width:' + d + 'px;height:' + d
-      +   'px;font-size:' + fs + 'px;background:' + FCOLOR[k] + '">' + n2 + '</span></span>'
+      + '<span class="fwrap">'
+      +   '<span class="fbar' + (n2 ? '' : ' zero') + '" style="height:' + h
+      +   'px;background:' + FCOLOR[k] + '">'
+      +   '</span>'
+      + '</span>'
       + '<span class="flab">' + f[1] + '</span>'
+      + '<span class="fnum num">' + n2 + '</span>'
       + '</div>';
   }).join('') + repStep() + '<div id="flowTip" role="status"></div>';
 
@@ -2283,14 +2330,26 @@ function renderFlow() {
 function repStep() {
   const r = reportState();
   return '<div class="fstep fend" data-k="rep">'
-    + '<span class="fwrap"><span class="fline dash"></span>'
-    +   '<span class="fdot rep' + (r.open ? ' open' : '') + '">'
-    +     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'
-    +     '<path stroke-linecap="round" stroke-linejoin="round" d="M8 4h6l4 4v12H6V4h2z"/>'
-    +     '<path stroke-linecap="round" d="M9 13h6M9 16.5h4"/></svg>'
-    +   '</span></span>'
+    + '<span class="fwrap"><span class="frep' + (r.open ? ' open' : '') + '">'
+    +   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'
+    +   '<path stroke-linecap="round" stroke-linejoin="round" d="M8 4h6l4 4v12H6V4h2z"/>'
+    +   '<path stroke-linecap="round" d="M9 13h6M9 16.5h4"/></svg>'
+    + '</span></span>'
     + '<span class="flab">리포트</span>'
+    + '<span class="fnum num">' + (r.open ? esc(r.at) : '\u2014') + '</span>'
     + '</div>';
+}
+
+/* 흐름에서 한 단계를 짚으면 아래 진행상황에서 그 사람들만 남는다.
+   위에서 본 수위가 아래 어느 카드인지 눈으로 이어져야 한다 */
+function flowFocus(stage) {
+  const g = $('pgrid');
+  if (!g) return;
+  g.classList.toggle('foc', !!stage);
+  g.querySelectorAll('.pcard').forEach(function (el) {
+    const c = CREATORS[+el.dataset.i];
+    el.classList.toggle('dim', !!stage && (!c || c.stage !== stage));
+  });
 }
 
 function bindFlow(by) {
@@ -2312,6 +2371,7 @@ function bindFlow(by) {
       tip.style.left = '94%';
       tip.style.top = '24px';
       tip.classList.add('on');
+      flowFocus(null);
     });
   });
   box.querySelectorAll('.fstep:not(.fend)').forEach(function (z) {
@@ -2330,6 +2390,7 @@ function bindFlow(by) {
       tip.style.left = ((k + 0.5) / K * 100) + '%';
       tip.style.top = '24px';
       tip.classList.add('on');
+      flowFocus(FLOW[k][0]);
     });
     z.addEventListener('click', function () { setFilter('stage', FLOW[k][0]); });
   });
@@ -2337,6 +2398,7 @@ function bindFlow(by) {
     box.classList.remove('hit');
     box.querySelectorAll('.on').forEach(e => e.classList.remove('on'));
     tip.classList.remove('on');
+    flowFocus(null);
   });
 }
 
@@ -2547,13 +2609,18 @@ function pcard(c) {
   /* 왼쪽에 사람, 오른쪽에 상태. 카드 폭을 끝까지 쓴다 */
   return '<article class="pcard surface-sm flex items-center gap-2.5"'
     + ' draggable="true" data-i="' + i + '"' + (PSTATE.open === i ? ' data-open="1"' : '')
-    + ' onclick="openPeek(' + i + ', event)" title="눌러서 정보 보기">'
+    + ' onclick="openPeek(' + i + ', event)" title="' + esc(c.name) + ' · '
+    + kw(c.fol) + ' 팔로워 · ' + (c.works > 1 ? c.works + '번째 함께함' : '이번이 처음') + '">'
     + '<span class="pbox shrink-0 cursor-pointer" data-i="' + i + '" onclick="togglePick(' + i + ', event)"'
     +   ' title="' + esc(c.name) + '님 고르기">' + box(PICK.has(i)) + '</span>'
     + avatar(c, i, 46)
     + '<span class="min-w-0 flex-1 leading-tight">'
     +   '<span class="block text-[15.5px] font-bold text-slate-900 truncate">' + esc(c.name) + '</span>'
     +   '<span class="block num text-[11.5px] text-slate-500 truncate mt-0.5">' + esc(c.handle) + '</span>'
+    /* 이름 칸이 71px 뿐이라 '13만 팔로워 · 4회 협업' 은 들어가지 않는다.
+       숫자만 남기고 풀어 쓴 말은 카드 툴팁으로 보낸다 */
+    +   '<span class="block num text-[11px] text-slate-400 truncate mt-0.5">'
+    +     kw(c.fol) + '<span class="text-slate-300"> · </span>' + c.works + '회차</span>'
     + '</span>'
     + '<span class="shrink-0 flex flex-col items-end gap-1.5 text-right">'
     +   '<button class="pstage ' + st.cls + '" onclick="openPeek(' + i + ', event)" title="진행 단계 보기">' + mark + st.label + '</button>'
@@ -2572,7 +2639,7 @@ function pcard(c) {
    중간값을 읽으니 폭은 재지 말고 계산한다 */
 const PCARD_MIN = 300;   /* 사람과 상태를 양끝에 두려면 이 폭은 있어야 한다 */
 const PCARD_MAX = 420;   /* 이보다 넓어지면 카드 안이 텅 빈다 */
-const PCARD_H   = 90;    /* 사진 46 + 위아래 14 + 테두리 */
+const PCARD_H   = 80;    /* 실측 — 사진 46 + 위아래 14 + 테두리 */
 const PGAP      = 8;
 
 function layoutProgGrid() {
@@ -2634,7 +2701,12 @@ function placeDetail(grid, cols, availH) {
   /* 상세가 열리면 칸은 셋이면 된다. 네 번째를 비워 두면 그 폭만큼 콘텐츠가 작아진다 —
      목록은 카드 한 장 폭만 쓰고 남는 것은 정보와 콘텐츠가 나눠 갖는다 */
   const cardW = Math.min(PCARD_MAX, Math.max(280, Math.round(grid.clientWidth * 0.26)));
-  grid.style.gridTemplateColumns = cardW + 'px repeat(2, minmax(0,1fr))';
+  /* 콘텐츠는 세로 영상이다 — 세로가 폭을 정한다. 가로를 더 줘 봐야 양옆이 빌 뿐이라
+     쓸 만큼만 가져가고 남는 것은 정보가 쓴다 */
+  const embW = Math.max(260, Math.min(340, Math.round((availH - 60) * EMB_W / EMB_H) + 30));
+  grid.style.gridTemplateColumns = cardW + 'px minmax(0,1fr) ' + embW + 'px';
+  /* 칸이 넓어졌으니 콘텐츠도 다시 맞춘다 */
+  requestAnimationFrame(fitEmb);
 
   const span = Math.max(5, rows);
   cards.forEach(el => { el.style.gridColumn = '1'; });
@@ -2828,6 +2900,23 @@ function resetFilters() {
 
 /* 데모에 붙이는 실제 릴스. 실제 화면에선 사람마다 자기 주소가 들어간다 */
 const REEL_EMBED = 'https://www.instagram.com/reel/DcatoH1zqC0/embed/';
+/* 릴스 임베드가 갖고 나오는 크기. 이 비율을 지켜야 위아래가 안 잘린다 */
+const EMB_W = 400, EMB_H = 680;
+
+/* 칸에 맞게 줄여 담는다. 남는 자리는 가운데 정렬로 양쪽에 고르게 둔다 */
+function fitEmb() {
+  const f = document.querySelector('.embFrame');
+  if (!f) return;
+  const ifr = f.querySelector('iframe');
+  if (!ifr) return;
+  const w = f.clientWidth, h = f.clientHeight;
+  if (!w || !h) return;
+  const k = Math.min(w / EMB_W, h / EMB_H);
+  ifr.style.width  = EMB_W + 'px';
+  ifr.style.height = EMB_H + 'px';
+  ifr.style.transform = 'translate(' + Math.round((w - EMB_W * k) / 2) + 'px,'
+    + Math.round((h - EMB_H * k) / 2) + 'px) scale(' + k.toFixed(4) + ')';
+}
 const SHEET_URL = 'https://sheets.siriai.co.kr/oddtype/2608';
 
 function copyLink() {
@@ -2987,9 +3076,10 @@ function paintDet() {
             + '">' + f[1] + '</div></div>';
         }).join('')
     + '</div>'
-    + '<div class="mt-3 pt-3 border-t border-slate-100">'
+    + '<div class="dg mt-3 pt-3 border-t border-slate-100">'
     +   row(c.up ? '업로드' : '업로드 예정', c.due)
     +   row('팔로워', kw(c.fol))
+    +   row('함께한 횟수', c.works + '회')
     +   row('참여율', c.er.toFixed(1) + '%')
     +   row('제안 단가', won(c.cost))
     +   (c.up ? row('조회수', n(c.views)) : '')
@@ -3012,7 +3102,6 @@ function paintEmb() {
   if (!emb || PSTATE.open === null) return;
   const c = CREATORS[PSTATE.open];
   if (!c) return;
-  const st = (k, v) => '<span><i>' + k + '</i><b class="num">' + v + '</b></span>';
 
   emb.innerHTML = '<div class="din">'
     + '<div class="flex items-center justify-between gap-2">'
@@ -3027,13 +3116,9 @@ function paintEmb() {
          + ' title="' + esc(c.name) + '님 콘텐츠" scrolling="no"'
          + ' allow="encrypted-media; clipboard-write" allowtransparency="true"></iframe></div>'
        : '<div class="embOff">업로드 전<br>올라오면 여기에서 바로 보입니다</div>')
-    + '<div class="embStat">'
-    +   (c.up
-         ? st('조회수', n(c.views)) + st('좋아요', n(c.likes))
-           + st('댓글', n(c.cmts)) + st('저장', n(c.saves))
-         : st('제안 단가', won(c.cost)) + st('팔로워', kw(c.fol))
-           + st('참여율', c.er.toFixed(1) + '%'))
-    + '</div></div>';
+    + '</div>';
+  /* 칸 크기가 정해진 다음에 담아야 한다 */
+  requestAnimationFrame(fitEmb);
 }
 
 /* ── 높이 ────────────────────────────────────────────────── */
