@@ -4575,8 +4575,11 @@ function bindShelfDrag(el) {
       if (Math.abs(dx) < 4) return;
       moved = true;
       el.classList.add('dragging');
-      /* 이제부터는 카드 밖으로 커서가 나가도 계속 따라온다 */
-      if (el.setPointerCapture) el.setPointerCapture(id);
+      /* 이제부터는 카드 밖으로 커서가 나가도 계속 따라온다.
+         붙잡기는 실패할 수 있다 — 그 사이 포인터가 이미 놓였으면
+         NotFoundError 가 난다. 여기서 던지면 끌기가 중간에 죽으므로 삼킨다.
+         못 붙잡아도 줄 위에서는 계속 끌린다(이벤트가 올라오니까) */
+      try { el.setPointerCapture(id); } catch (err) { /* 못 붙잡아도 계속 간다 */ }
     }
     el.scrollLeft = left0 - dx;
     e.preventDefault();
@@ -4584,7 +4587,9 @@ function bindShelfDrag(el) {
 
   function end(e) {
     if (id === null || (e && e.pointerId !== id)) return;
-    if (el.hasPointerCapture && el.hasPointerCapture(id)) el.releasePointerCapture(id);
+    try {
+      if (el.hasPointerCapture(id)) el.releasePointerCapture(id);
+    } catch (err) { /* 붙잡은 적이 없으면 놓을 것도 없다 */ }
     id = null;
     el.classList.remove('dragging');
     /* 끌고 놓은 것이 클릭으로 새어 나가면 놓는 순간 릴이 열린다.
