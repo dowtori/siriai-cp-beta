@@ -568,12 +568,13 @@
 
   /* 히어로 사진이 접히면서 사이드 배너 자리로 날아간다.
      같은 곡선을 쓰므로 본문이 올라오는 것과 어긋나지 않는다 */
-  #artGhost{position:absolute;z-index:6;pointer-events:none;overflow:hidden;
-            border-radius:16px;transition:border-radius .44s cubic-bezier(.45,.05,.25,1)}
+  /* 접힐 때 히어로 사진이 위로 걷히는 동안만 사는 껍데기.
+     화면 좌표에 못 박아 두고(fixed) 머리줄(z-30) 아래에 둔다 — 사진이
+     머리줄 밑으로 빨려 올라가는 것처럼 읽혀야 한다 */
+  #artGhost{position:fixed;z-index:20;pointer-events:none;overflow:hidden}
   #artGhost > span{position:absolute;inset:0;display:block;
                    background-position:center;background-size:cover;background-repeat:no-repeat}
-  #artGhost .gs{background-image:var(--od-side)}
-  #artGhost .gh{background-image:var(--od-hero);transition:opacity 360ms ease}
+  #artGhost .gh{background-image:var(--od-hero);background-position:center 46%}
 
   /* 대시보드 카드 — 아이콘은 우상단에 흐리게. 눈이 먼저 가면 안 된다 */
   .dico{width:15px;height:15px;flex:none;opacity:.5}
@@ -2986,37 +2987,51 @@ const HERO_EASE = 'cubic-bezier(.45,.05,.25,1)';
 
 function heroEls() { return [$('camTop'), $('heroSlot'), $('heroNudge')]; }
 
-/* 히어로 컷이 사이드 배너 자리로 날아가며 사이드 컷으로 바뀐다.
-   고스트를 대화 칸 안에 넣어 두면 본문이 올라오는 움직임을 그대로 타므로
-   따로 맞출 것이 없다. dy 는 본문이 아직 내려가 있는 만큼이다 */
-function artFlight(a0, cTo, dy) {
-  const col = $('chatDock');
-  if (!col || !a0 || !cTo || innerWidth < 1280) return;
+/* 접힐 때 히어로 사진을 위로 걷어낸다.
+   전에는 사진이 알약으로 줄어들며 우하단 '대화하기' 단추 속으로 빨려
+   들어갔다. 화면을 가로질러 단추로 사라지니 뜬금없었다 — 사진과 대화는
+   아무 상관이 없고, 눈이 사진을 따라 엉뚱한 데로 끌려갔다.
+   배너가 줄어드는 것과 같은 방향 · 같은 시간으로, 머리줄 밑으로 걷힌다.
+   고스트를 쓰는 이유는 그대로다 — .hero 가 벗겨지는 순간 #camArt 는
+   display:none 이 되므로 실물로는 이 움직임을 만들 수 없다 */
+let liftT = 0;
+function artLift(a0, T) {
+  if (!a0 || innerWidth < 1280) return;
+  /* 접기를 연달아 누르면 고스트가 겹친다. 앞의 것과 그 뒷정리 타이머를
+     같이 걷어낸다 — 안 걷으면 앞 타이머가 새 고스트를 지우거나, 반대로
+     지워질 것이 안 지워져 사진 조각이 화면에 남는다.
+     setHero 가 heroT · heroT2 를 다루는 방식과 같다 */
+  clearTimeout(liftT);
   const old = $('artGhost');
   if (old) old.remove();
 
   const g = document.createElement('div');
   g.id = 'artGhost';
-  g.style.left   = (a0.left - cTo.left) + 'px';
-  g.style.top    = (a0.top - cTo.top - dy) + 'px';
+  g.style.left   = a0.left + 'px';
+  g.style.top    = a0.top + 'px';
   g.style.width  = a0.width + 'px';
   g.style.height = a0.height + 'px';
-  g.innerHTML = '<span class="gs"></span><span class="gh"></span>';
-  col.appendChild(g);
+  g.innerHTML = '<span class="gh"></span>';
+  document.body.appendChild(g);
+
+  /* 안쪽은 제 키를 못 박는다. 겉이 줄어들 때 inset:0 을 그대로 두면
+     사진이 위아래로 눌려 찌그러진다 */
+  const inner = g.querySelector('.gh');
+  inner.style.height = a0.height + 'px';
+  inner.style.bottom = 'auto';
   void g.offsetWidth;
 
-  const T = 440;
-  g.style.transition = ['left', 'top', 'width', 'height']
-    .map(function (k) { return k + ' ' + T + 'ms ' + HERO_EASE; }).join(',');
-  g.style.left = '0px'; g.style.top = '0px';
-  g.style.width = cTo.width + 'px'; g.style.height = cTo.height + 'px';
-  g.style.borderRadius = '999px';
-  g.querySelector('.gh').style.opacity = 0;
+  /* 겉은 아래에서 위로 닫히고(걷히는 것), 안쪽 사진은 그보다 천천히 올라간다.
+     같은 속도로 올리면 사진이 그냥 위로 빠지는 것처럼 보인다 — 속도를
+     달리 줘야 '걷힌다' 로 읽힌다 */
+  g.style.transition = 'height ' + T + 'ms ' + HERO_EASE;
+  g.style.height = '0px';
+  inner.style.transition = 'transform ' + T + 'ms ' + HERO_EASE
+                         + ', opacity ' + Math.round(T * 0.62) + 'ms ease ' + Math.round(T * 0.34) + 'ms';
+  inner.style.transform = 'translateY(-' + Math.round(a0.height * 0.16) + 'px)';
+  inner.style.opacity = 0;
 
-  setTimeout(function () {
-    g.style.transition = 'opacity 180ms ease'; g.style.opacity = 0;
-    setTimeout(function () { if (g.parentNode) g.remove(); }, 220);
-  }, T);
+  liftT = setTimeout(function () { if (g.parentNode) g.remove(); }, T + 80);
 }
 
 function heroLabel(on) {
@@ -3095,15 +3110,13 @@ function setHero(on) {
       el.style.transition = 'none'; el.style.height = '';
       fitProgRows();
       const bTo = el.offsetHeight;
-      /* 사이드 배너의 최종 자리. 접힌 배치에서 재야 정확하다 */
-      const cTo = $('chatFab') ? $('chatFab').getBoundingClientRect() : null;
-
       el.style.height = bFrom + 'px';
       void el.offsetHeight;
       el.style.transition = 'height 440ms ' + HERO_EASE;
       el.style.height = bTo + 'px';
       glue(row, bFrom, bTo, 440);
-      artFlight(a0, cTo, bFrom - bTo);
+      /* 배너가 줄어드는 것과 같은 440ms 다. 어긋나면 둘이 따로 움직인다 */
+      artLift(a0, 440);
 
       heroT = setTimeout(function () {
         el.style.transition = ''; el.style.height = '';
