@@ -72,7 +72,10 @@
      표의 마지막 두세 행과 안내 한 줄이 그 밑으로 들어가 스크롤해도 안 나온다.
      --dockH 는 JS 가 독 높이를 재서 넣는다(내려가 있으면 0).
      72px 은 독을 내려도 남는 대화 단추 자리다 */
-  #pad{padding-bottom:calc(max(var(--dockH, 0px), 72px) + 14px)}
+  /* 스크롤은 이 화면에 하나뿐이다. 표 안에서 또 굴리게 만들면
+     명단을 보는 게 아니라 창문으로 명단을 엿보는 경험이 된다 */
+  #pad{overflow-y:auto;overflow-x:hidden;
+       padding-bottom:calc(max(var(--dockH, 0px), 72px) + 14px)}
 
   html,body{height:100%}
   body{
@@ -196,9 +199,12 @@
   #camBanner.hero #ebBrand{display:none}
 
   /* 워드마크 — 오드타입 헤더와 같은 모양(대문자·자간 .06em) */
-  .odw{font-size:14px;font-weight:700;letter-spacing:.06em;color:#fff;line-height:1}
-  .odw2{color:rgba(255,255,255,.66)}
-  .odx{color:var(--od-red);font-weight:700;font-size:13px;line-height:1}
+  /* 두 워드마크는 같은 눈높이에 선다. 원본 비율이 달라 폭을 따로 준다 —
+     ODDTYPE 474x118(4.0:1) · SIRIAI 652x224(2.9:1) */
+  .cwm{flex:none;color:#fff}
+  .cwm-od{width:72px;height:18px}
+  .cwm-si{width:52px;height:18px;opacity:.82}
+  .odx{color:var(--od-red);font-weight:700;font-size:15px;line-height:1;flex:none}
   #camTop{display:none}
   #railBtn{position:absolute;left:12px;top:12px;z-index:3}
 
@@ -220,19 +226,21 @@
      높이는 JS 가 남는 공간을 재서 준다(하단 CTA 자리는 남긴다) */
   #camBanner.hero{min-height:322px;display:flex;flex-direction:column}
   #camBanner.hero #camTop{display:flex}
-  /* 원본은 1040x717 — 가로 사진이다. 세로로 긴 칸에 cover 로 넣으면 좌우를 700px 넘게
-     잘라내고 눈만 남았다. 칸 자체를 원본 비율로 만들어 우측 상단에 붙인다.
-     그러면 어디도 잘리지 않는다. 좌·하단 모서리는 그라데이션으로 검은 면에 녹인다 */
-  #camBanner.hero #camArt{top:0;bottom:auto;right:0;
-    width:min(62%,1400px);max-width:none;aspect-ratio:1040 / 717;max-height:100%;
-    background-image:linear-gradient(90deg,var(--od-ink) 0%,rgba(35,31,32,.74) 11%,rgba(35,31,32,.26) 28%,rgba(35,31,32,.06) 40%,rgba(35,31,32,0) 52%),
-      linear-gradient(180deg,rgba(35,31,32,.22) 0%,rgba(35,31,32,0) 14%,rgba(35,31,32,0) 52%,rgba(35,31,32,.52) 80%,var(--od-ink) 100%),
+  /* 사진이 오른쪽 62% 만 덮고 나머지가 검은 면이면, 사진이 아니라
+     검은 판에 붙인 스티커로 보인다. 칸 전체를 사진으로 채운다.
+     위아래에만 아주 옅은 그늘 — 로고와 접기 화살표가 읽혀야 한다.
+     사진 중심이 위쪽(얼굴)이라 32% 에 맞춘다 */
+  #camBanner.hero #camArt{inset:0;width:auto;max-width:none;
+    aspect-ratio:auto;max-height:none;
+    background-image:linear-gradient(180deg,rgba(20,17,18,.52) 0%,rgba(20,17,18,.10) 22%,
+                                            rgba(20,17,18,0) 46%,rgba(20,17,18,.16) 76%,
+                                            rgba(20,17,18,.46) 100%),
       var(--od-hero);
-    background-size:cover,cover,contain;
-    background-position:center,center,right top}
-  /* 제목은 지표 바로 위, 아래쪽에 붙는다 */
-  #camBanner.hero #camPad{margin-top:auto;padding-bottom:10px}
-  #camBanner.hero #camPad h1{font-size:clamp(24px,3vw,34px)}
+    background-size:cover,cover;
+    background-position:center,center 32%}
+  /* 사진 위에 기간 · 제목 · 배지를 얹으면 사진이 배경 취급이 된다.
+     캠페인 이름은 왼쪽 목록과 접힌 머리줄에 이미 두 번 적혀 있다 */
+  #camBanner.hero #camPad{display:none}
   /* 다섯 칸이 정확히 같은 폭이어야 한 줄로 읽힌다.
      대시보드가 네 칸을 차지하고 안쪽 간격도 같게 맞춘다 */
   /* 이미지는 CTA 밑까지 내려가도 되지만 지표는 가리면 안 된다 */
@@ -251,16 +259,14 @@
      간격 자체가 구분선 역할을 한다 — 선을 긋는 것보다 이쪽이 조용하다 */
   #colL{gap:22px}
 
-  #dashSec, #flowSec, #progSec, #progHint{
+  #dashSec, #flowSec, #progSec{
     transition:opacity .34s ease, transform .38s cubic-bezier(.45,.05,.25,1)}
   #dashSec {transition-delay:.06s}
   #progSec  {transition-delay:.22s}
-  #progHint {transition-delay:.28s}
 
   #pad.heroOn #dashSec,
   #pad.heroOn #flowSec,
-  #pad.heroOn #progSec,
-  #pad.heroOn #progHint{
+  #pad.heroOn #progSec{
     opacity:0;transform:translateY(-16px);pointer-events:none;transition-delay:0s;transition-duration:.16s}
 
   #heroSlot{display:none}
@@ -309,13 +315,13 @@
 
   /* 진행상황 — 열이 사람을 가두지 않는다. 한 판에 놓고 폭에 따라 칸이 늘고 준다.
      단계는 카드의 배지가 말한다. 스크롤은 아래로 하나뿐이다 */
-  #prog{display:flex;gap:10px;padding:10px;min-height:0;overflow:hidden}
+  #prog{display:flex;gap:10px;padding:10px}
   /* 열 수는 화면 폭이 아니라 layoutProgGrid() 가 정한다 — 박스 크기를 먼저 지키고,
      한 열에 담을 수 있는 인원을 넘을 때만 열을 하나 더 쓴다 */
   /* 스크롤 상자라 가장자리에서 잔린다. 카드 테두리는 box-shadow 로
      그린 1px 링이어서 상자 밖으로 1px 나가 있다 — 그 1px 이 잔렸다.
      선택된 카드는 1.5px 이라 4px 을 둔다 */
-  #pgrid{flex:1 1 0;min-width:0;overflow-y:auto;padding:4px;
+  #pgrid{flex:1 1 0;min-width:0;padding:4px;
          display:grid;grid-template-columns:minmax(0,1fr);
          gap:var(--pgap);align-content:start}
   /* 열 수는 상세가 열리기 전에 바뀌는데 폭은 0.4초 뒤에 좁아진다.
@@ -326,10 +332,10 @@
   /* 넓은 화면에서 진행상황은 '남는 높이' 를 갖는다. 자기 위치를 재서 키를 정하면
      한 번 밀려난 순간 top 이 음수가 되어 되돌아오지 못한다 */
   @media (min-width:1280px){
-    #progSec{flex:1 1 0;min-height:240px}
+    #progSec{flex:none}
     /* height:0 은 flex-basis 를 위한 것이었고 짝이던 min-height 가 실제 키를 돌려줬다.
        부모가 row flex 라 stretch 로 채워진다 — height 를 못 박지 않는 게 맞다 */
-    #pgrid{height:auto;min-height:0}
+    #pgrid{height:auto}
   }
   #pgrid .pempty{grid-column:1/-1;padding:28px 10px;text-align:center;
                  font-size:11.5px;color:#94a3b8}
@@ -775,12 +781,26 @@
   .btn-ask:active{transform:translateY(1px)}
 
   /* 표 보기 — 팔로워·단가로 훑을 때는 이쪽이 빠르다 */
-  #ptable{flex:1 1 auto;min-height:0;overflow:auto;padding:0 10px 10px}
+  /* overflow-x:auto 를 주면 세로도 같이 스크롤 상자가 되고(스펙이 그렇다),
+     그러면 머리글이 페이지 스크롤에 안 붙는다. 열 폭이 비율이라 넓은 화면에서는
+     가로로 넘칠 일이 없으니 아예 열어 둔다 — 좁은 화면에서만 옆으로 넘긴다 */
+  #ptable{flex:none;overflow:visible;padding:0}
+  @media (max-width:900px){
+    #ptable{overflow-x:auto}
+    #ptable table{min-width:820px}
+  }
   /* auto 면 브라우저가 남는 자리를 내용 많은 열에 몰아 준다 — 이름이 그걸
      혼자 다 먹었다. fixed 면 준 대로만 간다 */
+  /* overflow:hidden 으로 모서리를 잘라 두면 표 자체가 스크롤 상자가 되어
+     머리글이 페이지 스크롤에 안 붙는다. 모서리는 첫·끝 칸에서 직접 둥글린다 */
   #ptable table{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;
-                background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--lift-1)}
-  #ptable th{position:sticky;top:0;z-index:1;background:#f8fafc;padding:0;
+                background:#fff;border-radius:12px;box-shadow:var(--lift-1)}
+  #ptable thead th:first-child{border-top-left-radius:12px}
+  #ptable thead th:last-child{border-top-right-radius:12px}
+  #ptable tbody tr:last-child > td:first-child{border-bottom-left-radius:12px}
+  #ptable tbody tr:last-child > td:last-child{border-bottom-right-radius:12px}
+  /* 페이지가 흐르니 머리글은 화면 위쪽에 붙는다 */
+  #ptable th{position:sticky;top:-1px;z-index:2;background:#f8fafc;padding:0;
              border-bottom:1px solid #e9eef4;white-space:nowrap}
   #ptable th button{width:100%;display:flex;align-items:center;gap:3px;padding:11px 12px;
                     font-size:11px;font-weight:600;color:#64748b;white-space:nowrap;
@@ -848,10 +868,19 @@
   /* 인플루언서는 이 화면의 맨 아래 층이다. 성과·소식과 같은 평면에 있으면
      세 영역이 전부 같은 무게로 읽힌다. 띄우지 말고 파 내려간다 —
      뜨는 것은 안에 놓인 카드와 표이고, 이 판은 그것들이 놓인 바닥이다 */
-  #progSec{background:#e9edf3;border-radius:18px;padding:2px 4px 4px;
-           box-shadow:inset 0 1px 3px rgba(15,23,42,.07),
-                      inset 0 0 0 1px rgba(15,23,42,.05)}
-  #progSec > header{padding:9px 10px 8px;border-bottom:0}
+  /* 층을 나누는 것은 상자가 아니다. 화면 끝까지 펴고 바닥 색을 한 단
+     낮춘다 — 그러면 '판' 이 아니라 '아래 층' 으로 읽히고, 목록은 갇히지
+     않는다. 아래로는 화면 밖까지 이어져 끝이 안 보인다 */
+  /* .pnl 이 준 overflow:hidden 을 푼다. 그게 스크롤 상자로 잡혀서
+     표 머리글이 페이지 스크롤에 안 붙고 있었다 */
+  #progSec{position:relative;background:transparent;border-radius:0;padding:0;box-shadow:none;
+           margin-top:4px;overflow:visible}
+  #progSec::before{content:'';position:absolute;z-index:-1;
+                   left:-24px;right:-24px;top:0;bottom:-100vh;
+                   background:#f4f6f9;
+                   box-shadow:inset 0 1px 0 rgba(15,23,42,.06)}
+  @media (max-width:639px){ #progSec::before{left:-16px;right:-16px} }
+  #progSec > header{padding:14px 2px 10px;border-bottom:0}
   #progSec > header h2{color:#475569}
   .pnl h2{font-size:14.5px;font-weight:600;letter-spacing:var(--tr-title)}
   /* 섹션 제목 — 크기와 여백이 위계를 만든다 */
@@ -871,7 +900,7 @@
   }
 
   /* 목록은 스크롤 상자다 — 여기만 경계를 갖는다. 그것도 선 하나로 */
-  #prog{border-top:1px solid #eef2f7;padding:10px 0 0}
+  #prog{border-top:0;padding:0 0 20px}
   /* 카드도 떠 있지 않다. 테두리 한 겹, 짚으면 그때 들린다 */
   .pcard{background:#fff;box-shadow:inset 0 0 0 1px #eef2f7}
   .pcard:hover{box-shadow:inset 0 0 0 1px #dbe3ec, var(--lift-1)}
@@ -1193,12 +1222,13 @@
     *{transition-duration:.001ms !important;animation:none !important}
   }
 
-  /* 낮은 화면 — 위쪽을 눌러 표 높이를 지킨다 */
-  @media (max-height:860px){
-    /* 펼친 첫 화면의 큰 제목만 줄인다. 접힌 헤더는 이미 15px 이라 여기 걸리면 안 된다 */
-    #camBanner.hero .tight-h1{font-size:22px !important}
-    .tight-kpi{padding-top:.55rem !important;padding-bottom:.55rem !important}
-    .tight-kpi .num{font-size:18px !important}
+  /* 낮은 화면 — 위쪽을 눌러 표 높이를 지킨다.
+     예전에는 첫 화면 제목을 줄였는데 그 제목이 없어졌다. 이제 누를 것은
+     성과 쪽이다 — 표는 건드리지 않는다. 행이 얇아지면 읽으려고 키운 뜻이 없어진다 */
+  @media (max-height:880px){
+    #dash .dcard > div:nth-of-type(2) .num{font-size:22px}
+    .dpill{font-size:15px;padding:2px 8px 2px 6px}
+    .dpill svg{width:12px;height:12px}
   }
   /* 세로가 더 짧아지면 한 화면 고정을 포기하고 페이지를 흐르게 둔다.
      (폭만 보는 분기로는 노트북에서 표가 두 줄만 보이는 문제가 안 풀린다) */
@@ -1227,7 +1257,7 @@
                      width .26s cubic-bezier(.22,.61,.36,1)}
   }
   /* 히어로가 화면을 채우는 동안 그 아래로 밀려난 본문은 잘라 둔다 */
-  @media (min-width:1280px){ #pad{overflow:hidden} }
+  /* 예전에는 한 화면에 가두려고 잘랐다. 이제 아래로 흐른다 */
 
   /* 폰 — 콜드메일 링크는 대부분 여기서 열린다.
      고정 두 열이 320px 라 390px 화면에서는 데이터가 38px 밖에 안 남는다.
@@ -1342,8 +1372,12 @@
         <button id="heroToggle" onclick="toggleHero(event)" class="w-8 h-8 grid place-items-center rounded-lg text-white/70 hover:text-white hover:bg-white/15 transition" aria-expanded="true" aria-label="캠페인 화면 접기" title="접기">
           <svg id="heroChev" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
         </button>
-        <div id="camTop" class="relative items-center gap-2 px-5 sm:px-6 pt-5">
-          <span class="odw">ODDTYPE</span><span class="odx">&times;</span><span class="odw odw2">SIRIAI</span>
+        <!-- 글자를 대문자에 자간만 벌려 로고인 척하고 있었다. 둘 다 워드마크를
+             갖고 있으니 그대로 쓴다 -->
+        <div id="camTop" class="relative items-center gap-3 px-5 sm:px-6 pt-5">
+          <span class="odw-mark cwm cwm-od" role="img" aria-label="ODDTYPE"></span>
+          <span class="odx" aria-hidden="true">&times;</span>
+          <span class="wm cwm cwm-si" role="img" aria-label="SIRIAI"></span>
         </div>
         <div id="camPad" class="relative px-5 sm:px-6 py-4">
           <div id="eyebrow" class="num t-label text-[10px] mb-2"></div>
@@ -1434,7 +1468,6 @@
             <div id="progFilter" class="hidden shrink-0 px-2.5 pt-2.5"></div>
             <div id="prog" class="flex-1 min-h-0"></div>
           </section>
-          <p id="progHint" class="shrink-0 -mt-1 text-[10.5px] text-slate-500 keep">이름을 누르면 그 사람 정보가, 카드를 누르면 선택이 됩니다. 고른 뒤 끌어다 놓거나 <span class="font-semibold text-slate-700">대화에 담기</span>를 누르세요.</p>
         </div>
 
         </div>
