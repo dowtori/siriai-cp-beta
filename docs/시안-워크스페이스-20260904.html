@@ -14,6 +14,12 @@
   :root{
     /* 오드타입 브랜드 — 클라이언트 자산이라 그쪽 초대 페이지 값을 그대로 쓴다 */
     --rail:244px; --pgap:8px;
+    /* 바깥 여백은 화면 폭을 따라간다. 숫자를 브레이크포인트마다 박아 두면
+       재 본 폭에서만 맞고 나머지에서는 전부 틀린다 */
+    --gut : clamp(20px, 3.2vw, 56px);
+    /* 글과 표가 읽히는 한계 폭. 2300px 화면에서 표를 1900px 로 벌리면
+       한 줄을 눈으로 따라갈 수가 없다. 여기서 멈추고 남는 자리는 여백으로 */
+    --maxw: 1280px;
     /* 오드타입 공식 워드마크 (474:118) — 마스크로 써서 색은 글자색을 따른다 */
     --odw: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNDc0IiBoZWlnaHQ9IjExOCIgdmlld0JveD0iMCAwIDQ3NCAxMTgiPjxkZWZzPjxjbGlwUGF0aCBpZD0iYSI+PHJlY3Qgd2lkdGg9IjQ3My4zMTEiIGhlaWdodD0iMTE3LjQ0MSIgZmlsbD0iI2ZmZiIvPjwvY2xpcFBhdGg+PGNsaXBQYXRoIGlkPSJjIj48cmVjdCB3aWR0aD0iNDc0IiBoZWlnaHQ9IjExOCIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGlkPSJiIiBjbGlwLXBhdGg9InVybCgjYykiPjxnIGNsaXAtcGF0aD0idXJsKCNhKSI+PHBhdGggZD0iTTQ3NS4xNTYsNDEuNTU4YTI4Ljc2MywyOC43NjMsMCwwLDAtMTAuNzQ3LTExLjI4NywzMC40NzEsMzAuNDcxLDAsMCwwLTE1LjgtNC4wODIsMzIuNTYsMzIuNTYsMCwwLDAtMjguNzMsMTYuMzY2LDMzLjQzOSwzMy40MzksMCwwLDAtNC40LDE3LjAyLDMzLjMxLDMzLjMxLDAsMCwwLDQuNDY2LDE3LjE1NkEzMi43NjksMzIuNzY5LDAsMCwwLDQzMi4xMTUsODguN2EzNC4zOTMsMzQuMzkzLDAsMCwwLDE3LjI3LDQuMzkyLDM2LjE3LDM2LjE3LDAsMCwwLDE0LjIxLTIuODMxLDMwLjE2OCwzMC4xNjgsMCwwLDAsMTEuMzMyLTguMjgybC44MTMtLjk1Ni05LjQ0Ni05LjYwNy0uOTczLDEuMTM1YTE4LjQ1MSwxOC40NTEsMCwwLDEtNi45MzgsNS4wNzEsMjMuMjQ0LDIzLjI0NCwwLDAsMS05LDEuNzA3LDIxLjA5MSwyMS4wOTEsMCwwLDEtMTAuMzUxLTIuNDg1LDE2LjkzOCwxNi45MzgsMCwwLDEtNi44NDItNi45NjIsMTkuNjU3LDE5LjY1NywwLDAsMS0xLjcxNy00LjUyNmg0Ny42NDJsLjIyMS0xLjFhMzMuMzE4LDMzLjMxOCwwLDAsMCwuNTM5LTMuNTg2Yy4wOS0xLjAzNS4xMzUtMi4wMTIuMTM1LTIuOWEzMy44MTcsMzMuODE3LDAsMCwwLTMuODU3LTE2LjJtLTQ0LjY0MiwxMS4zM2ExOC43MTMsMTguNzEzLDAsMCwxLDEuNTUxLTQuMDc4LDE2LjQ0NSwxNi40NDUsMCwwLDEsNi40NjctNi43MDcsMTkuNTI5LDE5LjUyOSwwLDAsMSw5LjgxNy0yLjQxMSwxNy4zNzUsMTcuMzc1LDAsMCwxLDkuMDE2LDIuMiwxNC45MiwxNC45MiwwLDAsMSw1LjcsNi4xODEsMTguMjM5LDE4LjIzOSwwLDAsMSwxLjU5Myw0LjgxMVoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC01LjcwMiAtMC4zNTkpIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTMyNC44MTQsMjcuMzQ3bC0xOC44LDQxLjVMMjg3LjU2MSwyNy42OTFsLS4xNTMtLjM0NEgyNjQuNFYxLjU1NmgtMTQuNDFWMjcuMzQ3aC0xMi42VjQwLjcyMWgxMi42VjkxLjY1aDE0LjMyN2wuMDg3LTE0LjQyNCwwLTM2LjUwNWgxMy4yODNsMzQuMjksNzYuMzg0LjE1NS4zNDNIMzI3LjhMMzEzLjU5LDg1Ljc1NmwyNi43Ny01OC40MDlaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMy4yNTggLTAuMDIxKSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0zODAuNzM3LDI2LjE4OWMtOC41MjksMC0xNS40MzIsMy41NTctMTkuOTYyLDEwLjI4NWwtLjM2OC41NDhWMjcuNjcxSDM0NS43NDVWMTE3LjhIMzYwLjlWODIuMjc3bC4zNjguNTI1YzQuNDksNi40MTUsMTEuMDQsOS42NjcsMTkuNDY5LDkuNjY3LDE3LjU0OCwwLDI4LjQ0Ny0xMi43LDI4LjQ0Ny0zMy4xNHMtMTAuOS0zMy4xNC0yOC40NDctMzMuMTRtMTMuNiwzMy4xNGMwLDEzLjE1Ni02LjA2LDIwLjctMTYuNjI2LDIwLjctMTAuMzMzLDAtMTYuNS03LjkyMy0xNi41LTIxLjE5MiwwLTEyLjg0Myw2LjAxNS0yMC4yMSwxNi41LTIwLjIxLDEwLjU2NiwwLDE2LjYyNiw3LjU0NSwxNi42MjYsMjAuNyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQuNzQ1IC0wLjM1OSkiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNzcuOTQzLDEzLjQyMkE0NC43NzYsNDQuNzc2LDAsMCwwLDYzLjQsMy41Miw0NS41NDUsNDUuNTQ1LDAsMCwwLDQ1LjQ4OCwwLDQ1LjUyOSw0NS41MjksMCwwLDAsMjcuNTcsMy41MmE0My45OCw0My45OCwwLDAsMC0xNC40NzksOS45MDdBNDYuNDQ4LDQ2LjQ0OCwwLDAsMCwzLjQ1MywyOC4yLDQ3LjQyMSw0Ny40MjEsMCwwLDAsMCw0Ni4zMzksNDcuNTgxLDQ3LjU4MSwwLDAsMCwzLjQ1MSw2NC40MTVhNDYuNSw0Ni41LDAsMCwwLDkuNywxNC45QTQ0Ljc5Myw0NC43OTMsMCwwLDAsNDUuNzQxLDkyLjkzMiw0NC41LDQ0LjUsMCwwLDAsNzguMDEsNzkuMzc5YTQ4LjAxNiw0OC4wMTYsMCwwLDAsOS43LTUxLjEyNSw0Ni42ODMsNDYuNjgzLDAsMCwwLTkuNzY4LTE0LjgzM003Ni4yNTUsNDYuMzM5YTM0Ljc2OSwzNC43NjksMCwwLDEtNC4wMDcsMTYuODU1LDMwLjE4OSwzMC4xODksMCwwLDEtMTAuODM1LDExLjUsMzAuMTA5LDMwLjEwOSwwLDAsMS0xNS45MjQsNC4xNjEsMzAuOTgyLDMwLjk4MiwwLDAsMS0xMi4zLTIuNDE2LDI4Ljg0NSwyOC44NDUsMCwwLDEtOS42NjYtNi43LDMwLjIyMiwzMC4yMjIsMCwwLDEtNi4yOTEtMTAuMjg0LDM3LjI4OCwzNy4yODgsMCwwLDEtMi4yNTUtMTMuMTEyQTM0Ljg0MywzNC44NDMsMCwwLDEsMTguOTIsMjkuNTQ1LDI5LjM1MywyOS4zNTMsMCwwLDEsMjkuNjgzLDE4LjE4MmEzMC4xODgsMzAuMTg4LDAsMCwxLDE1LjgwNS00LjEsMzEuNTQ3LDMxLjU0NywwLDAsMSwxMi4zNywyLjM1NywyOC41MjQsMjguNTI0LDAsMCwxLDkuNjYyLDYuNywzMS42NDcsMzEuNjQ3LDAsMCwxLDYuNDI3LDEwLjI0MiwzNS40NTEsMzUuNDUxLDAsMCwxLDIuMzA5LDEyLjk2NSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0xNDYuMiwzNi44NjZsLS4zNjctLjUyNWMtNC40OTItNi40MTYtMTEuMDQxLTkuNjY4LTE5LjQ3MS05LjY2OC0xNy41NDcsMC0yOC40NDcsMTIuNy0yOC40NDcsMzMuMTRzMTAuOSwzMy4xNCwyOC40NDgsMzMuMTRjOC41MywwLDE1LjQzMi0zLjU1NiwxOS45NjItMTAuMjgzbC4zNjktLjU0OFY5MS40N2gxNC42NjJWMS41NTVIMTQ2LjJabS4zNywyMi45NDdjMCwxMy4xNTYtNi4wNiwyMC43LTE2LjYyNiwyMC43LTEwLjQ4NiwwLTE2LjUtNy4zNjYtMTYuNS0yMC4yMDcsMC0xMy4yNzIsNi4xNjgtMjEuMiwxNi41LTIxLjIsMTAuNTY2LDAsMTYuNjI2LDcuNTQ1LDE2LjYyNiwyMC43IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMS4zNDQgLTAuMDIxKSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0yMTUuOTM2LDM2Ljg2NmwtLjM2Ny0uNTI1Yy00LjQ5Mi02LjQxNi0xMS4wNDEtOS42NjgtMTkuNDY5LTkuNjY4LTE3LjU0OCwwLTI4LjQ0OCwxMi43LTI4LjQ0OCwzMy4xNHMxMC45LDMzLjE0LDI4LjQ0OCwzMy4xNGM4LjUyOSwwLDE1LjQzMS0zLjU1NiwxOS45NjEtMTAuMjgzbC4zNjktLjU0OFY5MS40N2gxNC42NjJWMS41NTVIMjE1LjkzNlptLjM3LDIyLjk0N2MwLDEzLjE1Ni02LjA2LDIwLjctMTYuNjI2LDIwLjctMTAuNDg2LDAtMTYuNS03LjM2Ni0xNi41LTIwLjIwNywwLTEzLjI3Miw2LjE2OC0yMS4yLDE2LjUtMjEuMiwxMC41NjYsMCwxNi42MjYsNy41NDUsMTYuNjI2LDIwLjciIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yLjMwMSAtMC4wMjEpIiBmaWxsPSIjZmZmIi8+PC9nPjwvZz48L3N2Zz4=");
     --od-ink:#231f20; --od-red:#dc272d; --od-red-dark:#b81e23;
@@ -79,12 +85,10 @@
      멀어졌다. 여백을 키우면 표가 좁아지고 값이 서로 가까워진다 —
      한 시야에 들어오는 폭이 되는 것이 먼저다 */
   #pad{overflow-y:auto;overflow-x:hidden;
-       padding-left:56px;padding-right:56px;
-       padding-bottom:calc(max(var(--dockH, 0px), 72px) + 14px)}
-  /* 1280 에서 24 로 떨어뜨려 두었더니 노트북에서는 사실상 좁았다 —
-     실제로 쓰는 폭(1180~1440)이 전부 그 아래였다 */
-  @media (max-width:1023px){ #pad{padding-left:32px;padding-right:32px} }
-  @media (max-width:639px){  #pad{padding-left:18px;padding-right:18px} }
+       padding-top:0;padding-left:var(--gut);padding-right:var(--gut);
+       padding-bottom:calc(max(var(--dockH, 0px), 72px) + 40px)}
+  /* 넓은 화면에서는 폭을 늘리는 대신 가운데로 모은다 */
+  #topStack, #bodyRow{width:100%;max-width:var(--maxw);margin-left:auto;margin-right:auto}
 
   html,body{height:100%}
   body{
@@ -114,11 +118,10 @@
   /* 접혀 있을 때는 화면의 틀이다. 레일에 붙어 하나로 읽혀야 한다 —
      떠 있는 카드로 두면 "이건 뭐지" 를 한 번 묻게 만든다.
      펼치면(hero) 그때만 카드로 떠오른다 */
-  #camBanner{background:#fff;color:#0f172a;
-             margin:-20px -56px 0;padding:0;
+  /* 상자(topStack) 안으로 들어왔으니 밖으로 삐져나갈 이유가 없다.
+     -20px 이 sticky 상자 위로 20px 튀어나가 화면 밖으로 잘리고 있었다 */
+  #camBanner{background:#fff;color:#0f172a;margin:0;padding:0;
              border-bottom:1px solid #e8edf3}
-  @media (max-width:1023px){ #camBanner{margin-left:-32px;margin-right:-32px} }
-  @media (max-width:639px){  #camBanner{margin-left:-18px;margin-right:-18px} }
   /* 첫 화면은 사진 한 장이다. 여백도 모서리도 없이 화면을 채운다 —
      둘레에 흰 띠가 남으면 사진이 아니라 '사진이 든 카드' 가 된다.
      자리는 #pad.heroOn 이 padding 을 0 으로 놓아 비운다 */
@@ -127,7 +130,8 @@
   /* 첫 화면은 한 장이다. 굴릴 것이 없으니 스크롤바 자리도 비우지 않는다 —
      그 15px 이 오른쪽 흰 띠였다 */
   #pad.heroOn{padding:0;overflow:hidden}
-  #pad.heroOn #topStack{position:static;box-shadow:none;background:transparent}
+  #pad.heroOn #topStack{position:static;box-shadow:none;background:transparent;
+                        max-width:none;margin:0}
   /* 사진이 화면 끝까지 가니 좌상단 로고와 우상단 단추도 안쪽으로 들여 세운다 */
   #pad.heroOn #camTop{padding-top:22px}
   #camBanner.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
@@ -148,8 +152,7 @@
   #camBanner:not(.hero) #camArt{display:none}
   /* 한 줄로 눕힌다. 제목 · 기간 · 상태가 같은 높이에 온다 */
   #camBanner:not(.hero) #camPad{display:flex;align-items:center;gap:14px;
-                                padding:13px 56px}
-  @media (max-width:1023px){ #camBanner:not(.hero) #camPad{padding:13px 32px} }
+                                padding:16px 0}
   /* 자료를 펼치면 왼쪽으로 자리를 내준다. 제목은 이 줄의 주인이라 접지 않는다 —
      칩을 헤더 높이에 맞춰 줄여 두었으니 넉 장이 제목 옆에 그대로 들어간다.
      정말 빠듯한 폭에서만 기간이 물러난다 */
@@ -839,7 +842,7 @@
 
   /* 표 마감 — 표가 끝나는 자리다. 흰 표에 이어 붙은 한 줄로 둔다 */
   .pfoot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;
-         padding:15px 20px;background:#fff;border-top:1px solid #f1f5f9}
+         padding:18px 24px;background:#fff;border-top:1px solid #f1f5f9}
   .pfInfo{font-size:12px;color:var(--ink-3);letter-spacing:var(--tr-body)}
   .pfInfo b{font-weight:700;color:var(--ink-1)}
   .pfPer{display:flex;align-items:center;gap:3px;margin-left:auto}
@@ -931,7 +934,7 @@
   /* overflow-x:auto 를 주면 세로도 같이 스크롤 상자가 되고(스펙이 그렇다),
      그러면 머리글이 페이지 스크롤에 안 붙는다. 열 폭이 비율이라 넓은 화면에서는
      가로로 넘칠 일이 없으니 아예 열어 둔다 — 좁은 화면에서만 옆으로 넘긴다 */
-  #ptable{flex:none;overflow:visible;padding:0 8px}
+  #ptable{flex:none;overflow:visible;padding:0 6px}
   @media (max-width:900px){
     #ptable{overflow-x:auto}
     #ptable table{min-width:820px}
@@ -948,11 +951,11 @@
   #ptable th{position:sticky;top:calc(var(--topH,0px) - 1px);
              z-index:2;background:#f8fafc;padding:0;
              border-bottom:1px solid #e9eef4;white-space:nowrap}
-  #ptable th button{width:100%;display:flex;align-items:center;gap:3px;padding:11px 12px;
-                    font-size:11px;font-weight:600;color:#64748b;white-space:nowrap;
+  #ptable th button{width:100%;display:flex;align-items:center;gap:3px;padding:16px 18px;
+                    font-size:11.5px;font-weight:600;color:#64748b;white-space:nowrap;
                     letter-spacing:var(--tr-small)}
   /* 누르는 자리가 아닌 이름표 — 정렬 단추와 같은 높이에 앉힌다 */
-  #ptable th .thlab{display:block;padding:11px 12px;font-size:11px;font-weight:600;color:#64748b;
+  #ptable th .thlab{display:block;padding:16px 18px;font-size:11.5px;font-weight:600;color:#64748b;
                     white-space:nowrap;letter-spacing:var(--tr-small)}
   /* 오른쪽 정렬을 걷는다. 값이 칸의 반대쪽 끝에 서 있으면 그 앞이 전부 구멍이다.
      자릿수는 tabular-nums 가 맞춰 주니 왼쪽에서도 세로줄이 선다 */
@@ -960,7 +963,9 @@
   /* 스무 명을 한 화면에 밀어 넣으려다 글자가 작고 행이 얇아졌다.
      첫 화면에 네댓 명만 보여도 된다 — 아래는 스크롤이 있다.
      읽히는 것이 먼저다 */
-  #ptable td{padding:16px 12px;font-size:14px;color:#334155;border-bottom:1px solid #f1f5f9;
+  /* 한 줄이 숨 쉴 자리. 좌우도 같이 벌린다 — 값이 칸 벽에 붙으면
+     칸이 몇 개인지부터 세게 된다 */
+  #ptable td{padding:22px 18px;font-size:14px;color:#334155;border-bottom:1px solid #f1f5f9;
              white-space:nowrap}
   /* 한 칸에 이름과 계정을 위아래로. 계정을 옆 열로 빼 두었더니 두 칸 다
      반이 비었다 — 붙여 놓으면 한 칸이 차고 한 칸이 통째로 남는다 */
@@ -1031,14 +1036,14 @@
   /* 층은 목록이 끝나는 자리에서 같이 끝난다. 화면 밖까지 끌고 가면
      표 아래로 빈 바닥만 길게 남는다 */
   /* 층은 표보다 조금 더 내려가서 끝난다 — 딱 맞춰 끝내면 표가 낭떠러지에 선다 */
+  /* 아래 층은 화면 끝까지 간다. #pad 의 overflow-x 가 잘라 주니
+     넉넉하게 밀어 두면 어떤 폭에서도 끝까지 닿는다 */
   #progSec::before{content:'';position:absolute;z-index:-1;
-                   left:-56px;right:-56px;top:0;bottom:-24px;
+                   left:-100vw;right:-100vw;top:0;bottom:-40px;
                    background:#f4f6f9;
                    box-shadow:inset 0 1px 0 rgba(15,23,42,.06)}
-  @media (max-width:1023px){ #progSec::before{left:-32px;right:-32px} }
-  @media (max-width:639px){  #progSec::before{left:-18px;right:-18px} }
-  #progSec > #progCard > header{padding:16px 20px;border-bottom:1px solid #f1f5f9}
-  #progFilter{padding:14px 20px;border-bottom:1px solid #f1f5f9;background:#fbfcfd}
+  #progSec > #progCard > header{padding:20px 24px;border-bottom:1px solid #f1f5f9}
+  #progFilter{padding:16px 24px;border-bottom:1px solid #f1f5f9;background:#fbfcfd}
   #progSec > #progCard > header h2{color:var(--ink-1);font-size:15px}
   .pnl h2{font-size:14.5px;font-weight:600;letter-spacing:var(--tr-title)}
   /* 섹션 제목 — 크기와 여백이 위계를 만든다 */
