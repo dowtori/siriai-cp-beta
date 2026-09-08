@@ -115,7 +115,7 @@
      떠 있는 카드로 두면 "이건 뭐지" 를 한 번 묻게 만든다.
      펼치면(hero) 그때만 카드로 떠오른다 */
   #camBanner{background:#fff;color:#0f172a;
-             margin:-20px -56px 4px;padding:0;
+             margin:-20px -56px 0;padding:0;
              border-bottom:1px solid #e8edf3}
   @media (max-width:1023px){ #camBanner{margin-left:-32px;margin-right:-32px} }
   @media (max-width:639px){  #camBanner{margin-left:-18px;margin-right:-18px} }
@@ -127,7 +127,7 @@
   /* 첫 화면은 한 장이다. 굴릴 것이 없으니 스크롤바 자리도 비우지 않는다 —
      그 15px 이 오른쪽 흰 띠였다 */
   #pad.heroOn{padding:0;overflow:hidden}
-  #pad.heroOn #topStack{position:static;box-shadow:none}
+  #pad.heroOn #topStack{position:static;box-shadow:none;background:transparent}
   /* 사진이 화면 끝까지 가니 좌상단 로고와 우상단 단추도 안쪽으로 들여 세운다 */
   #pad.heroOn #camTop{padding-top:22px}
   #camBanner.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
@@ -139,7 +139,10 @@
   /* 접힌 상태의 글자색 — 흰 틀 위다 */
   #camBanner:not(.hero) #campTitle{color:#0f172a}
   #camBanner:not(.hero) #eyebrow{color:#94a3b8}
-  #camBanner:not(.hero) #campBadge{background:#f1f5f9 !important;color:#334155}
+  #camBanner:not(.hero) .ebw{color:var(--ink-2)}
+  #camBanner:not(.hero) .ebw-si{opacity:.55}
+  #camBanner:not(.hero) #campBadge{background:#ecfdf5 !important;color:#047857}
+  #camBanner:not(.hero) #campBadge.done{background:#f1f5f9 !important;color:#475569}
   #camBanner:not(.hero) #heroToggle{color:#94a3b8}
   #camBanner:not(.hero) #heroToggle:hover{color:#0f172a;background:#f1f5f9}
   #camBanner:not(.hero) #camArt{display:none}
@@ -224,6 +227,14 @@
   .cwm-od{width:72px;height:18px}
   .cwm-si{width:52px;height:18px;opacity:.82}
   .odx{color:var(--od-red);font-weight:700;font-size:15px;line-height:1;flex:none}
+  /* 접힌 머리줄의 브랜드 표기 — 히어로와 같은 워드마크를 작게 */
+  #ebBrand{display:inline-flex;align-items:center;gap:7px;vertical-align:middle}
+  .ebw{display:block;flex:none}
+  .ebw-od{width:56px;height:14px}
+  .ebw-si{width:40px;height:14px;opacity:.72}
+  .ebx{font-size:11px;line-height:1;color:var(--od-red);font-weight:700}
+  .ebper{margin-left:10px;padding-left:10px;vertical-align:middle;
+         border-left:1px solid #e2e8f0}
   #camTop{display:none}
   #railBtn{position:absolute;left:12px;top:12px;z-index:3}
 
@@ -291,19 +302,16 @@
      계속 변하는데, 그 값을 재서 아래 덩어리를 붙이니 어느 프레임에서는
      둘 사이에 틈이 생기고 그 틈으로 표가 비쳤다.
      애초에 붙어야 할 것은 흐름과 성과였다. 배너는 같이 올라간다 */
-  #topStack{position:sticky;top:0;z-index:20;
-            margin-left:-56px;margin-right:-56px;padding:14px 56px 0;
-            background:#fff;
-            transition:box-shadow .2s ease, padding .24s cubic-bezier(.22,.61,.36,1)}
-  @media (max-width:1023px){
-    #topStack{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
-  }
-  #topStack > section + section{margin-top:26px}
+  /* 좌우로 늘리지 않는다. 늘렸더니 왼쪽 레일 위까지 흰 면이 덮었다.
+     배너가 이 안에 들어왔으니 배너가 알아서 제 폭을 쓴다 */
+  #topStack{position:sticky;top:0;z-index:20;background:#fff;
+            transition:box-shadow .2s ease}
+  #topStack > section{margin-top:22px}
   /* 붙어 있는 동안만 밑에 그늘을 둔다 — 늘 있으면 그냥 띠가 하나 더 생긴 것이다 */
-  #topStack.stuck{box-shadow:0 10px 24px -18px rgba(15,23,42,.55),
-                             0 1px 0 rgba(15,23,42,.06);
-                  padding-bottom:12px}
-  #topStack.stuck > section + section{margin-top:14px}
+  #topStack.stuck{box-shadow:0 12px 26px -20px rgba(15,23,42,.5),
+                             0 1px 0 rgba(15,23,42,.07);
+                  padding-bottom:14px}
+  #topStack.stuck > section{margin-top:12px}
   /* 붙으면 성과는 숫자만 남긴다. 전일 대비 · 남은 인원 같은 것은 표를 읽는
      동안에는 필요 없다 — 필요해지면 위로 올리면 된다 */
   #topStack.stuck #dashSec .sechd,
@@ -1521,6 +1529,10 @@
         <div id="searchOut" class="flex-1 min-h-0 overflow-y-auto scroll scroll-thin"></div>
       </section>
 
+      <!-- 붙는 것은 셋이 한 덩어리다 — 어느 캠페인인지(배너) · 어디까지
+           왔는지(흐름) · 숫자가 얼마인지(성과). 배너만 밖에 두었더니
+           그 키를 재서 아래를 대야 했고, 재는 동안 틈이 생겼다 -->
+      <div id="topStack">
       <!-- 제목 — 오드타입 배너 -->
       <div id="camBanner" onclick="heroTap(event)" class="hero shrink-0 relative overflow-hidden">
         <div id="camArt" aria-hidden="true"></div>
@@ -1562,14 +1574,6 @@
         </button>
       </div>
 
-      <!-- 본문 2단 — 좌: 대시보드 · 에셋 · 진행상황 / 우: 대화창 -->
-      <div id="bodyRow" class="flex-1 min-h-0 mt-3 flex flex-col xl:flex-row gap-3">
-
-        <div id="colL" class="flex-1 min-w-0 min-h-0 flex flex-col">
-
-          <!-- 흐름과 성과는 한 덩어리다. 표를 보러 내려가도 이 둘은 위에 남는다 —
-               '지금 어디까지 왔고 숫자가 얼마인지' 는 표를 읽는 내내 필요하다 -->
-          <div id="topStack">
 
             <section id="flowSec" class="shrink-0">
               <div class="sechd"><h2>진행 흐름</h2><span id="fpSum" class="num text-[10.5px] text-slate-500"></span>
@@ -1586,10 +1590,14 @@
               <div class="sechd"><h2>성과</h2></div>
               <div id="dash"></div>
             </section>
+      </div>
+      <!-- 본문 2단 — 좌: 대시보드 · 에셋 · 진행상황 / 우: 대화창 -->
+      <div id="bodyRow" class="flex-1 min-h-0 mt-3 flex flex-col xl:flex-row gap-3">
 
-          </div>
+        <div id="colL" class="flex-1 min-w-0 min-h-0 flex flex-col">
 
-
+          <!-- 흐름과 성과는 한 덩어리다. 표를 보러 내려가도 이 둘은 위에 남는다 —
+               '지금 어디까지 왔고 숫자가 얼마인지' 는 표를 읽는 내내 필요하다 -->
           <!-- 3 · 진행상황 — 박스 하나에 전원. 20~30명이어도 여기 안에서만 흐른다 -->
           <!-- 3 · 진행상황 — 3행 높이에 맞춘다. flex-1 이면 남는 세로를 전부 먹고 안이 텅 빈다 -->
           <!-- 3 · 진행상황 — 단계마다 한 열. 상세는 옆 칸을 밀며 열린다 -->
@@ -2602,11 +2610,19 @@ function renderHead() {
   const cp = camp(), live = cp.state === 'live';
   /* 워드마크는 그쪽 헤더와 같은 모양이다 — 대문자, × 만 레드 */
   /* 펼쳤을 때는 위에 워드마크가 있으므로 브랜드 표기를 두 번 하지 않는다 */
-  $('eyebrow').innerHTML = '<span id="ebBrand">ODDTYPE <b>&times;</b> SIRIAI &nbsp;\u00b7&nbsp; </span>'
-    + cp.y + '.' + esc(cp.period);
+  /* 히어로에서 지적받은 것과 같은 자리다 — 여기도 글자가 아니라 로고를 쓴다 */
+  $('eyebrow').innerHTML =
+      '<span id="ebBrand">'
+    +   '<span class="odw-mark ebw ebw-od" role="img" aria-label="ODDTYPE"></span>'
+    +   '<span class="ebx" aria-hidden="true">&times;</span>'
+    +   '<span class="wm ebw ebw-si" role="img" aria-label="SIRIAI"></span>'
+    + '</span>'
+    + '<span class="ebper num">' + cp.y + '.' + esc(cp.period) + '</span>';
   $('campTitle').textContent = cp.title;
+  /* 진행 중은 좋은 소식이다. 붉은 점은 '문제 있음' 으로 읽힌다 */
   $('campBadge').innerHTML = '<span class="w-1.5 h-1.5 rounded-full" style="background:'
-    + (live ? 'var(--od-red)' : 'rgba(255,255,255,.45)') + '"></span>' + cp.badge;
+    + (live ? '#10b981' : '#94a3b8') + '"></span>' + cp.badge;
+  $('campBadge').classList.toggle('done', !live);
   $('reportTitle').textContent = live ? '8월 중간 성과 보고서' : cp.title + ' 최종 보고서';
   $('reportKicker').textContent = live ? 'Interim report' : 'Final report';
   $('reportNote').textContent = live
