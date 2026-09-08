@@ -108,6 +108,9 @@
   .them{background:#f1f5f9;color:var(--ink);border-bottom-left-radius:5px;align-self:flex-start}
   .us{background:var(--ink);color:#fff;border-bottom-right-radius:5px;align-self:flex-end}
   .who{font-size:9.5px;color:var(--ink-3);margin-bottom:3px}
+  /* 브랜드가 '이 사람 이야기' 로 보내면 누구인지 같이 온다 */
+  .pchip{display:inline-flex;align-items:center;background:#fff;box-shadow:var(--lift-1);
+         padding:3px 7px;border-radius:8px;font-size:10px;font-weight:700;color:var(--ink)}
 
   .tab{font-size:11.5px;font-weight:700;color:var(--ink-3);padding:6px 10px;border-radius:9px;
        transition:background-color .15s ease,color .15s ease;white-space:nowrap}
@@ -187,7 +190,11 @@
           <button id="tabChat" class="tab on" onclick="setTab('chat')">브랜드 대화</button>
           <button id="tabReq"  class="tab" onclick="setTab('req')">요청함<span id="reqN" class="badge"></span></button>
         </div>
-        <span class="num text-[10px]" style="color:var(--ink-3)">오드타입 이수연 매니저</span>
+        <span class="flex items-center gap-2 shrink-0">
+          <span class="num text-[10px]" style="color:var(--ink-3)">오드타입 이수연 매니저</span>
+          <button onclick="chatReset()" class="btn text-[10px] font-bold px-2 py-1 rounded-md"
+                  style="color:var(--ink-3)" title="대화를 처음 상태로">초기화</button>
+        </span>
       </header>
 
       <div id="paneChat" class="flex-1 min-h-0 flex flex-col">
@@ -412,26 +419,83 @@ function doReq(i) {
   if (r.done) return;
   r.done = true;
   renderReq(); renderSum();
-  CHAT.push({ me:1, text: r.t + ' 처리해 드렸어요. 화면 새로고침하시면 바로 보입니다.', at:'지금' });
-  renderChat();
+  CHAT.push({ who:'siriai', text: r.t + ' 처리해 드렸어요. 화면에서 바로 확인하실 수 있습니다.', at:'지금' });
+  renderChat(); chatSave();
   toast(r.t + ' — 처리하고 브랜드에 알렸어요.');
 }
 
-/* ── 대화 — 콘솔의 그 대화, 우리 쪽에서 본다 ───────────────── */
-const CHAT = [
-  { me:0, text:'이번 달 업로드분 생각보다 반응이 좋네요. 감사합니다!', at:'09.05 09:10' },
-  { me:1, text:'이수연 매니저님, 생각보다 쉽게 가고 있어요. 지금 업로드 9건 · 검수 4건이고, 나머지는 이번 주 안에 다 끝납니다.', at:'09.05 09:24' },
-  { me:0, text:'유료 코드 5건만 더 발급 부탁드리고 싶어요. 화면에서 골라서 보냈습니다.', at:'09.06 17:20' }
+/* ── 대화 ────────────────────────────────────────────────────
+   브랜드 화면의 그 대화다. 같은 주소의 화면이라 localStorage 한 칸을 스레드로
+   쓰고 BroadcastChannel 로 옆 창에 바로 알린다 — 서버 없이 실제로 오간다.
+   (같은 브라우저 안에서만 오간다. 데모는 한 대에서 두 창을 띄우고 한다)
+
+   메시지 모양은 브랜드 화면과 같다: { who:'brand'|'siriai'|'sys', text, at, people:[핸들] } */
+const CHAT_SEED = [
+  { who:'siriai', text:'8월 캠페인 진행 중입니다. 필요한 자료나 요청은 여기에 적어 주세요.', at:'09.01' },
+  { who:'brand',  text:'원본 파일 먼저 받아볼 수 있을까요?', at:'09.02' },
+  { who:'siriai', text:'업로드 완료된 3건은 왼쪽 에셋에서 바로 받으실 수 있어요.', at:'09.02' },
+  { who:'siriai', text:'이 분은 검수 중이라 업로드가 하루 늦어질 수 있어요. 블록을 누르면 지금 상태가 보입니다.', at:'09.03', people:['@eujin_style'] },
+  { who:'brand',  text:'유료 코드 5건만 더 발급 부탁드릴게요. 화면에서 골라서 보냈습니다.', at:'09.06' }
 ];
 
+const CHAT_KEY = 'siriai-cp-chat-2608';
+const CHAT_BUS = (function () { try { return new BroadcastChannel('siriai-cp'); } catch (e) { return null; } })();
+
+function chatLoad() {
+  try { const raw = localStorage.getItem(CHAT_KEY); if (raw) { const a = JSON.parse(raw); if (Array.isArray(a) && a.length) return a; } }
+  catch (e) {}
+  return CHAT_SEED.slice();
+}
+function chatSave() {
+  try { localStorage.setItem(CHAT_KEY, JSON.stringify(CHAT)); } catch (e) {}
+  if (CHAT_BUS) { try { CHAT_BUS.postMessage({ k:'chat', v:CHAT }); } catch (e) {} }
+}
+function chatAdopt(list, tell) {
+  if (!Array.isArray(list)) return;
+  const grew = list.length > CHAT.length;
+  const last = list[list.length - 1];
+  CHAT = list;
+  renderChat();
+  if (tell && grew && last && last.who === 'brand') {
+    toast('오드타입에서 새 메시지가 왔어요.');
+    setTab('chat');
+  }
+}
+if (CHAT_BUS) CHAT_BUS.onmessage = function (e) { if (e.data && e.data.k === 'chat') chatAdopt(e.data.v, true); };
+addEventListener('storage', function (e) {
+  if (e.key !== CHAT_KEY || !e.newValue) return;
+  try { chatAdopt(JSON.parse(e.newValue), true); } catch (err) {}
+});
+
+let CHAT = chatLoad();
+
+/* 함께 보낸 사람은 핸들로 담겨 온다. 우리 명단에서 찾아 이름으로 보여 준다 */
+function chip(h) {
+  const c = PEOPLE.find(x => x.handle === h);
+  return '<span class="pchip">' + esc(c ? c.name : h) + '</span>';
+}
+
 function renderChat() {
-  $('log').innerHTML = CHAT.map(m =>
-      '<div class="flex flex-col ' + (m.me ? 'items-end' : 'items-start') + '">'
-    + (m.me ? '' : '<span class="who">오드타입 · 이수연</span>')
-    + '<div class="bub ' + (m.me ? 'us' : 'them') + '">' + esc(m.text) + '</div>'
-    + '<span class="num text-[9px] mt-1" style="color:var(--ink-3)">' + esc(m.at) + '</span></div>'
-  ).join('');
+  $('log').innerHTML = CHAT.map(function (m) {
+    if (m.who === 'sys')
+      return '<div class="self-center text-[10.5px] px-2.5 py-1 rounded-full keep"'
+        + ' style="background:#f1f5f9;color:var(--ink-3)">' + esc(m.text) + '</div>';
+    const us = m.who === 'siriai';
+    return '<div class="flex flex-col ' + (us ? 'items-end' : 'items-start') + '">'
+      + (us ? '' : '<span class="who">오드타입 · 이수연</span>')
+      + (m.people && m.people.length
+         ? '<div class="flex flex-wrap gap-1 mb-1">' + m.people.map(chip).join('') + '</div>' : '')
+      + '<div class="bub ' + (us ? 'us' : 'them') + '">' + esc(m.text) + '</div>'
+      + '<span class="num text-[9px] mt-1" style="color:var(--ink-3)">' + esc(m.at) + '</span></div>';
+  }).join('');
   $('log').scrollTop = $('log').scrollHeight;
+}
+
+/* 데모를 여러 번 돌리면 대화가 쌓인다. 처음 상태로 되돌린다 */
+function chatReset() {
+  CHAT = CHAT_SEED.slice();
+  renderChat(); chatSave();
+  toast('대화를 처음 상태로 되돌렸어요. 브랜드 화면도 같이 바뀝니다.');
 }
 
 function grow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 104) + 'px'; }
@@ -445,10 +509,10 @@ function send(e) {
   if (e) e.preventDefault();
   const t = $('msg').value.trim();
   if (!t) return;
-  CHAT.push({ me:1, text:t, at:'지금' });
+  CHAT.push({ who:'siriai', text:t, at:'지금' });
   $('msg').value = ''; grow($('msg'));
-  renderChat();
-  toast('브랜드 화면에 바로 들어가요.');
+  renderChat(); chatSave();
+  toast('오드타입 화면에 바로 들어갔어요.');
 }
 
 function setTab(k) {
