@@ -112,12 +112,16 @@
   /* 자료를 펼치면 왼쪽으로 자리를 내준다. 제목은 이 줄의 주인이라 접지 않는다 —
      칩을 헤더 높이에 맞춰 줄여 두었으니 넉 장이 제목 옆에 그대로 들어간다.
      정말 빠듯한 폭에서만 기간이 물러난다 */
-  #camBanner:not(.hero) #eyebrow{margin:0;order:2;flex:none;overflow:hidden;max-width:420px;
-                                 transition:max-width .38s cubic-bezier(.22,.61,.36,1), opacity .2s ease}
+  #camBanner:not(.hero) #eyebrow{margin:0;order:2;flex:none}
   #camBanner:not(.hero) #camPad h1{font-size:15px;order:1;margin:0;flex:none}
-  @media (max-width:1499px){ #camPad.resOn #eyebrow{max-width:0;opacity:0} }
+  /* 좁은 폭에서는 칩이 기간 위를 지나간다. 자리를 없애면 그것이 또 레이아웃 이동이 되므로
+     자리는 두고 보이지만 않게 한다 */
+  @media (max-width:1279px){
+    #camPad #eyebrow{transition:opacity .18s ease}
+    #camPad.resOn #eyebrow{opacity:0;pointer-events:none}
+  }
   /* 자료는 오른쪽 끝에 붙는다. 접기 화살표는 다른 일을 하는 단추라 간격을 벌린다 */
-  #camBanner:not(.hero) #resWrap{order:3;margin-left:auto;padding-right:62px;
+  #camBanner:not(.hero) #resWrap{order:3;margin-left:auto;padding-right:62px;position:relative;
                                  display:flex;align-items:center;gap:12px;min-width:0}
   /* 펼친 첫 화면은 사진과 지표가 말한다 — 자료는 접은 뒤에 만난다 */
   #camBanner.hero #resWrap{display:none}
@@ -135,11 +139,18 @@
   /* 받을 것이 있는 칩만 테두리 한 겹 */
   #camPad .rchip.hot{background:#eef2f7;box-shadow:inset 0 0 0 1px #c8d3e0}
   #camPad .rchip.hot .ri, #camPad .rchip.hot .rt{color:var(--ink-1)}
-  /* 접혀 있다가 왼쪽으로 펼쳐진다 — 여는 단추는 오른쪽 끝에 그대로 있다 */
-  #resBar{max-width:0;opacity:0;overflow:hidden;
-          transition:max-width .4s cubic-bezier(.22,.61,.36,1), opacity .2s ease}
-  #resWrap.on #resBar{max-width:900px;opacity:1}
-  #resBar{gap:8px}
+  /* 접혀 있다가 왼쪽으로 펼쳐진다 — 여는 단추는 오른쪽 끝에 그대로 있다.
+     폭을 애니메이션하면 매 프레임 reflow 가 돌아 프레임이 튀고,
+     칩이 오른쪽부터 깎이며 반투명 잔상이 남는다.
+     칩 줄을 레이아웃 밖으로 빼서 transform 과 opacity 로만 움직인다 */
+  /* 자리를 숫자로 못 박으면 단추 폭이 바뀔 때 겹친다 — 단추 왼쪽에 붙여 둔다 */
+  #camBanner:not(.hero) #resBar{position:absolute;right:100%;margin-right:12px;top:50%;
+          display:flex;align-items:center;gap:8px;white-space:nowrap;
+          max-width:none;overflow:visible;
+          transform:translate3d(12px,-50%,0);opacity:0;pointer-events:none;
+          will-change:transform,opacity;
+          transition:opacity .18s ease, transform .3s cubic-bezier(.22,.61,.36,1)}
+  #camPad.resOn #resBar{transform:translate3d(0,-50%,0);opacity:1;pointer-events:auto}
   /* 이 줄의 주인은 캠페인 제목이다 — 자료는 조용히 옆에 선다.
      헤더 높이에 맞춘 30px, 흰 면에 테두리를 두르지 않고 아주 연한 회색으로 */
   #resTog{display:inline-flex;align-items:center;gap:6px;flex:none;height:30px;
