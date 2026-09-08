@@ -22,7 +22,8 @@
     --lift-1:0 1px 2px rgba(17,19,24,.05), 0 0 0 1px rgba(17,19,24,.05);
     --lift-2:0 2px 6px rgba(17,19,24,.06), 0 10px 26px -18px rgba(17,19,24,.30);
     --ring:0 0 0 1px rgba(17,19,24,.09);
-    --tr-body:-.005em;
+    /* 클라이언트 화면과 같은 자간. 큰 숫자는 좁게, 본문은 살짝만 */
+    --tr-body:-.005em; --tr-display:-.022em;
   }
 
   *{box-sizing:border-box}
@@ -46,7 +47,17 @@
        display:flex;flex-direction:column;overflow:hidden}
   .pnl > header{flex:none;display:flex;align-items:center;justify-content:space-between;
                 gap:12px;padding:12px 14px;border-bottom:1px solid #f1f5f9}
-  .pnl h2{font-size:12.5px;font-weight:700;margin:0;white-space:nowrap}
+  .pnl h2{font-size:12.5px;font-weight:700;margin:0;white-space:nowrap;
+          letter-spacing:var(--tr-body)}
+
+  /* 요약 타일 — 클라이언트 대시보드 카드와 같은 짜임이다.
+     라벨 · 큰 숫자 · 한 줄 메모. 숫자가 스스로 말하게 둔다 */
+  .tile{background:#fff;border-radius:14px;box-shadow:var(--lift-1);
+        padding:14px 16px 15px;display:flex;flex-direction:column}
+  .tile .lb{font-size:11px;font-weight:500;color:var(--ink-3)}
+  .tile .vl{font-size:26px;font-weight:700;margin-top:5px;line-height:1.05;
+            letter-spacing:var(--tr-display)}
+  .tile .nt{font-size:10.5px;color:var(--ink-3);margin-top:7px}
 
   /* 단계 — 브랜드 화면과 같은 농도 체계를 쓴다. 색을 늘리지 않는다 */
   .stg{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;
@@ -66,29 +77,34 @@
 
   /* 표 */
   #tw{flex:1 1 auto;min-height:0;overflow:auto}
-  table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:12.5px}
+  /* 머리는 한글이라 자간을 벌리면 오히려 안 읽힌다. 라벨 활자는 숫자 쪽에만 쓴다 */
   thead th{position:sticky;top:0;z-index:2;background:#fff;text-align:left;
-           font-size:10px;font-weight:700;color:var(--ink-3);white-space:nowrap;
-           padding:8px 10px;border-bottom:1px solid var(--line)}
+           font-size:10.5px;font-weight:700;letter-spacing:var(--tr-body);
+           color:var(--ink-3);white-space:nowrap;
+           padding:10px 11px;border-bottom:1px solid var(--line)}
   thead th.r{text-align:right}
   /* 원고료 칸은 눈에 보이게 갈라 둔다 — 브랜드 화면엔 없는 열이다 */
   thead th.own, tbody td.own{background:#fffaf5;box-shadow:inset 1px 0 0 #fde9d7, inset -1px 0 0 #fde9d7}
   thead th.own{color:#b45309}
-  tbody td{padding:8px 10px;border-bottom:1px solid #f4f7fa;vertical-align:middle}
+  tbody td{padding:11px;border-bottom:1px solid #f4f7fa;vertical-align:middle;
+           font-size:12.5px}
   tbody td.r{text-align:right}
   tbody tr:hover td{background:#fafcfe}
   tbody tr:hover td.own{background:#fff6ec}
   tbody tr.on td{background:#f8fafc}
 
-  .av{width:26px;height:26px;border-radius:99px;display:grid;place-items:center;
-      font-size:10.5px;font-weight:700;flex:none}
+  /* 아바타 — 클라이언트 화면과 같은 모양. 연한 면에 링 하나 */
+  .av{width:28px;height:28px;border-radius:99px;display:grid;place-items:center;
+      font-size:11px;font-weight:600;flex:none}
   .cell-in{width:100%;background:#f8fafc;border-radius:8px;padding:5px 8px;
            font-size:11px;box-shadow:var(--ring);outline:0;min-width:96px}
   .cell-in:focus{background:#fff;box-shadow:0 0 0 1.5px var(--ink)}
   .cell-in::placeholder{color:#cbd5e1}
 
   /* 대화 */
-  .bub{max-width:84%;font-size:12px;line-height:1.62;padding:9px 12px;border-radius:14px}
+  .bub{max-width:84%;font-size:12.5px;line-height:1.62;padding:10px 13px;border-radius:16px;
+       word-break:keep-all}
   .them{background:#f1f5f9;color:var(--ink);border-bottom-left-radius:5px;align-self:flex-start}
   .us{background:var(--ink);color:#fff;border-bottom-right-radius:5px;align-self:flex-end}
   .who{font-size:9.5px;color:var(--ink-3);margin-bottom:3px}
@@ -143,7 +159,7 @@
   </header>
 
   <!-- 요약 — 지금 어디가 막혀 있는지 한 줄로 -->
-  <div id="sum" class="shrink-0 grid gap-2" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
+  <div id="sum" class="shrink-0 grid gap-2.5" style="grid-template-columns:repeat(auto-fit,minmax(158px,1fr))"></div>
 
   <div id="body" class="flex-1 min-h-0 flex gap-3">
 
@@ -255,9 +271,11 @@ const PEOPLE = [
 /* 배송 중인 사람은 송장이 이미 찍혀 있다 */
 PEOPLE.forEach((c, i) => { if (c.stage === 'ship') c.ship = '6' + (417200000 + i * 137) + ''; });
 
-const AVC = ['#0f172a','#334155','#475569','#1e293b','#64748b'];
+/* 클라이언트 화면의 아바타와 같은 처리 — 연한 면(12%)에 링(28%) 하나 */
+const AVC = ['#dc272d','#0f172a','#475569','#b45309','#047857','#334155'];
 const av = (c, i) => '<span class="av" style="background:' + AVC[i % AVC.length]
-  + '18;color:' + AVC[i % AVC.length] + '">' + esc(c.name.charAt(0)) + '</span>';
+  + '1f;color:' + AVC[i % AVC.length] + ';box-shadow:inset 0 0 0 1px ' + AVC[i % AVC.length] + '47">'
+  + esc(c.name.charAt(0)) + '</span>';
 
 const PICK = new Set();
 
@@ -272,10 +290,9 @@ function renderSum() {
   /* 단계마다 지금 우리가 할 일이 다르다. 같은 말을 세 번 쓰면 아무 말도 아니다 */
   const NOTE = { ship:'송장 확인', make:'초안 대기', qa:'우리 확인 차례' };
   const tile = (label, val, note, tone) =>
-    '<div class="pnl" style="padding:12px 14px;border-radius:14px;box-shadow:var(--lift-1)">'
-    + '<div class="text-[10.5px] font-medium" style="color:var(--ink-3)">' + label + '</div>'
-    + '<div class="num text-[19px] font-bold mt-1"' + (tone ? ' style="color:' + tone + '"' : '') + '>' + val + '</div>'
-    + '<div class="text-[10px] mt-0.5" style="color:var(--ink-3)">' + note + '</div></div>';
+    '<div class="tile"><div class="lb">' + label + '</div>'
+    + '<div class="num vl"' + (tone ? ' style="color:' + tone + '"' : '') + '>' + val + '</div>'
+    + '<div class="nt">' + note + '</div></div>';
 
   $('sum').innerHTML =
       FLOW.map(f => tile(f.t, (by[f.k] || 0) + '명',
@@ -308,9 +325,9 @@ function renderTable() {
           +   '" aria-label="' + esc(c.name) + '님 고르기">'
           +   '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
           +   '</button></td>'
-          + '<td><span class="flex items-center gap-2">' + av(c, i)
-          +   '<span class="min-w-0"><b class="block text-[12px] font-bold">' + esc(c.name) + '</b>'
-          +   '<span class="num block text-[10px]" style="color:var(--ink-3)">' + esc(c.handle) + '</span></span></span></td>'
+          + '<td><span class="flex items-center gap-2.5">' + av(c, i)
+          +   '<span class="min-w-0"><b class="block text-[13px] font-bold">' + esc(c.name) + '</b>'
+          +   '<span class="num block text-[10.5px] mt-0.5" style="color:var(--ink-3)">' + esc(c.handle) + '</span></span></span></td>'
           + '<td><button class="stg ' + f.cls + '" onclick="step(' + i + ', 1)" oncontextmenu="step(' + i + ', -1); return false"'
           +   ' title="누르면 다음 단계 · 오른쪽 버튼은 되돌리기">' + f.t + '</button></td>'
           + '<td class="r num own" style="color:#b45309;font-weight:700">' + won(c.own) + '</td>'
@@ -418,7 +435,12 @@ function renderChat() {
 }
 
 function grow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 104) + 'px'; }
-function key(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(e); } }
+/* 한글은 조합이 끝나기 전에 Enter 가 온다. 그때 보내면 마지막 글자가 잘리거나
+   보낸 뒤 빈 칸에 다시 찍힌다 — 조합이 끝난 Enter 만 보낸다 */
+function key(e) {
+  if (e.isComposing || e.keyCode === 229) return;
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(e); }
+}
 function send(e) {
   if (e) e.preventDefault();
   const t = $('msg').value.trim();
