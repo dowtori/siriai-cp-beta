@@ -13,14 +13,18 @@
 
   :root{
     /* 오드타입 브랜드 — 클라이언트 자산이라 그쪽 초대 페이지 값을 그대로 쓴다 */
-    --rail:244px; --pgap:8px;
+    /* 애플뮤직 사이드바가 248px 이다. 그 언저리가 맞다 */
+    --rail:256px; --pgap:8px;
     /* 바깥 여백은 화면 폭을 따라간다. 숫자를 브레이크포인트마다 박아 두면
        재 본 폭에서만 맞고 나머지에서는 전부 틀린다 */
     /* 폭을 1280 으로 묶고 가운데로 모았더니, 왼쪽 레일과 내용 사이에
        387px 짜리 빈 땅이 생겼다. 그건 여백이 아니라 협곡이다.
        가운데 정렬을 걷고 여백만 크게 가져간다 — 내용은 자리를 다 쓰되
        양옆이 넉넉하다. 2350px 에서 한쪽 105px */
-    --gut : clamp(24px, 4.5vw, 132px);
+    /* 애플뮤직을 재 보니 사이드바에서 본문까지가 37px 이다. 좌우를 100px 씩
+       벌리는 게 '시원함' 이 아니었다 — 저쪽은 세로 간격과 밀도로 만든다.
+       가로는 붙이고, 숨은 세로에서 쉰다 */
+    --gut : clamp(20px, 2.4vw, 44px);
     /* 오드타입 공식 워드마크 (474:118) — 마스크로 써서 색은 글자색을 따른다 */
     --odw: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNDc0IiBoZWlnaHQ9IjExOCIgdmlld0JveD0iMCAwIDQ3NCAxMTgiPjxkZWZzPjxjbGlwUGF0aCBpZD0iYSI+PHJlY3Qgd2lkdGg9IjQ3My4zMTEiIGhlaWdodD0iMTE3LjQ0MSIgZmlsbD0iI2ZmZiIvPjwvY2xpcFBhdGg+PGNsaXBQYXRoIGlkPSJjIj48cmVjdCB3aWR0aD0iNDc0IiBoZWlnaHQ9IjExOCIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGlkPSJiIiBjbGlwLXBhdGg9InVybCgjYykiPjxnIGNsaXAtcGF0aD0idXJsKCNhKSI+PHBhdGggZD0iTTQ3NS4xNTYsNDEuNTU4YTI4Ljc2MywyOC43NjMsMCwwLDAtMTAuNzQ3LTExLjI4NywzMC40NzEsMzAuNDcxLDAsMCwwLTE1LjgtNC4wODIsMzIuNTYsMzIuNTYsMCwwLDAtMjguNzMsMTYuMzY2LDMzLjQzOSwzMy40MzksMCwwLDAtNC40LDE3LjAyLDMzLjMxLDMzLjMxLDAsMCwwLDQuNDY2LDE3LjE1NkEzMi43NjksMzIuNzY5LDAsMCwwLDQzMi4xMTUsODguN2EzNC4zOTMsMzQuMzkzLDAsMCwwLDE3LjI3LDQuMzkyLDM2LjE3LDM2LjE3LDAsMCwwLDE0LjIxLTIuODMxLDMwLjE2OCwzMC4xNjgsMCwwLDAsMTEuMzMyLTguMjgybC44MTMtLjk1Ni05LjQ0Ni05LjYwNy0uOTczLDEuMTM1YTE4LjQ1MSwxOC40NTEsMCwwLDEtNi45MzgsNS4wNzEsMjMuMjQ0LDIzLjI0NCwwLDAsMS05LDEuNzA3LDIxLjA5MSwyMS4wOTEsMCwwLDEtMTAuMzUxLTIuNDg1LDE2LjkzOCwxNi45MzgsMCwwLDEtNi44NDItNi45NjIsMTkuNjU3LDE5LjY1NywwLDAsMS0xLjcxNy00LjUyNmg0Ny42NDJsLjIyMS0xLjFhMzMuMzE4LDMzLjMxOCwwLDAsMCwuNTM5LTMuNTg2Yy4wOS0xLjAzNS4xMzUtMi4wMTIuMTM1LTIuOWEzMy44MTcsMzMuODE3LDAsMCwwLTMuODU3LTE2LjJtLTQ0LjY0MiwxMS4zM2ExOC43MTMsMTguNzEzLDAsMCwxLDEuNTUxLTQuMDc4LDE2LjQ0NSwxNi40NDUsMCwwLDEsNi40NjctNi43MDcsMTkuNTI5LDE5LjUyOSwwLDAsMSw5LjgxNy0yLjQxMSwxNy4zNzUsMTcuMzc1LDAsMCwxLDkuMDE2LDIuMiwxNC45MiwxNC45MiwwLDAsMSw1LjcsNi4xODEsMTguMjM5LDE4LjIzOSwwLDAsMSwxLjU5Myw0LjgxMVoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC01LjcwMiAtMC4zNTkpIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTMyNC44MTQsMjcuMzQ3bC0xOC44LDQxLjVMMjg3LjU2MSwyNy42OTFsLS4xNTMtLjM0NEgyNjQuNFYxLjU1NmgtMTQuNDFWMjcuMzQ3aC0xMi42VjQwLjcyMWgxMi42VjkxLjY1aDE0LjMyN2wuMDg3LTE0LjQyNCwwLTM2LjUwNWgxMy4yODNsMzQuMjksNzYuMzg0LjE1NS4zNDNIMzI3LjhMMzEzLjU5LDg1Ljc1NmwyNi43Ny01OC40MDlaIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMy4yNTggLTAuMDIxKSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0zODAuNzM3LDI2LjE4OWMtOC41MjksMC0xNS40MzIsMy41NTctMTkuOTYyLDEwLjI4NWwtLjM2OC41NDhWMjcuNjcxSDM0NS43NDVWMTE3LjhIMzYwLjlWODIuMjc3bC4zNjguNTI1YzQuNDksNi40MTUsMTEuMDQsOS42NjcsMTkuNDY5LDkuNjY3LDE3LjU0OCwwLDI4LjQ0Ny0xMi43LDI4LjQ0Ny0zMy4xNHMtMTAuOS0zMy4xNC0yOC40NDctMzMuMTRtMTMuNiwzMy4xNGMwLDEzLjE1Ni02LjA2LDIwLjctMTYuNjI2LDIwLjctMTAuMzMzLDAtMTYuNS03LjkyMy0xNi41LTIxLjE5MiwwLTEyLjg0Myw2LjAxNS0yMC4yMSwxNi41LTIwLjIxLDEwLjU2NiwwLDE2LjYyNiw3LjU0NSwxNi42MjYsMjAuNyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTQuNzQ1IC0wLjM1OSkiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNzcuOTQzLDEzLjQyMkE0NC43NzYsNDQuNzc2LDAsMCwwLDYzLjQsMy41Miw0NS41NDUsNDUuNTQ1LDAsMCwwLDQ1LjQ4OCwwLDQ1LjUyOSw0NS41MjksMCwwLDAsMjcuNTcsMy41MmE0My45OCw0My45OCwwLDAsMC0xNC40NzksOS45MDdBNDYuNDQ4LDQ2LjQ0OCwwLDAsMCwzLjQ1MywyOC4yLDQ3LjQyMSw0Ny40MjEsMCwwLDAsMCw0Ni4zMzksNDcuNTgxLDQ3LjU4MSwwLDAsMCwzLjQ1MSw2NC40MTVhNDYuNSw0Ni41LDAsMCwwLDkuNywxNC45QTQ0Ljc5Myw0NC43OTMsMCwwLDAsNDUuNzQxLDkyLjkzMiw0NC41LDQ0LjUsMCwwLDAsNzguMDEsNzkuMzc5YTQ4LjAxNiw0OC4wMTYsMCwwLDAsOS43LTUxLjEyNSw0Ni42ODMsNDYuNjgzLDAsMCwwLTkuNzY4LTE0LjgzM003Ni4yNTUsNDYuMzM5YTM0Ljc2OSwzNC43NjksMCwwLDEtNC4wMDcsMTYuODU1LDMwLjE4OSwzMC4xODksMCwwLDEtMTAuODM1LDExLjUsMzAuMTA5LDMwLjEwOSwwLDAsMS0xNS45MjQsNC4xNjEsMzAuOTgyLDMwLjk4MiwwLDAsMS0xMi4zLTIuNDE2LDI4Ljg0NSwyOC44NDUsMCwwLDEtOS42NjYtNi43LDMwLjIyMiwzMC4yMjIsMCwwLDEtNi4yOTEtMTAuMjg0LDM3LjI4OCwzNy4yODgsMCwwLDEtMi4yNTUtMTMuMTEyQTM0Ljg0MywzNC44NDMsMCwwLDEsMTguOTIsMjkuNTQ1LDI5LjM1MywyOS4zNTMsMCwwLDEsMjkuNjgzLDE4LjE4MmEzMC4xODgsMzAuMTg4LDAsMCwxLDE1LjgwNS00LjEsMzEuNTQ3LDMxLjU0NywwLDAsMSwxMi4zNywyLjM1NywyOC41MjQsMjguNTI0LDAsMCwxLDkuNjYyLDYuNywzMS42NDcsMzEuNjQ3LDAsMCwxLDYuNDI3LDEwLjI0MiwzNS40NTEsMzUuNDUxLDAsMCwxLDIuMzA5LDEyLjk2NSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0xNDYuMiwzNi44NjZsLS4zNjctLjUyNWMtNC40OTItNi40MTYtMTEuMDQxLTkuNjY4LTE5LjQ3MS05LjY2OC0xNy41NDcsMC0yOC40NDcsMTIuNy0yOC40NDcsMzMuMTRzMTAuOSwzMy4xNCwyOC40NDgsMzMuMTRjOC41MywwLDE1LjQzMi0zLjU1NiwxOS45NjItMTAuMjgzbC4zNjktLjU0OFY5MS40N2gxNC42NjJWMS41NTVIMTQ2LjJabS4zNywyMi45NDdjMCwxMy4xNTYtNi4wNiwyMC43LTE2LjYyNiwyMC43LTEwLjQ4NiwwLTE2LjUtNy4zNjYtMTYuNS0yMC4yMDcsMC0xMy4yNzIsNi4xNjgtMjEuMiwxNi41LTIxLjIsMTAuNTY2LDAsMTYuNjI2LDcuNTQ1LDE2LjYyNiwyMC43IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMS4zNDQgLTAuMDIxKSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0yMTUuOTM2LDM2Ljg2NmwtLjM2Ny0uNTI1Yy00LjQ5Mi02LjQxNi0xMS4wNDEtOS42NjgtMTkuNDY5LTkuNjY4LTE3LjU0OCwwLTI4LjQ0OCwxMi43LTI4LjQ0OCwzMy4xNHMxMC45LDMzLjE0LDI4LjQ0OCwzMy4xNGM4LjUyOSwwLDE1LjQzMS0zLjU1NiwxOS45NjEtMTAuMjgzbC4zNjktLjU0OFY5MS40N2gxNC42NjJWMS41NTVIMjE1LjkzNlptLjM3LDIyLjk0N2MwLDEzLjE1Ni02LjA2LDIwLjctMTYuNjI2LDIwLjctMTAuNDg2LDAtMTYuNS03LjM2Ni0xNi41LTIwLjIwNywwLTEzLjI3Miw2LjE2OC0yMS4yLDE2LjUtMjEuMiwxMC41NjYsMCwxNi42MjYsNy41NDUsMTYuNjI2LDIwLjciIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yLjMwMSAtMC4wMjEpIiBmaWxsPSIjZmZmIi8+PC9nPjwvZz48L3N2Zz4=");
     --od-ink:#231f20; --od-red:#dc272d; --od-red-dark:#b81e23;
@@ -296,7 +300,7 @@
      접으면 위에서부터 차례로 내려온다 — 날아다니는 것보다 이쪽이 읽힌다 */
   /* 세 영역이 붙어 있으면 답답하고 어디까지가 한 덩어리인지 안 보인다.
      간격 자체가 구분선 역할을 한다 — 선을 긋는 것보다 이쪽이 조용하다 */
-  #colL{gap:34px}
+  #colL{gap:44px}
   /* 페이지가 흐르는 지금, 이 둘이 flex 로 눌려 있으면 안 된다.
      제 키가 619px 인데 안의 표는 1600px 이라, 위에 붙인 덩어리가 619 까지만
      붙고 그 뒤로는 같이 흘러가 버렸다 — 내용만큼 자라게 둔다 */
@@ -319,7 +323,7 @@
             padding-left:var(--gut);padding-right:var(--gut);
             transition:box-shadow .3s ease, background-color .3s ease,
                        padding-bottom .34s cubic-bezier(.22,.61,.36,1)}
-  #topStack > section{margin-top:22px;transition:margin-top .30s cubic-bezier(.22,.61,.36,1)}
+  #topStack > section{margin-top:30px;transition:margin-top .30s cubic-bezier(.22,.61,.36,1)}
   /* ══ 떠 있는 바 ══════════════════════════════════════════════
      세 줄이다 — 배너 · 흐름 · 성과. 붙었을 때 무엇이 보일지를 먼저 정하고
      그것만 남긴다. 펼친 화면의 규칙에 예외를 덧대면 닫다 만 조각이
@@ -335,20 +339,14 @@
 
   /* 1줄 · 배너 — 그대로. 키만 낮춘다 */
 
-  /* 2줄 · 흐름 — 점과 숫자만. 이름표는 접는다.
-     이름표를 남기면 양 끝에서 잘린다(상자가 overflow:hidden 이라야
-     높이를 여닫을 수 있으므로) — 잘릴 자리를 아예 없앤다 */
+  /* 붙었을 때 진행도는 뺀다. 낮은 띠 안에 억지로 욱여넣으면 어느 쪽으로
+     만들어도 어색하다 — 없는 편이 낫다. 흐름은 펼친 화면에서 본다 */
   #fpWave{overflow:hidden;max-height:160px;
           transition:max-height .34s cubic-bezier(.22,.61,.36,1), opacity .2s ease}
-  #fpLine{overflow:hidden;max-height:0;opacity:0;
-          transition:max-height .34s cubic-bezier(.22,.61,.36,1), opacity .22s ease .05s}
-  #topStack.stuck #fpWave{max-height:0;opacity:0}
-  #topStack.stuck #fpLine{max-height:46px;opacity:1}
-  #topStack.stuck .fline{height:46px}
-  #topStack.stuck .fline .fl{display:none}
-  #topStack.stuck .fline .ftrack{top:9px}
-  #topStack.stuck .fline .fdot{width:9px;height:9px;margin-top:5px}
-  #topStack.stuck .fline .fn{margin-top:8px;font-size:12.5px}
+  #fpLine{display:none}
+  #topStack.stuck #flowSec{overflow:hidden;max-height:0;opacity:0;margin-top:0}
+  #flowSec{overflow:hidden;max-height:520px;
+           transition:max-height .34s cubic-bezier(.22,.61,.36,1), opacity .2s ease, margin-top .34s cubic-bezier(.22,.61,.36,1)}
 
   /* 3줄 · 성과 — 라벨과 값만. 막대도 변환지표도 전부 닫는다.
      값 행 다음(3번째부터)은 무엇이든 닫는다 — 카드마다 막대가 있고
@@ -1075,8 +1073,8 @@
      표 머리글이 페이지 스크롤에 안 붙고 있었다 */
   /* 위 덩어리(흐름·성과)와 확실히 떨어뜨린다. 붙어 있으면 어디까지가
      요약이고 어디부터 명단인지 안 보인다 */
-  #progSec{position:relative;background:transparent;border-radius:0;padding:40px 0 0;
-           box-shadow:none;margin-top:32px;overflow:visible}
+  #progSec{position:relative;background:transparent;border-radius:0;padding:44px 0 0;
+           box-shadow:none;margin-top:36px;overflow:visible}
   /* 층은 목록이 끝나는 자리에서 같이 끝난다. 화면 밖까지 끌고 가면
      표 아래로 빈 바닥만 길게 남는다 */
   /* 층은 표보다 조금 더 내려가서 끝난다 — 딱 맞춰 끝내면 표가 낭떠러지에 선다 */
@@ -1091,8 +1089,9 @@
   #progSec > #progCard > header h2{color:var(--ink-1);font-size:15px}
   .pnl h2{font-size:14.5px;font-weight:600;letter-spacing:var(--tr-title)}
   /* 섹션 제목 — 크기와 여백이 위계를 만든다 */
-  .sechd{display:flex;align-items:baseline;gap:9px;padding:0 2px 12px}
-  .sechd h2{font-size:14.5px;font-weight:600;color:var(--ink-1);
+  /* 애플뮤직의 섹션 제목 — 크고, 아래로 넉넉히 */
+  .sechd{display:flex;align-items:baseline;gap:10px;padding:0 2px 14px}
+  .sechd h2{font-size:19px;font-weight:700;color:var(--ink-1);
             letter-spacing:var(--tr-title)}
 
   /* 성과 — 넷이 한 면에 서고 사이는 세로 선 하나. 네 장의 카드가 아니다 */
@@ -1793,24 +1792,24 @@
 
 <!-- ══ 진입 안내 ══ -->
 <div id="tut" class="fixed inset-0 z-[70] bg-slate-900/55 backdrop-blur-sm flex items-center justify-center p-5" onclick="if(event.target===this)hideTut()">
-  <div class="card bg-white rounded-3xl w-full max-w-[472px] overflow-hidden" style="box-shadow:var(--lift-4)" role="dialog" aria-modal="true" aria-labelledby="tutTitle">
+  <div class="card bg-white rounded-3xl w-full max-w-[640px] overflow-hidden" style="box-shadow:var(--lift-4)" role="dialog" aria-modal="true" aria-labelledby="tutTitle">
     <img id="tutImg" class="hidden w-full block" alt="">
-    <div class="px-7 pt-6 pb-7">
-    <h2 id="tutTitle" class="text-[20px] sm:text-[23px] font-bold text-slate-900 leading-[1.35] mt-5 keep sm:whitespace-nowrap">
+    <div class="px-9 pt-7 pb-9">
+    <h2 id="tutTitle" class="text-[24px] sm:text-[29px] font-bold text-slate-900 leading-[1.32] mt-6 keep sm:whitespace-nowrap">
       데모 화면을 직접 눌러보세요!
     </h2>
 
-    <p class="text-[12.5px] text-slate-500 leading-relaxed mt-3 keep">
+    <p class="text-[14.5px] text-slate-500 leading-relaxed mt-4 keep">
       <span class="font-semibold text-slate-700">oddtype · 29apostrophe · OJOS</span> 등
       트렌드를 이끌어가는 브랜드를 팔로업해보세요.
     </p>
 
-    <p class="flex items-start gap-2 text-[11.5px] text-slate-500 mt-6 keep bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3">
+    <p class="flex items-start gap-2.5 text-[13px] text-slate-500 mt-7 keep bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5">
       <svg class="w-3.5 h-3.5 shrink-0 mt-[1px] text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       저장·내려받기 등 일부 기능은 동작하지 않습니다.
     </p>
 
-    <button onclick="hideTut()" class="mt-5 w-full text-[14px] font-bold text-white bg-slate-900 hover:bg-slate-800 py-3.5 rounded-xl transition">
+    <button onclick="hideTut()" class="mt-5 w-full text-[17px] font-bold text-white bg-slate-900 hover:bg-slate-800 py-3.5 rounded-xl transition">
       둘러보기 시작
     </button>
     </div>
@@ -2692,6 +2691,7 @@ let heroT = null, heroT2 = null, autoT = null, heroAuto = false;
    첫 화면 지표가 그 밑에 깔린다 */
 /* 위에 붙었는지는 제 자리와 실제 자리를 견줘서 안다.
    배너 키는 여기서 같이 잰다 — 접히는 순간을 따로 잡으려다 놓치기 쉽다 */
+let STUCK_LOCK = 0;
 function syncStuck() {
   const t = $('topStack'), pad = $('pad'), b = $('camBanner');
   if (!t || !pad || !b) return;
@@ -2699,10 +2699,18 @@ function syncStuck() {
   /* 제 자리를 견주면 안 된다 — 붙으면서 이 덩어리가 줄고, 줄면 문서가 짧아지고,
      짧아지면 스크롤이 밀려 다시 안 붙은 자리가 된다. 그 되먹임에 화면이 떤다.
      스크롤 양만 보고, 붙을 때와 떨어질 때의 문턱을 다르게 둔다 */
+  /* 붙는 순간 이 덩어리가 줄면서 문서가 짧아지고, 짧아지면 스크롤이 밀려
+     다시 안 붙은 자리가 된다 — 문턱을 벌려도 경계에서는 위아래로 떤다.
+     한 번 바꾸면 잠시 잠가 둔다. 그게 떨림을 끊는 유일한 방법이다 */
   const st = pad.scrollTop;
   const was = t.classList.contains('stuck');
-  const on = hdr > 0 && (was ? st > 40 : st > 96);
-  t.classList.toggle('stuck', on);
+  const on = hdr > 0 && (was ? st > 56 : st > 168);
+  if (on !== was) {
+    const now = performance.now();
+    if (now < STUCK_LOCK) return;
+    STUCK_LOCK = now + 460;
+    t.classList.toggle('stuck', on);
+  }
   syncTopH();
 }
 
