@@ -1228,7 +1228,11 @@
   #tbody tr.pick td .text-slate-500{color:#475569}
 
   /* 좌측 레일 — 딱딱한 선 대신 면이 갈라진 느낌으로 */
-  #rail{box-shadow:1px 0 0 rgba(17,19,24,.06), 8px 0 24px -20px rgba(17,19,24,.45);
+  /* 레일은 늘 맨 위다. static 으로 두면 본문의 z-index 를 가진 것들
+     (떠 있는 바 20, 배너)이 레일의 경계선과 그림자를 덮어, 어느 구간에서는
+     레일이 아래로 묻힌 것처럼 보인다 */
+  #rail{position:relative;z-index:40;
+        box-shadow:1px 0 0 rgba(17,19,24,.06), 8px 0 24px -20px rgba(17,19,24,.45);
         width:var(--rail);min-width:var(--rail)}
   /* 접고 펴는 동안에만 애니메이션을 건다. 늘 걸어 두면 창 크기를 바꿀 때마다 끌린다 */
   #rail.anim{transition:width .26s cubic-bezier(.22,.61,.36,1),
