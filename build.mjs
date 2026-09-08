@@ -99,11 +99,52 @@ function checkCss(css) {
   if (depth !== 0) throw new Error('중괄호가 안 맞는다 (depth ' + depth + ')');
 }
 
+/* 스크립트도 같다. 따옴표를 하나 안 닫으면 화면은 그냥 아무것도 안 하는
+   빈 껍데기가 되는데, 그게 배포까지 조용히 나간 적이 있다. 여기서 끊는다. */
+function checkJs(body) {
+  const re = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g
+  let m, n = 0
+  while ((m = re.exec(body))) {
+    const src = m[1]
+    if (!src.trim()) continue
+    n++
+    try { new Function(src) }
+    catch (e) { throw new Error(`${n}번째 <script> 가 안 읽힌다 -> ${e.message}`) }
+  }
+  return n
+}
+
+/* #tbody 는 어드민 표에서 그대로 옮겨 온 선택자였다. 이 화면에 그런 id 가 없어서
+   고른 행이 녹색으로 안 칠해졌는데, 화면은 그냥 조용했다.
+   반대로 규칙 뭉치를 지우다 옆 것까지 지운 적도 있다. 둘 다 여기서 잡는다. */
+function checkIds(body, css) {
+  const rest = body.replace(/<style>[\s\S]*?<\/style>/, '')
+  const used = new Set()
+  const add = re => { for (const m of rest.matchAll(re)) used.add(m[1]) }
+  add(/id\s*=\s*["']([A-Za-z][\w-]*)["']/g)          // 마크업과 JS 문자열
+  add(/\$\(\s*['"]([A-Za-z][\w-]*)['"]\s*\)/g)      // $('x')
+  add(/getElementById\(\s*['"]([A-Za-z][\w-]*)['"]/g)
+  add(/querySelector(?:All)?\(\s*['"]#([A-Za-z][\w-]*)/g)
+
+  /* 선택자만 본다 — 여는 중괄호 앞 조각이 선택자다. #f8fafc 같은 색은 안쪽에 있다 */
+  const dead = new Set()
+  const flat = css.replace(/\/\*[\s\S]*?\*\//g, '')
+  for (const part of flat.split(/\}/)) {
+    const sel = part.split('{')[0]
+    for (const m of sel.matchAll(/#([A-Za-z][\w-]*)/g)) {
+      if (!used.has(m[1])) dead.add(m[1])
+    }
+  }
+  if (dead.size) throw new Error('CSS 가 없는 id 를 가리킨다 -> #' + [...dead].join(', #'))
+}
+
 for (const page of PAGES) {
   const body = await readFile(page.src, 'utf8')
   const css = (body.match(/<style>([\s\S]*?)<\/style>/) || [])[1] || ''
   try {
     checkCss(css)
+    checkJs(body)
+    checkIds(body, css)
   } catch (e) {
     throw new Error(`${page.src} — ${e.message}`)
   }
