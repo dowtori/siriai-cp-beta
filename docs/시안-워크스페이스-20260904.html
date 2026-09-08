@@ -454,6 +454,42 @@
   .ico-r{color:#3b82f6}
   .ico-w{color:#a78bfa}
   .ico-p{color:#10b981}
+  /* ── 진행 흐름 팝오버 ──────────────────────────────────────
+     섹션으로 늘 펴 두면 자리를 먹는다. 업로드 완료 카드가 이미 그 얘기를
+     하고 있으니, 자세한 건 거기 손을 올렸을 때만 꺼낸다. */
+  #flowPop{position:fixed;z-index:70;width:452px;padding:14px 16px 10px;
+           background:#fff;border-radius:14px;
+           box-shadow:0 0 0 1px rgba(15,23,42,.07),0 6px 16px rgba(15,23,42,.07),
+                      0 24px 48px -24px rgba(15,23,42,.55);
+           opacity:0;visibility:hidden;transform:translateY(-4px);
+           transition:opacity .16s ease,transform .16s ease,visibility .16s ease;
+           pointer-events:none}
+  #flowPop.on{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+  #flowPop .fpHead{display:flex;align-items:baseline;justify-content:space-between;
+                   font-size:12px;margin-bottom:2px}
+  #flowPop .fpHead b{font-weight:700;letter-spacing:-.02em}
+  #flowPop .fpHead span{font-size:10.5px;color:#64748b}
+  .fpWave{position:relative;height:126px}
+  .fpWave svg{position:absolute;left:0;right:0;bottom:42px;width:100%;height:52px;display:block}
+  .fpWave .fseg{fill:#0f172a;fill-opacity:calc(var(--o) * .18);transition:fill-opacity .16s ease}
+  .fpWave.on .fseg{fill-opacity:calc(var(--o) * .09)}
+  .fpWave .fseg.hot{fill-opacity:calc(var(--o) * .92)}
+  .fpWave .fbase{position:absolute;left:0;right:0;bottom:42px;height:1px;background:rgba(15,23,42,.08)}
+  .fpWave .fav{position:absolute;transform:translateX(-50%);width:22px;height:22px;border-radius:50%;
+               background:#fff;box-shadow:0 0 0 2px #fff,0 1px 4px rgba(15,23,42,.18);
+               transition:transform .16s ease}
+  .fpWave .fav img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+  .fpWave .fav b{position:absolute;right:-7px;bottom:-3px;font-size:8.5px;font-weight:700;color:#0f172a;
+                 background:#fff;border-radius:999px;padding:0 3.5px;line-height:12px;
+                 box-shadow:0 0 0 1px rgba(15,23,42,.08)}
+  .fpWave .fav.hot{transform:translateX(-50%) scale(1.18)}
+  .fpWave .flab{position:absolute;bottom:6px;transform:translateX(-50%);text-align:center;white-space:nowrap}
+  .fpWave .flab b{display:block;font-size:13px;font-weight:700;line-height:1;letter-spacing:-.02em}
+  .fpWave .flab i{display:block;font-size:10px;font-style:normal;color:#64748b;margin-top:4px}
+  .fpWave .flab.hot b{color:#e2483d}
+  .fpWave .fhit{position:absolute;top:0;bottom:34px;cursor:pointer}
+  .dcard[data-flowpop]{cursor:default}
+
   .dbar{flex:1 1 auto;min-width:28px;height:4px;border-radius:999px;background:#e8edf3;
         overflow:hidden;display:block}
   .dbar > span{display:block;height:100%;border-radius:999px;transition:width .5s cubic-bezier(.22,.61,.36,1)}
@@ -1210,21 +1246,6 @@
             <div id="dash"></div>
           </section>
 
-          <!-- 2 · 흐름 + 자료 — 왼쪽은 어디에 몰려 있는지, 오른쪽은 가져갈 것 -->
-          <section id="flowRow" class="shrink-0">
-
-            <div id="flowSec" class="pnl">
-              <header>
-                <div class="flex items-center gap-2.5 min-w-0">
-                  <h2>진행 흐름</h2>
-                  <span id="flowSum" class="num text-[10.5px] text-slate-500"></span>
-                </div>
-                <span class="t-label num text-[9.5px] text-slate-400">리스트 → 업로드</span>
-              </header>
-              <div id="flow" class="relative"></div>
-            </div>
-
-          </section>
 
           <!-- 3 · 진행상황 — 박스 하나에 전원. 20~30명이어도 여기 안에서만 흐른다 -->
           <!-- 3 · 진행상황 — 3행 높이에 맞춘다. flex-1 이면 남는 세로를 전부 먹고 안이 텅 빈다 -->
@@ -1575,6 +1596,12 @@
   </div>
 </div>
 
+
+<!-- 진행 흐름 — 업로드 완료 카드에 마우스를 올렸을 때만 나온다 -->
+<div id="flowPop" role="tooltip" aria-hidden="true">
+  <div class="fpHead"><b>진행 흐름</b><span id="fpSum"></span></div>
+  <div class="fpWave" id="fpWave"></div>
+</div>
 
 <div id="toast" role="status" aria-live="polite" class="toast fixed bottom-28 left-1/2 z-[80] bg-slate-900 text-white text-xs px-4 py-3 rounded-xl flex items-start gap-2.5 max-w-[min(460px,92vw)]" style="box-shadow:0 8px 20px rgba(0,0,0,.18), 0 30px 60px -24px rgba(0,0,0,.6)">
   <span id="toastIcon" class="shrink-0 mt-[1px]"></span>
@@ -2366,7 +2393,8 @@ const lastUp = () => upList().slice().sort((a, b) => a.due < b.due ? 1 : -1)[0] 
    아래 한 줄이 그 숫자를 읽는 법을 준다 — 얼마나 올랐나, 무엇으로 이루어졌나,
    무엇이 남았나. 아이콘은 우상단에 흐리게 둔다. 눈이 먼저 가면 안 된다 */
 function dashCard(o) {
-  return '<div class="dcard surface-sm px-4 py-4 flex flex-col">'
+  return '<div class="dcard surface-sm px-4 py-4 flex flex-col"'
+    + (o.pop ? ' data-flowpop="1" tabindex="0" aria-describedby="flowPop"' : '') + '>'
     + '<div class="flex items-start justify-between gap-2">'
     +   '<span class="text-[11px] font-medium text-slate-500 truncate">' + o.label + '</span>'
     +   '<span class="dico ' + (o.tone || '') + '">' + o.icon + '</span>'
@@ -2448,6 +2476,8 @@ function renderDash() {
     + dashCard({
         label: '업로드 완료', val: up.length + '<span class="text-slate-400"> / ' + sel.length + '</span>',
         icon: DICO.play, tone: 'ico-p',
+        /* 여기 손을 올리면 어느 단계에 몇 명이 서 있는지 파도로 펼친다 */
+        pop: true,
         bar: dBar(done, done === 100 ? '#10b981' : '#0f172a'),
         foot: (upAdd ? dPill('+' + upAdd + '명', true) : dPill(done + '%', false))
             + dMuted(rest > 0 ? '남은 ' + rest + '명 · ' + done + '%' : '모두 완료')
@@ -2478,127 +2508,132 @@ function flowData() {
 }
 
 
-/* 눈금 위 곡선. 점 다섯 개를 부드럽게 잇고 아래를 은은하게 채운다.
-   제어점까지 기준선 안으로 눌러 둔다 — 그러지 않으면 0 인 칸 옆에서 선이 바닥을 뚫는다 */
-const FV = { W: 1000, H: 112, padX: 46, top: 18, base: 26 };
+/* ── 진행 흐름 파도 ───────────────────────────────────────────────
+   높이는 인원수에 비례하지 않는다. 비중 순위로만 정한다 — 서로 다른 값이
+   넷이면 단계도 넷이고, 같은 값은 같은 높이에 선다. "얼마나 높아야 맞나" 를
+   고민할 필요가 없어지고, 정확한 수는 아래 숫자가 말한다.
+   막대가 아니라 면이다. 구간마다 따로 세워 하나로 이어 붙지 않게 했다. */
+const FTIER_H = [1, 0.72, 0.46, 0.26, 0.15];
+const FTIER_O = [1, 0.78, 0.56, 0.40, 0.30];
+const FW = 1000, FVH = 100, FFILL = 0.66, FPEAK = 52, FBASE = 42;
 
-function fcurve(pts, y0) {
-  if (pts.length < 2) return '';
-  const t = 0.20;
-  const cl = y => Math.max(FV.top - 6, Math.min(y0, y));
-  let d = 'M' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
-    const c1x = p1.x + (p2.x - p0.x) * t, c1y = cl(p1.y + (p2.y - p0.y) * t);
-    const c2x = p2.x - (p3.x - p1.x) * t, c2y = cl(p2.y - (p3.y - p1.y) * t);
-    d += ' C' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) + ',' + c2x.toFixed(1) + ' '
-       + c2y.toFixed(1) + ',' + p2.x.toFixed(1) + ' ' + p2.y.toFixed(1);
+function fhump(x0, w, h) {
+  let d = 'M' + x0.toFixed(1) + ' ' + FVH;
+  for (let x = 0; x <= w; x += 4) {
+    const t = x / w;
+    const y = FVH - (0.5 - 0.5 * Math.cos(2 * Math.PI * t)) * h * FVH;
+    d += ' L' + (x0 + x).toFixed(1) + ' ' + y.toFixed(1);
   }
-  return d;
+  return d + ' L' + (x0 + w).toFixed(1) + ' ' + FVH + ' Z';
 }
 
 function renderFlow() {
-  const box = $('flow');
+  const box = $('fpWave');
   if (!box) return;
   const by = flowData();
-  const total = by.reduce((a, g) => a + g.length, 0);
-  const max = Math.max(1, ...by.map(g => g.length));
-  const y0 = FV.H - FV.base;
-  const plot = y0 - FV.top;
-  const nStep = FLOW.length;
-  const gap = (FV.W - FV.padX * 2) / (nStep - 1);
-  const pts = FLOW.map(function (f, k) {
-    return { x: FV.padX + k * gap, y: y0 - (by[k].length / max) * plot, v: by[k].length };
+  const counts = by.map(g => g.length);
+  const uniq = [...new Set(counts)].sort((a, b) => b - a);
+  const slot = FW / FLOW.length, pad = slot * (1 - FFILL) / 2, step = 100 / FLOW.length;
+
+  const seg = FLOW.map(function (f, i) {
+    const t = uniq.indexOf(counts[i]);
+    return { key: f[0], label: f[1], n: counts[i], one: by[i][0],
+             h: FTIER_H[t] || 0.12, o: FTIER_O[t] || 0.3 };
   });
-  const line = fcurve(pts, y0);
-  const area = line + ' L' + pts[pts.length - 1].x.toFixed(1) + ' ' + y0
-             + ' L' + pts[0].x.toFixed(1) + ' ' + y0 + ' Z';
 
   box.innerHTML =
-      /* 점은 그림 높이를 기준으로 얹는다 — 라벨까지 포함한 높이로 재면 아래로 밀린다 */
-      '<div class="fplot">'
-    + '<svg class="fsvg" viewBox="0 0 ' + FV.W + ' ' + FV.H + '" preserveAspectRatio="none"'
-    + ' aria-hidden="true">'
-    +   '<defs><linearGradient id="fgrad" x1="0" y1="0" x2="0" y2="1">'
-    +     '<stop offset="0" stop-color="#0f172a" stop-opacity=".17"/>'
-    +     '<stop offset="1" stop-color="#0f172a" stop-opacity="0"/></linearGradient></defs>'
-    +   '<g class="fgrid">'
-    +     pts.map(p => '<line x1="' + p.x.toFixed(1) + '" y1="' + FV.top
-             + '" x2="' + p.x.toFixed(1) + '" y2="' + y0 + '"/>').join('')
-    +   '</g>'
-    +   '<line class="fbase" x1="' + FV.padX + '" y1="' + y0
-    +     '" x2="' + (FV.W - FV.padX) + '" y2="' + y0 + '"/>'
-    +   '<path class="farea" d="' + area + '" fill="url(#fgrad)"/>'
-    +   '<path class="fpath" d="' + line + '"/>'
-    + '</svg>'
-    /* 점은 곡선 위에 정확히 앉아야 한다 — 백분율로 얹는다 */
-    + pts.map(function (p, k) {
-        return '<span class="fpt' + (p.v ? '' : ' zero') + '" data-k="' + k
-          + '" style="left:' + (p.x / FV.W * 100).toFixed(3) + '%;top:'
-          + (p.y / FV.H * 100).toFixed(3) + '%"></span>';
-      }).join('')
-    + pts.map(function (p, k) {
-        const half = gap / 2;
-        const l = Math.max(0, p.x - half), r = Math.min(FV.W, p.x + half);
-        return '<span class="fhit" data-k="' + k + '" style="left:'
-          + (l / FV.W * 100).toFixed(3) + '%;width:' + ((r - l) / FV.W * 100).toFixed(3) + '%"></span>';
-      }).join('')
-    + '</div>'
-    + '<div class="flabs">'
-    +   FLOW.map(function (f, k) {
-          return '<span class="flab" data-k="' + k + '"><b class="num">' + by[k].length
-            + '</b><i>' + f[1] + '</i></span>';
+      '<svg viewBox="0 0 ' + FW + ' ' + FVH + '" preserveAspectRatio="none" aria-hidden="true">'
+    +   seg.map(function (x, i) {
+          return '<path class="fseg" data-seg="' + i + '" style="--o:' + x.o + '" d="'
+            + fhump(i * slot + pad, slot * FFILL, x.h) + '"/>';
         }).join('')
-    + '</div>'
-    + '<div id="flowTip" role="status"></div>';
+    + '</svg><div class="fbase"></div>'
+    + seg.map(function (x, i) {
+        if (!x.one) return '';
+        const more = x.n - 1;
+        return '<div class="fav" data-seg="' + i + '" style="left:' + ((i + .5) * step)
+          + '%;bottom:' + (FBASE + FPEAK + 8) + 'px">'
+          + (x.one.pic ? '<img src="' + x.one.pic + '" alt="">' : '')
+          + (more > 0 ? '<b>+' + more + '</b>' : '') + '</div>';
+      }).join('')
+    + seg.map(function (x, i) {
+        return '<div class="flab" data-seg="' + i + '" style="left:' + ((i + .5) * step) + '%">'
+          + '<b class="num">' + x.n + '</b><i>' + x.label + '</i></div>';
+      }).join('')
+    + seg.map(function (x, i) {
+        return '<span class="fhit" data-seg="' + i + '" style="left:' + (i * step)
+          + '%;width:' + step + '%"></span>';
+      }).join('');
 
-  $('flowSum').textContent = total + '명';
-  bindFlow(by);
+  $('fpSum').textContent = counts.reduce((a, b) => a + b, 0) + '명 · 리스트 → 업로드';
+  bindFlow(seg);
 }
 
-function bindFlow(by) {
-  const box = $('flow'), tip = $('flowTip');
-  if (!box || !tip) return;
-  const K = FLOW.length;
-
-  function on(k) {
-    const grp = by[k];
-    box.classList.add('hit');
-    box.querySelectorAll('.fpt, .flab').forEach(function (e) {
-      e.classList.toggle('on', +e.dataset.k === k);
-    });
-    const face = grp.slice(0, 3).map(c => avatar(c, CREATORS.indexOf(c), 20)).join('');
-    const names = grp.slice(0, 3).map(c => c.name).join(' · ');
-    const rest = grp.length > 3 ? ' 외 ' + (grp.length - 3) + '명' : '';
-    tip.innerHTML = '<div class="text-[11.5px] font-bold">' + FLOW[k][1]
-        + ' <span class="num">' + grp.length + '</span>명</div>'
-      + (grp.length
-         ? '<div class="tw">' + face + '<span class="text-[10.5px]" style="color:rgba(255,255,255,.82)">'
-           + esc(names) + esc(rest) + '</span></div>'
-         : '<div class="text-[10.5px] mt-1" style="color:rgba(255,255,255,.72)">아직 없어요</div>');
-    tip.style.left = ((k + 0.5) / K * 100) + '%';
-    tip.style.top = '18px';
-    tip.classList.add('on');
-    flowFocus(FLOW[k][0]);
+function bindFlow(seg) {
+  const box = $('fpWave');
+  const all = [].slice.call(box.querySelectorAll('.fseg,.fav,.flab'));
+  function set(i) {
+    box.classList.toggle('on', i != null);
+    all.forEach(function (e) { e.classList.toggle('hot', i != null && +e.dataset.seg === i); });
+    /* 아래 인물 카드까지 같이 반응한다 — 단계를 짚으면 그 사람들이 드러난다 */
+    flowFocus(i == null ? null : seg[i].key);
   }
-
-  function off() {
-    box.classList.remove('hit');
-    box.querySelectorAll('.on').forEach(e => e.classList.remove('on'));
-    tip.classList.remove('on');
-    flowFocus(null);
-  }
-
-  box.querySelectorAll('.fhit, .flab').forEach(function (z) {
-    const k = +z.dataset.k;
-    z.addEventListener('mouseenter', function () { on(k); });
-    z.addEventListener('click', function () { setFilter('stage', FLOW[k][0]); });
+  [].slice.call(box.querySelectorAll('.fhit')).forEach(function (h) {
+    h.addEventListener('mouseenter', function () { set(+h.dataset.seg); });
+    h.addEventListener('mouseleave', function () { set(null); });
   });
-  box.addEventListener('mouseleave', off);
 }
+/* 팝오버를 카드 아래에 띄운다. 카드가 스크롤 컨테이너 안이라
+   카드 안에 넣으면 잘린다 — fixed 로 띄우고 좌표만 맞춘다 */
+let fpTimer = null;
+function flowPopShow(card) {
+  const pop = $('flowPop');
+  if (!pop) return;
+  clearTimeout(fpTimer);
+  renderFlow();
+  pop.classList.add('on');
+  pop.setAttribute('aria-hidden', 'false');
+  const r = card.getBoundingClientRect();
+  const w = pop.offsetWidth, h = pop.offsetHeight, m = 10;
+  /* 오른쪽 끝 카드라 그대로 두면 화면 밖으로 나간다. 안쪽으로 당긴다 */
+  let x = Math.min(r.right - w, innerWidth - w - m);
+  let y = r.bottom + 8;
+  if (y + h > innerHeight - m) y = Math.max(m, r.top - h - 8);
+  pop.style.left = Math.max(m, x) + 'px';
+  pop.style.top = y + 'px';
+}
+function flowPopHide() {
+  fpTimer = setTimeout(function () {
+    const pop = $('flowPop');
+    if (!pop) return;
+    pop.classList.remove('on');
+    pop.setAttribute('aria-hidden', 'true');
+    flowFocus(null);
+  }, 120);
+}
+document.addEventListener('mouseover', function (e) {
+  const card = e.target.closest && e.target.closest('[data-flowpop]');
+  if (card) flowPopShow(card);
+});
+document.addEventListener('mouseout', function (e) {
+  const card = e.target.closest && e.target.closest('[data-flowpop]');
+  if (card && !card.contains(e.relatedTarget)) flowPopHide();
+});
+document.addEventListener('focusin', function (e) {
+  const card = e.target.closest && e.target.closest('[data-flowpop]');
+  if (card) flowPopShow(card);
+});
+document.addEventListener('focusout', function (e) {
+  if (e.target.closest && e.target.closest('[data-flowpop]')) flowPopHide();
+});
+/* 팝오버 위에 있는 동안은 닫지 않는다 — 단계를 짚으려면 들어가야 한다 */
+document.addEventListener('DOMContentLoaded', function () {
+  const pop = $('flowPop');
+  if (!pop) return;
+  pop.addEventListener('mouseenter', function () { clearTimeout(fpTimer); });
+  pop.addEventListener('mouseleave', flowPopHide);
+});
 
-/* 흐름에서 한 단계를 짚으면 아래 진행상황에서 그 사람들만 남는다.
-   위에서 본 분포가 아래 어느 카드인지 눈으로 이어져야 한다 */
 function flowFocus(stage) {
   const g = $('pgrid');
   if (!g) return;
