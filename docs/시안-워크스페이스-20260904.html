@@ -157,6 +157,33 @@
   #camBanner:not(.hero) #heroToggle{color:#94a3b8}
   #camBanner:not(.hero) #heroToggle:hover{color:#0f172a;background:#f1f5f9}
   #camBanner:not(.hero) #camArt{display:none}
+
+  /* ── 접힌 줄 ── 내려갔을 때만 선다 */
+  #camMini{display:none}
+  #pad.cond #camBanner:not(.hero) #camMini{
+    display:flex;align-items:center;gap:clamp(16px,2.4vw,44px);
+    padding:0 clamp(20px,1.6vw,26px) 11px;position:relative;z-index:2}
+  .cmFlow{display:flex;align-items:center;flex:1 1 auto;min-width:0}
+  .cmSep{flex:1 1 auto;min-width:10px;height:1px;background:#e2e8f0;margin:0 clamp(6px,.7vw,12px)}
+  .cmStep{display:flex;align-items:center;gap:6px;flex:none;padding:3px 7px;border-radius:8px;
+          transition:background-color .15s ease}
+  .cmStep:hover{background:#f1f5f9}
+  .cmStep .cmDot{width:6px;height:6px;border-radius:50%;background:#cbd5e1;flex:none}
+  .cmStep b{font-size:13px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-title)}
+  .cmStep em{font-style:normal;font-size:11px;color:var(--ink-3);letter-spacing:var(--tr-small)}
+  .cmStep.zero{opacity:.42}
+  .cmStep.zero b{color:var(--ink-3)}
+  .cmStep.hot{background:#eef2f7}
+  .cmStep.sel{background:var(--ink-1)}
+  .cmStep.sel b, .cmStep.sel em{color:#fff}
+  .cmStep.sel .cmDot{background:#fff}
+  .cmNums{display:flex;align-items:center;gap:clamp(14px,1.6vw,30px);flex:none}
+  .cmN{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+  .cmN i{font-style:normal;font-size:11px;color:var(--ink-4);letter-spacing:var(--tr-small)}
+  .cmN b{font-size:14px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-display)}
+  .cmN b .text-slate-400{color:#c3cbd6}
+  @media (max-width:1279px){ .cmNums .cmN:nth-child(n+3){display:none} }
+  @media (max-width:1023px){ #pad.cond #camBanner:not(.hero) #camMini{display:none} }
   /* 한 줄로 눕힌다. 제목 · 기간 · 상태가 같은 높이에 온다 */
   #camBanner:not(.hero) #camPad{display:flex;align-items:center;gap:14px;
                                 padding:16px 0;transition:padding .30s cubic-bezier(.22,.61,.36,1)}
@@ -849,19 +876,43 @@
              color:var(--ink-4);letter-spacing:var(--tr-small)}
   .frow .frc{flex:1 1 auto;min-width:0;display:flex;flex-wrap:wrap;gap:6px}
 
+  /* 이 페이지를 다 골랐을 때 뒷장을 알린다 */
+  .pkbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+         padding:12px 20px;background:var(--pick);border-top:1px solid #e3efe8;
+         font-size:12.5px;color:#245c46}
+  .pkbar b{font-weight:700;color:#124632}
+  .pkbar button{font-size:12px;font-weight:700;color:#0f6b4c;
+                padding:5px 10px;border-radius:8px;background:rgba(255,255,255,.7);
+                transition:background-color .15s ease}
+  .pkbar button:hover{background:#fff}
+  .pkbar .pkx{margin-left:auto;color:var(--ink-3);background:transparent}
+  .pkbar .pkx:hover{background:rgba(255,255,255,.7);color:var(--ink-1)}
+
+  /* 이름 칸은 이제 누르는 단추가 아니다 — 줄 전체가 고르는 자리다 */
+  #ptable .tname{cursor:pointer}
+
   /* 표 마감 — 표가 끝나는 자리다. 흰 표에 이어 붙은 한 줄로 둔다 */
+  /* 머리줄은 세 가지 일을 한다 — 거르기 · 보기 · 가져가기.
+     한 줄에 여섯 개를 같은 간격으로 늘어놓으면 어느 것이 어느 일인지 모른다 */
+  .hgrp{display:flex;align-items:center;gap:6px}
+  .hdiv{width:1px;height:18px;background:#e2e8f0;margin:0 clamp(8px,.8vw,14px);flex:none}
+
   .pfoot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;
          padding:18px 24px;background:#fff;border-top:1px solid #f1f5f9}
   .pfInfo{font-size:12px;color:var(--ink-3);letter-spacing:var(--tr-body)}
   .pfInfo b{font-weight:700;color:var(--ink-1)}
-  .pfPer{display:flex;align-items:center;gap:3px;margin-left:auto}
-  .pfPer i{font-style:normal;font-size:11px;color:var(--ink-4);margin-left:3px}
-  .pfP{min-width:30px;height:26px;padding:0 7px;border-radius:8px;
+  .pfPer{display:flex;align-items:center;gap:7px}
+  .pfPerL{font-style:normal;font-size:11.5px;color:var(--ink-4);letter-spacing:var(--tr-small)}
+  /* 테두리로 묶어 두면 세 알약이 '한 벌의 설정' 으로 읽힌다 —
+     오른쪽 끝의 장 번호와 생김새부터 다르다 */
+  .pfPerBox{display:flex;align-items:center;gap:2px;padding:2px;border-radius:9px;
+            background:#f4f6f9;box-shadow:inset 0 0 0 1px #e6ebf1}
+  .pfP{min-width:28px;height:22px;padding:0 7px;border-radius:7px;
        font-size:11.5px;font-weight:700;color:var(--ink-3);
        transition:background-color .15s ease,color .15s ease}
   .pfP:hover{background:#f1f5f9;color:var(--ink-1)}
-  .pfP.on{background:var(--ink-1);color:#fff}
-  .pfNav{display:flex;align-items:center;gap:3px}
+  .pfP.on{background:#fff;color:var(--ink-1);box-shadow:var(--lift-1)}
+  .pfNav{display:flex;align-items:center;gap:3px;margin-left:auto}
   .pfB{height:26px;padding:0 10px;border-radius:8px;font-size:11.5px;font-weight:700;
        color:var(--ink-3);transition:background-color .15s ease,color .15s ease}
   .pfB:hover{background:#f1f5f9;color:var(--ink-1)}
@@ -874,7 +925,7 @@
   .pfGap{font-size:11.5px;color:var(--ink-4);padding:0 2px}
   @media (max-width:720px){
     .pfoot{gap:10px}
-    .pfPer{margin-left:0}
+    .pfNav{margin-left:0}
   }
 
   .dmchip{font-size:12px;font-weight:600;color:#64748b;background:#f1f5f9;
@@ -959,7 +1010,10 @@
      --topH 는 JS 가 붙은 덩어리의 키를 재서 넣는다 */
   /* 굴리려고 끌면 머리글 글자가 파랗게 잡혔다 */
   /* 머리글은 툴바 줄 아래에 선다 */
-  #ptable th{user-select:none;-webkit-user-select:none;
+  /* th 의 브라우저 기본값이 가운데 정렬이다. 정렬되는 열은 안쪽이 flex 라
+     그 값을 안 타고, 정렬 없는 열(.thlab)만 block 이라 그대로 타서 '메모'
+     라벨만 44px 밀려 있었다. 표의 머리글은 전부 아래 값과 같은 자리에 선다 */
+  #ptable th{text-align:left;user-select:none;-webkit-user-select:none;
              position:sticky;top:calc(var(--hdrH,0px) + var(--toolH,0px) - 1px);
              z-index:2;background:#f8fafc;padding:0;
              border-bottom:1px solid #e9eef4;white-space:nowrap;
@@ -986,6 +1040,7 @@
   #ptable td.cbx .pbox{display:inline-flex;align-items:center;justify-content:center}
   /* 이름 칸은 왼쪽 여백을 조금 줄여 고른 칸과 붙지 않게 */
   #ptable th:nth-child(2), #ptable td:nth-child(2){padding-left:6px}
+  #ptable th:nth-child(2) button, #ptable th:nth-child(2) .thlab{padding-left:0}
   /* 한 칸에 이름과 계정을 위아래로. 계정을 옆 열로 빼 두었더니 두 칸 다
      반이 비었다 — 붙여 놓으면 한 칸이 차고 한 칸이 통째로 남는다 */
   #ptable .tname{display:flex;align-items:center;gap:11px;text-align:left;
@@ -996,6 +1051,15 @@
                      overflow:hidden;text-overflow:ellipsis;max-width:100%}
   #ptable .tname .th{font-size:11.5px;line-height:1.15;color:var(--ink-4);
                      overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  /* 상세로 가는 화살 — 있는 줄 알아볼 만큼만 보이고, 짚으면 또렷해진다 */
+  #ptable th.go, #ptable td.go{padding-left:0;padding-right:12px;text-align:right}
+  .rgo{display:inline-flex;align-items:center;justify-content:center;
+       width:30px;height:30px;border-radius:9px;color:#b6c0cd;
+       transition:color .15s ease, background-color .15s ease}
+  .rgo svg{width:15px;height:15px}
+  #ptable tr:hover .rgo{color:var(--ink-3)}
+  .rgo:hover{color:#fff;background:var(--ink-1)}
+
   #ptable .tdue{display:flex;flex-direction:column;gap:2px}
   #ptable .tdue b{font-size:13.5px;font-weight:600;color:var(--ink-1);line-height:1.15}
   #ptable .tdue i{font-size:11px;font-style:normal;line-height:1.15;color:var(--ink-4)}
@@ -1007,6 +1071,29 @@
   #ptable tr.on td{background:#f8fafc}
   #ptable tbody tr{cursor:pointer}
   /* 펼침 — 표 안이라 카드 옆에 서던 때와 달리 아래로 열린다 */
+  /* 상세 창 */
+  #peekOv{position:fixed;inset:0;z-index:60;display:flex;align-items:center;
+          justify-content:center;padding:clamp(16px,3vw,48px);
+          background:rgba(15,23,42,.42);
+          -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+          animation:peekFade .18s ease both}
+  #peekOv.hidden{display:none}
+  @keyframes peekFade{from{opacity:0}to{opacity:1}}
+  .peekCard{width:min(1180px,100%);background:#f1f5f9;border-radius:18px;overflow:hidden;
+            box-shadow:0 40px 90px -30px rgba(15,23,42,.55);
+            animation:peekIn .26s cubic-bezier(.22,.61,.36,1) both}
+  @keyframes peekIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){ #peekOv, .peekCard{animation:none} }
+  .peekHd{display:flex;align-items:center;gap:11px;padding:14px 16px;background:#fff;
+          border-bottom:1px solid #e9eef4}
+  .peekHd b{font-size:15px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-title)}
+  .peekHd i{font-style:normal;font-size:12px;color:var(--ink-4)}
+  .peekX{margin-left:auto;width:32px;height:32px;display:grid;place-items:center;
+         border-radius:9px;color:var(--ink-3);font-size:19px;line-height:1;
+         transition:background-color .15s ease, color .15s ease}
+  .peekX:hover{background:#f1f5f9;color:var(--ink-1)}
+  .peekCard .pexpIn{animation:none}
+
   #ptable tr.pexp > td{padding:0;background:#f1f5f9;border-bottom:1px solid #e2e8f0}
   /* 카드 보기에서 상세가 서는 키와 맞춘다 — 같은 것이 두 화면에서 달리 보이면 안 된다.
      세로 영상이라 이 키가 곧 콘텐츠 크기를 정한다 */
@@ -1590,6 +1677,10 @@
           </div>
         </div>
 
+        <!-- 내려가면 흐름과 성과가 여기로 접혀 들어온다. 표를 읽는 내내
+             '어디까지 왔고 숫자가 얼마인지' 는 곁에 있어야 한다 -->
+        <div id="camMini"></div>
+
         <!-- 첫 화면은 사진 한 장과 제목이다. 숫자 넷을 얹으니 사진도 숫자도
              둘 다 죽었다 — 성과는 들어가서 본다 -->
         <div id="heroSlot" class="relative z-[2] px-5 sm:px-6 pb-12"></div>
@@ -1605,9 +1696,9 @@
 
 
             <section id="flowSec" class="shrink-0">
-              <div class="sechd"><h2>진행 흐름</h2><span id="fpSum" class="num text-[10.5px] text-slate-500"></span>
+              <div class="sechd"><h2>진행 상태</h2>
                 <button id="flowTog" onclick="toggleFlow()" class="hbtn" style="margin-left:auto"
-                        aria-expanded="true" title="흐름 접기" aria-label="흐름 접기">
+                        aria-expanded="true" title="접기" aria-label="진행 상태 접기">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                 </button></div>
               <div class="fpWave" id="fpWave"></div>
@@ -1640,7 +1731,8 @@
                 <button id="progAll" onclick="pickAllProg()" class="flex items-center gap-1.5 text-[10.5px] font-bold text-slate-600 hover:text-slate-900 transition whitespace-nowrap"></button>
                 <button id="progPick" onclick="chatAboutPicked()" class="cta hidden text-[10.5px] font-bold px-2.5 py-1.5 rounded-lg whitespace-nowrap"></button>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
+              <div class="flex items-center shrink-0">
+                <div class="hgrp">
                 <!-- 필터 넷을 늘 펴 두니 머리줄이 필터밭이 됐다. 하나로 접고
                      걸린 개수만 옆에 붙인다 — 무엇이 걸렸는지는 열어서 본다 -->
                 <button id="fAll" onclick="openFilter('filters')" class="fbtn">
@@ -1650,7 +1742,9 @@
                 <button id="fReset" onclick="resetFilters()" class="fbtn hidden" title="필터 초기화">
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v6h6M20 20v-6h-6M20 9A8 8 0 006 5.3M4 15a8 8 0 0014 3.7"/></svg>
                   초기화</button>
-                <span class="w-px h-4 bg-slate-200 mx-0.5"></span>
+                </div>
+                <span class="hdiv"></span>
+                <div class="hgrp">
                 <span class="vsw flex items-center rounded-lg bg-white" style="box-shadow:var(--lift-1)">
                   <button id="vKan" onclick="setView('card')" class="vbtn">카드</button>
                   <button id="vTab" onclick="setView('table')" class="vbtn">표</button>
@@ -1658,12 +1752,16 @@
                 <button id="fCols" onclick="openFilter('cols')" class="fbtn" title="표시할 항목">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.4 3.6a1 1 0 011-.85h1.2a1 1 0 011 .85l.17 1.2a6.8 6.8 0 011.53.89l1.13-.46a1 1 0 011.22.4l.6 1.04a1 1 0 01-.2 1.25l-.9.83a6.8 6.8 0 010 1.78l.9.83a1 1 0 01.2 1.25l-.6 1.04a1 1 0 01-1.22.4l-1.13-.46a6.8 6.8 0 01-1.53.89l-.17 1.2a1 1 0 01-1 .85h-1.2a1 1 0 01-1-.85l-.17-1.2a6.8 6.8 0 01-1.53-.89l-1.13.46a1 1 0 01-1.22-.4l-.6-1.04a1 1 0 01.2-1.25l.9-.83a6.8 6.8 0 010-1.78l-.9-.83a1 1 0 01-.2-1.25l.6-1.04a1 1 0 011.22-.4l1.13.46a6.8 6.8 0 011.53-.89z"/><circle cx="12" cy="12" r="2.5"/></svg>
                 </button>
+                </div>
+                <span class="hdiv"></span>
+                <div class="hgrp">
                 <button id="fExport" onclick="openFilter('export')" class="fbtn" title="목록 내보내기">
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
                   내보내기</button>
                 <button class="hbtn" onclick="openDrawer('dw-calendar')" title="업로드 캘린더" aria-label="업로드 캘린더">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M4 11h16M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 </button>
+                </div>
               </div>
             </header>
               <div id="progFilter" class="hidden shrink-0"></div>
@@ -1987,6 +2085,10 @@
   </div>
 </div>
 
+
+<!-- 한 사람의 상세 — 표 맨 오른쪽 › 로 연다. 표를 밀어내지 않고 위에 뜬다:
+     줄을 열어 밑으로 밀면 위아래 사람과 견주던 눈이 끊긴다 -->
+<div id="peekOv" class="hidden" onclick="closeRow()"></div>
 
 <!-- 인플루언서 메모 — 표에서 메모 칸을 누르면 그 사람 자리에 열린다 -->
 <div id="memoPop" role="dialog" aria-modal="false" aria-hidden="true">
@@ -2673,6 +2775,71 @@ let heroT = null, heroT2 = null, autoT = null, heroAuto = false;
 function syncStuck() {}
 function paintFloat() { syncTopH(); }
 
+/* ── 접힌 줄 ────────────────────────────────────────────────────
+   흐름은 선 하나로, 성과는 숫자 넷으로 줄여 맨 윗줄에 남긴다. */
+function renderMini() {
+  const box = $('camMini');
+  if (!box) return;
+  const by = flowData();
+  const up = upList(), sel = selected();
+  const views = sum(up, 'views');
+  const react = sum(up, 'likes') + sum(up, 'cmts') + sum(up, 'saves');
+  const cur = (PSTATE.stage && PSTATE.stage !== 'all') ? PSTATE.stage : null;
+
+  box.innerHTML =
+      '<div class="cmFlow">'
+    +   FLOW.map(function (f, i) {
+          const n0 = by[i].length;
+          return '<button class="cmStep' + (n0 ? '' : ' zero') + (cur === f[0] ? ' sel' : '') + '"'
+            + ' data-seg="' + i + '" data-key="' + f[0] + '"'
+            + ' title="' + esc(f[1]) + ' ' + n0 + '명만 보기">'
+            + '<i class="cmDot"' + (n0 ? ' style="background:' + fcolor(FLOW.length > 1 ? i / (FLOW.length - 1) : 1) + '"' : '') + '></i>'
+            + '<b class="num">' + n0 + '</b>'
+            + '<em>' + esc(f[1].split(' ')[0]) + '</em></button>';
+        }).join('<i class="cmSep"></i>')
+    + '</div>'
+    + '<div class="cmNums">'
+    +   cmN('조회', n(views)) + cmN('반응', n(react))
+    +   cmN('업로드', up.length + '<span class="text-slate-400"> / ' + sel.length + '</span>')
+    +   cmN('예산', won(sum(sel, 'cost')))
+    + '</div>';
+
+  [].slice.call(box.querySelectorAll('.cmStep')).forEach(function (b) {
+    const k = b.dataset.key;
+    b.addEventListener('mouseenter', function () { flowFocus(k); });
+    b.addEventListener('mouseleave', function () { flowFocus(null); });
+    b.addEventListener('click', function () { setFilter('stage', k); });
+  });
+}
+function cmN(label, val) {
+  return '<span class="cmN"><i>' + label + '</i><b class="num">' + val + '</b></span>';
+}
+
+/* 내려가면 접고, 올라오면 편다.
+   늘어나는 쪽은 문서가 길어질 뿐이라 스크롤이 되감기지 않는다. 늘어난 만큼
+   scrollTop 을 더해 보고 있던 줄을 붙잡고, 문턱을 50px 벌려 경계에서 떨지
+   않게 한다 — ON 150 / OFF 100, 줄 키(약 40px)보다 넓다 */
+const COND_ON = 150, COND_OFF = 100;
+function syncCond() {
+  const pad = $('pad'), b = $('camBanner');
+  if (!pad || !b) return;
+  const hero = b.classList.contains('hero');
+  const now  = pad.classList.contains('cond');
+  const want = hero ? false : (now ? pad.scrollTop > COND_OFF : pad.scrollTop > COND_ON);
+  if (want === now) return;
+
+  /* 머리가 커진 만큼 본문이 아래로 밀린다. 배너 키를 재서 빼는 것보다
+     '보고 있던 것' 을 직접 기준 삼는 편이 확실하다 — 무엇이 몇 픽셀
+     변했든 그 줄이 화면에서 안 움직이면 그만이다 */
+  const ref = $('progCard') || $('bodyRow');
+  const y0 = ref ? ref.getBoundingClientRect().top : 0;
+  pad.classList.toggle('cond', want);
+  if (want) renderMini();
+  const d = ref ? Math.round(ref.getBoundingClientRect().top - y0) : 0;
+  if (d) pad.scrollTop += d;
+  syncTopH();
+}
+
 /* 표 머리글이 붙는 자리. 덩어리가 여닫히는 동안 키가 계속 바뀌므로
    한 번 재고 끝내면 안 된다 — 바뀔 때마다 다시 잰다 */
 /* 배너와 툴바가 차지하는 키. 둘 다 안 변하지만, 글자 크기나 폭이
@@ -2701,7 +2868,11 @@ function syncDockH() {
   const h = d.classList.contains('down') ? 0 : Math.round(d.getBoundingClientRect().height);
   document.documentElement.style.setProperty('--dockH', h + 'px');
 }
-addEventListener('resize', function () { syncDockH(); syncStuck(); });
+addEventListener('resize', function () { syncDockH(); syncCond(); });
+addEventListener('DOMContentLoaded', function () {
+  const pad = $('pad');
+  if (pad) pad.addEventListener('scroll', syncCond, { passive: true });
+});
 
 
 function heroHeight() {
@@ -3006,6 +3177,7 @@ function renderDash() {
       });
 
   $('dash').innerHTML = html;
+  renderMini();
 }
 
 /* ══════════ 2 · 에셋 ══════════
@@ -3083,7 +3255,7 @@ function syncFlow() {
   const b = $('flowTog');
   if (b) {
     b.setAttribute('aria-expanded', slim ? 'false' : 'true');
-    const t = slim ? '흐름 펼치기' : '흐름 접기';
+    const t = slim ? '펼치기' : '접기';
     b.title = t; b.setAttribute('aria-label', t);
   }
 }
@@ -3127,8 +3299,8 @@ function renderFlow() {
           + '%;width:' + step + '%"></span>';
       }).join('');
 
-  $('fpSum').textContent = counts.reduce((a, b) => a + b, 0) + '명 · 리스트 → 업로드';
   bindFlow(seg);
+  renderMini();
 }
 
 function bindFlow(seg) {
@@ -3387,11 +3559,15 @@ function pagerHtml(total) {
   return '<div class="pfoot">'
     + '<span class="pfInfo">전체 <b class="num">' + total + '</b>명 중 '
     +   '<b class="num">' + from + '–' + to + '</b>명</span>'
-    + '<span class="pfPer">'
+    /* '한 장에 몇 명' 과 '몇 번째 장' 은 다른 일이다. 숫자 알약을 나란히
+       붙여 두면 10·20·50 과 1·2·3 이 같은 것으로 읽힌다 — 이름표를 달고
+       테두리로 묶어 왼쪽에 두고, 장 넘기기는 오른쪽 끝으로 보낸다 */
+    + '<span class="pfPer"><i class="pfPerL">한 장에</i>'
+    +   '<span class="pfPerBox">'
     +   PER_OPTS.map(v => '<button class="pfP' + (PSTATE.per === v ? ' on' : '') + '"'
         + ' onclick="setPer(' + v + ')" aria-pressed="' + (PSTATE.per === v ? 'true' : 'false') + '">'
         + '<span class="num">' + v + '</span></button>').join('')
-    +   '<i>개씩</i></span>'
+    +   '</span><i class="pfPerL">명씩</i></span>'
     + '<span class="pfNav">'
     +   '<button class="pfB" onclick="goPage(' + (PSTATE.page - 1) + ')"'
     +     (PSTATE.page <= 1 ? ' disabled' : '') + ' aria-label="이전 장">이전</button>'
@@ -3671,46 +3847,60 @@ function progTable(list) {
              + '</button>')
     + '</th>';
 
-  /* 이름 칸의 몫. 아바타와 이름만 남았으니 숫자 칸의 한 배 반이면 된다 */
-  const NAMEW = 200;
-  const wsum  = NAMEW + cols.reduce((a, x) => a + (x.w || 78), 0);
+  /* 이름 칸의 몫. 아바타(34) + 이름 두 줄이 쓰는 자리는 200px 남짓이다.
+     폭은 비율로 나뉘므로 화면이 넓어질수록 이 칸도 같이 부푼다 —
+     2304px 에서 442px 까지 갔다. 넓은 화면에서만 몫을 줄인다.
+     좁은 화면에서 같이 줄이면 이름이 잘리니 그쪽은 그대로 둔다 */
+  const NAMEW = innerWidth >= 1700 ? 138 : (innerWidth >= 1440 ? 168 : 200);
+  const GOW   = 52;
+  const wsum  = NAMEW + GOW + cols.reduce((a, x) => a + (x.w || 78), 0);
   const pw    = w => (w / wsum * 100).toFixed(3) + '%';
 
   return '<div id="ptable" class="scroll scroll-thin"><table><thead><tr>'
-    + '<th class="cbx" style="width:58px"></th>'
+    /* 왼쪽 위 칸은 전체 선택 자리다. 비워 두면 그 열이 뭘 하는 칸인지
+       한 번 더 생각해야 한다 */
+    + '<th class="cbx" style="width:58px">'
+    +   '<span class="pbox cursor-pointer" onclick="pickPage(event)"'
+    +   ' role="checkbox" tabindex="0" aria-checked="' + (pageAllOn(all) ? 'true' : 'false') + '"'
+    +   ' title="이 페이지 전체 선택">' + box(pageAllOn(all)) + '</span></th>'
     /* 폭을 안 주면 이 열이 남는 자리를 혼자 먹어 이름과 다음 열이 양끝으로 갈린다.
        못 박아 두면 남는 것은 모든 열에 고루 퍼진다 */
     /* 폭을 px 로 못 박고 이름만 비워 두면, 남는 자리를 이름 혼자 다 먹어
        이름과 팔로워 사이가 손바닥만큼 벌어진다. 넉넉한 화면에서 특히 심하다.
        그래서 px 를 '몫' 으로 쓰고 비율로 바꿔 준다 — 남는 자리를 열들이
        자기 몫만큼 나눠 갖는다. 열을 켜고 끄면 다 같이 줄고 늘어난다 */
-    + th('name', '이름', 0, pw(NAMEW))
+    + th('name', '인플루언서', 0, pw(NAMEW))
     /* 숫자든 단계든 전부 눌러서 정렬된다 — 되는 열과 안 되는 열이 섞여 있었다 */
     + cols.map(x => th(x.k, x.t, 0, pw(x.w || 78), x.nosort)).join('')
+    /* 줄을 누르면 고르는 것이 됐으니 상세로 가는 길을 따로 낸다.
+       읽는 눈이 마지막으로 닿는 자리, 맨 오른쪽 끝이다 */
+    + '<th class="go" style="width:' + pw(GOW) + '"></th>'
     + '</tr></thead><tbody id="tbody">'
     + (list.length ? list.map(function (c) {
         const i = CREATORS.indexOf(c);
-        const opened = PSTATE.open === i;
-        return '<tr data-i="' + i + '" class="' + (PICK.has(i) ? 'pick ' : '') + (opened ? 'on' : '')
-          + '" onclick="openPeek(' + i + ', event)">'
-          + '<td class="cbx"><span class="pbox cursor-pointer" data-i="' + i + '" onclick="togglePick(' + i + ', event)">'
+        /* 표에서 줄을 누르는 것은 '고른다' 이지 '연다' 가 아니다.
+           체크박스든 이름이든 어디를 눌러도 같은 일이 일어난다 */
+        return '<tr data-i="' + i + '" class="' + (PICK.has(i) ? 'pick' : '') + '"'
+          + ' onclick="togglePick(' + i + ', event)"'
+          + ' aria-selected="' + (PICK.has(i) ? 'true' : 'false') + '">'
+          + '<td class="cbx"><span class="pbox cursor-pointer" data-i="' + i + '">'
           +   box(PICK.has(i)) + '</span></td>'
-          + '<td><button onclick="openPeek(' + i + ', event)" class="tname">'
+          + '<td><span class="tname">'
           +   avatar(c, i, 34)
           +   '<span class="tnw"><span class="tn">' + esc(c.name) + '</span>'
-          +     '<span class="th num">' + esc(c.handle) + '</span></span></button></td>'
+          +     '<span class="th num">' + esc(c.handle) + '</span></span></span></td>'
           + cols.map(x => '<td class="' + (x.num ? 'num' : '') + '">' + x.v(c) + '</td>').join('')
-          + '</tr>'
-          /* 누른 사람은 그 자리에서 열린다 — 위아래 사람이 그대로 남아야 견줄 수 있다 */
-          + (opened
-             ? '<tr class="pexp"><td colspan="' + (cols.length + 2) + '">'
-               + '<div class="pexpIn"><div id="pdet"></div><div id="pemb"></div><div id="pmemo"></div></div>'
-               + '</td></tr>'
-             : '');
+          + '<td class="go"><button class="rgo" data-nopick onclick="openRow(' + i + ', event)"'
+          +   ' title="' + esc(c.name) + ' 상세 보기" aria-label="' + esc(c.name) + ' 상세 보기">'
+          +   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">'
+          +   '<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>'
+          + '</button></td>'
+          + '</tr>';
       }).join('')
       : '<tr><td colspan="' + (cols.length + 3) + '" class="text-center text-slate-400 py-6">'
         + '필터에 맞는 사람이 없습니다</td></tr>')
     + '</tbody></table>'
+    + pickBanner()
     + pagerHtml(all.length)
     + '</div>';
 }
@@ -3894,6 +4084,48 @@ function exportCsv() {
 }
 
 /* ── 고르기 ──────────────────────────────────────────────── */
+/* 이 페이지 사람들의 자리 */
+function pageIdx() { return pageSlice(progList()).map(c => CREATORS.indexOf(c)); }
+function pageAllOn(all) {
+  const idx = pageIdx();
+  return idx.length > 0 && idx.every(i => PICK.has(i));
+}
+
+/* 왼쪽 위 칸 — 이 페이지를 통째로 고르고 푼다 */
+function pickPage(ev) {
+  if (ev) ev.stopPropagation();
+  const idx = pageIdx();
+  if (!idx.length) return;
+  const on = idx.every(i => PICK.has(i));
+  idx.forEach(i => on ? PICK.delete(i) : PICK.add(i));
+  paintPick();
+  renderProg();
+}
+
+/* 뒷장 사람들까지 한 번에 */
+function pickEverything() {
+  progList().forEach(c => PICK.add(CREATORS.indexOf(c)));
+  paintPick(); renderProg();
+}
+function pickNone() { PICK.clear(); paintPick(); renderProg(); }
+
+/* 이 페이지만 골랐을 때 '뒷장도 있습니다' 를 알린다 — 묻지도 않고
+   전부 고르면 20명만 보내려던 사람이 100명을 보내게 된다 */
+function pickBanner() {
+  const all = progList(), idx = pageIdx();
+  if (!idx.length || !idx.every(i => PICK.has(i))) return '';
+  if (all.length <= idx.length) return '';
+  const every = all.every(c => PICK.has(CREATORS.indexOf(c)));
+  return '<div class="pkbar">'
+    + (every
+        ? '<span>전체 <b class="num">' + all.length + '</b>명을 모두 골랐습니다.</span>'
+          + '<button onclick="pickPage(event)">이 페이지만 두기</button>'
+        : '<span>이 페이지 <b class="num">' + idx.length + '</b>명을 골랐습니다.</span>'
+          + '<button onclick="pickEverything()">전체 ' + all.length + '명 모두 고르기</button>')
+    + '<button class="pkx" onclick="pickNone()">선택 해제</button>'
+    + '</div>';
+}
+
 function pickAllProg() {
   const idx = progList().map(c => CREATORS.indexOf(c));
   if (!idx.length) return;
@@ -3903,6 +4135,9 @@ function pickAllProg() {
 }
 
 function togglePick(i, ev) {
+  /* 줄 전체가 고르는 자리지만, 줄 안에 제 할 일이 있는 단추는 예외다 */
+  if (ev && ev.target && ev.target.closest
+      && ev.target.closest('.mcell, a, .pop, .rgo, [data-nopick]')) return;
   if (ev) ev.stopPropagation();
   dockYield();
   PICK.has(i) ? PICK.delete(i) : PICK.add(i);
@@ -3931,6 +4166,8 @@ function paintPick() {
     const idx = progList().map(c => CREATORS.indexOf(c));
     const allOn = idx.length > 0 && idx.every(i => PICK.has(i));
     a.innerHTML = box(allOn) + (allOn ? '전체 해제' : '전체 선택');
+    /* 표에서는 머리글 왼쪽 칸이 그 일을 한다 — 같은 일을 두 군데 두지 않는다 */
+    a.classList.toggle('hidden', PSTATE.view !== 'card');
   }
 }
 
@@ -4019,6 +4256,33 @@ function flipProg(mutate) {
     moved.forEach(function (el) { el.style.transition = ''; el.style.transform = ''; });
   }, PFLIP_MS + 80);
 }
+
+/* 표에서 한 사람을 연다. 표 위에 띄운다 — 줄을 밀어내면 견주던 눈이 끊긴다 */
+function openRow(i, ev) {
+  if (ev) ev.stopPropagation();
+  const c = CREATORS[i], ov = $('peekOv');
+  if (!c || !ov) return;
+  dockYield();
+  PSTATE.open = i;
+  ov.innerHTML =
+      '<div class="peekCard" onclick="event.stopPropagation()">'
+    +   '<div class="peekHd">' + avatar(c, i, 32)
+    +     '<b>' + esc(c.name) + '</b><i class="num">' + esc(c.handle) + '</i>'
+    +     '<button class="peekX" onclick="closeRow()" aria-label="닫기">&times;</button>'
+    +   '</div>'
+    +   '<div class="pexpIn"><div id="pdet"></div><div id="pemb"></div><div id="pmemo"></div></div>'
+    + '</div>';
+  ov.classList.remove('hidden');
+  paintDet(); paintEmb(); paintMemoPanel();
+}
+function closeRow() {
+  const ov = $('peekOv');
+  if (!ov || ov.classList.contains('hidden')) return;
+  PSTATE.open = null;
+  ov.classList.add('hidden');
+  ov.innerHTML = '';
+}
+addEventListener('keydown', function (e) { if (e.key === 'Escape') closeRow(); });
 
 function openPeek(i, ev) {
   if (ev) ev.stopPropagation();
