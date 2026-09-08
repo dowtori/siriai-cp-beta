@@ -316,7 +316,7 @@
      높이와 투명도는 사이 값이 있어서 부드러워질 수 있다.
      (격자 배치를 바꾸는 방식은 버렸다. grid-template-areas 에는
       사이 값이 없어서 애초에 부드러워질 수가 없다) */
-  #topStack.stuck{padding-bottom:12px;
+  #topStack.stuck{padding-bottom:12px;border-bottom:1px solid rgba(15,23,42,.07);
     background:rgba(255,255,255,.88);
     -webkit-backdrop-filter:blur(16px) saturate(1.4);
             backdrop-filter:blur(16px) saturate(1.4);
@@ -633,8 +633,8 @@
                transition:background-color .16s ease}
   .fline .fhit:hover{background:rgba(15,23,42,.03)}
   /* 양 끝 이름표가 밖으로 나가지 않게 붙여 세운다 */
-  .fline .fnode.first{transform:none;align-items:flex-start}
-  .fline .fnode.last{transform:translateX(-100%);align-items:flex-end}
+  .fline .fnode.first{transform:none !important;align-items:flex-start}
+  .fline .fnode.last{transform:translateX(-100%) !important;align-items:flex-end}
 
   /* 펼침과 붙음이 서로 다른 물건을 쓴다. 파도는 안쪽이 전부 절대 위치라
      바깥만 줄이면 조각들이 제자리에 남아 겹친다 — 줄이지 말고 접는다 */
@@ -648,11 +648,16 @@
            display:flex;align-items:center;gap:clamp(20px,2.4vw,44px);
            transition:max-height .34s cubic-bezier(.22,.61,.36,1), opacity .24s ease .04s, margin .34s cubic-bezier(.22,.61,.36,1)}
   #topStack.stuck #miniBar{max-height:76px;opacity:1;margin-top:10px;margin-bottom:2px}
-  #miniBar .fline{flex:1 1 auto;min-width:0}
-  #miniNums{flex:0 0 auto;display:flex;align-items:center;gap:clamp(14px,1.6vw,30px)}
-  .mn{display:flex;flex-direction:column;gap:2px;white-space:nowrap}
-  .mn i{font-style:normal;font-size:10.5px;color:var(--ink-4);letter-spacing:var(--tr-small)}
-  .mn b{font-size:17px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-display);
+  /* 상자가 overflow:hidden 이라(높이를 여닫으려면 필요하다) 안쪽이 조금만
+     넘쳐도 양 끝이 잘린다. 실제로 '리스트 전달' 의 첫 글자와 '9/20' 의 끝이
+     잘려 있었다. 둘 다 줄어들 수 있게 두고, 선은 양 끝을 안으로 들인다 */
+  #miniBar .fline{flex:1 1 auto;min-width:0;padding:0 10px}
+  #miniNums{flex:0 1 auto;min-width:0;display:flex;align-items:center;
+            gap:clamp(12px,1.4vw,26px);padding-right:2px}
+  .mn{display:flex;flex-direction:column;gap:2px;white-space:nowrap;min-width:0}
+  .mn i{font-style:normal;font-size:10.5px;color:var(--ink-4);letter-spacing:var(--tr-small);
+        overflow:hidden;text-overflow:ellipsis}
+  .mn b{font-size:16px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-display);
         line-height:1.1}
   .mn b .text-slate-400{color:#c3cbd6;font-weight:600}
   @media (max-width:1100px){ #miniNums .mn:nth-child(n+4){display:none} }
