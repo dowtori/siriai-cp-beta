@@ -69,9 +69,10 @@
   }
 
   /* 하단 CTA · 대화 단추는 본문 위에 떠 있다. 자리를 안 비워 두면
-     표의 마지막 두세 행과 안내 한 줄이 그 밑으로 들어가 스크롤해도 안 나온다.
+     표의 마지막 두세 행이 그 밑으로 들어가 스크롤해도 안 나온다.
      --dockH 는 JS 가 독 높이를 재서 넣는다(내려가 있으면 0).
-     72px 은 독을 내려도 남는 대화 단추 자리다 */
+     72px 은 독을 내려도 남는 대화 단추 자리다.
+     첫 화면에서는 비우지 않는다 — 사진 위에 떠도 가릴 내용이 없다 */
   /* 스크롤은 이 화면에 하나뿐이다. 표 안에서 또 굴리게 만들면
      명단을 보는 게 아니라 창문으로 명단을 엿보는 경험이 된다 */
   #pad{overflow-y:auto;overflow-x:hidden;
@@ -110,8 +111,16 @@
              border-bottom:1px solid #e8edf3}
   /* 좁은 화면은 좌우 여백이 16px 이라 24 를 빼면 넘친다 */
   @media (max-width:639px){ #camBanner{margin-left:-16px;margin-right:-16px} }
+  /* 첫 화면은 사진 한 장이다. 여백도 모서리도 없이 화면을 채운다 —
+     둘레에 흰 띠가 남으면 사진이 아니라 '사진이 든 카드' 가 된다.
+     자리는 #pad.heroOn 이 padding 을 0 으로 놓아 비운다 */
   #camBanner.hero{background:var(--od-ink);color:#fff;
-                  margin:0;border-bottom:0;border-radius:16px;box-shadow:var(--lift-2)}
+                  margin:0;border-bottom:0;border-radius:0;box-shadow:none}
+  /* 첫 화면은 한 장이다. 굴릴 것이 없으니 스크롤바 자리도 비우지 않는다 —
+     그 15px 이 오른쪽 흰 띠였다 */
+  #pad.heroOn{padding:0;overflow:hidden}
+  /* 사진이 화면 끝까지 가니 좌상단 로고와 우상단 단추도 안쪽으로 들여 세운다 */
+  #pad.heroOn #camTop{padding-top:22px}
   #camBanner.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
                     background:var(--od-red)}
   #camArt{position:absolute;top:0;bottom:0;right:0;width:46%;max-width:540px;
@@ -718,6 +727,36 @@
              color:var(--ink-4);letter-spacing:var(--tr-small)}
   .frow .frc{flex:1 1 auto;min-width:0;display:flex;flex-wrap:wrap;gap:6px}
 
+  /* 표 마감 — 표가 끝나는 자리다. 흰 표에 이어 붙은 한 줄로 둔다 */
+  .pfoot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+         margin-top:-1px;padding:12px 14px;background:#fff;
+         border-top:1px solid #f1f5f9;border-radius:0 0 12px 12px;
+         box-shadow:var(--lift-1)}
+  .pfInfo{font-size:12px;color:var(--ink-3);letter-spacing:var(--tr-body)}
+  .pfInfo b{font-weight:700;color:var(--ink-1)}
+  .pfPer{display:flex;align-items:center;gap:3px;margin-left:auto}
+  .pfPer i{font-style:normal;font-size:11px;color:var(--ink-4);margin-left:3px}
+  .pfP{min-width:30px;height:26px;padding:0 7px;border-radius:8px;
+       font-size:11.5px;font-weight:700;color:var(--ink-3);
+       transition:background-color .15s ease,color .15s ease}
+  .pfP:hover{background:#f1f5f9;color:var(--ink-1)}
+  .pfP.on{background:var(--ink-1);color:#fff}
+  .pfNav{display:flex;align-items:center;gap:3px}
+  .pfB{height:26px;padding:0 10px;border-radius:8px;font-size:11.5px;font-weight:700;
+       color:var(--ink-3);transition:background-color .15s ease,color .15s ease}
+  .pfB:hover{background:#f1f5f9;color:var(--ink-1)}
+  .pfB[disabled]{opacity:.35;pointer-events:none}
+  .pfN{min-width:26px;height:26px;padding:0 6px;border-radius:8px;
+       font-size:11.5px;font-weight:700;color:var(--ink-3);
+       transition:background-color .15s ease,color .15s ease}
+  .pfN:hover{background:#f1f5f9;color:var(--ink-1)}
+  .pfN.on{background:var(--ink-1);color:#fff}
+  .pfGap{font-size:11.5px;color:var(--ink-4);padding:0 2px}
+  @media (max-width:720px){
+    .pfoot{gap:10px}
+    .pfPer{margin-left:0}
+  }
+
   .dmchip{font-size:12px;font-weight:600;color:#64748b;background:#f1f5f9;
           padding:8px 12px;border-radius:10px;transition:all .15s ease}
   .dmchip:hover{background:#e6ecf3}
@@ -875,8 +914,10 @@
      표 머리글이 페이지 스크롤에 안 붙고 있었다 */
   #progSec{position:relative;background:transparent;border-radius:0;padding:0;box-shadow:none;
            margin-top:4px;overflow:visible}
+  /* 층은 목록이 끝나는 자리에서 같이 끝난다. 화면 밖까지 끌고 가면
+     표 아래로 빈 바닥만 길게 남는다 */
   #progSec::before{content:'';position:absolute;z-index:-1;
-                   left:-24px;right:-24px;top:0;bottom:-100vh;
+                   left:-24px;right:-24px;top:0;bottom:0;
                    background:#f4f6f9;
                    box-shadow:inset 0 1px 0 rgba(15,23,42,.06)}
   @media (max-width:639px){ #progSec::before{left:-16px;right:-16px} }
@@ -900,7 +941,7 @@
   }
 
   /* 목록은 스크롤 상자다 — 여기만 경계를 갖는다. 그것도 선 하나로 */
-  #prog{border-top:0;padding:0 0 20px}
+  #prog{border-top:0;padding:0 0 22px}
   /* 카드도 떠 있지 않다. 테두리 한 겹, 짚으면 그때 들린다 */
   .pcard{background:#fff;box-shadow:inset 0 0 0 1px #eef2f7}
   .pcard:hover{box-shadow:inset 0 0 0 1px #dbe3ec, var(--lift-1)}
@@ -3079,9 +3120,82 @@ let dragging = false;
 const PSTATE = {
   stage: 'all', fol: 'all', cost: 'all', sort: 'stage', dir: 1,
   /* 표가 먼저다. 인물 카드는 훑어보는 화면이고, 담당자가 실제로 쓰는 건 표다 */
-  view: 'table', open: null, panel: null
+  view: 'table', open: null, panel: null,
+  /* 한 번에 몇 명을 볼지. 스무 명이 한 화면에서 훑기 좋은 크기다 */
+  per: 20, page: 1
 };
 const PDEFAULT = { stage: 'all', fol: 'all', cost: 'all', sort: 'stage', dir: 1 };
+const PER_OPTS = [10, 20, 50];
+
+/* 거르거나 정렬하면 첫 장으로 돌아간다 — 3장을 보다 걸렀는데 3장이 없으면
+   빈 화면만 나온다 */
+function pageReset() { PSTATE.page = 1; }
+function pageCount(n2) { return Math.max(1, Math.ceil(n2 / PSTATE.per)); }
+
+function goPage(p) {
+  const last = pageCount(progList().length);
+  const next = Math.min(Math.max(1, p), last);
+  if (next === PSTATE.page) return;
+  PSTATE.page = next;
+  PSTATE.open = null;
+  renderProg();
+  /* 장을 넘기면 표 머리로 올려 준다. 아래 끝에 선 채로 다음 장이 오면
+     어디로 갔는지 알 수 없다 */
+  const sec = $('progSec'), pad = $('pad');
+  if (sec && pad) pad.scrollTop += sec.getBoundingClientRect().top - 8;
+}
+
+function setPer(v) {
+  if (PSTATE.per === v) return;
+  /* 보던 사람이 화면 밖으로 나가지 않게, 지금 첫 줄이 들어 있는 장으로 옮긴다 */
+  const first = (PSTATE.page - 1) * PSTATE.per;
+  PSTATE.per = v;
+  PSTATE.page = Math.floor(first / v) + 1;
+  PSTATE.open = null;
+  renderProg();
+}
+
+/* 이 장에 보일 사람들 */
+function pageSlice(list) {
+  const last = pageCount(list.length);
+  if (PSTATE.page > last) PSTATE.page = last;
+  const from = (PSTATE.page - 1) * PSTATE.per;
+  return list.slice(from, from + PSTATE.per);
+}
+
+/* 표 마감 — 전체 몇 명 중 몇 번째인지, 한 번에 몇 명을 볼지, 그리고 장 넘기기 */
+function pagerHtml(total) {
+  const last = pageCount(total);
+  const from = total ? (PSTATE.page - 1) * PSTATE.per + 1 : 0;
+  const to   = Math.min(PSTATE.page * PSTATE.per, total);
+
+  /* 장이 많아지면 전부 늘어놓지 않는다 — 지금 자리 앞뒤로만 */
+  const nums = [];
+  for (let i = 1; i <= last; i++) {
+    if (i === 1 || i === last || Math.abs(i - PSTATE.page) <= 1) nums.push(i);
+    else if (nums[nums.length - 1] !== '…') nums.push('…');
+  }
+
+  return '<div class="pfoot">'
+    + '<span class="pfInfo">전체 <b class="num">' + total + '</b>명 중 '
+    +   '<b class="num">' + from + '–' + to + '</b>명</span>'
+    + '<span class="pfPer">'
+    +   PER_OPTS.map(v => '<button class="pfP' + (PSTATE.per === v ? ' on' : '') + '"'
+        + ' onclick="setPer(' + v + ')" aria-pressed="' + (PSTATE.per === v ? 'true' : 'false') + '">'
+        + '<span class="num">' + v + '</span></button>').join('')
+    +   '<i>개씩</i></span>'
+    + '<span class="pfNav">'
+    +   '<button class="pfB" onclick="goPage(' + (PSTATE.page - 1) + ')"'
+    +     (PSTATE.page <= 1 ? ' disabled' : '') + ' aria-label="이전 장">이전</button>'
+    +   nums.map(v => v === '…'
+        ? '<span class="pfGap">…</span>'
+        : '<button class="pfN num' + (v === PSTATE.page ? ' on' : '') + '"'
+          + ' onclick="goPage(' + v + ')"'
+          + (v === PSTATE.page ? ' aria-current="page"' : '') + '>' + v + '</button>').join('')
+    +   '<button class="pfB" onclick="goPage(' + (PSTATE.page + 1) + ')"'
+    +     (PSTATE.page >= last ? ' disabled' : '') + ' aria-label="다음 장">다음</button>'
+    + '</span></div>';
+}
 
 /* 담당자가 가장 먼저 보고 싶은 것은 올라간 콘텐츠다. 그 순서로 줄 세운다 */
 const STAGE_RANK = { live: 0, make: 1, ship: 2, pick: 3, list: 4 };
@@ -3335,6 +3449,9 @@ function renderProg() {
 }
 
 function progTable(list) {
+  /* 넘어온 것은 거른 뒤의 전원이다. 그리는 것은 이 장의 몫만 */
+  const all  = list;
+  list = pageSlice(all);
   const cols = TCOLS.filter(x => TSHOW.has(x.k));
   const th = (k, t, r, w, nos) => '<th class="' + (r ? 'r' : '') + '"'
     + (w ? ' style="width:' + w + '"' : '') + '>'
@@ -3381,11 +3498,14 @@ function progTable(list) {
       }).join('')
       : '<tr><td colspan="' + (cols.length + 3) + '" class="text-center text-slate-400 py-6">'
         + '필터에 맞는 사람이 없습니다</td></tr>')
-    + '</tbody></table></div>';
+    + '</tbody></table>'
+    + pagerHtml(all.length)
+    + '</div>';
 }
 
 function sortBy(k) {
   dockYield();
+  pageReset();
   if (PSTATE.sort === k) PSTATE.dir = -PSTATE.dir;
   else { PSTATE.sort = k; PSTATE.dir = k === 'due' || k === 'name' ? 1 : -1; }
   renderProg();
@@ -3516,6 +3636,7 @@ function toggleCol(k) {
 
 function setFilter(k, v) {
   dockYield();
+  pageReset();
   /* 같은 값을 다시 누르면 푼다. 걸어 놓고 못 푸는 필터가 제일 답답하다 */
   const bands = k === 'stage' || k === 'fol' || k === 'cost';
   PSTATE[k] = (bands && PSTATE[k] === v) ? 'all' : v;
@@ -3526,6 +3647,7 @@ function setFilter(k, v) {
 function resetFilters() {
   Object.keys(PDEFAULT).forEach(k => { PSTATE[k] = PDEFAULT[k]; });
   PSTATE.open = null;
+  pageReset();
   renderProg();
 }
 
@@ -4670,8 +4792,10 @@ render();
 /* 첫 화면은 배너가 펼쳐진 상태다. 대시보드를 그 안으로 옮겨 둔 채로 시작한다 */
 if ($('camBanner').classList.contains('hero')) {
   syncDockH();
-  $('camBanner').style.height = heroHeight() + 'px';
+  /* heroOn 이 #pad 의 여백을 0 으로 만든다. 재기 전에 붙여야 화면 전체가 나온다 —
+     순서가 반대면 독 자리(200px 넘게)만큼 사진이 짧아진다 */
   $('pad').classList.add('heroOn');
+  $('camBanner').style.height = heroHeight() + 'px';
 }
 buildGuide();
 buildReport();
