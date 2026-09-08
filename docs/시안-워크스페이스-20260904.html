@@ -65,8 +65,14 @@
     --lift-4: 0 0 0 1px rgba(17,19,24,.10), 0 8px 20px rgba(17,19,24,.08), 0 40px 80px -32px rgba(17,19,24,.55);
     --c1: 112px;               /* 고정 1열(선정) 폭 — sticky 오프셋과 반드시 같은 값을 쓴다 */
     --c2: 208px;               /* 고정 2열(크리에이터) 폭 */
-    --rail: 244px;
+    /* --rail 은 위(16행)에서 이미 정했다 */
   }
+
+  /* 하단 CTA · 대화 단추는 본문 위에 떠 있다. 자리를 안 비워 두면
+     표의 마지막 두세 행과 안내 한 줄이 그 밑으로 들어가 스크롤해도 안 나온다.
+     --dockH 는 JS 가 독 높이를 재서 넣는다(내려가 있으면 0).
+     72px 은 독을 내려도 남는 대화 단추 자리다 */
+  #pad{padding-bottom:calc(max(var(--dockH, 0px), 72px) + 14px)}
 
   html,body{height:100%}
   body{
@@ -231,6 +237,7 @@
      대시보드가 네 칸을 차지하고 안쪽 간격도 같게 맞춘다 */
   /* 이미지는 CTA 밑까지 내려가도 되지만 지표는 가리면 안 된다 */
   /* 이미지는 CTA 밑까지 내려가도 되지만 지표는 가리면 안 된다 */
+  /* 숫자 넷이 있던 시절의 자리다. 지금은 비었고, 독 자리는 #pad 가 비운다 */
   #camBanner.hero #heroSlot{display:grid;grid-template-columns:1fr;gap:10px;align-items:stretch;
                             padding-bottom:170px}
   #camBanner.hero #heroNudge{bottom:120px}
@@ -246,7 +253,6 @@
 
   #dashSec, #flowSec, #progSec, #progHint{
     transition:opacity .34s ease, transform .38s cubic-bezier(.45,.05,.25,1)}
-  #dashSec {transition-delay:.10s}
   #dashSec {transition-delay:.06s}
   #progSec  {transition-delay:.22s}
   #progHint {transition-delay:.28s}
@@ -289,9 +295,6 @@
   /* 필터가 많은 좁은 화면에서는 제목을 눌러 쪼개지 말고 머리를 두 줄로 쓴다 */
   #progSec > header{flex-wrap:wrap;row-gap:6px}
 
-  .hbtn{width:26px;height:26px;display:grid;place-items:center;border-radius:8px;color:#94a3b8;
-        transition:background-color .17s ease,color .17s ease}
-  .hbtn:hover{background:#f1f5f9;color:#0f172a}
 
   /* 점은 그냥 점이다. 숨 쉬게 만들면 '지금 방송 중' 같은 신호가 되는데,
      여기는 두 달째 도는 캠페인 목록이다. 계속 깜빡일 이유가 없다 */
@@ -507,11 +510,14 @@
                  background:#fff;border-radius:999px;padding:0 3.5px;line-height:12px;
                  box-shadow:0 0 0 1px rgba(15,23,42,.08)}
   .fpWave .fav.hot{transform:translateX(-50%) scale(1.18)}
-  .fpWave .flab{position:absolute;bottom:6px;transform:translateX(-50%);text-align:center;white-space:nowrap}
+  .fpWave .flab{position:absolute;bottom:6px;transform:translateX(-50%);text-align:center;
+                white-space:nowrap;cursor:pointer}
   .fpWave .flab b{display:block;font-size:13px;font-weight:700;line-height:1;letter-spacing:-.02em}
   .fpWave .flab i{display:block;font-size:10px;font-style:normal;color:#64748b;margin-top:4px}
   .fpWave .flab.hot b{color:#e2483d}
-  .fpWave .fhit{position:absolute;top:0;bottom:34px;cursor:pointer}
+  .fpWave .fhit{position:absolute;top:0;bottom:34px;cursor:pointer;border-radius:10px;
+                transition:background-color .16s ease}
+  .fpWave .fhit:hover{background:rgba(15,23,42,.032)}
 
   .dbar{flex:1 1 auto;min-width:28px;height:4px;border-radius:999px;background:#e8edf3;
         overflow:hidden;display:block}
@@ -546,33 +552,11 @@
          background:#e8edf3;color:#41506a}
   .dpill.up{background:#c9f5e1;color:#04674a}
   .dpill svg{width:14px;height:14px;stroke-width:3;flex:none}
-  /* 그림 자리 — 점의 백분율이 이 높이를 기준으로 잡힌다 */
-  .fplot{position:relative;height:112px}
-  .fsvg{display:block;width:100%;height:112px;overflow:visible}
-  .fsvg .fgrid{stroke:#e8edf3;stroke-width:1}
-  .fsvg .fbase{stroke:#dbe3ec;stroke-width:1}
-  .fsvg .fpath{fill:none;stroke:var(--ink-1);stroke-width:2;stroke-linecap:round;
-               stroke-linejoin:round;vector-effect:non-scaling-stroke;
-               transition:opacity .16s ease}
-
-  /* 점 · 라벨은 HTML 로 얹는다 — SVG 안 글자는 자간과 굵기가 이 화면과 어긋난다 */
-  .fpt{position:absolute;width:9px;height:9px;border-radius:999px;background:var(--ink-1);
-       transform:translate(-50%,-50%);box-shadow:0 0 0 3px #fff;
-       transition:transform .18s cubic-bezier(.22,.61,.36,1), opacity .16s ease}
-  .fpt.zero{background:#fff;box-shadow:0 0 0 2px #dbe3ec}
-
-  /* 눌러서 거르는 자리 — 세로 띠 하나가 한 단계다 */
-  .fhit{position:absolute;top:0;bottom:0;cursor:pointer;border-radius:10px;
-        transition:background-color .16s ease}
-  .fhit:hover{background:rgba(15,23,42,.032)}
-
-  .flabs{display:flex;margin-top:2px}
-  .flab{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;
-        cursor:pointer}
-  .flab i{font-style:normal;font-size:11px;font-weight:600;color:var(--ink-4);
-          letter-spacing:var(--tr-small);white-space:nowrap;transition:color .15s ease}
-  .flab b{font-size:14px;font-weight:800;color:var(--ink-2);letter-spacing:-.02em;
-          transition:color .15s ease}
+  /* 옛 흐름 시안(.fplot · .fsvg · .fpt · .flabs)의 규칙을 걷는다.
+     쓰는 데가 한 군데도 없는데, 그중 .fhit 과 .flab 은 지금 차트가 쓰는
+     이름과 겹쳐서 의도한 적 없는 규칙이 살아 있었다.
+     그 둘에서 살릴 만했던 것(짚는 자리의 옅은 바탕, 손 모양)은
+     아래 .fpWave 쪽에 제 이름으로 옮겨 적었다 */
   /* 흐름에서 한 단계를 짚으면 아래 진행상황에서 그 사람들만 남는다 */
   .pcard{transition:box-shadow .18s ease,background-color .18s ease,opacity .16s ease}
   .pcard.dim{opacity:.26}
@@ -626,8 +610,10 @@
   .srow mark{background:#fef08a;color:inherit;border-radius:3px;padding:0 1px}
 
   /* 필터 · 보기 전환 */
-  .fbtn{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;
-        color:#475569;background:#fff;box-shadow:var(--lift-1);padding:5px 8px;border-radius:8px;
+  /* 한 줄에 선 단추는 키가 같아야 한다. 안쪽 여백으로 키가 정해지면
+     글자 수에 따라 미세하게 달라진다 — 키를 못 박는다 */
+  .fbtn{display:inline-flex;align-items:center;gap:5px;height:26px;font-size:10.5px;font-weight:700;
+        color:var(--ink-2);background:#fff;box-shadow:var(--lift-1);padding:0 9px;border-radius:8px;
         white-space:nowrap;transition:box-shadow .17s ease,color .17s ease}
   .fbtn:hover{color:#0f172a;box-shadow:var(--lift-2)}
   .fbtn.on{background:#0f172a;color:#fff;box-shadow:none}
@@ -635,7 +621,8 @@
   /* .fbtn 이 테일윈드의 .hidden 보다 뒤에 있어 display 가 되살아났다. 초기화 버튼이 항상 보였다 */
   .fbtn.hidden{display:none}
   .fbtn b{font-weight:700;opacity:.72}
-  .vbtn{font-size:10.5px;font-weight:700;color:#64748b;padding:5px 9px;transition:all .17s ease}
+  .vbtn{display:inline-flex;align-items:center;height:26px;padding:0 10px;
+        font-size:10.5px;font-weight:700;color:var(--ink-3);transition:all .17s ease}
   .vbtn.on{background:#0f172a;color:#fff}
 
   /* 전환이 있다는 걸 모르면 표만 보고 끝난다. 빛이 오른쪽에서 왼쪽으로 한 번 훑고 지나가
@@ -734,7 +721,7 @@
      홈페이지 하단 브랜드 라벨 위를 지나는 그 빛이다. 회색으로 깔면
      그냥 얼룩으로 보여서, 앰버에서 붉은 쪽으로 넘어가는 결로 바꿨다.
      손을 올릴 때까지 기다리지 않는다 — 여기 눌러볼 것이 있다는 신호다 */
-  .vsw{position:relative;overflow:hidden}
+  .vsw{position:relative;overflow:hidden;height:26px}
   .vsw::after{content:'';position:absolute;top:0;bottom:0;width:52px;pointer-events:none;
               background:linear-gradient(100deg,transparent,
                          rgba(255,184,60,.55) 38%,rgba(226,72,61,.30) 62%,transparent);
@@ -864,7 +851,6 @@
   #progSec{background:#e9edf3;border-radius:18px;padding:2px 4px 4px;
            box-shadow:inset 0 1px 3px rgba(15,23,42,.07),
                       inset 0 0 0 1px rgba(15,23,42,.05)}
-  #flowSec > header{padding:0 2px 9px;border-bottom:0}
   #progSec > header{padding:9px 10px 8px;border-bottom:0}
   #progSec > header h2{color:#475569}
   .pnl h2{font-size:14.5px;font-weight:600;letter-spacing:var(--tr-title)}
@@ -904,7 +890,8 @@
     #colL{gap:12px}
   }
 
-  .hbtn{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;color:#94a3b8;
+  /* 머리줄에 선 것들과 같은 키다. 28 로 두면 이것만 4px 크다 */
+  .hbtn{width:26px;height:26px;display:grid;place-items:center;border-radius:8px;color:var(--ink-4);
         transition:background-color .17s ease,color .17s ease}
   .hbtn:hover{background:#f1f5f9;color:#0f172a}
   .hbtn[disabled]{opacity:.3;pointer-events:none}
@@ -3365,6 +3352,7 @@ function progTable(list) {
 }
 
 function sortBy(k) {
+  dockYield();
   if (PSTATE.sort === k) PSTATE.dir = -PSTATE.dir;
   else { PSTATE.sort = k; PSTATE.dir = k === 'due' || k === 'name' ? 1 : -1; }
   renderProg();
@@ -3494,6 +3482,7 @@ function toggleCol(k) {
 }
 
 function setFilter(k, v) {
+  dockYield();
   /* 같은 값을 다시 누르면 푼다. 걸어 놓고 못 푸는 필터가 제일 답답하다 */
   const bands = k === 'stage' || k === 'fol' || k === 'cost';
   PSTATE[k] = (bands && PSTATE[k] === v) ? 'all' : v;
@@ -3548,6 +3537,7 @@ function pickAllProg() {
 
 function togglePick(i, ev) {
   if (ev) ev.stopPropagation();
+  dockYield();
   PICK.has(i) ? PICK.delete(i) : PICK.add(i);
   paintPick();
 }
@@ -3665,6 +3655,7 @@ function flipProg(mutate) {
 
 function openPeek(i, ev) {
   if (ev) ev.stopPropagation();
+  dockYield();
   if (!CREATORS[i]) return;
   if (PSTATE.open === i) { closePeek(); return; }
   flipProg(function () { PSTATE.open = i; renderProg(); });
@@ -4051,6 +4042,11 @@ function memoDel(i, id) {
 }
 
 /* 바깥을 누르면 닫는다. 표를 다시 그려도 살아 있게 위임으로 건다 */
+/* 표를 굴리는 것도 일을 시작했다는 신호다 */
+document.addEventListener('wheel', function (e) {
+  if (e.target.closest && e.target.closest('#progSec')) dockYield();
+}, { passive: true });
+
 document.addEventListener('mousedown', function (e) {
   const pop = $('memoPop');
   if (!pop || !pop.classList.contains('on')) return;
@@ -4237,10 +4233,22 @@ document.addEventListener('keydown', e => {
 });
 
 /* ══════════ 하단 독 · 진입 안내 ══════════ */
+/* 독은 처음 보는 사람에게 하는 말이다. 표를 만지기 시작한 사람에게는
+   자리를 내주는 것이 맞다 — 흐름을 접는 것과 같은 규칙이다.
+   한 번 스스로 열었으면 다시는 안 내린다 */
+let DOCK_PIN = false;
 function dock(open) {
+  if (open) DOCK_PIN = true;
   setTimeout(syncDockH, 360);
   $('dock').classList.toggle('down', !open);
   $('dockTab').classList.toggle('up', !open);
+}
+function dockYield() {
+  if (DOCK_PIN) return;
+  DOCK_PIN = true;
+  const d = $('dock');
+  if (d && !d.classList.contains('down')) dock(false);
+  DOCK_PIN = false;   /* 내려간 뒤로는 사람이 여는 것만 남는다 */
 }
 /* 이미지가 지정돼 있을 때만 건다. 비어 있으면 지금까지와 똑같이 뜬다 */
 if (TUT_IMG) {
