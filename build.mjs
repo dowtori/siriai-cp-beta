@@ -13,20 +13,64 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 /* 두 화면이다. 브랜드가 링크로 여는 콘솔과, 우리가 캠페인을 굴리는 어드민.
    어드민은 /admin 으로 나간다 — 같은 배포 안에 두면 서로를 링크할 수 있다. */
 const PAGES = [
-  { src: 'docs/시안-워크스페이스-20260904.html', out: 'index.html' },
-  { src: 'docs/어드민-캠페인운영-20260907.html', out: 'admin/index.html' },
+  { src: 'docs/시안-워크스페이스-20260904.html', out: 'index.html',       title: '브랜드 워크스페이스', path: '/' },
+  { src: 'docs/어드민-캠페인운영-20260907.html', out: 'admin/index.html', title: '캠페인 어드민',      path: '/admin' },
 ]
 const OUT = 'dist'
 
-const head = [
-  '<!doctype html>',
-  '<html lang="ko">',
-  '<meta charset="utf-8">',
-  '<meta name="viewport" content="width=device-width,initial-scale=1">',
-  /* 실 클라이언트명이 박힌 화면이라 검색 노출만 막는다. 링크 접근은 공개다. */
-  '<meta name="robots" content="noindex,nofollow">',
-  '',
-].join('\n')
+/* ── 계측 ────────────────────────────────────────────────────────────
+ * 키는 코드에 박지 않고 Vercel 환경변수로 받는다. 안 넣으면 아무것도 안 붙어서
+ * 로컬에서 열 때 내 클릭이 통계에 섞이지 않는다.
+ *
+ *   GA4_ID        G-XXXXXXXXXX
+ *   BEUSABLE_SRC  뷰저블 대시보드가 주는 스크립트 주소 그대로
+ *                 (//rum.beusable.net/script/… 형태. 키 형식을 추측하지 않으려고 통째로 받는다)
+ *
+ * 두 화면이 한 배포에 있어서 GA4 에서 섞이지 않게 page_title 을 못박아 준다.
+ */
+const GA4 = (process.env.GA4_ID || '').trim()
+const BEU = (process.env.BEUSABLE_SRC || '').trim()
+
+function analytics(page) {
+  const out = []
+  if (GA4) {
+    out.push(
+      `<script async src="https://www.googletagmanager.com/gtag/js?id=${GA4}"></script>`,
+      '<script>',
+      '  window.dataLayer = window.dataLayer || [];',
+      '  function gtag(){dataLayer.push(arguments)}',
+      "  gtag('js', new Date());",
+      `  gtag('config', '${GA4}', { page_title: ${JSON.stringify(page.title)}, page_path: ${JSON.stringify(page.path)} });`,
+      '</script>',
+    )
+  }
+  if (BEU) {
+    out.push(
+      '<script>',
+      '(function(w, d, a){',
+      '  w.__beusablerumclient__ = { load: function(src){',
+      '    var b = d.createElement("script"); b.src = src; b.async = true; b.type = "text/javascript";',
+      '    d.getElementsByTagName("head")[0].appendChild(b);',
+      '  } };',
+      '  w.__beusablerumclient__.load(a + "?url=" + encodeURIComponent(d.URL));',
+      `})(window, document, ${JSON.stringify(BEU)});`,
+      '</script>',
+    )
+  }
+  return out.length ? out.join('\n') + '\n' : ''
+}
+
+function headFor(page) {
+  return [
+    '<!doctype html>',
+    '<html lang="ko">',
+    '<meta charset="utf-8">',
+    '<meta name="viewport" content="width=device-width,initial-scale=1">',
+    /* 실 클라이언트명이 박힌 화면이라 검색 노출만 막는다. 링크 접근은 공개다. */
+    '<meta name="robots" content="noindex,nofollow">',
+    '',
+  ].join('\n') + analytics(page)
+}
 
 
 
@@ -65,6 +109,11 @@ for (const page of PAGES) {
   }
   const dir = page.out.includes('/') ? `${OUT}/${page.out.split('/').slice(0, -1).join('/')}` : OUT
   await mkdir(dir, { recursive: true })
-  await writeFile(`${OUT}/${page.out}`, head + body, 'utf8')
-  console.log(`dist/${page.out} — ${(head + body).length} bytes`)
+  const html = headFor(page) + body
+  await writeFile(`${OUT}/${page.out}`, html, 'utf8')
+  console.log(`dist/${page.out} — ${html.length} bytes`)
 }
+
+/* 빌드 로그만 봐도 계측이 켜졌는지 알 수 있게 한다.
+   조용히 안 붙는 것이 이 종류에서 제일 흔한 사고다. */
+console.log(`계측 — GA4 ${GA4 ? GA4 : '없음(미설정)'} · 뷰저블 ${BEU ? '켜짐' : '없음(미설정)'}`)
