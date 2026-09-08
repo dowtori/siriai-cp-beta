@@ -79,10 +79,12 @@
      멀어졌다. 여백을 키우면 표가 좁아지고 값이 서로 가까워진다 —
      한 시야에 들어오는 폭이 되는 것이 먼저다 */
   #pad{overflow-y:auto;overflow-x:hidden;
-       padding-left:40px;padding-right:40px;
+       padding-left:56px;padding-right:56px;
        padding-bottom:calc(max(var(--dockH, 0px), 72px) + 14px)}
-  @media (max-width:1279px){ #pad{padding-left:24px;padding-right:24px} }
-  @media (max-width:639px){  #pad{padding-left:16px;padding-right:16px} }
+  /* 1280 에서 24 로 떨어뜨려 두었더니 노트북에서는 사실상 좁았다 —
+     실제로 쓰는 폭(1180~1440)이 전부 그 아래였다 */
+  @media (max-width:1023px){ #pad{padding-left:32px;padding-right:32px} }
+  @media (max-width:639px){  #pad{padding-left:18px;padding-right:18px} }
 
   html,body{height:100%}
   body{
@@ -113,10 +115,10 @@
      떠 있는 카드로 두면 "이건 뭐지" 를 한 번 묻게 만든다.
      펼치면(hero) 그때만 카드로 떠오른다 */
   #camBanner{background:#fff;color:#0f172a;
-             margin:-20px -40px 4px;padding:0;
+             margin:-20px -56px 4px;padding:0;
              border-bottom:1px solid #e8edf3}
-  @media (max-width:1279px){ #camBanner{margin-left:-24px;margin-right:-24px} }
-  @media (max-width:639px){  #camBanner{margin-left:-16px;margin-right:-16px} }
+  @media (max-width:1023px){ #camBanner{margin-left:-32px;margin-right:-32px} }
+  @media (max-width:639px){  #camBanner{margin-left:-18px;margin-right:-18px} }
   /* 첫 화면은 사진 한 장이다. 여백도 모서리도 없이 화면을 채운다 —
      둘레에 흰 띠가 남으면 사진이 아니라 '사진이 든 카드' 가 된다.
      자리는 #pad.heroOn 이 padding 을 0 으로 놓아 비운다 */
@@ -143,8 +145,8 @@
   #camBanner:not(.hero) #camArt{display:none}
   /* 한 줄로 눕힌다. 제목 · 기간 · 상태가 같은 높이에 온다 */
   #camBanner:not(.hero) #camPad{display:flex;align-items:center;gap:14px;
-                                padding:13px 40px}
-  @media (max-width:1279px){ #camBanner:not(.hero) #camPad{padding:13px 24px} }
+                                padding:13px 56px}
+  @media (max-width:1023px){ #camBanner:not(.hero) #camPad{padding:13px 32px} }
   /* 자료를 펼치면 왼쪽으로 자리를 내준다. 제목은 이 줄의 주인이라 접지 않는다 —
      칩을 헤더 높이에 맞춰 줄여 두었으니 넉 장이 제목 옆에 그대로 들어간다.
      정말 빠듯한 폭에서만 기간이 물러난다 */
@@ -275,19 +277,26 @@
      접으면 위에서부터 차례로 내려온다 — 날아다니는 것보다 이쪽이 읽힌다 */
   /* 세 영역이 붙어 있으면 답답하고 어디까지가 한 덩어리인지 안 보인다.
      간격 자체가 구분선 역할을 한다 — 선을 긋는 것보다 이쪽이 조용하다 */
-  #colL{gap:30px}
+  #colL{gap:34px}
+  /* 페이지가 흐르는 지금, 이 둘이 flex 로 눌려 있으면 안 된다.
+     제 키가 619px 인데 안의 표는 1600px 이라, 위에 붙인 덩어리가 619 까지만
+     붙고 그 뒤로는 같이 흘러가 버렸다 — 내용만큼 자라게 둔다 */
+  /* #bodyRow 는 세로 흐름의 칸이라 0 0 auto 면 '내용 높이, 폭은 그대로' 다.
+     #colL 은 1280 위에서 가로 흐름의 칸이 된다 — 여기에 0 0 auto 를 주면
+     폭이 글자 길이로 쪼그라들어 표가 터진다. 늘어나되 키만 내용을 따르게 */
+  #bodyRow{flex:0 0 auto;min-height:0}
+  #colL{flex:1 1 auto;min-width:0;min-height:0}
 
-  /* 배너는 늘 위에 있다. 표를 한참 내려도 어느 캠페인인지 · 자료가 어디
-     있는지는 손 닿는 자리에 남아야 한다 */
-  #camBanner:not(.hero){position:sticky;top:0;z-index:22}
-
-  /* 흐름과 성과는 배너 바로 아래에 붙는다. --hdrH 는 JS 가 배너 키를 재서 넣는다 */
-  #topStack{position:sticky;top:var(--hdrH, 58px);z-index:20;
-            margin-left:-40px;margin-right:-40px;padding:14px 40px 0;
+  /* 배너까지 붙이려다 사고가 났다. 첫 화면이 접히는 440ms 동안 배너 높이가
+     계속 변하는데, 그 값을 재서 아래 덩어리를 붙이니 어느 프레임에서는
+     둘 사이에 틈이 생기고 그 틈으로 표가 비쳤다.
+     애초에 붙어야 할 것은 흐름과 성과였다. 배너는 같이 올라간다 */
+  #topStack{position:sticky;top:0;z-index:20;
+            margin-left:-56px;margin-right:-56px;padding:14px 56px 0;
             background:#fff;
             transition:box-shadow .2s ease, padding .24s cubic-bezier(.22,.61,.36,1)}
-  @media (max-width:1279px){
-    #topStack{margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px}
+  @media (max-width:1023px){
+    #topStack{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
   }
   #topStack > section + section{margin-top:26px}
   /* 붙어 있는 동안만 밑에 그늘을 둔다 — 늘 있으면 그냥 띠가 하나 더 생긴 것이다 */
@@ -344,7 +353,7 @@
   .pnl h2    {font-size:12.5px;font-weight:700;color:#0f172a;letter-spacing:var(--tr-body);
               white-space:nowrap}
   /* 필터가 많은 좁은 화면에서는 제목을 눌러 쪼개지 말고 머리를 두 줄로 쓴다 */
-  #progSec > header{flex-wrap:wrap;row-gap:6px}
+  #progSec > #progCard > header{flex-wrap:wrap;row-gap:6px}
 
 
   /* 점은 그냥 점이다. 숨 쉬게 만들면 '지금 방송 중' 같은 신호가 되는데,
@@ -522,6 +531,54 @@
   .ico-r{color:#3b82f6}
   .ico-w{color:#a78bfa}
   .ico-p{color:#10b981}
+  /* ── 진행 흐름 ────────────────────────────────────────────
+     선정에서 업로드까지를 하나의 파도로 본다. 막대 넷이 아니라 한 덩어리다.
+     높이는 인원수에 비례하지 않는다 — 많은 순서로 등급을 매겨 얹는다.
+     비례로 그리면 1명과 2명이 두 배로 벌어져 없는 얘기를 만든다 */
+  .fpWave{position:relative;height:132px;
+          transition:height .3s cubic-bezier(.22,.61,.36,1)}
+  /* 사람을 고르거나 펼치기 시작하면 흐름은 자리를 내준다 —
+     그때 필요한 건 '어디쯤 왔나' 한 줄이지 얼굴 다섯이 아니다 */
+  #flowSec.slim .fpWave{height:56px}
+  #flowSec.slim .fpWave svg{bottom:26px;height:26px}
+  #flowSec.slim .fpWave .fbase{bottom:26px}
+  #flowSec.slim .fpWave .fav{opacity:0;pointer-events:none}
+  #flowSec.slim .fpWave .flab{bottom:2px}
+  #flowSec.slim .fpWave .flab b{display:inline;font-size:11px}
+  #flowSec.slim .fpWave .flab i{display:inline;margin-left:5px;margin-top:0;font-size:9.5px}
+  #flowSec.slim .fpWave .fhit{bottom:16px}
+  .fpWave .fav{transition:opacity .2s ease, transform .16s ease}
+  #flowTog svg{transition:transform .3s cubic-bezier(.22,.61,.36,1)}
+  #flowSec.slim #flowTog svg{transform:rotate(-180deg)}
+  .fpWave svg{position:absolute;left:0;right:0;bottom:42px;width:100%;height:52px;display:block}
+  .fpWave .fseg{fill:var(--c,#0f172a);fill-opacity:calc(var(--o) * .30);
+                transition:fill-opacity .16s ease}
+  .fpWave.on .fseg{fill-opacity:calc(var(--o) * .09)}
+  .fpWave .fseg.hot{fill-opacity:calc(var(--o) * .92)}
+  /* 바닥선이 오른쪽에서 화살촉으로 끝난다 — 어디로 가는 흐름인지 한 번에 읽힌다 */
+  .fpWave .fbase{position:absolute;left:0;right:8px;bottom:42px;height:1px;
+                 background:linear-gradient(90deg,rgba(15,23,42,.10),rgba(16,185,129,.42))}
+  .fpWave .fbase i{position:absolute;right:-1px;top:-3px;width:7px;height:7px;
+                   border-top:1.5px solid rgba(16,185,129,.55);
+                   border-right:1.5px solid rgba(16,185,129,.55);
+                   transform:rotate(45deg)}
+  .fpWave .fav{position:absolute;transform:translateX(-50%);width:22px;height:22px;border-radius:50%;
+               background:#fff;box-shadow:0 0 0 2px #fff,0 1px 4px rgba(15,23,42,.18);
+               transition:transform .16s ease}
+  .fpWave .fav img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+  .fpWave .fav b{position:absolute;right:-7px;bottom:-3px;font-size:8.5px;font-weight:700;color:#0f172a;
+                 background:#fff;border-radius:999px;padding:0 3.5px;line-height:12px;
+                 box-shadow:0 0 0 1px rgba(15,23,42,.08)}
+  .fpWave .fav.hot{transform:translateX(-50%) scale(1.18)}
+  .fpWave .flab{position:absolute;bottom:6px;transform:translateX(-50%);text-align:center;
+                white-space:nowrap;cursor:pointer}
+  .fpWave .flab b{display:block;font-size:13px;font-weight:700;line-height:1;letter-spacing:-.02em}
+  .fpWave .flab i{display:block;font-size:10px;font-style:normal;color:#64748b;margin-top:4px}
+  .fpWave .flab.hot b{color:#e2483d}
+  .fpWave .fhit{position:absolute;top:0;bottom:34px;cursor:pointer;border-radius:10px;
+                transition:background-color .16s ease}
+  .fpWave .fhit:hover{background:rgba(15,23,42,.032)}
+
   /* ── 진행 흐름 — 선 하나와 점 다섯 ─────────────────────────
      파도로 그리던 것을 선으로 바꾼다. 굴곡은 예뻤지만 '몇 명이 어디에'
      를 읽는 데는 선이 낫다. 점의 크기가 인원, 채워진 길이가 진행이다.
@@ -564,7 +621,13 @@
   .fline .fnode.first{transform:none;align-items:flex-start}
   .fline .fnode.last{transform:translateX(-100%);align-items:flex-end}
 
-  /* 사람을 고르거나 펼치기 시작하면, 그리고 아래로 내려가면 자리를 내준다 */
+  /* 파도가 기본, 선은 위에 붙었을 때. 붙어 있는 동안에는 '몇 명이 어디에'
+     한 줄이면 되고, 그때는 굴곡보다 선이 읽기 쉽다 */
+  #fpLine{display:none}
+  #topStack.stuck #fpWave{display:none}
+  #topStack.stuck #fpLine{display:block}
+
+  /* 사람을 고르거나 펼치기 시작하면 자리를 내준다 */
   #flowSec.slim .fline{height:44px}
   #flowSec.slim .fline .ftrack{top:9px}
   #flowSec.slim .fline .fdot{width:9px;height:9px;margin-top:5px}
@@ -768,9 +831,7 @@
 
   /* 표 마감 — 표가 끝나는 자리다. 흰 표에 이어 붙은 한 줄로 둔다 */
   .pfoot{display:flex;align-items:center;gap:16px;flex-wrap:wrap;
-         margin-top:-1px;padding:12px 14px;background:#fff;
-         border-top:1px solid #f1f5f9;border-radius:0 0 12px 12px;
-         box-shadow:var(--lift-1)}
+         padding:15px 20px;background:#fff;border-top:1px solid #f1f5f9}
   .pfInfo{font-size:12px;color:var(--ink-3);letter-spacing:var(--tr-body)}
   .pfInfo b{font-weight:700;color:var(--ink-1)}
   .pfPer{display:flex;align-items:center;gap:3px;margin-left:auto}
@@ -862,7 +923,7 @@
   /* overflow-x:auto 를 주면 세로도 같이 스크롤 상자가 되고(스펙이 그렇다),
      그러면 머리글이 페이지 스크롤에 안 붙는다. 열 폭이 비율이라 넓은 화면에서는
      가로로 넘칠 일이 없으니 아예 열어 둔다 — 좁은 화면에서만 옆으로 넘긴다 */
-  #ptable{flex:none;overflow:visible;padding:0}
+  #ptable{flex:none;overflow:visible;padding:0 8px}
   @media (max-width:900px){
     #ptable{overflow-x:auto}
     #ptable table{min-width:820px}
@@ -871,15 +932,12 @@
      혼자 다 먹었다. fixed 면 준 대로만 간다 */
   /* overflow:hidden 으로 모서리를 잘라 두면 표 자체가 스크롤 상자가 되어
      머리글이 페이지 스크롤에 안 붙는다. 모서리는 첫·끝 칸에서 직접 둥글린다 */
+  /* 카드 안이라 제 그림자와 모서리는 필요 없다 */
   #ptable table{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;
-                background:#fff;border-radius:12px;box-shadow:var(--lift-1)}
-  #ptable thead th:first-child{border-top-left-radius:12px}
-  #ptable thead th:last-child{border-top-right-radius:12px}
-  #ptable tbody tr:last-child > td:first-child{border-bottom-left-radius:12px}
-  #ptable tbody tr:last-child > td:last-child{border-bottom-right-radius:12px}
+                background:#fff}
   /* 위에 붙은 배너 · 흐름 · 성과 밑으로 들어가면 안 된다. 그 아래에 선다.
      --topH 는 JS 가 붙은 덩어리의 키를 재서 넣는다 */
-  #ptable th{position:sticky;top:calc(var(--hdrH,59px) + var(--topH,0px) - 1px);
+  #ptable th{position:sticky;top:calc(var(--topH,0px) - 1px);
              z-index:2;background:#f8fafc;padding:0;
              border-bottom:1px solid #e9eef4;white-space:nowrap}
   #ptable th button{width:100%;display:flex;align-items:center;gap:3px;padding:11px 12px;
@@ -896,18 +954,23 @@
      읽히는 것이 먼저다 */
   #ptable td{padding:16px 12px;font-size:14px;color:#334155;border-bottom:1px solid #f1f5f9;
              white-space:nowrap}
-  #ptable .tname{display:flex;align-items:center;gap:10px;text-align:left;
+  /* 한 칸에 이름과 계정을 위아래로. 계정을 옆 열로 빼 두었더니 두 칸 다
+     반이 비었다 — 붙여 놓으면 한 칸이 차고 한 칸이 통째로 남는다 */
+  #ptable .tname{display:flex;align-items:center;gap:11px;text-align:left;
                  max-width:100%;min-width:0}
-  #ptable .tname .tn{font-size:14.5px;font-weight:600;color:var(--ink-1);
+  #ptable .tnw{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+  #ptable .tname .tn{font-size:14px;font-weight:600;color:var(--ink-1);line-height:1.15;
                      letter-spacing:var(--tr-title);
-                     overflow:hidden;text-overflow:ellipsis;min-width:0}
-  /* 계정은 제 열에 선다. 이름 칸이 넓어야 했던 이유가 이것 하나였다 */
+                     overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  #ptable .tname .th{font-size:11.5px;line-height:1.15;color:var(--ink-4);
+                     overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  #ptable .tdue{display:flex;flex-direction:column;gap:2px}
+  #ptable .tdue b{font-size:13.5px;font-weight:600;color:var(--ink-1);line-height:1.15}
+  #ptable .tdue i{font-size:11px;font-style:normal;line-height:1.15;color:var(--ink-4)}
   /* 단계 배지 — 표 안에서 제일 먼저 읽히는 것이라 작으면 안 된다 */
   #ptable .tstage{display:inline-flex;align-items:center;height:28px;padding:0 11px;
                   border-radius:8px;font-size:12.5px;font-weight:700;
                   letter-spacing:var(--tr-body)}
-  #ptable .thandle{font-size:12.5px;color:var(--ink-4);
-                   overflow:hidden;text-overflow:ellipsis;display:block}
   #ptable tr:last-child td{border-bottom:0}
   #ptable tr.on td{background:#f8fafc}
   #ptable tbody tr{cursor:pointer}
@@ -953,19 +1016,22 @@
      않는다. 아래로는 화면 밖까지 이어져 끝이 안 보인다 */
   /* .pnl 이 준 overflow:hidden 을 푼다. 그게 스크롤 상자로 잡혀서
      표 머리글이 페이지 스크롤에 안 붙고 있었다 */
-  #progSec{position:relative;background:transparent;border-radius:0;padding:0;box-shadow:none;
-           margin-top:4px;overflow:visible}
+  /* 위 덩어리(흐름·성과)와 확실히 떨어뜨린다. 붙어 있으면 어디까지가
+     요약이고 어디부터 명단인지 안 보인다 */
+  #progSec{position:relative;background:transparent;border-radius:0;padding:40px 0 0;
+           box-shadow:none;margin-top:32px;overflow:visible}
   /* 층은 목록이 끝나는 자리에서 같이 끝난다. 화면 밖까지 끌고 가면
      표 아래로 빈 바닥만 길게 남는다 */
   /* 층은 표보다 조금 더 내려가서 끝난다 — 딱 맞춰 끝내면 표가 낭떠러지에 선다 */
   #progSec::before{content:'';position:absolute;z-index:-1;
-                   left:-40px;right:-40px;top:0;bottom:-24px;
+                   left:-56px;right:-56px;top:0;bottom:-24px;
                    background:#f4f6f9;
                    box-shadow:inset 0 1px 0 rgba(15,23,42,.06)}
-  @media (max-width:1279px){ #progSec::before{left:-24px;right:-24px} }
-  @media (max-width:639px){  #progSec::before{left:-16px;right:-16px} }
-  #progSec > header{padding:14px 2px 10px;border-bottom:0}
-  #progSec > header h2{color:#475569}
+  @media (max-width:1023px){ #progSec::before{left:-32px;right:-32px} }
+  @media (max-width:639px){  #progSec::before{left:-18px;right:-18px} }
+  #progSec > #progCard > header{padding:16px 20px;border-bottom:1px solid #f1f5f9}
+  #progFilter{padding:14px 20px;border-bottom:1px solid #f1f5f9;background:#fbfcfd}
+  #progSec > #progCard > header h2{color:var(--ink-1);font-size:15px}
   .pnl h2{font-size:14.5px;font-weight:600;letter-spacing:var(--tr-title)}
   /* 섹션 제목 — 크기와 여백이 위계를 만든다 */
   .sechd{display:flex;align-items:baseline;gap:9px;padding:0 2px 12px}
@@ -985,7 +1051,14 @@
 
   /* 목록은 스크롤 상자다 — 여기만 경계를 갖는다. 그것도 선 하나로 */
   /* 표가 끝나자마자 화면이 끝나면 답답하다. 마감 아래로 한 뼘 */
-  #prog{border-top:0;padding:0 0 56px}
+  /* 한 장 — 머리줄부터 마감까지 흰 면 하나 위에 있다.
+     overflow:hidden 으로 모서리를 자르면 이 카드가 스크롤 상자가 되고,
+     그러면 표 머리글이 페이지 스크롤에 안 붙는다. 세 번째 같은 함정이다 —
+     모서리는 맨 위(머리줄)와 맨 아래(마감)에서 직접 둥글린다 */
+  #progCard{background:#fff;border-radius:16px;box-shadow:var(--lift-1)}
+  #progSec > #progCard > header{border-radius:16px 16px 0 0}
+  .pfoot{border-radius:0 0 16px 16px}
+  #prog{border-top:0;padding:0}
   /* 카드도 떠 있지 않다. 테두리 한 겹, 짚으면 그때 들린다 */
   .pcard{background:#fff;box-shadow:inset 0 0 0 1px #eef2f7}
   .pcard:hover{box-shadow:inset 0 0 0 1px #dbe3ec, var(--lift-1)}
@@ -1504,7 +1577,8 @@
                         aria-expanded="true" title="흐름 접기" aria-label="흐름 접기">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                 </button></div>
-              <div class="fline" id="fpWave"></div>
+              <div class="fpWave" id="fpWave"></div>
+              <div class="fline" id="fpLine" aria-hidden="true"></div>
             </section>
 
             <!-- 1 · 대시보드 — 숫자가 스스로 말한다. 라벨을 얹지 않는다 -->
@@ -1520,6 +1594,9 @@
           <!-- 3 · 진행상황 — 3행 높이에 맞춘다. flex-1 이면 남는 세로를 전부 먹고 안이 텅 빈다 -->
           <!-- 3 · 진행상황 — 단계마다 한 열. 상세는 옆 칸을 밀며 열린다 -->
           <section id="progSec" class="pnl shrink-0">
+            <!-- 제목 · 필터 · 표 · 마감이 한 장이다. 제목만 카드 밖에 띄워 두면
+                 표가 어디서 시작하는지 두 번 찾게 된다 -->
+            <div id="progCard">
             <header>
               <div class="flex items-center gap-2.5 min-w-0">
                 <h2>인플루언서</h2>
@@ -1552,8 +1629,9 @@
                 </button>
               </div>
             </header>
-            <div id="progFilter" class="hidden shrink-0 px-2.5 pt-2.5"></div>
-            <div id="prog" class="flex-1 min-h-0"></div>
+              <div id="progFilter" class="hidden shrink-0"></div>
+              <div id="prog" class="flex-1 min-h-0"></div>
+            </div>
           </section>
         </div>
 
@@ -2522,7 +2600,6 @@ function pickCamp(id) {
 /* 제목 · 기간 · 상태는 선택된 캠페인에서 그린다 */
 function renderHead() {
   const cp = camp(), live = cp.state === 'live';
-  requestAnimationFrame(syncHdrH);
   /* 워드마크는 그쪽 헤더와 같은 모양이다 — 대문자, × 만 레드 */
   /* 펼쳤을 때는 위에 워드마크가 있으므로 브랜드 표기를 두 번 하지 않는다 */
   $('eyebrow').innerHTML = '<span id="ebBrand">ODDTYPE <b>&times;</b> SIRIAI &nbsp;\u00b7&nbsp; </span>'
@@ -2547,21 +2624,12 @@ let heroT = null, heroT2 = null, autoT = null, heroAuto = false;
    하단 CTA 는 화면을 덮어도 된다 — 데모라는 걸 알려주는 역할이라 자리를 비우지 않는다 */
 /* 독은 fixed 라 레이아웃에 안 잡힌다. 높이를 재서 변수로 주지 않으면
    첫 화면 지표가 그 밑에 깔린다 */
-/* 배너 키를 재서 그 아래에 흐름·성과를 붙인다. 숫자로 박아 두면
-   글자 크기가 조금만 달라져도 겹치거나 뜬다 */
-function syncHdrH() {
-  const b = $('camBanner');
-  if (!b || b.classList.contains('hero')) return;
-  document.documentElement.style.setProperty('--hdrH', Math.round(b.getBoundingClientRect().height) + 'px');
-}
-
 /* 위에 붙었는지는 제 자리와 실제 자리를 견줘서 안다.
    배너 키는 여기서 같이 잰다 — 접히는 순간을 따로 잡으려다 놓치기 쉽다 */
 function syncStuck() {
   const t = $('topStack'), pad = $('pad'), b = $('camBanner');
   if (!t || !pad || !b) return;
-  const hdr = b.classList.contains('hero') ? 0 : Math.round(b.getBoundingClientRect().height);
-  if (hdr) document.documentElement.style.setProperty('--hdrH', hdr + 'px');
+  const hdr = b.classList.contains('hero') ? 0 : 1;
   /* 제 자리를 견주면 안 된다 — 붙으면서 이 덩어리가 줄고, 줄면 문서가 짧아지고,
      짧아지면 스크롤이 밀려 다시 안 붙은 자리가 된다. 그 되먹임에 화면이 떤다.
      스크롤 양만 보고, 붙을 때와 떨어질 때의 문턱을 다르게 둔다 */
@@ -2580,14 +2648,7 @@ function syncDockH() {
   const h = d.classList.contains('down') ? 0 : Math.round(d.getBoundingClientRect().height);
   document.documentElement.style.setProperty('--dockH', h + 'px');
 }
-addEventListener('resize', function () { syncDockH(); syncHdrH(); syncStuck(); });
-/* 배너는 첫 화면에서 접힐 때 900px 에서 59px 까지 줄어든다. 그 사이 어느
-   순간을 재느냐에 따라 붙는 자리가 엉뚱해진다 — 바뀔 때마다 다시 잰다 */
-if (window.ResizeObserver) {
-  addEventListener('DOMContentLoaded', function () {
-    new ResizeObserver(function () { syncHdrH(); syncStuck(); }).observe($('camBanner'));
-  });
-}
+addEventListener('resize', function () { syncDockH(); syncStuck(); });
 addEventListener('DOMContentLoaded', function () {
   const pad = $('pad');
   if (pad) pad.addEventListener('scroll', syncStuck, { passive: true });
@@ -2709,7 +2770,7 @@ function setHero(on) {
       const bFrom = el.getBoundingClientRect().height;
       el.classList.remove('hero');
       $('pad').classList.remove('heroOn');
-      requestAnimationFrame(function () { syncHdrH(); syncStuck(); });
+      requestAnimationFrame(syncStuck);
       heroEls().forEach(function (nd) { nd.style.transition = ''; nd.style.opacity = ''; });
       setChat(false);
 
@@ -2982,66 +3043,109 @@ function renderFlow() {
   if (!box) return;
   const by = flowData();
   const counts = by.map(g => g.length);
-  const uniq = [...new Set(counts.filter(Boolean))].sort((a, b) => b - a);
-  const step = 100 / (FLOW.length - 1);
+  const uniq = [...new Set(counts)].sort((a, b) => b - a);
+  const slot = FW / FLOW.length, pad = slot * (1 - FFILL) / 2, step = 100 / FLOW.length;
 
   const seg = FLOW.map(function (f, i) {
     const t = uniq.indexOf(counts[i]);
-    return { key: f[0], label: f[1], n: counts[i],
+    return { key: f[0], label: f[1], n: counts[i], one: by[i][0],
+             h: FTIER_H[t] || 0.12, o: FTIER_O[t] || 0.3,
              c: fcolor(FLOW.length > 1 ? i / (FLOW.length - 1) : 1) };
   });
 
-  /* 채워진 길이 = 마지막으로 사람이 선 자리까지 */
+  box.innerHTML =
+      '<svg viewBox="0 0 ' + FW + ' ' + FVH + '" preserveAspectRatio="none" aria-hidden="true">'
+    +   seg.map(function (x, i) {
+          return '<path class="fseg" data-seg="' + i + '" style="--o:' + x.o + ';--c:' + x.c + '" d="'
+            + fhump(i * slot + pad, slot * FFILL, x.h) + '"/>';
+        }).join('')
+    + '</svg><div class="fbase"><i></i></div>'
+    + seg.map(function (x, i) {
+        if (!x.one) return '';
+        const more = x.n - 1;
+        return '<div class="fav" data-seg="' + i + '" style="left:' + ((i + .5) * step)
+          + '%;bottom:' + (FBASE + FPEAK + 8) + 'px">'
+          + (x.one.pic ? '<img src="' + x.one.pic + '" alt="">' : '')
+          + (more > 0 ? '<b>+' + more + '</b>' : '') + '</div>';
+      }).join('')
+    + seg.map(function (x, i) {
+        return '<div class="flab" data-seg="' + i + '" style="left:' + ((i + .5) * step) + '%">'
+          + '<b class="num">' + x.n + '</b><i>' + x.label + '</i></div>';
+      }).join('')
+    + seg.map(function (x, i) {
+        return '<span class="fhit" data-seg="' + i + '" style="left:' + (i * step)
+          + '%;width:' + step + '%"></span>';
+      }).join('');
+
+  $('fpSum').textContent = counts.reduce((a, b) => a + b, 0) + '명 · 리스트 → 업로드';
+  renderLine(seg, counts);
+  bindFlow(seg);
+}
+
+/* 위에 붙었을 때 쓰는 선. 파도와 같은 자료를 같은 순서로 그린다 */
+function renderLine(seg, counts) {
+  const box = $('fpLine');
+  if (!box) return;
+  const step = 100 / (FLOW.length - 1);
   let lastAt = 0;
-  seg.forEach(function (x, i) { if (x.n) lastAt = i; });
+  seg.forEach(function (x, i) { if (counts[i]) lastAt = i; });
 
   box.innerHTML =
       '<span class="ftrack"><span class="ffill" style="width:'
     +   (lastAt / (FLOW.length - 1) * 100) + '%"></span></span>'
     + seg.map(function (x, i) {
-        return '<span class="fnode' + (x.n ? ' has' : '')
+        return '<span class="fnode' + (counts[i] ? ' has' : '')
           + (PSTATE.stage === x.key ? ' sel' : '')
           + (i === 0 ? ' first' : i === FLOW.length - 1 ? ' last' : '') + '"'
           + ' data-seg="' + i + '" style="left:' + (i * step) + '%;--c:' + x.c + '">'
           + '<span class="fdot"></span>'
-          + '<b class="fn num">' + x.n + '</b>'
+          + '<b class="fn num">' + counts[i] + '</b>'
           + '<i class="fl">' + x.label + '</i></span>';
       }).join('')
     + seg.map(function (x, i) {
         const half = step / 2;
         const l = Math.max(0, i * step - half), r = Math.min(100, i * step + half);
         return '<span class="fhit" data-seg="' + i + '" role="button" tabindex="0"'
-          + ' title="' + esc(x.label) + ' ' + x.n + '명만 보기"'
+          + ' title="' + esc(x.label) + ' ' + counts[i] + '명만 보기"'
           + ' aria-pressed="' + (PSTATE.stage === x.key ? 'true' : 'false') + '"'
           + ' style="left:' + l + '%;width:' + (r - l) + '%"></span>';
       }).join('');
-
-  $('fpSum').textContent = counts.reduce((a, b) => a + b, 0) + '명 · 리스트 → 업로드';
-  bindFlow(seg);
 }
 
 function bindFlow(seg) {
-  const box = $('fpWave');
-  const all = [].slice.call(box.querySelectorAll('.fnode'));
+  const boxes = [$('fpWave'), $('fpLine')].filter(Boolean);
+  const marks = [];
+  boxes.forEach(function (b) {
+    [].slice.call(b.querySelectorAll('.fseg,.fav,.flab,.fnode')).forEach(function (e) { marks.push(e); });
+  });
   function set(i) {
-    box.classList.toggle('on', i != null);
-    all.forEach(function (e) { e.classList.toggle('hot', i != null && +e.dataset.seg === i); });
+    boxes.forEach(function (b) { b.classList.toggle('on', i != null); });
+    marks.forEach(function (e) { e.classList.toggle('hot', i != null && +e.dataset.seg === i); });
     /* 아래 명단까지 같이 반응한다 — 단계를 짚으면 그 사람들이 드러난다 */
     flowFocus(i == null ? null : seg[i].key);
   }
   /* 짚으면 드러나고, 누르면 그 단계만 남는다. 같은 것을 다시 누르면 풀린다 */
-  function pick(i) { setFilter('stage', seg[i].key); }
-  [].slice.call(box.querySelectorAll('.fhit')).forEach(function (h) {
-    const i = +h.dataset.seg;
-    h.addEventListener('mouseenter', function () { set(i); });
-    h.addEventListener('mouseleave', function () { set(null); });
-    h.addEventListener('click', function () { pick(i); });
-    h.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(i); }
+  boxes.forEach(function (b) {
+    [].slice.call(b.querySelectorAll('.fhit')).forEach(function (h) {
+      const i = +h.dataset.seg;
+      h.addEventListener('mouseenter', function () { set(i); });
+      h.addEventListener('mouseleave', function () { set(null); });
+      h.addEventListener('click', function () { setFilter('stage', seg[i].key); });
+      h.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFilter('stage', seg[i].key); }
+      });
     });
   });
 }
+document.addEventListener('click', function (e) {
+  const chip = e.target.closest && e.target.closest('#dmSize .dmchip');
+  if (!chip) return;
+  chip.parentNode.querySelectorAll('.dmchip').forEach(function (b) { b.classList.remove('on'); });
+  chip.classList.add('on');
+});
 
+/* 흐름에서 한 단계를 짚으면 아래 명단에서 그 사람들만 남는다.
+   기본이 표 보기라 카드만 반응하면 아무 일도 안 일어난 것처럼 보인다 */
 function flowFocus(stage) {
   const g = $('pgrid');
   if (g) {
@@ -3293,10 +3397,7 @@ const COST_BANDS = [['all', '전체'], ['hi', '30만 이상'], ['mid', '20만~30
    def:1 은 처음부터 켜져 있는 열. 나머지는 톱니에서 켠다 */
 const DASH = '<span class="text-slate-400">\u2014</span>';
 const TCOLS = [
-  /* 이름 칸에 붙여 두면 그 칸만 뚱뚱해진다. 제 열에 세운다 */
-  { k:'handle', t:'계정',      num:0, def:1, w:124, nosort:1,
-                v:c => '<span class="thandle num">' + esc(c.handle) + '</span>' },
-  { k:'fol',    t:'팔로워',    num:1, def:1, w:78, v:c => kw(c.fol),
+  { k:'fol',    t:'팔로워',    num:1, def:1, w:74, v:c => kw(c.fol),
                 h:c => kw(c.fol) + ' 팔로워' },
   { k:'er',     t:'참여율',    num:1, def:1, w:70, v:c => c.er.toFixed(1) + '%',
                 h:c => c.er.toFixed(1) + '% 참여' },
@@ -3305,12 +3406,17 @@ const TCOLS = [
                          return '<span class="tstage ' + st.cls + '">'
                               + st.label + '</span>'; } },
   /* 진행을 보다가 바로 적는 자리다. 맨 끝에 두면 적으러 가는 길이 멀다 */
-  { k:'memo',   t:'메모',      num:0, def:1, w:72, nosort:1, v:c => memoCell(c) },
+  { k:'memo',   t:'메모',      num:0, def:1, w:66, nosort:1, v:c => memoCell(c) },
   { k:'cost',   t:'단가',      num:1, def:1, w:98, v:c => won(c.cost),
                 h:c => won(c.cost) },
   { k:'views',  t:'조회수',    num:1, def:1, w:90, v:c => c.up ? n(c.views) : DASH,
                 h:c => c.up ? n(c.views) + ' 조회' : '업로드 전' },
-  { k:'due',    t:'업로드일',  num:1, def:1, w:82, v:c => esc(c.due) },
+  /* 날짜만 있으면 그것이 실적인지 예정인지 표에서 알 수 없다.
+     아래 한 줄이 그것을 말하고, 덤으로 칸이 찬다 */
+  { k:'due',    t:'업로드일',  num:1, def:1, w:104,
+                v:c => '<span class="tdue"><b class="num">' + esc(c.due) + '</b>'
+                     + '<i>' + (c.up ? '업로드 완료' : '예정') + '</i></span>',
+                h:c => esc(c.due) + (c.up ? ' 업로드' : ' 예정') },
   { k:'likes',  t:'좋아요',    num:1, def:0, w:80, v:c => c.up ? n(c.likes) : DASH,
                 h:c => c.up ? n(c.likes) + ' 좋아요' : '업로드 전' },
   { k:'cmts',   t:'댓글',      num:1, def:0, w:74, v:c => c.up ? n(c.cmts) : DASH,
@@ -3547,7 +3653,7 @@ function progTable(list) {
     + '</th>';
 
   /* 이름 칸의 몫. 아바타와 이름만 남았으니 숫자 칸의 한 배 반이면 된다 */
-  const NAMEW = 158;
+  const NAMEW = 216;
   const wsum  = NAMEW + cols.reduce((a, x) => a + (x.w || 78), 0);
   const pw    = w => (w / wsum * 100).toFixed(3) + '%';
 
@@ -3571,7 +3677,9 @@ function progTable(list) {
           + '<td><span class="pbox cursor-pointer" data-i="' + i + '" onclick="togglePick(' + i + ', event)">'
           +   box(PICK.has(i)) + '</span></td>'
           + '<td><button onclick="openPeek(' + i + ', event)" class="tname">'
-          +   avatar(c, i, 32) + '<span class="tn">' + esc(c.name) + '</span></button></td>'
+          +   avatar(c, i, 34)
+          +   '<span class="tnw"><span class="tn">' + esc(c.name) + '</span>'
+          +     '<span class="th num">' + esc(c.handle) + '</span></span></button></td>'
           + cols.map(x => '<td class="' + (x.num ? 'num' : '') + '">' + x.v(c) + '</td>').join('')
           + '</tr>'
           /* 누른 사람은 그 자리에서 열린다 — 위아래 사람이 그대로 남아야 견줄 수 있다 */
