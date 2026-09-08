@@ -223,7 +223,27 @@
   #camBanner.hero #heroSlot{display:grid;grid-template-columns:1fr;gap:10px;align-items:stretch;
                             padding-bottom:170px}
   #camBanner.hero #heroNudge{bottom:120px}
-  #camBanner.hero #heroDash{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  /* 독이 커지면서 지표를 덮었다. 독 높이를 JS 가 재서 --dockH 로 준다 */
+  #camBanner.hero #heroSlot{padding-bottom:calc(var(--dockH, 130px) + 26px)}
+
+  /* 검은 면 위에서는 상자를 그리지 않는다. 상자를 그리면 사진도 숫자도 죽는다.
+     넷을 가는 세로선으로만 나누고 숫자가 스스로 서게 둔다 */
+  #camBanner.hero #heroDash{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  #camBanner.hero #heroDash > div{
+    background:transparent !important;box-shadow:none !important;border-radius:0 !important;
+    padding:2px 24px !important;position:relative}
+  #camBanner.hero #heroDash > div::before{content:'';position:absolute;left:0;top:6px;bottom:6px;
+    width:1px;background:rgba(255,255,255,.14)}
+  #camBanner.hero #heroDash > div:first-child::before{display:none}
+  #camBanner.hero #heroDash > div:first-child{padding-left:0 !important}
+  /* 값은 이 화면에서 가장 큰 글자다. 상자가 없어진 만큼 더 키운다 */
+  #camBanner.hero #heroDash > div > div:nth-of-type(2) .num{font-size:36px;line-height:1.05}
+  #camBanner.hero #heroDash .text-slate-500{font-size:10.5px;letter-spacing:var(--tr-label);
+    text-transform:uppercase;font-weight:600}
+  /* 밑줄은 상자가 있을 때나 필요했다 */
+  #camBanner.hero #heroDash .border-slate-100{border-top:0 !important;padding-top:6px !important;
+    margin-top:6px !important}
+  #camBanner.hero #heroDash .dico{opacity:.5}
 
   /* 허어로 위에서는 흔 판이 사진을 덮어 사진도 숫자도 안 산다.
      사진을 받아 흔리고 그 위에 숫자를 흔색으로 올린다 */
@@ -2334,6 +2354,16 @@ let heroT = null, heroT2 = null, autoT = null, heroAuto = false;
 
 /* 히어로는 남는 세로를 다 쓴다.
    하단 CTA 는 화면을 덮어도 된다 — 데모라는 걸 알려주는 역할이라 자리를 비우지 않는다 */
+/* 독은 fixed 라 레이아웃에 안 잡힌다. 높이를 재서 변수로 주지 않으면
+   첫 화면 지표가 그 밑에 깔린다 */
+function syncDockH() {
+  const d = $('dock');
+  if (!d) return;
+  const h = d.classList.contains('down') ? 0 : Math.round(d.getBoundingClientRect().height);
+  document.documentElement.style.setProperty('--dockH', h + 'px');
+}
+addEventListener('resize', syncDockH);
+
 function heroHeight() {
   const pad = $('pad');
   if (innerWidth < 1280) return Math.round(Math.min(innerHeight * 0.72, 560));
@@ -3934,6 +3964,7 @@ document.addEventListener('keydown', e => {
 
 /* ══════════ 하단 독 · 진입 안내 ══════════ */
 function dock(open) {
+  setTimeout(syncDockH, 360);
   $('dock').classList.toggle('down', !open);
   $('dockTab').classList.toggle('up', !open);
 }
@@ -4323,6 +4354,7 @@ if (window.ResizeObserver) {
 render();
 /* 첫 화면은 배너가 펼쳐진 상태다. 대시보드를 그 안으로 옮겨 둔 채로 시작한다 */
 if ($('camBanner').classList.contains('hero')) {
+  syncDockH();
   $('camBanner').style.height = heroHeight() + 'px';
   $('pad').classList.add('heroOn');
 }
