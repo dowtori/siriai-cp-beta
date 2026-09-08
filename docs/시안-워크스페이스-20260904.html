@@ -88,7 +88,10 @@
   #pad{overflow-y:auto;overflow-x:hidden;
        padding-top:0;padding-left:var(--gut);padding-right:var(--gut);
        padding-bottom:calc(max(var(--dockH, 0px), 72px) + 40px)}
-  #topStack, #bodyRow{width:100%}
+  #bodyRow{width:100%}
+  /* width:100% 는 #pad 의 안쪽 폭이다. 거기에 음수 마진을 더하면 왼쪽으로만
+     밀려서 오른쪽이 여백만큼(2304px 에서 222px) 모자란다. 폭은 마진이 정하게 둔다 */
+  #topStack{width:auto}
 
   html,body{height:100%}
   body{
