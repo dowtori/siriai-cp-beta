@@ -140,21 +140,42 @@
   #camPad .rchip{height:32px;padding:0 9px 0 11px;gap:7px;border:0;border-radius:10px;
                  background:#fff;box-shadow:var(--lift-1);
                  transition:box-shadow .15s ease, transform .13s ease, background-color .15s ease}
-  #camPad .rchip:hover{background:#fff;transform:translateY(-1px);box-shadow:var(--lift-2)}
-  #camPad .rchip:active{transform:translateY(0);box-shadow:var(--lift-1)}
-  #camPad .rchip .ri{width:15px;height:15px;color:var(--ink-3)}
-  #camPad .rchip:hover .ri{color:var(--ink-2)}
+  #camPad .rchip .ri{width:15px;height:15px;color:var(--ink-3);transition:color .15s ease}
   #camPad .rchip .rt{font-size:12px;font-weight:700;color:var(--ink-2);
-                     letter-spacing:var(--tr-small)}
-  #camPad .rchip:hover .rt{color:var(--ink-1)}
+                     letter-spacing:var(--tr-small);transition:color .15s ease}
   /* 화살표가 이 단추의 동사다 — 내려받는 것과 새 창으로 여는 것이 다르게 생겼다 */
   #camPad .rchip .rx{display:block;width:12px;height:12px;flex:none;color:#c3cbd6;
                      transition:color .15s ease, transform .15s ease}
-  #camPad .rchip:hover .rx{color:var(--ink-3);transform:translateY(1px)}
+  /* 몇 건인지. 셀 수 있는 것에만 붙고, 0 이면 아예 안 붙는다 */
+  #camPad .rchip .rn{display:inline-grid;place-items:center;min-width:17px;height:17px;
+                     padding:0 4px;border-radius:6px;margin-left:-2px;
+                     font-size:10.5px;font-weight:700;line-height:1;
+                     color:var(--ink-1);background:#eef2f7;
+                     transition:color .15s ease, background-color .15s ease}
+
+  /* 손을 올리면 색이 뒤집힌다. 눌리는 물건이라는 걸 손이 먼저 안다 */
+  #camPad .rchip:not(.off):hover{background:var(--ink-1);transform:translateY(-1px);
+                                 box-shadow:0 6px 16px -8px rgba(15,23,42,.55)}
+  #camPad .rchip:not(.off):hover .rt{color:#fff}
+  #camPad .rchip:not(.off):hover .ri{color:rgba(255,255,255,.82)}
+  #camPad .rchip:not(.off):hover .rx{color:rgba(255,255,255,.9);transform:translateY(1px)}
+  #camPad .rchip:not(.off):hover .rn{color:var(--ink-1);background:#fff}
+  #camPad .rchip:not(.off):active{transform:translateY(0);box-shadow:var(--lift-1)}
+
   /* 받을 것이 있는 칩 하나만 붉게. 넷이 다 붉으면 아무것도 안 붉다 */
   #camPad .rchip.hot{box-shadow:inset 0 0 0 1px rgba(226,72,61,.32), var(--lift-1)}
   #camPad .rchip.hot .ri, #camPad .rchip.hot .rx{color:var(--od-red)}
   #camPad .rchip.hot .rt{color:var(--ink-1)}
+  #camPad .rchip.hot .rn{color:#fff;background:var(--od-red)}
+  #camPad .rchip.hot:hover{background:var(--od-red);box-shadow:0 6px 16px -8px rgba(197,32,43,.7)}
+  #camPad .rchip.hot:hover .ri, #camPad .rchip.hot:hover .rx{color:rgba(255,255,255,.88)}
+  #camPad .rchip.hot:hover .rn{color:var(--od-red);background:#fff}
+
+  /* 받을 것이 없는 칩 — 면과 그림자를 걷는다. 눌러 보고 알게 하지 않는다 */
+  #camPad .rchip.off{background:transparent;box-shadow:inset 0 0 0 1px #e8edf3;cursor:default}
+  #camPad .rchip.off .rt{color:#b3bcc9;font-weight:600}
+  #camPad .rchip.off .ri, #camPad .rchip.off .rx{color:#d3dae3}
+  #camPad .rchip.off:hover{background:#f8fafc}
   /* 빠듯한 폭에서는 이름표부터 접는다 — 아이콘이 이미 무엇인지 말한다 */
   @media (max-width:1365px){
     #camPad .rchip{padding:0 9px}
@@ -213,54 +234,8 @@
   #camBanner.hero #heroSlot{display:grid;grid-template-columns:1fr;gap:10px;align-items:stretch;
                             padding-bottom:170px}
   #camBanner.hero #heroNudge{bottom:120px}
-  /* 독이 커지면서 지표를 덮었다. 독 높이를 JS 가 재서 --dockH 로 준다 */
-  #camBanner.hero #heroSlot{padding-bottom:calc(var(--dockH, 130px) + 26px)}
+  /* 첫 화면은 사진과 제목뿐이다. 독이 가릴 것이 없다 */
 
-  /* 검은 면 위에서는 상자를 그리지 않는다. 상자를 그리면 사진도 숫자도 죽는다.
-     넷을 가는 세로선으로만 나누고 숫자가 스스로 서게 둔다 */
-  #camBanner.hero #heroDash{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
-  #camBanner.hero #heroDash > div{
-    background:transparent !important;box-shadow:none !important;border-radius:0 !important;
-    padding:2px 24px !important;position:relative}
-  #camBanner.hero #heroDash > div::before{content:'';position:absolute;left:0;top:6px;bottom:6px;
-    width:1px;background:rgba(255,255,255,.14)}
-  #camBanner.hero #heroDash > div:first-child::before{display:none}
-  #camBanner.hero #heroDash > div:first-child{padding-left:0 !important}
-  /* 값은 이 화면에서 가장 큰 글자다. 상자가 없어진 만큼 더 키운다 */
-  #camBanner.hero #heroDash > div > div:nth-of-type(2) .num{font-size:36px;line-height:1.05}
-  #camBanner.hero #heroDash .text-slate-500{font-size:10.5px;letter-spacing:var(--tr-label);
-    text-transform:uppercase;font-weight:600}
-  /* 밑줄은 상자가 있을 때나 필요했다 */
-  #camBanner.hero #heroDash .border-slate-100{border-top:0 !important;padding-top:6px !important;
-    margin-top:6px !important}
-  #camBanner.hero #heroDash .dico{opacity:.5}
-  /* 36px 숫자 넷은 넓은 화면의 얘기다. 좁아지면 네 번째가 화면 밖으로 밀린다 */
-  @media (max-width:1180px){
-    #camBanner.hero #heroDash > div{padding:2px 16px !important}
-    #camBanner.hero #heroDash > div > div:nth-of-type(2) .num{font-size:29px}
-  }
-  @media (max-width:880px){
-    #camBanner.hero #heroDash{grid-template-columns:repeat(2,1fr);row-gap:16px}
-    #camBanner.hero #heroDash > div:nth-child(3)::before{display:none}
-    #camBanner.hero #heroDash > div:nth-child(3){padding-left:0 !important}
-    #camBanner.hero #heroDash > div > div:nth-of-type(2) .num{font-size:26px}
-  }
-
-  /* 허어로 위에서는 흔 판이 사진을 덮어 사진도 숫자도 안 산다.
-     사진을 받아 흔리고 그 위에 숫자를 흔색으로 올린다 */
-  #camBanner.hero #heroDash > div{
-    background:rgba(255,255,255,.09);
-    -webkit-backdrop-filter:blur(14px) saturate(1.18);
-            backdrop-filter:blur(14px) saturate(1.18);
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.17), 0 12px 30px -20px rgba(0,0,0,.50);
-    border-radius:14px;
-  }
-  /* 유리 위에서는 재료가 바뀌었으니 글자도 같이 바뀐다 */
-  #camBanner.hero #heroDash .text-slate-900{color:#fff}
-  #camBanner.hero #heroDash .text-slate-500{color:rgba(255,255,255,.74)}
-  #camBanner.hero #heroDash .text-emerald-700{color:#6ee7b7}
-  /* 배너가 진토니 숫자 밑 새로 향하는 섬유는 한 단 밝게 */
-  #camBanner.hero #heroDash svg{opacity:.92}
   #camBanner.hero #heroNudge{display:grid}
 
   /* 히어로가 첫 화면인 동안 그 아래는 안 보인다.
@@ -571,15 +546,6 @@
          background:#e8edf3;color:#41506a}
   .dpill.up{background:#c9f5e1;color:#04674a}
   .dpill svg{width:14px;height:14px;stroke-width:3;flex:none}
-  /* 유리 위에서는 선과 바닥도 같이 밝아진다 */
-  #camBanner.hero #heroDash .border-slate-100{border-color:rgba(255,255,255,.18)}
-  #camBanner.hero #heroDash .dbar{background:rgba(255,255,255,.22)}
-  #camBanner.hero #heroDash .dpill{background:rgba(255,255,255,.15);color:rgba(255,255,255,.90)}
-  #camBanner.hero #heroDash .dpill.up{background:rgba(16,185,129,.22);color:#6ee7b7}
-  #camBanner.hero #heroDash .text-slate-800{color:#fff}
-  #camBanner.hero #heroDash .text-slate-400{color:rgba(255,255,255,.55)}
-  #camBanner.hero #heroDash .text-slate-300{color:rgba(255,255,255,.35)}
-  #camBanner.hero #heroDash .dico{opacity:.72}
   /* 그림 자리 — 점의 백분율이 이 높이를 기준으로 잡힌다 */
   .fplot{position:relative;height:112px}
   .fsvg{display:block;width:100%;height:112px;overflow:visible}
@@ -677,14 +643,18 @@
   /* ── 메모 ────────────────────────────────────────────────────
      담당자가 자기 기억으로 적는 것이 먼저고, 그중 일부만 우리에게 넘어간다.
      그래서 끝점이 둘이다 — 메모로 남기거나, 대화로 보내거나. */
-  .mcell{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 9px;border-radius:9px;
-         font-size:11.5px;font-weight:700;color:#94a3b8;background:transparent;
-         transition:background .14s ease,color .14s ease}
-  .mcell:hover{background:#eef2f7;color:#334155}
-  .mcell.has{color:#0f172a;background:#f1f5f9}
-  .mcell.has:hover{background:#e6ecf3}
-  .mcell .mdot{width:5px;height:5px;border-radius:50%;background:var(--od-red,#e2483d);flex:none}
-  .mcell svg{width:15px;height:15px;stroke-width:2}
+  /* 투명한 + 하나로는 눌리는 자리로 안 보였다. 면을 깔고 키운다 */
+  .mcell{display:inline-flex;align-items:center;justify-content:center;gap:5px;
+         height:34px;min-width:38px;padding:0 11px;border-radius:10px;
+         font-size:13px;font-weight:700;color:#94a3b8;
+         background:#f4f6f9;box-shadow:inset 0 0 0 1px #e8edf3;
+         transition:background-color .14s ease,color .14s ease,box-shadow .14s ease}
+  .mcell:hover{background:var(--ink-1);color:#fff;box-shadow:none}
+  .mcell.has{color:var(--ink-1);background:#fff;box-shadow:var(--lift-1)}
+  .mcell.has:hover{color:#fff;background:var(--ink-1);box-shadow:none}
+  .mcell .mdot{width:6px;height:6px;border-radius:50%;background:var(--od-red,#e2483d);flex:none}
+  .mcell:hover .mdot{background:#fff}
+  .mcell svg{width:17px;height:17px;stroke-width:2.2}
 
   #memoPop{position:fixed;z-index:80;width:322px;background:#fff;border-radius:16px;
            box-shadow:0 0 0 1px rgba(15,23,42,.08),0 8px 20px rgba(15,23,42,.08),
@@ -819,8 +789,10 @@
 
   /* 표 보기 — 팔로워·단가로 훑을 때는 이쪽이 빠르다 */
   #ptable{flex:1 1 auto;min-height:0;overflow:auto;padding:0 10px 10px}
-  #ptable table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;
-                border-radius:12px;overflow:hidden;box-shadow:var(--lift-1)}
+  /* auto 면 브라우저가 남는 자리를 내용 많은 열에 몰아 준다 — 이름이 그걸
+     혼자 다 먹었다. fixed 면 준 대로만 간다 */
+  #ptable table{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;
+                background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--lift-1)}
   #ptable th{position:sticky;top:0;z-index:1;background:#f8fafc;padding:0;
              border-bottom:1px solid #e9eef4;white-space:nowrap}
   #ptable th button{width:100%;display:flex;align-items:center;gap:3px;padding:11px 12px;
@@ -829,17 +801,26 @@
   /* 누르는 자리가 아닌 이름표 — 정렬 단추와 같은 높이에 앉힌다 */
   #ptable th .thlab{display:block;padding:11px 12px;font-size:11px;font-weight:600;color:#64748b;
                     white-space:nowrap;letter-spacing:var(--tr-small)}
-  #ptable th.r button{justify-content:flex-end}
+  /* 오른쪽 정렬을 걷는다. 값이 칸의 반대쪽 끝에 서 있으면 그 앞이 전부 구멍이다.
+     자릿수는 tabular-nums 가 맞춰 주니 왼쪽에서도 세로줄이 선다 */
   #ptable th button:hover{color:#0f172a;background:#f1f5f9}
   /* 스무 명을 한 화면에 밀어 넣으려다 글자가 작고 행이 얇아졌다.
      첫 화면에 네댓 명만 보여도 된다 — 아래는 스크롤이 있다.
      읽히는 것이 먼저다 */
-  #ptable td{padding:17px 12px;font-size:13.5px;color:#334155;border-bottom:1px solid #f1f5f9;
+  #ptable td{padding:16px 12px;font-size:14px;color:#334155;border-bottom:1px solid #f1f5f9;
              white-space:nowrap}
-  #ptable .tname{display:flex;align-items:center;gap:10px;text-align:left}
-  #ptable .tname .tn{font-size:14px;font-weight:600;color:var(--ink-1);
-                     letter-spacing:var(--tr-title)}
-  #ptable .tname .th{font-size:11.5px;color:var(--ink-4)}
+  #ptable .tname{display:flex;align-items:center;gap:10px;text-align:left;
+                 max-width:100%;min-width:0}
+  #ptable .tname .tn{font-size:14.5px;font-weight:600;color:var(--ink-1);
+                     letter-spacing:var(--tr-title);
+                     overflow:hidden;text-overflow:ellipsis;min-width:0}
+  /* 계정은 제 열에 선다. 이름 칸이 넓어야 했던 이유가 이것 하나였다 */
+  /* 단계 배지 — 표 안에서 제일 먼저 읽히는 것이라 작으면 안 된다 */
+  #ptable .tstage{display:inline-flex;align-items:center;height:28px;padding:0 11px;
+                  border-radius:8px;font-size:12.5px;font-weight:700;
+                  letter-spacing:var(--tr-body)}
+  #ptable .thandle{font-size:12.5px;color:var(--ink-4);
+                   overflow:hidden;text-overflow:ellipsis;display:block}
   #ptable tr:last-child td{border-bottom:0}
   #ptable tr.on td{background:#f8fafc}
   #ptable tbody tr{cursor:pointer}
@@ -858,7 +839,8 @@
   .pexpIn > div{height:100%;animation:none}
   @keyframes pexpIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
   @media (prefers-reduced-motion:reduce){ .pexpIn{animation:none} }
-  #ptable td.r{text-align:right}
+  /* fixed 로 못 박았으니 넘치는 것은 잘라 준다 */
+  #ptable td{overflow:hidden;text-overflow:ellipsis}
   /* 세로가 줄면 여백부터 조이고, 그래도 모자라면 그 다음에 줄 수를 내린다.
      순서가 반대면 노트북에서 진행상황이 먼저 얇아진다 */
   @media (max-height:920px){
@@ -1029,14 +1011,16 @@
 
   /* 브랜드 머리 — 표식 하나와 이름 하나. 이 줄에 다른 것을 더 얹지 않는다 */
   .bhead{width:100%;display:flex;align-items:center;gap:10px;text-align:left;
-         padding:6px 8px 6px 6px;margin:0 -6px;border-radius:12px;
+         padding:8px 8px 8px 6px;margin:0 -6px;border-radius:12px;
          transition:background-color .15s ease}
   .bhead:hover{background:#f4f6f9}
-  .bmark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none;
+  /* 펼쳤을 때는 워드마크 그대로. 브랜드 이름을 옆에 또 쓰지 않는다 —
+     로고가 이름이다 */
+  .bwm{width:96px;height:24px;flex:1 1 auto;min-width:0;color:var(--ink-1)}
+  /* 접혔을 때만 타일. 64px 폭에서는 이것 말고 방법이 없다 */
+  .bmark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;
          background:var(--od-red);
          box-shadow:0 1px 2px rgba(197,32,43,.28), 0 6px 14px -10px rgba(197,32,43,.9)}
-  .bname{display:block;font-size:15px;font-weight:700;color:var(--ink-1);
-         letter-spacing:var(--tr-title);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* 눌러서 어디로 간다는 것만 아주 조용히 알린다 */
   .bchev{width:15px;height:15px;flex:none;color:#c3cbd6;
          transition:color .15s ease, transform .15s ease}
@@ -1295,11 +1279,11 @@
     <div class="lgrow py-3.5 shrink-0">
       <button id="railBrand" onclick="brandHome()" class="bhead"
               title="캠페인 전체 보기" aria-label="오드타입 · 캠페인 전체 보기">
-        <span class="bmark" aria-hidden="true">
-          <span class="odw-mark w-[26px] h-[7px] text-white" role="img" aria-hidden="true"></span>
-        </span>
-        <span class="full min-w-0 flex-1">
-          <span class="bname">오드타입</span>
+        <!-- 워드마크를 읽히는 크기로 그대로 세운다. 타일 안에 눌러 담으면
+             로고가 아니라 로고 모양의 얼룩이 된다 -->
+        <span class="odw-mark bwm full" role="img" aria-label="ODDTYPE"></span>
+        <span class="bmark mini-only" aria-hidden="true">
+          <span class="odw-mark w-[30px] h-[8px] text-white" role="img" aria-hidden="true"></span>
         </span>
         <svg class="bchev full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
              aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
@@ -1388,10 +1372,9 @@
           </div>
         </div>
 
-        <!-- 첫 화면에서 대시보드가 여기로 옮겨 앉는다. 대화는 아직 닫힌 카드다 -->
-        <div id="heroSlot" class="relative z-[2] px-5 sm:px-6 pb-12">
-          <div id="heroDash"></div>
-        </div>
+        <!-- 첫 화면은 사진 한 장과 제목이다. 숫자 넷을 얹으니 사진도 숫자도
+             둘 다 죽었다 — 성과는 들어가서 본다 -->
+        <div id="heroSlot" class="relative z-[2] px-5 sm:px-6 pb-12"></div>
 
         <button id="heroNudge" onclick="toggleHero(event)" aria-label="접고 자세히 보기" title="접고 자세히 보기"
                 class="absolute left-1/2 bottom-3 z-[3] w-9 h-9 place-items-center rounded-full text-white/85 hover:text-white transition"
@@ -2055,6 +2038,13 @@ const ASSETS = [
   { t:'성과 보고서',   s:'08.31',     ic:'chart', c:'bg-slate-100 text-slate-700',    dw:'dw-report' }
 ];
 
+/* 왜 비었는지는 자료마다 다르다. '없음' 세 글자로 끝내면 다음 행동이 안 보인다 */
+const A_EMPTY = {
+  'dw-files' : '업로드가 하나라도 끝나면 원본이 여기로 들어옵니다.',
+  'dw-code'  : '코드를 발급한 크리에이터가 아직 없습니다.',
+  'dw-report': '업로드가 시작되면 보고서가 만들어집니다.'
+};
+
 /* 코드는 앞에서부터 무료로 나간다. 그 뒤는 닫아 두고 필요한 것만 골라 요청한다 —
    전부 받아 두면 안 쓰는 코드까지 비용이 되기 때문이다. */
 const FREE_CODES = 15;
@@ -2651,7 +2641,8 @@ function armHero() {
   });
   $('camBanner').addEventListener('wheel', autoCollapse, { passive: true });
   document.addEventListener('pointerdown', autoCollapse);
-  autoT = setTimeout(autoCollapse, 5000);
+  /* 사진 한 장을 보여 주는 시간이다. 5초는 '멈춰 있나' 싶어진다 */
+  autoT = setTimeout(autoCollapse, 2600);
 }
 
 function toggleRail(open) {
@@ -2756,14 +2747,23 @@ function renderDash() {
             + dMuted(rest > 0 ? '남은 ' + rest + '명 · ' + done + '%' : '모두 완료')
       });
 
-  /* 히어로와 본문 두 곳에 같은 카드를 그린다. DOM 을 옮기면 애니메이션이 끊긴다 */
   $('dash').innerHTML = html;
-  if ($('heroDash')) $('heroDash').innerHTML = html;
 }
 
 /* ══════════ 2 · 에셋 ══════════
    태스크 중심의 핵심. 누르면 그 자료가 바로 열린다. */
 /* 부제를 박아 두면 캠페인을 갈아탈 때 그대로 남아 거짓말이 된다 */
+/* 셀 수 있는 것만 센다. 0 이면 그 칩은 꺼진다 —
+   눌러 놓고 '아직 없습니다' 를 보는 것만큼 허무한 것이 없다 */
+function assetN(a) {
+  if (a.dw === 'dw-files')  return upList().length;
+  if (a.dw === 'dw-code')   return selected().filter(c => c.codeOn).length;
+  if (a.dw === 'dw-report') return upList().length ? 1 : 0;
+  return 1;
+}
+/* 숫자를 배지로 달아 줄 것과, 있고 없고만 말하면 되는 것 */
+const A_COUNTED = { 'dw-files': 1, 'dw-code': 1 };
+
 function assetSub(a) {
   if (a.dw === 'dw-files')  return '영상 ' + upList().length + '건';
   if (a.dw === 'dw-code')   return selected().length + '건';
@@ -2979,9 +2979,11 @@ function saveSet() {
   $('setBody').querySelectorAll('input[data-g]').forEach(function (el) {
     SET[el.dataset.g][el.dataset.k] = el.value.trim();
   });
-  /* 브랜드명은 화면 여러 곳에 다시 찍힌다 */
-  const nm = document.querySelector('#rail .bname');
-  if (nm && SET.brand.name) nm.textContent = SET.brand.name;
+  /* 레일은 워드마크만 세운다. 이름표가 없으니 여기서 바꿀 것도 없다 */
+  const rb = $('railBrand');
+  if (rb && SET.brand.name) {
+    rb.setAttribute('aria-label', SET.brand.name + ' · 전체 캠페인 보기');
+  }
   closeDrawer('dw-set');
   toast('저장했어요. 실제 화면에서는 담당자에게도 같이 반영됩니다.');
 }
@@ -2991,17 +2993,23 @@ function saveSet() {
 
 function renderAssets() {
   $('resBar').innerHTML = ASSETS.map(function (a, i) {
-    /* 받을 것이 있는 자료 = 원본. 그것만 눈에 띄어야 한다 */
-    const hot = a.dw === 'dw-files' && upList().length > 0;
+    const n2 = assetN(a);
+    const off = n2 === 0;
+    /* 받을 것이 있는 자료 = 원본. 넷 중 하나만 붉다 */
+    const hot = a.dw === 'dw-files' && n2 > 0;
     const arrow = a.dw === 'dw-files'
       ? 'M12 4v12m0 0l-4-4m4 4l4-4M4 20h16'
       : 'M14 4h6v6M20 4l-8 8M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5';
-    return '<button class="rchip' + (hot ? ' hot' : '') + '" onclick="openAsset(' + i + ')">'
+    return '<button class="rchip' + (hot ? ' hot' : '') + (off ? ' off' : '') + '"'
+      + ' onclick="openAsset(' + i + ')"'
+      + (off ? ' aria-disabled="true"' : '')
+      + ' title="' + esc(a.t) + ' · ' + esc(off ? '아직 없음' : assetSub(a)) + '">'
       + '<span class="ri">'
       +   '<svg fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">'
       +   '<path stroke-linecap="round" stroke-linejoin="round" d="' + A_ICON[a.ic] + '"/></svg></span>'
       + '<span class="rt">' + esc(a.t) + '</span>'
-      + '<span class="rb num">' + esc(hot ? assetSub(a) + ' 완료' : assetSub(a)) + '</span>'
+      + (A_COUNTED[a.dw] && n2 > 0 ? '<span class="rn num">' + n2 + '</span>' : '')
+      + '<span class="rb num">' + esc(assetSub(a)) + '</span>'
       + '<svg class="rx" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">'
       +   '<path stroke-linecap="round" stroke-linejoin="round" d="' + arrow + '"/></svg>'
       + '</button>';
@@ -3029,6 +3037,11 @@ function setGlass(on) {
 /* 자료는 접어 둔다 — 헤더에 버튼 넉 장이 늘 펴져 있으면 무엇이 중한지 알 수 없다 */
 function openAsset(i) {
   const a = ASSETS[i];
+  /* 꺼진 칩은 열지 않는다. 왜 비었는지만 말해 준다 */
+  if (assetN(a) === 0) {
+    toast(esc(a.t) + '는 아직 없어요. ' + esc(A_EMPTY[a.dw] || '준비되면 여기에 켜집니다.'), 'na');
+    return;
+  }
   if (a.dw) return openDrawer(a.dw);
   na(a.t, '실제 화면에서는 누르는 즉시 ' + a.t + ' 폴더가 새 창에서 열립니다.');
 }
@@ -3061,13 +3074,16 @@ const COST_BANDS = [['all', '전체'], ['hi', '30만 이상'], ['mid', '20만~30
    def:1 은 처음부터 켜져 있는 열. 나머지는 톱니에서 켠다 */
 const DASH = '<span class="text-slate-400">\u2014</span>';
 const TCOLS = [
+  /* 이름 칸에 붙여 두면 그 칸만 뚱뚱해진다. 제 열에 세운다 */
+  { k:'handle', t:'계정',      num:0, def:1, w:124, nosort:1,
+                v:c => '<span class="thandle num">' + esc(c.handle) + '</span>' },
   { k:'fol',    t:'팔로워',    num:1, def:1, w:78, v:c => kw(c.fol),
                 h:c => kw(c.fol) + ' 팔로워' },
   { k:'er',     t:'참여율',    num:1, def:1, w:70, v:c => c.er.toFixed(1) + '%',
                 h:c => c.er.toFixed(1) + '% 참여' },
   { k:'stage',  t:'단계',      num:0, def:1, w:92,
                 v:c => { const st = STAGE[c.stage] || STAGE.make;
-                         return '<span class="text-[11px] font-bold px-2 py-1 rounded-md ' + st.cls + '">'
+                         return '<span class="tstage ' + st.cls + '">'
                               + st.label + '</span>'; } },
   /* 진행을 보다가 바로 적는 자리다. 맨 끝에 두면 적으러 가는 길이 멀다 */
   { k:'memo',   t:'메모',      num:0, def:1, w:72, nosort:1, v:c => memoCell(c) },
@@ -3089,7 +3105,8 @@ const TSHOW = new Set(TCOLS.filter(x => x.def).map(x => x.k));
 const tcol  = k => TCOLS.find(x => x.k === k);
 
 /* 정렬 기준은 표의 열과 같다. 이름만 따로 붙는다 */
-const SORTS = TCOLS.map(x => [x.k, x.k === 'stage' ? '진행 단계' : x.k === 'cost' ? '제안 단가' : x.t])
+const SORTS = TCOLS.filter(x => !x.nosort)
+  .map(x => [x.k, x.k === 'stage' ? '진행 단계' : x.k === 'cost' ? '제안 단가' : x.t])
   .concat([['name', '이름']]);
 
 const folBand  = v => v >= 100000 ? 'hi' : v >= 50000 ? 'mid' : 'lo';
@@ -3307,8 +3324,8 @@ function progTable(list) {
              + '</button>')
     + '</th>';
 
-  /* 이름 칸의 몫. 아바타 + 이름 + 핸들이 들어가니 숫자 칸의 두 배 반쯤 */
-  const NAMEW = 208;
+  /* 이름 칸의 몫. 아바타와 이름만 남았으니 숫자 칸의 한 배 반이면 된다 */
+  const NAMEW = 158;
   const wsum  = NAMEW + cols.reduce((a, x) => a + (x.w || 78), 0);
   const pw    = w => (w / wsum * 100).toFixed(3) + '%';
 
@@ -3322,7 +3339,7 @@ function progTable(list) {
        자기 몫만큼 나눠 갖는다. 열을 켜고 끄면 다 같이 줄고 늘어난다 */
     + th('name', '이름', 0, pw(NAMEW))
     /* 숫자든 단계든 전부 눌러서 정렬된다 — 되는 열과 안 되는 열이 섞여 있었다 */
-    + cols.map(x => th(x.k, x.t, x.num, pw(x.w || 78), x.nosort)).join('')
+    + cols.map(x => th(x.k, x.t, 0, pw(x.w || 78), x.nosort)).join('')
     + '</tr></thead><tbody id="tbody">'
     + (list.length ? list.map(function (c) {
         const i = CREATORS.indexOf(c);
@@ -3332,9 +3349,8 @@ function progTable(list) {
           + '<td><span class="pbox cursor-pointer" data-i="' + i + '" onclick="togglePick(' + i + ', event)">'
           +   box(PICK.has(i)) + '</span></td>'
           + '<td><button onclick="openPeek(' + i + ', event)" class="tname">'
-          +   avatar(c, i, 32) + '<span class="tn">' + esc(c.name) + '</span>'
-          +   '<span class="th num">' + esc(c.handle) + '</span></button></td>'
-          + cols.map(x => '<td class="' + (x.num ? 'r num' : '') + '">' + x.v(c) + '</td>').join('')
+          +   avatar(c, i, 32) + '<span class="tn">' + esc(c.name) + '</span></button></td>'
+          + cols.map(x => '<td class="' + (x.num ? 'num' : '') + '">' + x.v(c) + '</td>').join('')
           + '</tr>'
           /* 누른 사람은 그 자리에서 열린다 — 위아래 사람이 그대로 남아야 견줄 수 있다 */
           + (opened
