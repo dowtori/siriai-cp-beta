@@ -1190,30 +1190,45 @@
 
   /* ══ 선반 ══ 애플뮤직의 그 줄. 카드에 껍데기가 없다 —
      흰 바탕에 그림과 글자만 있고, 깊이는 그림 크기가 만든다 */
-  #workSec{margin-top:49px;padding-bottom:8px}
-  .shelf{display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;
-         padding:2px 2px 14px;scroll-snap-type:x proximity;
-         scroll-padding-left:2px}
-  .wcard{flex:none;width:clamp(168px,13.5vw,223px);text-align:left;scroll-snap-align:start;
-         display:flex;flex-direction:column;gap:9px}
-  .wart{position:relative;display:block;aspect-ratio:4/5;border-radius:12px;overflow:hidden;
-        background:#e8edf3;box-shadow:var(--lift-1);
-        transition:transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease}
-  .wart img{width:100%;height:100%;object-fit:cover;display:block}
-  .wcard:hover .wart{transform:translateY(-3px);box-shadow:var(--lift-3)}
-  /* 재생 표식 — 이것이 영상이라는 말은 이 하나면 된다 */
-  .wplay{position:absolute;left:10px;top:10px;width:26px;height:26px;border-radius:50%;
+  /* 링 지름은 한 군데서 정한다. avatar() 에 넘기는 사진 크기(108px)와
+     padding 7px 이 여기에 물려 있다 — 122 = 108 + 7*2 */
+  #workSec{margin-top:49px;padding-bottom:8px;--wring:122px}
+  /* 스토리 줄 — 넉 장의 세로 썸네일이 화면을 채우고 끝났다. 사람이 먼저
+     보이고 동그란 것이 여럿 늘어서야 훑는 재미가 생긴다. 인스타의 그 줄이다 */
+  .shelf{display:flex;gap:clamp(16px,1.5vw,26px);overflow-x:auto;overflow-y:hidden;
+         padding:8px 2px 16px;scroll-snap-type:x proximity;
+         scroll-padding-left:2px;
+         /* 끌 수 있다는 말은 커서가 먼저 한다 */
+         cursor:grab}
+  /* 끄는 동안엔 스냅을 끈다 — scrollLeft 를 손으로 옮기는데 스냅이 물고
+     당기면 줄이 튄다. 글자 선택도 끈다(파란 덩어리가 따라다닌다) */
+  .shelf.dragging{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto;user-select:none}
+  .shelf.dragging .wname,.shelf.dragging .wmeta{pointer-events:none}
+  .wcard{flex:none;width:var(--wring);text-align:center;scroll-snap-align:start;
+         display:flex;flex-direction:column;align-items:center;gap:11px}
+  /* 링 — 그라데이션 테를 두르고 그 안에 흰 틈을 한 겹 남긴다.
+     브랜드 레드를 축으로 잡아, 무지개가 아니라 우리 것으로 읽히게 한다 */
+  .wring{position:relative;flex:none;display:grid;place-items:center;
+         width:var(--wring);height:var(--wring);border-radius:50%;padding:7px;
+         background:conic-gradient(from 150deg,#f9c449,var(--od-red) 34%,#c026d3 62%,#6366f1 84%,#f9c449);
+         transition:transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease}
+  .wring::before{content:'';position:absolute;inset:4px;border-radius:50%;background:#fff}
+  /* 사진 크기는 avatar() 가 인라인으로 박아 준다 — 여기서 다시 재지 않는다.
+     avatar 의 ring-1 회색 실선은 링 안에서 군더더기라 지운다 */
+  .wring img,.wring svg{position:relative;border-radius:50%;display:block;box-shadow:none}
+  .wcard:hover .wring{transform:translateY(-3px) scale(1.03);box-shadow:var(--lift-3)}
+  .wcard:active .wring{transform:translateY(-1px) scale(1.01)}
+  /* 재생 표식 — 이것이 영상이라는 말은 이 하나면 된다.
+     링 위에 얹으니 흰 테를 둘러 링과 겹쳐 보이지 않게 한다 */
+  .wplay{position:absolute;right:1px;bottom:1px;z-index:2;
+         width:30px;height:30px;border-radius:50%;
          display:grid;place-items:center;color:#fff;
-         background:rgba(15,23,42,.42);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+         background:var(--od-ink);box-shadow:0 0 0 3px #fff}
   .wplay svg{width:11px;height:11px;margin-left:1px}
-  .wfoot{position:absolute;left:0;right:0;bottom:0;padding:22px 10px 9px;
-         display:flex;align-items:flex-end;justify-content:space-between;gap:8px;
-         font-size:11.5px;font-weight:600;color:#fff;
-         background:linear-gradient(180deg,rgba(15,23,42,0),rgba(15,23,42,.62))}
-  .wname{font-size:13.5px;font-weight:600;color:var(--ink-1);letter-spacing:var(--tr-title);
-         white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .whandle{font-size:11.5px;color:var(--ink-4);margin-top:-6px;
-           white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wname{font-size:13px;font-weight:600;color:var(--ink-1);letter-spacing:var(--tr-title);
+         max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .wmeta{font-size:11px;color:var(--ink-4);letter-spacing:var(--tr-small);margin-top:-7px;
+         white-space:nowrap}
   .wempty{padding:34px 2px;font-size:13px;color:var(--ink-4)}
 
   /* 한 영역 안에서 왼쪽은 그림, 오른쪽은 숫자. 둘 사이는 선 하나다 */
@@ -1839,7 +1854,11 @@
             <section id="workSec">
               <div class="sechd"><h2>업로드된 콘텐츠</h2>
                 <span id="workN" class="secN num"></span></div>
-              <div id="workRow" class="shelf scroll-thin"></div>
+              <!-- .edge 는 좌우 끝 그림자다. 스크롤 상자에 직접 걸면 그림자가
+                   내용과 같이 밀려 나가므로 안 움직이는 껍데기에 건다 -->
+              <div id="workEdge" class="edge">
+                <div id="workRow" class="shelf scroll-thin"></div>
+              </div>
             </section>
           </section>
         </div>
@@ -4518,19 +4537,92 @@ function renderWork() {
     ? up.map(function (c) {
         const i = CREATORS.indexOf(c);
         return '<button class="wcard" onclick="openRow(' + i + ', event)"'
-          + ' title="' + esc(c.name) + '님 콘텐츠 · ' + n(c.views) + ' 조회">'
-          + '<span class="wart">'
-          +   '<img src="' + STILLS[i % STILLS.length] + '" alt="" loading="lazy">'
+          + ' title="' + esc(c.name) + '님 · ' + esc(c.handle) + ' · '
+          +   esc(c.due) + ' 업로드 · ' + n(c.views) + ' 조회">'
+          + '<span class="wring">' + avatar(c, i, WRING_PIC)
           +   '<span class="wplay">' + play + '</span>'
-          +   '<span class="wfoot"><span class="num">' + esc(c.due) + '</span>'
-          +     '<span class="num">' + n(c.views) + '</span></span>'
           + '</span>'
           + '<span class="wname">' + esc(c.name) + '</span>'
-          + '<span class="whandle num">' + esc(c.handle) + '</span>'
+          + '<span class="wmeta num">' + n(c.views) + ' 조회</span>'
           + '</button>';
       }).join('')
     : '<div class="wempty">업로드가 시작되면 이 자리에 올라옵니다</div>';
+
+  bindShelfDrag(box);
+  shelfEdges();
 }
+
+/* 링 안의 사진 지름. CSS 의 --wring(122px) 에서 padding 7px 을 뺀 값이다 —
+   한쪽만 고치면 사진이 링을 밟거나 흰 틈이 벌어진다 */
+const WRING_PIC = 108;
+
+/* ── 선반을 손으로 끈다 ──────────────────────────────────────
+   가로로 넘치는 줄인데 끄는 것이 안 됐다. 커서가 grab 이면서 안 끌리는 것은
+   거짓말이고, 스크롤바를 찾아 내려가는 것은 답답하다.
+   마우스만 가로챈다 — 손가락은 브라우저가 이미 관성까지 붙여 잘 굴린다 */
+function bindShelfDrag(el) {
+  if (!el || el.dataset.dragBound) return;
+  el.dataset.dragBound = '1';
+  let id = null, x0 = 0, left0 = 0, moved = false;
+
+  el.addEventListener('pointerdown', function (e) {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    id = e.pointerId; x0 = e.clientX; left0 = el.scrollLeft; moved = false;
+    /* 여기서 붙잡지 않는다. pointerdown 에서 setPointerCapture 를 걸면
+       뒤따르는 click 이 붙잡은 쪽(이 줄)으로 재타깃되고, 카드의 onclick 이
+       아예 안 불린다 — 눌러도 릴이 안 열렸다. 끌기가 실제로 시작된 뒤에만
+       붙잡는다. 그때는 클릭을 삼키는 게 오히려 맞다 */
+  });
+
+  el.addEventListener('pointermove', function (e) {
+    if (id === null || e.pointerId !== id) return;
+    const dx = e.clientX - x0;
+    /* 4px 안쪽은 손떨림이다. 그 안에서는 아직 클릭으로 둔다 */
+    if (!moved) {
+      if (Math.abs(dx) < 4) return;
+      moved = true;
+      el.classList.add('dragging');
+      /* 이제부터는 카드 밖으로 커서가 나가도 계속 따라온다 */
+      if (el.setPointerCapture) el.setPointerCapture(id);
+    }
+    el.scrollLeft = left0 - dx;
+    e.preventDefault();
+  });
+
+  function end(e) {
+    if (id === null || (e && e.pointerId !== id)) return;
+    if (el.hasPointerCapture && el.hasPointerCapture(id)) el.releasePointerCapture(id);
+    id = null;
+    el.classList.remove('dragging');
+    /* 끌고 놓은 것이 클릭으로 새어 나가면 놓는 순간 릴이 열린다.
+       바로 뒤에 오는 click 한 번만 삼킨다 */
+    if (moved) {
+      el.dataset.swallow = '1';
+      setTimeout(function () { delete el.dataset.swallow; }, 0);
+    }
+    moved = false;
+  }
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', end);
+
+  el.addEventListener('click', function (e) {
+    if (el.dataset.swallow) { e.stopPropagation(); e.preventDefault(); }
+  }, true);
+
+  el.addEventListener('scroll', shelfEdges, { passive: true });
+}
+
+/* 좌우 끝의 그림자 — 더 볼 게 남았는지 말해 준다.
+   .edge 는 진작 만들어져 있었는데 아무 데도 안 쓰이고 있었다 */
+function shelfEdges() {
+  const el = $('workRow'), wrap = $('workEdge');
+  if (!el || !wrap) return;
+  const max = el.scrollWidth - el.clientWidth;
+  wrap.classList.toggle('can-l', el.scrollLeft > 2);
+  wrap.classList.toggle('can-r', max > 2 && el.scrollLeft < max - 2);
+}
+
+addEventListener('resize', shelfEdges);
 
 /* ── 높이 ────────────────────────────────────────────────── */
 function fitProgRows() {
