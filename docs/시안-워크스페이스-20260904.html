@@ -250,14 +250,20 @@
 
   /* 히어로가 첫 화면인 동안 그 아래는 안 보인다.
      접으면 위에서부터 차례로 내려온다 — 날아다니는 것보다 이쪽이 읽힌다 */
-  #dashSec, #assetPanel, #progSec, #progHint{
+  /* 세 영역이 붙어 있으면 답답하고 어디까지가 한 덩어리인지 안 보인다.
+     간격 자체가 구분선 역할을 한다 — 선을 긋는 것보다 이쪽이 조용하다 */
+  #colL{gap:22px}
+
+  #dashSec, #newsSec, #assetPanel, #progSec, #progHint{
     transition:opacity .34s ease, transform .38s cubic-bezier(.45,.05,.25,1)}
+  #newsSec {transition-delay:.10s}
   #dashSec {transition-delay:.06s}
   #assetPanel{transition-delay:.14s}
   #progSec  {transition-delay:.22s}
   #progHint {transition-delay:.28s}
 
   #pad.heroOn #dashSec,
+  #pad.heroOn #newsSec,
   #pad.heroOn #assetPanel,
   #pad.heroOn #progSec,
   #pad.heroOn #progHint{
@@ -663,6 +669,22 @@
 
   /* 전환이 있다는 걸 모르면 표만 보고 끝난다. 빛이 오른쪽에서 왼쪽으로 한 번 훑고 지나가
      "여기 눌러볼 수 있다" 를 알린다. 손이 닿으면 멈춘다 — 계속 반짝이면 그건 소음이다 */
+  /* 최근 소식 — 애플뮤직 인기 신곡의 문법. 썸네일 · 제목 · 부제가 한 줄이고
+     두 열로 나뉜다. 판을 씌우지 않는다. 목록이 곧 내용이다 */
+  #news{display:grid;grid-template-columns:1fr;gap:0 34px}
+  @media (min-width:900px){ #news{grid-template-columns:1fr 1fr} }
+  .nrow{display:flex;align-items:center;gap:12px;padding:11px 2px;
+        border-bottom:1px solid rgba(15,23,42,.055)}
+  .nrow:last-child,.nrow:nth-last-child(2):nth-child(odd){border-bottom:0}
+  .nrow img{width:42px;height:42px;border-radius:10px;object-fit:cover;flex:none}
+  .nrow .nt{flex:1;min-width:0}
+  .nrow .nt b{display:block;font-size:13px;font-weight:600;color:#0f172a;
+              letter-spacing:var(--tr-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .nrow .nt i{display:block;font-size:11.5px;font-style:normal;color:#64748b;margin-top:2px;
+              white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .nrow .nd{font-size:11px;color:#94a3b8;flex:none;font-variant-numeric:tabular-nums}
+  .nrow .ndot{width:6px;height:6px;border-radius:50%;flex:none}
+
   .dmchip{font-size:12px;font-weight:600;color:#64748b;background:#f1f5f9;
           padding:8px 12px;border-radius:10px;transition:all .15s ease}
   .dmchip:hover{background:#e6ecf3}
@@ -718,7 +740,7 @@
     #camPad h1{font-size:22px}
     #eyebrow{margin-bottom:4px}
     #pad{padding-top:12px}
-    #colL{gap:8px}
+    #colL{gap:18px}
     #dash > div{padding-top:10px;padding-bottom:10px}
     #assetPanel > header{padding:6px 13px}
     #assets{padding:6px;gap:8px}
@@ -732,11 +754,20 @@
   /* ── 화이트 베이스 ─────────────────────────────────────
      면을 겹치지 않는다. 바탕은 하나이고 섹션은 제목과 여백으로 나뉜다.
      카드 셋을 나란히 얹으면 셋이 같은 무게로 읽힌다 */
-  #dashSec{margin-bottom:20px}
+  /* 간격은 #colL 의 gap 이 준다. 여기서 또 주면 두 번 벌어진다 */
   #flowRow{margin-bottom:16px}
   /* 패널의 껍데기를 벗긴다 — 남는 것은 제목과 내용이다 */
-  #flowSec, #progSec{background:transparent;box-shadow:none;border-radius:0}
-  #flowSec > header, #progSec > header{padding:0 2px 9px;border-bottom:0}
+  #flowSec{background:transparent;box-shadow:none;border-radius:0}
+
+  /* 인플루언서는 이 화면의 맨 아래 층이다. 성과·소식과 같은 평면에 있으면
+     세 영역이 전부 같은 무게로 읽힌다. 띄우지 말고 파 내려간다 —
+     뜨는 것은 안에 놓인 카드와 표이고, 이 판은 그것들이 놓인 바닥이다 */
+  #progSec{background:#e9edf3;border-radius:18px;padding:2px 4px 4px;
+           box-shadow:inset 0 1px 3px rgba(15,23,42,.07),
+                      inset 0 0 0 1px rgba(15,23,42,.05)}
+  #flowSec > header{padding:0 2px 9px;border-bottom:0}
+  #progSec > header{padding:9px 10px 8px;border-bottom:0}
+  #progSec > header h2{color:#475569}
   .pnl h2{font-size:14.5px;font-weight:700;letter-spacing:var(--tr-title)}
   /* 섹션 제목 — 크기와 여백이 위계를 만든다 */
   .sechd{display:flex;align-items:baseline;gap:9px;padding:0 2px 9px}
@@ -772,7 +803,7 @@
     #camPad h1{font-size:20px}
     #eyebrow{margin-bottom:2px}
     #pad{padding-top:8px}
-    #colL{gap:6px}
+    #colL{gap:12px}
   }
 
   .hbtn{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;color:#94a3b8;
@@ -1287,6 +1318,13 @@
             <div id="dash"></div>
           </section>
 
+
+          <!-- 2.5 · 최근 소식 — 성과와 인플루언서 사이에 숨통을 낸다.
+               판을 씌우지 않고 목록만 둔다. 목록이 곧 내용이다 -->
+          <section id="newsSec" class="shrink-0">
+            <div class="sechd"><h2>최근 소식</h2><span id="newsSum" class="num text-[10.5px] text-slate-500"></span></div>
+            <div id="news"></div>
+          </section>
 
           <!-- 3 · 진행상황 — 박스 하나에 전원. 20~30명이어도 여기 안에서만 흐른다 -->
           <!-- 3 · 진행상황 — 3행 높이에 맞춘다. flex-1 이면 남는 세로를 전부 먹고 안이 텅 빈다 -->
@@ -2547,6 +2585,42 @@ const DICO = {
   play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>'
 };
 
+/* ── 최근 소식 ────────────────────────────────────────────────
+   따로 적어 두는 목록이 아니다. 사람마다 이미 갖고 있는 날짜(발송·수령·업로드)를
+   사건으로 펴서 최근 순으로 세운다 — 그래서 캠페인을 갈아타면 저절로 따라간다 */
+const NEV = [
+  { k: 'upAt',   t: '업로드 완료',  c: '#10b981' },
+  { k: 'gotAt',  t: '제품 수령',    c: '#64748b' },
+  { k: 'sentAt', t: '제품 발송',    c: '#94a3b8' }
+];
+
+function newsList() {
+  const out = [];
+  CREATORS.forEach(function (c) {
+    NEV.forEach(function (e) {
+      if (c[e.k]) out.push({ who: c, at: c[e.k], label: e.t, dot: e.c });
+    });
+  });
+  /* MM.DD 라 문자열 정렬로 충분하다 */
+  return out.sort(function (a, b) { return a.at < b.at ? 1 : a.at > b.at ? -1 : 0; }).slice(0, 6);
+}
+
+function renderNews() {
+  const box = $('news');
+  if (!box) return;
+  const list = newsList();
+  box.innerHTML = list.map(function (v) {
+    return '<div class="nrow">'
+      + (v.who.pic ? '<img src="' + v.who.pic + '" alt="">' : '')
+      + '<span class="nt"><b>' + esc(v.who.name) + '<span class="font-normal text-slate-400"> '
+      +   esc(v.who.handle) + '</span></b>'
+      + '<i><span class="ndot inline-block mr-1.5" style="background:' + v.dot + '"></span>'
+      +   v.label + '</i></span>'
+      + '<span class="nd">' + v.at + '</span></div>';
+  }).join('');
+  $('newsSum').textContent = list.length ? '최근 ' + list.length + '건' : '';
+}
+
 function renderDash() {
   const sel = selected(), up = upList(), last = lastUp(), live = isLive();
   const rest = sel.length - up.length;
@@ -3791,7 +3865,7 @@ function chatSend(e) {
 }
 
 function render() {
-  renderHead(); renderNav(); renderDash(); renderFlow(); renderAssets(); renderProg(); renderChat();
+  renderHead(); renderNav(); renderDash(); renderNews(); renderFlow(); renderAssets(); renderProg(); renderChat();
 }
 
 /* ══════════ 상호작용 ══════════ */
