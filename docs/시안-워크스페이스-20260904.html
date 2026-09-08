@@ -277,10 +277,8 @@
           font-size:10.5px;font-weight:700;padding:3px 7px;border-radius:7px;
           white-space:nowrap;transition:filter .16s ease}
   .pstage:hover{filter:brightness(.94)}
-  .pcard{padding:14px 10px 14px 12px}
-  /* 아바타는 이름 줄에 맞춰 한 칸 내린다 */
-  .pcard > img, .pcard > svg{margin-top:2px}
-  .pcard > .pbox{margin-top:5px}
+  .pcard{padding:18px 12px 18px 14px}
+  .pstage{font-size:11.5px;padding:4px 9px}
 
   /* 카드를 누르면 목록은 한 열로 서고, 남은 두 칸에 정보와 콘텐츠가 선다.
      맨 오른쪽에 두면 어느 카드의 것인지 알 수 없다 */
@@ -337,36 +335,60 @@
   #camBanner.hero #heroDash .text-slate-300{color:rgba(255,255,255,.35)}
   #camBanner.hero #heroDash .dico{opacity:.72}
 
-  /* 진행 흐름 — 사운드 파형처럼 읽는다. 높이가 곧 그 구간에 몰린 인원이다 */
-  #flow svg{display:block;width:100%;height:96px}
-  #flow .fz{cursor:pointer}
-  #flow .fz rect{fill:transparent}
-  #flow .fz:hover ~ .fbars .b{opacity:.34}
-  .fLabel{font-size:10px;font-weight:700;fill:#94a3b8;letter-spacing:.02em}
-  .fLabel.on{fill:#0f172a}
-  .fCount{font-size:12.5px;font-weight:700;letter-spacing:-.02em}
-  /* 짚은 구간만 살아난다 */
-  #flow.hit .b{opacity:.30;transition:opacity .14s ease}
-  #flow.hit .b.on{opacity:1}
-  #flowTip{position:absolute;z-index:4;pointer-events:none;opacity:0;
-           transform:translate(-50%,-100%) translateY(-8px);
+  /* 진행 흐름 — 실 한 가닥. 단계(꼭지점)에서만 인원만큼 불룩해지고 사이는 홀쭉하다.
+     SVG 에는 모양만 넣는다. 글자·점은 HTML 로 얹어 늘어나지 않게 한다 */
+  #flow{height:132px}
+  #flow svg{position:absolute;left:0;right:0;top:30px;height:72px;width:100%;display:block}
+  #flow .fpath{transition:opacity .16s ease}
+  #flow.hit .fpath{opacity:.55}
+  /* 꼭지점 */
+  .fnode{position:absolute;top:66px;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:999px;
+         box-shadow:0 0 0 3px #fff, 0 2px 8px rgba(15,23,42,.18);pointer-events:none;
+         transition:transform .16s cubic-bezier(.22,.61,.36,1)}
+  .fnode.on{transform:translate(-50%,-50%) scale(1.35)}
+  /* 수량은 꼭지점 위에서만 말한다 */
+  .fcnt{position:absolute;top:2px;transform:translateX(-50%);font-size:15px;font-weight:700;
+        letter-spacing:-.02em;color:#0f172a;line-height:1;pointer-events:none}
+  .fcnt.zero{color:#cbd5e1}
+  .flab{position:absolute;bottom:4px;transform:translateX(-50%);font-size:10.5px;font-weight:700;
+        color:#94a3b8;white-space:nowrap;pointer-events:none;transition:color .14s ease}
+  .flab.on{color:#0f172a}
+  /* 짚는 구간 */
+  .fz{position:absolute;top:0;bottom:0;cursor:pointer}
+  #flowTip{position:absolute;z-index:4;pointer-events:none;opacity:0;top:0;
+           transform:translate(-50%,-100%) translateY(-6px);
            transition:opacity .14s ease;background:#0f172a;color:#fff;
            border-radius:12px;padding:9px 11px;box-shadow:var(--lift-3);white-space:nowrap}
   #flowTip.on{opacity:1}
   #flowTip .tw{display:flex;align-items:center;gap:6px;margin-top:6px}
-  #flowTip img, #flowTip svg.av{width:20px;height:20px;border-radius:999px;
-                                box-shadow:0 0 0 1.5px rgba(255,255,255,.35)}
+  #flowTip img, #flowTip svg{width:20px;height:20px;border-radius:999px;
+                             box-shadow:0 0 0 1.5px rgba(255,255,255,.35)}
 
-  /* 자료 — 접혀 있다가 눌러야 열린다 */
-  #matSec{transition:box-shadow .17s ease}
+  /* 자료 — 닫혀 있을 땐 232px 버튼 하나. 열면 이쪽이 넓어지고 흐름이 340px 로 줄어든다.
+     둘 다 flex 를 애니메이션한다 — 한쪽이 자라는 만큼 다른 쪽이 준다 */
+  #flowRow{display:flex;gap:12px;align-items:stretch}
+  #flowSec{flex:1 1 0;min-width:0;transition:flex-grow .38s cubic-bezier(.22,.61,.36,1), flex-basis .38s cubic-bezier(.22,.61,.36,1)}
+  #matSec{flex:0 0 232px;min-width:0;display:flex;flex-direction:column;overflow:hidden;
+          transition:flex-grow .38s cubic-bezier(.22,.61,.36,1), flex-basis .38s cubic-bezier(.22,.61,.36,1)}
+  #flowRow.matOpen #flowSec{flex:0 0 340px}
+  #flowRow.matOpen #matSec{flex:1 1 0}
+  #matBtn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:16px 14px 16px 16px;
+          transition:background-color .15s ease}
   #matBtn:hover{background:#f8fafc}
-  #matChev svg{transition:transform .26s cubic-bezier(.22,.61,.36,1)}
-  #matSec.on #matChev svg{transform:rotate(180deg)}
-  .matRow{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:10px;
-          text-align:left;transition:background-color .15s ease}
-  .matRow:hover{background:#f1f5f9}
-  .matRow .mi{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;flex:none;
-              background:#f1f5f9;color:#475569}
+  #matBtn .mic{width:44px;height:44px;border-radius:13px;flex:none;display:grid;place-items:center;
+               background:#0f172a;color:#fff}
+  #matBtn .mtx{min-width:0;flex:1 1 auto}
+  #matChev svg{transition:transform .3s cubic-bezier(.22,.61,.36,1)}
+  #flowRow.matOpen #matChev svg{transform:rotate(180deg)}
+  #matBody{display:none;padding:0 14px 14px;flex:1 1 auto;min-height:0}
+  #flowRow.matOpen #matBody{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-content:start}
+  /* 열렸을 때 자료 타일 — 예전에 쓰던 큰 타일 그대로 */
+  .mtile{display:flex;align-items:center;gap:12px;text-align:left;padding:14px 12px 14px 14px;
+         border-radius:14px;background:#f8fafc;border:1px solid #e8edf3;min-width:0;
+         transition:background-color .15s ease, transform .15s ease, box-shadow .15s ease}
+  .mtile:hover{background:#fff;transform:translateY(-1px);box-shadow:var(--lift-2)}
+  .mtile .mi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;
+             background:#e8edf3;color:#334155}
 
   /* 홈 타일 — 캠페인 하나가 타일 하나다. 색은 상태가 정한다 */
   .htile{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4 / 3;
@@ -552,6 +574,15 @@
         transition:background-color .15s ease,color .15s ease}
   .rnav:hover{background:#f1f5f9;color:#0f172a}
   .rnav.on{background:#0f172a;color:#fff}
+  /* 캠페인 행 — 누를 수 있다는 티를 낸다. 지금 보고 있는 것은 왼쪽에 표시 */
+  .nbar{display:flex;align-items:center;gap:7px;min-width:0}
+  .nbar .nb{flex:1 1 auto;height:3px;border-radius:999px;background:#e8edf3;overflow:hidden;display:block}
+  .nbar .nb > span{display:block;height:100%;border-radius:999px}
+  .crow{position:relative;transition:transform .14s ease, box-shadow .14s ease}
+  .crow:hover{transform:translateX(1px)}
+  .crow:active{transform:translateX(0) scale(.99)}
+  .crow.on::before{content:"";position:absolute;left:-6px;top:50%;transform:translateY(-50%);
+                   width:3px;height:18px;border-radius:999px;background:#0f172a}
   .rnav .ri{width:17px;height:17px;flex:none}
   #rail.mini .rnav{justify-content:center;padding:0}
 
@@ -934,24 +965,24 @@
                 </div>
                 <span class="t-label num text-[9.5px] text-slate-400">배송 → 업로드</span>
               </header>
-              <div id="flow" class="relative px-3 pt-2 pb-2.5"></div>
+              <div id="flow" class="relative"></div>
             </div>
 
-            <!-- 자료는 늘 쓰는 것이 아니다. 한 겹 아래로 내리고 눌러야 열린다 -->
-            <div id="matSec" class="pnl shrink-0" style="width:232px">
-              <button id="matBtn" onclick="toggleMat()" class="w-full text-left"
-                      aria-expanded="false" aria-controls="matBody">
-                <span class="flex items-center justify-between gap-2 px-3.5 py-3.5">
-                  <span class="min-w-0">
-                    <span class="block text-[12.5px] font-bold text-slate-900">캠페인 자료</span>
-                    <span id="matSum" class="block num text-[10.5px] text-slate-500 mt-0.5"></span>
-                  </span>
-                  <span id="matChev" class="hbtn shrink-0">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-                  </span>
+            <!-- 자료 — 큼직한 버튼 하나. 열면 왼쪽으로 펴지고 흐름은 반대로 줄어든다 -->
+            <div id="matSec" class="pnl">
+              <button id="matBtn" onclick="toggleMat()" aria-expanded="false" aria-controls="matBody">
+                <span class="mic">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5A2.5 2.5 0 015.5 5H9l2 2h7.5A2.5 2.5 0 0121 9.5v8A2.5 2.5 0 0118.5 20h-13A2.5 2.5 0 013 17.5z"/></svg>
+                </span>
+                <span class="mtx">
+                  <span class="block text-[13.5px] font-bold text-slate-900">캠페인 자료</span>
+                  <span id="matSum" class="block num text-[11px] text-slate-500 mt-0.5"></span>
+                </span>
+                <span id="matChev" class="hbtn shrink-0" aria-hidden="true">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
                 </span>
               </button>
-              <div id="matBody" class="hidden px-2.5 pb-2.5 flex flex-col gap-1.5"></div>
+              <div id="matBody"></div>
             </div>
           </section>
 
@@ -1733,6 +1764,12 @@ function goChat() { go('camp'); setTimeout(() => setChat(true), 60); }
 
 /* 그 달에 몇 명이 올라갔나. 레일에서 이름 옆에 붙는 숫자다 */
 const upCount = id => (ROSTERS[id] || []).filter(c => c.sel && c.up).length;
+/* 숫자만 붙이면 날짜처럼 읽힌다. 막대가 있어야 '몇 명 중 몇 명' 으로 읽힌다 */
+const navBar = (up, n, color) => {
+  const p = n ? Math.round(up / n * 100) : 0;
+  return '<span class="nbar mt-1.5"><span class="nb"><span style="width:' + p + '%;background:' + color + '"></span></span>'
+    + '<span class="num text-[10px] font-bold text-slate-500 shrink-0">' + up + '<span class="text-slate-300">/</span>' + n + '</span></span>';
+};
 
 function renderNav() {
   const nav = $('campNav'), mini = $('rail').classList.contains('mini');
@@ -1757,23 +1794,23 @@ function renderNav() {
 
   /* 진행 중 — 지금 보고 있는 달. 기간과 인원까지 */
   const liveHtml = live.map(cp =>
-      '<div class="w-full text-left px-3 py-2.5 rounded-xl mb-1 bg-white" style="'
+      '<button onclick="pickCamp(\'' + cp.id + '\')" class="crow w-full text-left px-3 py-2.5 rounded-xl mb-1 bg-white'
+    + (cp.id === S.camp && S.view === 'camp' ? ' on' : '') + '" style="'
     + 'box-shadow:0 0 0 1px rgba(16,185,129,.34), 0 2px 6px rgba(17,19,24,.05), 0 10px 26px -20px rgba(16,185,129,.50)">'
     + '<span class="flex items-center gap-2">'
     +   '<span class="dot on shrink-0" style="background:#10b981"></span>'
     +   '<span class="text-[12.5px] font-semibold text-slate-900 truncate min-w-0">' + esc(cp.title) + '</span>'
-    +   '<span class="num text-[11px] font-bold text-slate-500 shrink-0 ml-auto">'
-    +     upCount(cp.id) + '/' + cp.n + '</span>'
     + '</span>'
-    + '</div>').join('');
+    + navBar(upCount(cp.id), cp.n, '#10b981')
+    + '</button>').join('');
 
   /* 지난 캠페인 — 캠페인이 쌓인다는 것만 말한다. 기간·인원·배지는 뺀다 */
   const pastHtml = past.map(cp =>
-      '<div class="w-full text-left px-3 py-2 rounded-xl mb-1 bg-slate-50 border border-slate-200/70'
-    + ' flex items-center gap-2">'
-    + '<span class="text-[12px] font-medium text-slate-500 truncate min-w-0">' + esc(cp.title) + '</span>'
-    + '<span class="num text-[11px] font-semibold text-slate-400 shrink-0 ml-auto">'
-    +   upCount(cp.id) + '/' + cp.n + '</span></div>').join('');
+      '<button onclick="pickCamp(\'' + cp.id + '\')" class="crow w-full text-left px-3 py-2 rounded-xl mb-1'
+    + ' bg-slate-50 border border-slate-200/70 flex items-center gap-2'
+    + (cp.id === S.camp && S.view === 'camp' ? ' on' : '') + '">'
+    + '<span class="min-w-0 flex-1"><span class="block text-[12px] font-medium text-slate-500 truncate">' + esc(cp.title) + '</span>'
+    + navBar(upCount(cp.id), cp.n, '#94a3b8') + '</span></button>').join('');
 
   const sec = (title, html) => html
     ? '<div class="pt-3 first:pt-1"><div class="px-2 pb-1.5 num t-label text-[9.5px] text-slate-500">'
@@ -2140,115 +2177,98 @@ function assetSub(a) {
    막대 하나가 한 사람이 아니다. x 축을 잘게 쪼개고 각 단계의 인원을
    그 구간 한가운데에 놓아 옆으로 번지게 했다 — 그래서 경계에서 끊기지 않고
    '어디에 몰려 있는지' 가 모양으로 읽힌다. 사운드 파형을 보는 눈과 같다. */
-const FBARS = 96;
-
 function flowData() {
   const sel = selected();
-  const by = FLOW.map(f => sel.filter(c => c.stage === f[0]));
-  const n = FBARS, w = n / FLOW.length;
-  /* 번짐 폭. 좁으면 계단, 넓으면 뭉개진다 */
-  const sp = w * 0.62;
-  const val = new Array(n).fill(0);
-  by.forEach((grp, k) => {
-    if (!grp.length) return;
-    const c = (k + 0.5) * w;
-    for (let x = 0; x < n; x++) {
-      const d = (x + 0.5 - c) / sp;
-      val[x] += grp.length * Math.exp(-d * d);
-    }
-  });
-  return { by, val, max: Math.max(1, ...val) };
+  return FLOW.map(f => sel.filter(c => c.stage === f[0]));
 }
 
+/* 단계마다 농도만 다르다. 마지막만 초록 */
+const FCOLOR = ['#cbd5e1', '#94a3b8', '#64748b', '#10b981'];
+
+/* 실 한 가닥. 가운데 선을 두고 위아래로 두께를 준다.
+   두께 = 기본 실 + 각 꼭지점에서 인원만큼 부푼 종 모양. 사이에서는 실만 남는다 */
 function renderFlow() {
   const box = $('flow');
   if (!box) return;
-  const { by, val, max } = flowData();
+  const by = flowData();
   const total = by.reduce((a, g) => a + g.length, 0);
-  const W = 1000, H = 96, base = H - 20, top = 8;
-  const bw = W / FBARS;
+  const max = Math.max(1, ...by.map(g => g.length));
 
-  const bars = val.map((v, x) => {
-    const k = Math.min(FLOW.length - 1, Math.floor(x / (FBARS / FLOW.length)));
-    const h = Math.max(3, Math.round((v / max) * (base - top)));
-    return '<rect class="b b' + k + '" data-k="' + k + '" x="' + (x * bw + bw * 0.16).toFixed(2)
-      + '" y="' + (base - h) + '" width="' + (bw * 0.68).toFixed(2) + '" height="' + h
-      + '" rx="' + Math.min(2, bw * 0.34).toFixed(2) + '" fill="' + FCOLOR[k] + '"/>';
-  }).join('');
+  const W = 1000, H = 72, mid = H / 2, thin = 2.5, fat = mid - 4;
+  const N = 240, K = FLOW.length, pts = [];
+  for (let i = 0; i <= N; i++) {
+    const x = i / N;
+    let t = thin;
+    by.forEach((g, k) => {
+      const c = (k + 0.5) / K, d = (x - c) / 0.06;
+      t += (g.length / max) * (fat - thin) * Math.exp(-d * d);
+    });
+    pts.push([x * W, t]);
+  }
+  let d = 'M0 ' + mid;
+  pts.forEach(p => { d += 'L' + p[0].toFixed(1) + ' ' + (mid - p[1]).toFixed(1); });
+  for (let i = pts.length - 1; i >= 0; i--) d += 'L' + pts[i][0].toFixed(1) + ' ' + (mid + pts[i][1]).toFixed(1);
+  d += 'Z';
 
-  const labels = FLOW.map((f, k) => {
-    const cx = (k + 0.5) * (W / FLOW.length);
-    return '<text class="fLabel" data-k="' + k + '" x="' + cx.toFixed(1) + '" y="' + (H - 5)
-      + '" text-anchor="middle">' + f[1] + '</text>'
-      + '<text class="fCount" x="' + cx.toFixed(1) + '" y="' + (top + 2)
-      + '" text-anchor="middle" fill="' + (by[k].length ? FCOLOR[k] : '#cbd5e1') + '">'
-      + by[k].length + '</text>';
-  }).join('');
-
-  const zones = FLOW.map((f, k) =>
-    '<g class="fz" data-k="' + k + '"><rect x="' + (k * (W / FLOW.length)) + '" y="0" width="'
-    + (W / FLOW.length) + '" height="' + H + '"/></g>').join('');
+  const pos = k => ((k + 0.5) / K * 100).toFixed(2) + '%';
 
   box.innerHTML =
-      '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img"'
-    + ' aria-label="\uc9c4\ud589 \ub2e8\uacc4\ubcc4 \uc778\uc6d0 \ud750\ub984">'
-    + '<g class="fbars">' + bars + '</g>' + labels + zones + '</svg>'
+      '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-hidden="true">'
+    +   '<defs><linearGradient id="fg" x1="0" x2="1">'
+    +     '<stop offset="0" stop-color="#cbd5e1"/><stop offset=".55" stop-color="#94a3b8"/>'
+    +     '<stop offset=".78" stop-color="#64748b"/><stop offset="1" stop-color="#10b981"/>'
+    +   '</linearGradient></defs>'
+    +   '<path class="fpath" d="' + d + '" fill="url(#fg)"/>'
+    + '</svg>'
+    + FLOW.map((f, k) =>
+        '<span class="fcnt num' + (by[k].length ? '' : ' zero') + '" data-k="' + k + '" style="left:' + pos(k) + '">' + by[k].length + '</span>'
+      + '<span class="fnode" data-k="' + k + '" style="left:' + pos(k) + ';background:' + FCOLOR[k] + '"></span>'
+      + '<span class="flab" data-k="' + k + '" style="left:' + pos(k) + '">' + f[1] + '</span>'
+      + '<span class="fz" data-k="' + k + '" style="left:' + (k / K * 100) + '%;width:' + (100 / K) + '%"></span>'
+      ).join('')
     + '<div id="flowTip" role="status"></div>';
 
   $('flowSum').textContent = total + '명';
-  bindFlow();
+  bindFlow(by);
 }
 
-/* 단계마다 농도만 다르다. 색을 늘리지 않는다 — 마지막 칸만 초록 */
-const FCOLOR = ['#cbd5e1', '#94a3b8', '#64748b', '#10b981'];
-
-function bindFlow() {
+function bindFlow(by) {
   const box = $('flow'), tip = $('flowTip');
   if (!box || !tip) return;
-  const { by } = flowData();
-
+  const K = FLOW.length;
   box.querySelectorAll('.fz').forEach(function (z) {
     const k = +z.dataset.k;
     z.addEventListener('mouseenter', function () {
       const grp = by[k];
       box.classList.add('hit');
-      box.querySelectorAll('.b').forEach(b => b.classList.toggle('on', +b.dataset.k === k));
-      box.querySelectorAll('.fLabel').forEach(l => l.classList.toggle('on', +l.dataset.k === k));
-
-      /* 이름을 다 늘어놓으면 읽히지 않는다. 얼굴 셋과 수만 남긴다 */
+      box.querySelectorAll('.fnode,.flab').forEach(e => e.classList.toggle('on', +e.dataset.k === k));
       const face = grp.slice(0, 3).map(c => avatar(c, CREATORS.indexOf(c), 20)).join('');
-      const rest = grp.length > 3 ? ' 외 ' + (grp.length - 3) + '명' : '';
       const names = grp.slice(0, 3).map(c => c.name).join(' · ');
-      tip.innerHTML = '<div class="text-[11.5px] font-bold">' + FLOW[k][1] + ' '
-        + '<span class="num">' + grp.length + '</span>명</div>'
+      const rest = grp.length > 3 ? ' 외 ' + (grp.length - 3) + '명' : '';
+      tip.innerHTML = '<div class="text-[11.5px] font-bold">' + FLOW[k][1] + ' <span class="num">' + grp.length + '</span>명</div>'
         + (grp.length
-           ? '<div class="tw">' + face
-             + '<span class="text-[10.5px]" style="color:rgba(255,255,255,.82)">'
-             + esc(names) + esc(rest) + '</span></div>'
+           ? '<div class="tw">' + face + '<span class="text-[10.5px]" style="color:rgba(255,255,255,.82)">' + esc(names) + esc(rest) + '</span></div>'
            : '<div class="text-[10.5px] mt-1" style="color:rgba(255,255,255,.72)">아직 없어요</div>');
-
-      const r = box.getBoundingClientRect();
-      tip.style.left = Math.round(r.width * ((k + 0.5) / FLOW.length)) + 'px';
-      tip.style.top = '10px';
+      tip.style.left = ((k + 0.5) / K * 100) + '%';
+      tip.style.top = '30px';
       tip.classList.add('on');
     });
     z.addEventListener('click', function () { setFilter('stage', FLOW[k][0]); });
   });
-
   box.addEventListener('mouseleave', function () {
     box.classList.remove('hit');
-    box.querySelectorAll('.b.on').forEach(b => b.classList.remove('on'));
-    box.querySelectorAll('.fLabel.on').forEach(l => l.classList.remove('on'));
+    box.querySelectorAll('.on').forEach(e => e.classList.remove('on'));
     tip.classList.remove('on');
   });
 }
 
 /* ── 자료 — 한 겹 아래 ──────────────────────────────────── */
 function toggleMat() {
-  const sec = $('matSec'), body = $('matBody'), on = body.classList.contains('hidden');
-  body.classList.toggle('hidden', !on);
-  sec.classList.toggle('on', on);
+  const row = $('flowRow'), on = !row.classList.contains('matOpen');
+  row.classList.toggle('matOpen', on);
   $('matBtn').setAttribute('aria-expanded', on ? 'true' : 'false');
+  /* 흐름 폭이 바뀌니 다시 그린다 — 실 모양은 % 라 그대로지만 툴팁 위치가 어긋난다 */
+  setTimeout(renderFlow, 400);
 }
 
 /* ── 설정 ─────────────────────────────────────────────────
@@ -2293,7 +2313,20 @@ function renderSet() {
     + head('알림')
     + sw('upload', '업로드가 올라오면', SET.notify.upload)
     + sw('ask', 'SIRIAI 가 답하면', SET.notify.ask)
-    + sw('weekly', '주간 요약', SET.notify.weekly);
+    + sw('weekly', '주간 요약', SET.notify.weekly)
+    + '<div class="border-t border-slate-100 my-5"></div>'
+    + head('대화')
+    + '<button onclick="chatResetLocal()" class="btn w-full text-[12px] font-bold text-slate-700 py-2.5 rounded-xl">대화를 처음 상태로 되돌리기</button>'
+    + '<p class="text-[10.5px] text-slate-400 mt-2 keep">시연하며 남긴 시험 메시지를 지웁니다. 이 브라우저에만 적용됩니다.</p>';
+}
+
+/* 데모를 여러 번 돌리면 시험 메시지가 쌓인다. 이 브라우저의 대화만 씨앗으로 되돌린다 */
+function chatResetLocal() {
+  CHAT = CHAT_SEED.slice();
+  CHAT_TOPIC = null;
+  renderChat(); chatSave();
+  closeDrawer('dw-set');
+  toast('대화를 처음 상태로 되돌렸어요.');
 }
 
 function toggleSet(k) { SET.notify[k] = !SET.notify[k]; renderSet(); }
@@ -2310,17 +2343,16 @@ function saveSet() {
 }
 
 function renderAssets() {
-  /* 큰 타일 넉 장이 화면 한가운데를 차지할 일이 아니다. 줄로 접어 둔다 */
   $('matSum').textContent = ASSETS.length + '건';
   $('matBody').innerHTML = ASSETS.map((a, i) =>
-    '<button class="matRow" onclick="openAsset(' + i + ')">'
-    + '<span class="mi"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">'
+    '<button class="mtile" onclick="openAsset(' + i + ')">'
+    + '<span class="mi"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">'
     +   '<path stroke-linecap="round" stroke-linejoin="round" d="' + A_ICON[a.ic] + '"/></svg></span>'
     + '<span class="min-w-0 flex-1 leading-tight">'
-    +   '<span class="block text-[11.5px] font-bold text-slate-900 truncate">' + esc(a.t) + '</span>'
-    +   '<span class="block num text-[10px] text-slate-500 truncate">' + esc(assetSub(a)) + '</span>'
+    +   '<span class="block text-[13.5px] font-bold text-slate-900 truncate">' + esc(a.t) + '</span>'
+    +   '<span class="block num text-[11px] text-slate-500 truncate mt-0.5">' + esc(assetSub(a)) + '</span>'
     + '</span>'
-    + '<svg class="w-3 h-3 shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">'
+    + '<svg class="w-3.5 h-3.5 shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">'
     +   '<path stroke-linecap="round" stroke-linejoin="round" d="' + (a.dw === 'dw-files' ? 'M12 4v12m0 0l-4-4m4 4l4-4M4 20h16' : 'M9 5l7 7-7 7') + '"/></svg>'
     + '</button>').join('');
 }
@@ -2430,25 +2462,25 @@ function sortHint(c) {
 
 function pcard(c) {
   const i = CREATORS.indexOf(c), st = STAGE[c.stage] || STAGE.make;
-  /* 업로드가 끝난 사람은 체크, 아직인 사람은 도는 점 — 한눈에 갈린다 */
   const mark = c.stage === 'live'
     ? '<svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24">'
       + '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
     : '<span class="dot on"></span>';
-  return '<article class="pcard surface-sm flex items-start gap-3"'
+  /* 왼쪽에 사람, 오른쪽에 상태. 카드 폭을 끝까지 쓴다 */
+  return '<article class="pcard surface-sm flex items-center gap-3.5"'
     + ' draggable="true" data-i="' + i + '"' + (PSTATE.open === i ? ' data-open="1"' : '')
     + ' onclick="openPeek(' + i + ', event)" title="눌러서 정보 보기">'
     + '<span class="pbox shrink-0 cursor-pointer" data-i="' + i + '" onclick="togglePick(' + i + ', event)"'
     +   ' title="' + esc(c.name) + '님 고르기">' + box(PICK.has(i)) + '</span>'
-    + avatar(c, i, 48)
+    + avatar(c, i, 54)
     + '<span class="min-w-0 flex-1 leading-tight">'
-    +   '<span class="block text-[15px] font-bold text-slate-900 truncate">' + esc(c.name) + '</span>'
-    +   '<span class="block num text-[11.5px] text-slate-500 truncate mt-0.5">' + esc(c.handle) + '</span>'
-    +   '<span class="flex items-center gap-2 mt-2 min-w-0">'
-    +     '<button class="pstage ' + st.cls + '" onclick="openPeek(' + i + ', event)"'
-    +       ' title="진행 단계 보기">' + mark + st.label + '</button>'
-    +     '<span class="num text-[10.5px] text-slate-500 truncate">' + sortHint(c) + '</span>'
-    +   '</span>'
+    +   '<span class="block text-[16px] font-bold text-slate-900 truncate">' + esc(c.name) + '</span>'
+    +   '<span class="block num text-[12px] text-slate-500 truncate mt-1">' + esc(c.handle) + '</span>'
+    +   '<span class="block num text-[11px] text-slate-400 truncate mt-1">' + kw(c.fol) + ' 팔로워 · 참여율 ' + c.er.toFixed(1) + '%</span>'
+    + '</span>'
+    + '<span class="shrink-0 flex flex-col items-end gap-1.5 text-right">'
+    +   '<button class="pstage ' + st.cls + '" onclick="openPeek(' + i + ', event)" title="진행 단계 보기">' + mark + st.label + '</button>'
+    +   '<span class="num text-[11px] text-slate-500 whitespace-nowrap">' + sortHint(c) + '</span>'
     + '</span>'
     + '<button class="hbtn shrink-0" onclick="chatAbout(' + i + ', event)" title="이 사람 이야기로 대화 열기"'
     +   ' aria-label="' + esc(c.name) + '님 이야기로 대화 열기">'
@@ -2461,9 +2493,9 @@ function pcard(c) {
    한 열에 담을 수 있는 인원을 넘을 때만 열을 하나 더 쓴다.
    상세가 열려 있으면 그만큼 좁아진 폭으로 센다 — 애니메이션 중에 재면
    중간값을 읽으니 폭은 재지 말고 계산한다 */
-const PCARD_MIN = 292;   /* 이보다 좁아지면 이름과 단계가 붙는다 */
-const PCARD_MAX = 420;   /* 이보다 넓어지면 오른쪽이 텅 빈다 */
-const PCARD_H   = 90;
+const PCARD_MIN = 340;   /* 사람과 상태를 양끝에 두려면 이 폭은 있어야 한다 */
+const PCARD_MAX = 520;
+const PCARD_H   = 104;
 const PGAP      = 8;
 const PCOL_MAX  = 3;     /* 이보다 늘리면 카드가 다시 작아진다 */
 
