@@ -406,7 +406,11 @@
   /* 패널 — 대화창 · 에셋 · 진행상황이 같은 머리글을 쓴다.
      떠 있는 라벨 대신 박스가 자기 이름을 갖게 하는 것이 '완성된 화면'의 조건이다. */
   .pnl       {background:#fff;box-shadow:var(--lift-2);border-radius:16px;display:flex;flex-direction:column;overflow:hidden}
-  .pnl > header{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  /* 카드(#progCard)로 한 겹 감싸면서 이 선택자가 안 맞게 됐다.
+     그래서 머리줄이 flex 가 아니라 block 으로 떨어졌고, 제목 묶음과
+     컨트롤 묶음이 세로로 겹쳐 체크박스가 아래 것에 묻혔다 */
+  .pnl > header, #progCard > header{flex:none;display:flex;align-items:center;
+                justify-content:space-between;gap:16px;
                   padding:9px 13px;border-bottom:1px solid #f1f5f9}
   .pnl h2    {font-size:12.5px;font-weight:700;color:#0f172a;letter-spacing:var(--tr-body);
               white-space:nowrap}
@@ -2697,7 +2701,7 @@ let heroT = null, heroT2 = null, autoT = null, heroAuto = false;
    첫 화면 지표가 그 밑에 깔린다 */
 /* 위에 붙었는지는 제 자리와 실제 자리를 견줘서 안다.
    배너 키는 여기서 같이 잰다 — 접히는 순간을 따로 잡으려다 놓치기 쉽다 */
-let STUCK_LOCK = 0;
+let STUCK_LOCK = 0, STUCK_T = null;
 function syncStuck() {
   const t = $('topStack'), pad = $('pad'), b = $('camBanner');
   if (!t || !pad || !b) return;
@@ -2713,7 +2717,14 @@ function syncStuck() {
   const on = hdr > 0 && (was ? st > 56 : st > 168);
   if (on !== was) {
     const now = performance.now();
-    if (now < STUCK_LOCK) return;
+    if (now < STUCK_LOCK) {
+      /* 잠긴 동안 그냥 돌아가면 그 상태가 그대로 굳는다 — 빠르게 굴리다
+         멈추면 목록 한참 아래인데 위가 펼쳐진 채로 남는 이유가 이것이다.
+         잠금이 풀리는 시점에 한 번 더 본다 */
+      clearTimeout(STUCK_T);
+      STUCK_T = setTimeout(syncStuck, STUCK_LOCK - now + 30);
+      return;
+    }
     STUCK_LOCK = now + 460;
     t.classList.toggle('stuck', on);
   }
