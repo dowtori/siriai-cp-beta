@@ -317,37 +317,12 @@
      스크롤되는 표가 그 옆으로 지나가며 잘려 보인다.
      --gut 을 그대로 되돌려 쓰니 #pad 의 테두리 상자와 정확히 같다 —
      레일을 침범할 수가 없다. 안의 내용만 다시 여백에 맞춘다 */
-  #stkEnd{height:1px;margin:0;pointer-events:none}
-
-  /* ══ 떠 있는 바 ══ 흐름 밖이라 내려와도 문서가 한 픽셀도 안 변한다 */
-  #floatBar{position:fixed;top:0;left:var(--rail);right:0;z-index:30;
-            padding:11px var(--gut) 13px;
-            background:rgba(255,255,255,.93);
-            -webkit-backdrop-filter:blur(18px) saturate(1.5);
-                    backdrop-filter:blur(18px) saturate(1.5);
-            box-shadow:0 12px 30px -22px rgba(15,23,42,.5),
-                       0 1px 0 rgba(15,23,42,.08);
-            transform:translateY(-102%);opacity:0;pointer-events:none;
-            transition:transform .30s cubic-bezier(.22,.61,.36,1), opacity .2s ease}
-  #floatBar.on{transform:none;opacity:1;pointer-events:auto}
-  .fbRow{display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:0}
-  .fbHead{display:flex;align-items:center;gap:9px;min-width:0}
-  .fbTitle{font-size:15px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-title);
-           white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .fbBadge{display:inline-flex;align-items:center;gap:5px;flex:none;
-           font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;
-           background:#ecfdf5;color:#047857}
-  .fbRes{display:flex;align-items:center;gap:8px;flex:none}
-  .fbNums{display:flex;align-items:center;gap:clamp(16px,2vw,40px);margin-top:9px;min-width:0}
-  .fbn{display:flex;align-items:baseline;gap:7px;white-space:nowrap;min-width:0}
-  .fbn i{font-style:normal;font-size:11px;color:var(--ink-4);letter-spacing:var(--tr-small)}
-  .fbn b{font-size:17px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-display)}
-  .fbn b .text-slate-400{color:#c3cbd6}
-  @media (max-width:900px){ .fbNums .fbn:nth-child(n+3){display:none} }
-  /* 흐름 안에서는 평범하게 위로 흘러 올라간다. 붙는 일은 #floatBar 가 한다 */
-  #topStack{background:#fff;
-            margin-left:calc(var(--gut) * -1);margin-right:calc(var(--gut) * -1);
-            padding-left:var(--gut);padding-right:var(--gut)}
+  #topStack{background:transparent}
+  /* 배너는 처음부터 끝까지 맨 위다. 키가 안 변하니 문서가 줄 일이 없고,
+     하나뿐이니 두 벌을 맞출 일도 없다 */
+  #camBanner:not(.hero){position:sticky;top:0;z-index:30;
+                        margin-left:calc(var(--gut) * -1);margin-right:calc(var(--gut) * -1);
+                        padding-left:var(--gut);padding-right:var(--gut)}
   #topStack > section{margin-top:30px;transition:margin-top .30s cubic-bezier(.22,.61,.36,1)}
   /* 붙으면 성과는 숫자만 남긴다. 전일 대비 · 남은 인원 같은 것은 표를 읽는
      동안에는 필요 없다 — 필요해지면 위로 올리면 된다 */
@@ -393,7 +368,7 @@
      컨트롤 묶음이 세로로 겹쳐 체크박스가 아래 것에 묻혔다 */
   /* 이 줄이 위로 사라지면 표를 조금만 내려도 필터도 보기 전환도 못 누른다.
      떠 있는 덩어리 바로 아래에 같이 붙는다 */
-  #progCard > header{position:sticky;top:var(--floatH,0px);z-index:6;background:#fff;
+  #progCard > header{position:sticky;top:var(--hdrH,0px);z-index:6;background:#fff;
                      border-radius:16px 16px 0 0}
   .pnl > header, #progCard > header{flex:none;display:flex;align-items:center;
                 justify-content:space-between;gap:16px;
@@ -985,7 +960,7 @@
   /* 굴리려고 끌면 머리글 글자가 파랗게 잡혔다 */
   /* 머리글은 툴바 줄 아래에 선다 */
   #ptable th{user-select:none;-webkit-user-select:none;
-             position:sticky;top:calc(var(--floatH,0px) + var(--toolH,0px) - 1px);
+             position:sticky;top:calc(var(--hdrH,0px) + var(--toolH,0px) - 1px);
              z-index:2;background:#f8fafc;padding:0;
              border-bottom:1px solid #e9eef4;white-space:nowrap;
              box-shadow:0 1px 0 rgba(15,23,42,.04)}
@@ -1584,7 +1559,7 @@
       <!-- 붙는 것은 셋이 한 덩어리다 — 어느 캠페인인지(배너) · 어디까지
            왔는지(흐름) · 숫자가 얼마인지(성과). 배너만 밖에 두었더니
            그 키를 재서 아래를 대야 했고, 재는 동안 틈이 생겼다 -->
-      <div id="topStack">
+      <!-- 배너는 늘 맨 위에 있다. 흐름·성과는 그 아래로 지나간다 -->
       <!-- 제목 — 오드타입 배너 -->
       <div id="camBanner" onclick="heroTap(event)" class="hero shrink-0 relative overflow-hidden">
         <div id="camArt" aria-hidden="true"></div>
@@ -1626,6 +1601,8 @@
         </button>
       </div>
 
+      <div id="topStack">
+
 
             <section id="flowSec" class="shrink-0">
               <div class="sechd"><h2>진행 흐름</h2><span id="fpSum" class="num text-[10.5px] text-slate-500"></span>
@@ -1643,10 +1620,6 @@
             </section>
 
       </div>
-      <!-- 이 표식이 화면 위로 사라지면 떠 있는 바가 내려온다.
-           바는 흐름 밖(fixed)이라 이 표식의 자리를 건드리지 않는다 -->
-      <div id="stkEnd" aria-hidden="true"></div>
-
       <!-- 본문 2단 — 좌: 대시보드 · 에셋 · 진행상황 / 우: 대화창 -->
       <div id="bodyRow" class="flex-1 min-h-0 mt-3 flex flex-col xl:flex-row gap-3">
 
@@ -2014,18 +1987,6 @@
   </div>
 </div>
 
-
-<!-- 떠 있는 바 — 흐름 밖이다. 내려와도 문서 높이가 안 변한다 -->
-<div id="floatBar" aria-hidden="true">
-  <div class="fbRow">
-    <span class="fbHead">
-      <b class="fbTitle"></b>
-      <span class="fbBadge"></span>
-    </span>
-    <span class="fbRes"></span>
-  </div>
-  <div class="fbNums"></div>
-</div>
 
 <!-- 인플루언서 메모 — 표에서 메모 칸을 누르면 그 사람 자리에 열린다 -->
 <div id="memoPop" role="dialog" aria-modal="false" aria-hidden="true">
@@ -2708,44 +2669,27 @@ let heroT = null, heroT2 = null, autoT = null, heroAuto = false;
    하단 CTA 는 화면을 덮어도 된다 — 데모라는 걸 알려주는 역할이라 자리를 비우지 않는다 */
 /* 독은 fixed 라 레이아웃에 안 잡힌다. 높이를 재서 변수로 주지 않으면
    첫 화면 지표가 그 밑에 깔린다 */
-/* 떠 있는 바를 채운다. 값은 이미 그려 둔 것에서 가져온다 —
-   같은 계산을 두 번 하면 두 곳이 어긋난다 */
-function paintFloat() {
-  const fb = $('floatBar');
-  if (!fb) return;
-  fb.querySelector('.fbTitle').textContent = $('campTitle') ? $('campTitle').textContent : '';
-  fb.querySelector('.fbBadge').innerHTML   = $('campBadge') ? $('campBadge').innerHTML : '';
-  fb.querySelector('.fbRes').innerHTML     = $('resBar')    ? $('resBar').innerHTML    : '';
-  const dash = $('dash');
-  fb.querySelector('.fbNums').innerHTML = !dash ? '' :
-    [].slice.call(dash.children).map(function (c) {
-      const lab = c.children[0] && c.children[0].firstElementChild;
-      const val = c.children[1];
-      if (!lab || !val) return '';
-      return '<span class="fbn"><i>' + lab.textContent + '</i><b>' + val.innerHTML + '</b></span>';
-    }).join('');
-  syncTopH();
-}
-
 /* 옛 이름을 쓰던 자리가 남아 있다 — 아무 일도 하지 않는다 */
 function syncStuck() {}
+function paintFloat() { syncTopH(); }
 
 /* 표 머리글이 붙는 자리. 덩어리가 여닫히는 동안 키가 계속 바뀌므로
    한 번 재고 끝내면 안 된다 — 바뀔 때마다 다시 잰다 */
+/* 배너와 툴바가 차지하는 키. 둘 다 안 변하지만, 글자 크기나 폭이
+   달라지면 조금씩 달라진다 — 재서 넘긴다 */
 function syncTopH() {
-  const fb = $('floatBar');
-  const on = fb && fb.classList.contains('on');
-  document.documentElement.style.setProperty('--floatH',
-    (on ? Math.round(fb.getBoundingClientRect().height) : 0) + 'px');
-  /* 표 머리글은 툴바 줄 아래에 선다 */
+  const b = $('camBanner');
+  const on = b && !b.classList.contains('hero');
+  document.documentElement.style.setProperty('--hdrH',
+    (on ? Math.round(b.getBoundingClientRect().height) : 0) + 'px');
   const hd = document.querySelector('#progCard > header');
   document.documentElement.style.setProperty('--toolH',
     (hd ? Math.round(hd.getBoundingClientRect().height) : 0) + 'px');
 }
 if (window.ResizeObserver) {
   addEventListener('DOMContentLoaded', function () {
-    const fb = $('floatBar');
-    if (fb) new ResizeObserver(syncTopH).observe(fb);
+    const b = $('camBanner');
+    if (b) new ResizeObserver(syncTopH).observe(b);
     const hd = document.querySelector('#progCard > header');
     if (hd) new ResizeObserver(syncTopH).observe(hd);
   });
@@ -2758,20 +2702,7 @@ function syncDockH() {
   document.documentElement.style.setProperty('--dockH', h + 'px');
 }
 addEventListener('resize', function () { syncDockH(); syncStuck(); });
-addEventListener('DOMContentLoaded', function () {
-  const pad = $('pad'), sen = $('stkEnd'), fb = $('floatBar');
-  if (!pad || !sen || !fb || !window.IntersectionObserver) return;
-  new IntersectionObserver(function (ents) {
-    const b = $('camBanner');
-    const on = !ents[0].isIntersecting && !(b && b.classList.contains('hero'));
-    if (fb.classList.contains('on') !== on) {
-      fb.classList.toggle('on', on);
-      fb.setAttribute('aria-hidden', on ? 'false' : 'true');
-      requestAnimationFrame(syncTopH);
-      setTimeout(syncTopH, 340);
-    }
-  }, { root: pad, threshold: 0 }).observe(sen);
-});
+
 
 function heroHeight() {
   const pad = $('pad');
