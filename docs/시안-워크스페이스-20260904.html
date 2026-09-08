@@ -83,13 +83,34 @@
   .t-label{letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600}
 
   /* 캠페인 배너 — 브랜드 화면이라는 걸 여기서 한 번에 말한다 */
-  #camBanner{background:var(--od-ink);box-shadow:var(--lift-2)}
-  #camBanner::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  /* 접혀 있을 때는 화면의 틀이다. 레일에 붙어 하나로 읽혀야 한다 —
+     떠 있는 카드로 두면 "이건 뭐지" 를 한 번 묻게 만든다.
+     펼치면(hero) 그때만 카드로 떠오른다 */
+  #camBanner{background:#fff;color:#0f172a;
+             margin:-20px -24px 4px;padding:0;
+             border-bottom:1px solid #e8edf3}
+  /* 좁은 화면은 좌우 여백이 16px 이라 24 를 빼면 넘친다 */
+  @media (max-width:639px){ #camBanner{margin-left:-16px;margin-right:-16px} }
+  #camBanner.hero{background:var(--od-ink);color:#fff;
+                  margin:0;border-bottom:0;border-radius:16px;box-shadow:var(--lift-2)}
+  #camBanner.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
                     background:var(--od-red)}
   #camArt{position:absolute;top:0;bottom:0;right:0;width:46%;max-width:540px;
           background-image:linear-gradient(90deg,var(--od-ink) 0%,rgba(35,31,32,.94) 26%,rgba(35,31,32,.34) 100%),var(--od-hero);
           background-size:cover,cover;background-position:center,center 18%;
           background-repeat:no-repeat}
+  /* 접힌 상태의 글자색 — 흰 틀 위다 */
+  #camBanner:not(.hero) #campTitle{color:#0f172a}
+  #camBanner:not(.hero) #eyebrow{color:#94a3b8}
+  #camBanner:not(.hero) #campBadge{background:#f1f5f9 !important;color:#334155}
+  #camBanner:not(.hero) #heroToggle{color:#94a3b8}
+  #camBanner:not(.hero) #heroToggle:hover{color:#0f172a;background:#f1f5f9}
+  #camBanner:not(.hero) #camArt{display:none}
+  /* 한 줄로 눕힌다. 제목 · 기간 · 상태가 같은 높이에 온다 */
+  #camBanner:not(.hero) #camPad{display:flex;align-items:center;gap:14px;
+                                padding:13px 24px 13px 24px}
+  #camBanner:not(.hero) #eyebrow{margin:0;order:2;flex:none}
+  #camBanner:not(.hero) #camPad h1{font-size:15px;order:1;margin:0}
   #eyebrow{color:rgba(255,255,255,.60)}
   #eyebrow b{color:var(--od-red);font-weight:700}
   #camBanner.hero #ebBrand{display:none}
@@ -104,10 +125,10 @@
   /* 접는 건 되돌릴 수 있어야 한다. 배너 어디를 눌러도 다시 펼쳐진다 */
   #camBanner{cursor:pointer}
   /* 접혀 있을 때는 박스 하단에 붙는다. 펼치면 우상단으로 올라간다 */
-  #heroToggle{position:absolute;right:10px;bottom:8px;z-index:3;
+  #heroToggle{position:absolute;right:16px;top:50%;transform:translateY(-50%);bottom:auto;z-index:3;
               transition:top .3s ease, bottom .3s ease}
   /* 사진의 가장 밝은 우상단에 겹친다 — 밑에 어두운 알약을 깐다 */
-  #camBanner.hero #heroToggle{top:10px;bottom:auto;
+  #camBanner.hero #heroToggle{top:10px;bottom:auto;transform:none;
                               background:rgba(35,31,32,.45);border-radius:10px}
   #heroChev{transition:transform .3s cubic-bezier(.22,.61,.36,1)}
   #camBanner.hero #heroChev{transform:rotate(180deg)}
@@ -297,6 +318,24 @@
                    background-position:center;background-size:cover;background-repeat:no-repeat}
   #artGhost .gs{background-image:var(--od-side)}
   #artGhost .gh{background-image:var(--od-hero);transition:opacity 360ms ease}
+
+  /* 대시보드 카드 — 아이콘은 우상단에 흐리게. 눈이 먼저 가면 안 된다 */
+  .dico{width:15px;height:15px;flex:none;opacity:.5}
+  .dico svg{width:100%;height:100%;display:block}
+  .ico-v{color:#dc272d}
+  .ico-r{color:#3b82f6}
+  .ico-w{color:#a78bfa}
+  .ico-p{color:#10b981}
+  .dbar{flex:1 1 auto;min-width:28px;height:4px;border-radius:999px;background:#e8edf3;
+        overflow:hidden;display:block}
+  .dbar > span{display:block;height:100%;border-radius:999px;transition:width .5s cubic-bezier(.22,.61,.36,1)}
+  /* 유리 위에서는 선과 바닥도 같이 밝아진다 */
+  #camBanner.hero #heroDash .border-slate-100{border-color:rgba(255,255,255,.18)}
+  #camBanner.hero #heroDash .dbar{background:rgba(255,255,255,.22)}
+  #camBanner.hero #heroDash .text-slate-800{color:#fff}
+  #camBanner.hero #heroDash .text-slate-400{color:rgba(255,255,255,.55)}
+  #camBanner.hero #heroDash .text-slate-300{color:rgba(255,255,255,.35)}
+  #camBanner.hero #heroDash .dico{opacity:.72}
 
   /* 진행 흐름 — 사운드 파형처럼 읽는다. 높이가 곧 그 구간에 몰린 인원이다 */
   #flow svg{display:block;width:100%;height:96px}
@@ -833,7 +872,7 @@
       </section>
 
       <!-- 제목 — 오드타입 배너 -->
-      <div id="camBanner" onclick="toggleHero(event)" class="hero shrink-0 relative overflow-hidden rounded-2xl">
+      <div id="camBanner" onclick="toggleHero(event)" class="hero shrink-0 relative overflow-hidden">
         <div id="camArt" aria-hidden="true"></div>
         <button id="railBtn" onclick="toggleRail(true)" class="hidden items-center justify-center w-9 h-9 rounded-lg text-white/85 hover:bg-white/15 transition" aria-label="캠페인 목록 열기">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -1692,6 +1731,9 @@ function goPerson(cid, i) {
 }
 function goChat() { go('camp'); setTimeout(() => setChat(true), 60); }
 
+/* 그 달에 몇 명이 올라갔나. 레일에서 이름 옆에 붙는 숫자다 */
+const upCount = id => (ROSTERS[id] || []).filter(c => c.sel && c.up).length;
+
 function renderNav() {
   const nav = $('campNav'), mini = $('rail').classList.contains('mini');
   const live = CAMPAIGNS.filter(c => c.state === 'live');
@@ -1719,16 +1761,19 @@ function renderNav() {
     + 'box-shadow:0 0 0 1px rgba(16,185,129,.34), 0 2px 6px rgba(17,19,24,.05), 0 10px 26px -20px rgba(16,185,129,.50)">'
     + '<span class="flex items-center gap-2">'
     +   '<span class="dot on shrink-0" style="background:#10b981"></span>'
-    +   '<span class="text-[12.5px] font-semibold text-slate-900 truncate">' + esc(cp.title) + '</span>'
+    +   '<span class="text-[12.5px] font-semibold text-slate-900 truncate min-w-0">' + esc(cp.title) + '</span>'
+    +   '<span class="num text-[11px] font-bold text-slate-500 shrink-0 ml-auto">'
+    +     upCount(cp.id) + '/' + cp.n + '</span>'
     + '</span>'
-    + '<span class="num block text-[10.5px] text-slate-500 mt-1.5 pl-3.5">'
-    +   cp.period + ' · ' + cp.n + '명</span></div>').join('');
+    + '</div>').join('');
 
   /* 지난 캠페인 — 캠페인이 쌓인다는 것만 말한다. 기간·인원·배지는 뺀다 */
   const pastHtml = past.map(cp =>
-      '<div class="w-full text-left px-3 py-2 rounded-xl mb-1 bg-slate-50 border border-slate-200/70">'
-    + '<span class="block text-[12px] font-medium text-slate-500 truncate">'
-    + esc(cp.title) + '</span></div>').join('');
+      '<div class="w-full text-left px-3 py-2 rounded-xl mb-1 bg-slate-50 border border-slate-200/70'
+    + ' flex items-center gap-2">'
+    + '<span class="text-[12px] font-medium text-slate-500 truncate min-w-0">' + esc(cp.title) + '</span>'
+    + '<span class="num text-[11px] font-semibold text-slate-400 shrink-0 ml-auto">'
+    +   upCount(cp.id) + '/' + cp.n + '</span></div>').join('');
 
   const sec = (title, html) => html
     ? '<div class="pt-3 first:pt-1"><div class="px-2 pb-1.5 num t-label text-[9.5px] text-slate-500">'
@@ -1996,42 +2041,85 @@ function toggleRail(open) {
 const sum    = (arr, k) => arr.reduce((a, c) => a + (c[k] || 0), 0);
 const lastUp = () => upList().slice().sort((a, b) => a.due < b.due ? 1 : -1)[0] || null;
 
-function dashCard(label, val, delta, note) {
-  return '<div class="surface-sm px-4 py-5 flex flex-col">'
-    + '<div class="text-[11px] font-medium text-slate-500 truncate">' + label + '</div>'
-    + '<div class="num text-[27px] font-bold text-slate-900 mt-1.5" style="letter-spacing:var(--tr-display)">' + val + '</div>'
-    + '<div class="mt-2 flex items-end justify-between gap-2">'
-    +   '<span class="text-[10.5px] text-slate-500 truncate">' + note + '</span>'
-    +   (delta ? '<span class="num text-[11px] font-bold text-emerald-700 shrink-0 inline-flex items-center gap-0.5"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"/></svg>' + delta + '</span>' : '')
+/* 카드 하나가 숫자 하나로 끝나면 "그래서 뭐" 가 남는다.
+   아래 한 줄이 그 숫자를 읽는 법을 준다 — 얼마나 올랐나, 무엇으로 이루어졌나,
+   무엇이 남았나. 아이콘은 우상단에 흐리게 둔다. 눈이 먼저 가면 안 된다 */
+function dashCard(o) {
+  return '<div class="dcard surface-sm px-4 py-4 flex flex-col">'
+    + '<div class="flex items-start justify-between gap-2">'
+    +   '<span class="text-[11px] font-medium text-slate-500 truncate">' + o.label + '</span>'
+    +   '<span class="dico ' + (o.tone || '') + '">' + o.icon + '</span>'
+    + '</div>'
+    + '<div class="flex items-baseline gap-1.5 mt-1.5">'
+    +   '<span class="num text-[27px] font-bold text-slate-900" style="letter-spacing:var(--tr-display)">'
+    +   o.val + '</span>'
+    +   (o.unit ? '<span class="text-[11px] text-slate-400">' + o.unit + '</span>' : '')
+    + '</div>'
+    + '<div class="mt-2.5 pt-2.5 border-t border-slate-100 flex items-center gap-1.5 min-w-0">'
+    +   (o.foot || '')
     + '</div></div>';
 }
+
+/* 아래 한 줄에 들어가는 조각들 */
+const dUp = t => '<span class="num text-[11px] font-bold text-emerald-700 inline-flex items-center gap-1 shrink-0">'
+  + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24">'
+  + '<path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"/></svg>' + t + '</span>';
+const dMuted = t => '<span class="text-[10.5px] text-slate-500 truncate">' + t + '</span>';
+const dStrong = t => '<span class="num text-[11px] font-bold text-slate-800 shrink-0">' + t + '</span>';
+const dDot = c => '<span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:' + c + '"></span>';
+/* 얇은 막대 하나. 숫자 두 개를 비교하는 데 이보다 싼 그림이 없다 */
+const dBar = (p, c) => '<span class="dbar"><span style="width:' + Math.max(2, Math.min(100, p))
+  + '%;background:' + c + '"></span></span>';
+
+const DICO = {
+  eye:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20s-7.5-4.6-7.5-9.4A4.1 4.1 0 0 1 12 8a4.1 4.1 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/></svg>',
+  won:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" d="M4 7l3.2 10L12 9l4.8 8L20 7M3.5 12h17"/></svg>',
+  play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>'
+};
 
 function renderDash() {
   const sel = selected(), up = upList(), last = lastUp(), live = isLive();
   const rest = sel.length - up.length;
-
-  /* 반응은 세 가지를 따로 세면 조회수 옆에서 전부 반올림 오차처럼 보인다. 한 숫자로 합친다 */
-  const react = sum(up, 'likes') + sum(up, 'cmts') + sum(up, 'shares');
-
-  /* 초록 화살표는 화면에 하나만 둔다. 총 비용은 선정 때 확정되므로 업로드로 오르지 않고,
-     캠페인이 끝난 달에는 '오르는 중'이라는 표시 자체가 틀린 말이 된다 */
+  const views = sum(up, 'views');
+  const react = sum(up, 'likes') + sum(up, 'cmts') + sum(up, 'saves');
   const rising = live && last;
 
+  /* 반응률 — 조회 대비 반응. 브랜드가 다른 캠페인과 견줄 수 있는 유일한 비율이다 */
+  const er = views ? (react / views * 100) : 0;
+  /* 전일 대비 — 마지막 업로드분이 오늘 얹은 몫 */
+  const dayPct = views && last ? (last.views / (views - last.views) * 100) : 0;
+  const done = Math.round(up.length / Math.max(1, sel.length) * 100);
+
   const html =
-      dashCard('총 조회수', n(sum(up, 'views')),
-               rising ? '+' + n(last.views) : null,
-               /* 초록 숫자와 설명을 한 줄에 같이 두면 1280px 에서 설명이 잘린다.
-                  누가 방금 올렸는지는 바로 아래 진행상황에 이미 있다 */
-               rising ? '' : (up.length ? '캠페인 종료 기준' : '업로드를 기다리는 중'))
+      dashCard({
+        label: '총 누적 조회수', val: n(views), unit: '회', icon: DICO.eye, tone: 'ico-v',
+        foot: rising
+          ? dUp('+' + n(last.views)) + dMuted('전일 대비 +' + dayPct.toFixed(1) + '%')
+          : dMuted(up.length ? '캠페인 종료 기준' : '업로드를 기다리는 중')
+      })
 
-    + dashCard('반응 수', n(react), null, '좋아요·댓글·공유')
+    + dashCard({
+        label: '총 반응 수', val: n(react), unit: '건', icon: DICO.heart, tone: 'ico-r',
+        /* 무엇으로 이루어진 숫자인지 밝히지 않으면 비교가 안 된다 */
+        foot: dStrong('평균 반응률 ' + er.toFixed(2) + '%')
+            + '<span class="text-slate-300">|</span>' + dMuted('좋아요·댓글·저장')
+      })
 
-    + dashCard('총 비용', won(sum(sel, 'cost')), null, '선정 ' + sel.length + '명 확정')
+    + dashCard({
+        label: '총 집행 예산', val: won(sum(sel, 'cost')), icon: DICO.won, tone: 'ico-w',
+        /* 브랜드가 실제로 걱정하는 것은 "여기서 더 나가나" 다 */
+        foot: dDot('#a78bfa') + dMuted('확정 ' + sel.length + '명 · 추가 비용 없음')
+      })
 
-    + dashCard('업로드 완료',
-               up.length + '<span class="text-slate-500"> / ' + sel.length + '</span>',
-               null,
-               rest > 0 ? rest + '명 진행 중' : '모두 업로드 완료');
+    + dashCard({
+        label: '업로드 완료', val: up.length + '<span class="text-slate-400"> / ' + sel.length + '</span>',
+        icon: DICO.play, tone: 'ico-p',
+        /* 남은 수를 말로만 쓰면 얼마나 남았는지 감이 안 온다. 막대를 같이 둔다 */
+        foot: dBar(done, done === 100 ? '#10b981' : '#0f172a')
+            + dStrong(done + '%')
+            + dMuted(rest > 0 ? '남은 ' + rest + '명' : '모두 완료')
+      });
 
   /* 히어로와 본문 두 곳에 같은 카드를 그린다. DOM 을 옮기면 애니메이션이 끊긴다 */
   $('dash').innerHTML = html;
