@@ -2382,7 +2382,9 @@ function setChat(on) {
 
 /* 엔터로 보낸다. 줄을 바꾸려면 Shift+Enter. 메신저와 같은 손놀림이다 */
 function chatKey(e) {
-  if (e.key !== 'Enter' || e.shiftKey || e.isComposing) return;
+  /* 한글 조합 중에는 keyCode 229 로만 오는 브라우저도 있다 */
+  if (e.isComposing || e.keyCode === 229) return;
+  if (e.key !== 'Enter' || e.shiftKey) return;
   e.preventDefault();
   chatSend(e);
 }
