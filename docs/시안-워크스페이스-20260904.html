@@ -271,7 +271,7 @@
 
   #dashSec, #flowSec, #progSec, #progHint{
     transition:opacity .34s ease, transform .38s cubic-bezier(.45,.05,.25,1)}
-  #flowSec {transition-delay:.10s}
+  #dashSec {transition-delay:.10s}
   #dashSec {transition-delay:.06s}
   #progSec  {transition-delay:.22s}
   #progHint {transition-delay:.28s}
@@ -318,16 +318,10 @@
         transition:background-color .17s ease,color .17s ease}
   .hbtn:hover{background:#f1f5f9;color:#0f172a}
 
-  /* 진행 중인 것만 점이 숨 쉰다. 끝난 것은 멈춰 있어야 끝난 것으로 읽힌다. */
-  .dot{position:relative;display:inline-block;width:6px;height:6px;border-radius:9999px;
+  /* 점은 그냥 점이다. 숨 쉬게 만들면 '지금 방송 중' 같은 신호가 되는데,
+     여기는 두 달째 도는 캠페인 목록이다. 계속 깜빡일 이유가 없다 */
+  .dot{display:inline-block;width:6px;height:6px;border-radius:9999px;
        background:currentColor;flex:none}
-  .dot.on::after{content:'';position:absolute;inset:0;border-radius:9999px;background:currentColor;
-                 animation:dotPulse 1.9s cubic-bezier(.22,.61,.36,1) infinite}
-  @keyframes dotPulse{
-    0%  {transform:scale(1);   opacity:.5}
-    70% {transform:scale(2.8); opacity:0}
-    100%{transform:scale(2.8); opacity:0}
-  }
 
   /* 사람 카드를 대화창으로 끌어다 놓는다 */
   .pcard{cursor:pointer;transition:box-shadow .18s ease,background-color .18s ease}
@@ -503,7 +497,21 @@
      선정에서 업로드까지를 하나의 파도로 본다. 막대 넷이 아니라 한 덩어리다.
      높이는 인원수에 비례하지 않는다 — 많은 순서로 등급을 매겨 얹는다.
      비례로 그리면 1명과 2명이 두 배로 벌어져 없는 얘기를 만든다 */
-  .fpWave{position:relative;height:132px}
+  .fpWave{position:relative;height:132px;
+          transition:height .3s cubic-bezier(.22,.61,.36,1)}
+  /* 사람을 고르거나 펼치기 시작하면 흐름은 자리를 내준다 —
+     그때 필요한 건 '어디쯤 왔나' 한 줄이지 얼굴 다섯이 아니다 */
+  #flowSec.slim .fpWave{height:56px}
+  #flowSec.slim .fpWave svg{bottom:26px;height:26px}
+  #flowSec.slim .fpWave .fbase{bottom:26px}
+  #flowSec.slim .fpWave .fav{opacity:0;pointer-events:none}
+  #flowSec.slim .fpWave .flab{bottom:2px}
+  #flowSec.slim .fpWave .flab b{display:inline;font-size:11px}
+  #flowSec.slim .fpWave .flab i{display:inline;margin-left:5px;margin-top:0;font-size:9.5px}
+  #flowSec.slim .fpWave .fhit{bottom:16px}
+  .fpWave .fav{transition:opacity .2s ease, transform .16s ease}
+  #flowTog svg{transition:transform .3s cubic-bezier(.22,.61,.36,1)}
+  #flowSec.slim #flowTog svg{transform:rotate(-180deg)}
   .fpWave svg{position:absolute;left:0;right:0;bottom:42px;width:100%;height:52px;display:block}
   .fpWave .fseg{fill:var(--c,#0f172a);fill-opacity:calc(var(--o) * .30);
                 transition:fill-opacity .16s ease}
@@ -669,14 +677,14 @@
   /* ── 메모 ────────────────────────────────────────────────────
      담당자가 자기 기억으로 적는 것이 먼저고, 그중 일부만 우리에게 넘어간다.
      그래서 끝점이 둘이다 — 메모로 남기거나, 대화로 보내거나. */
-  .mcell{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 7px;border-radius:8px;
-         font-size:10.5px;font-weight:700;color:#94a3b8;background:transparent;
+  .mcell{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 9px;border-radius:9px;
+         font-size:11.5px;font-weight:700;color:#94a3b8;background:transparent;
          transition:background .14s ease,color .14s ease}
   .mcell:hover{background:#eef2f7;color:#334155}
   .mcell.has{color:#0f172a;background:#f1f5f9}
   .mcell.has:hover{background:#e6ecf3}
   .mcell .mdot{width:5px;height:5px;border-radius:50%;background:var(--od-red,#e2483d);flex:none}
-  .mcell svg{width:13px;height:13px;stroke-width:2}
+  .mcell svg{width:15px;height:15px;stroke-width:2}
 
   #memoPop{position:fixed;z-index:80;width:322px;background:#fff;border-radius:16px;
            box-shadow:0 0 0 1px rgba(15,23,42,.08),0 8px 20px rgba(15,23,42,.08),
@@ -739,6 +747,13 @@
   .mpb.send{color:#fff;background:var(--od-red,#e2483d)}
   .mpb.send:hover{filter:brightness(1.06)}
   .mpb:disabled{opacity:.42;cursor:default}
+
+  /* 필터 판 — 줄마다 이름표가 앞에 서고 값이 뒤따른다 */
+  .fpanel{display:flex;flex-direction:column;gap:8px}
+  .frow{display:flex;align-items:flex-start;gap:10px}
+  .frow .frt{flex:none;width:56px;padding-top:6px;font-size:10.5px;font-weight:700;
+             color:var(--ink-4);letter-spacing:var(--tr-small)}
+  .frow .frc{flex:1 1 auto;min-width:0;display:flex;flex-wrap:wrap;gap:6px}
 
   .dmchip{font-size:12px;font-weight:600;color:#64748b;background:#f1f5f9;
           padding:8px 12px;border-radius:10px;transition:all .15s ease}
@@ -808,16 +823,23 @@
                 border-radius:12px;overflow:hidden;box-shadow:var(--lift-1)}
   #ptable th{position:sticky;top:0;z-index:1;background:#f8fafc;padding:0;
              border-bottom:1px solid #e9eef4;white-space:nowrap}
-  #ptable th button{width:100%;display:flex;align-items:center;gap:3px;padding:8px 10px;
-                    font-size:10px;font-weight:700;color:#64748b;white-space:nowrap}
+  #ptable th button{width:100%;display:flex;align-items:center;gap:3px;padding:11px 12px;
+                    font-size:11px;font-weight:600;color:#64748b;white-space:nowrap;
+                    letter-spacing:var(--tr-small)}
   /* 누르는 자리가 아닌 이름표 — 정렬 단추와 같은 높이에 앉힌다 */
-  #ptable th .thlab{display:block;padding:8px 10px;font-size:10px;font-weight:700;color:#64748b;
-                    white-space:nowrap}
+  #ptable th .thlab{display:block;padding:11px 12px;font-size:11px;font-weight:600;color:#64748b;
+                    white-space:nowrap;letter-spacing:var(--tr-small)}
   #ptable th.r button{justify-content:flex-end}
   #ptable th button:hover{color:#0f172a;background:#f1f5f9}
-  /* 메모가 들어오면서 한 행이 담는 것이 늘었다. 7px 로는 글자끼리 붙는다 */
-  #ptable td{padding:11px 10px;font-size:12px;color:#334155;border-bottom:1px solid #f1f5f9;
+  /* 스무 명을 한 화면에 밀어 넣으려다 글자가 작고 행이 얇아졌다.
+     첫 화면에 네댓 명만 보여도 된다 — 아래는 스크롤이 있다.
+     읽히는 것이 먼저다 */
+  #ptable td{padding:17px 12px;font-size:13.5px;color:#334155;border-bottom:1px solid #f1f5f9;
              white-space:nowrap}
+  #ptable .tname{display:flex;align-items:center;gap:10px;text-align:left}
+  #ptable .tname .tn{font-size:14px;font-weight:600;color:var(--ink-1);
+                     letter-spacing:var(--tr-title)}
+  #ptable .tname .th{font-size:11.5px;color:var(--ink-4)}
   #ptable tr:last-child td{border-bottom:0}
   #ptable tr.on td{background:#f8fafc}
   #ptable tbody tr{cursor:pointer}
@@ -1023,14 +1045,42 @@
   #rail.mini .bhead:hover .bmark{transform:translateY(-1px)}
   #rail.mini .bmark{transition:transform .16s ease}
   /* 캠페인 행 — 누를 수 있다는 티를 낸다. 지금 보고 있는 것은 왼쪽에 표시 */
-  .nbar{display:flex;align-items:center;gap:7px;min-width:0}
-  .nbar .nb{flex:1 1 auto;height:3px;border-radius:999px;background:#e8edf3;overflow:hidden;display:block}
+  .nbar{display:flex;align-items:center;gap:8px;min-width:0}
+  .nbar .nb{flex:1 1 auto;height:3px;border-radius:999px;background:#eaeef4;overflow:hidden;display:block}
   .nbar .nb > span{display:block;height:100%;border-radius:999px}
-  .crow{position:relative;transition:transform .14s ease, box-shadow .14s ease}
-  .crow:hover{transform:translateX(1px)}
-  .crow:active{transform:translateX(0) scale(.99)}
-  .crow.on::before{content:"";position:absolute;left:-6px;top:50%;transform:translateY(-50%);
-                   width:3px;height:18px;border-radius:999px;background:#0f172a}
+
+  /* ── 캠페인 목록 ──────────────────────────────────────────
+     줄마다 흰 상자에 테두리에 그림자를 두르니 목록이 아니라 카드 무더기였다.
+     면을 걷는다 — 지금 보고 있는 것 하나만 칠하면 그것으로 충분하다 */
+  .csec{padding-top:20px}
+  .csec:first-child{padding-top:6px}
+  .csecT{display:flex;align-items:baseline;gap:7px;padding:0 4px 8px;
+         font-size:15px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-title)}
+  .csecT .num{font-size:11.5px;font-weight:600;color:#b3bcc9}
+
+  .crow{position:relative;display:block;width:100%;text-align:left;
+        padding:9px 10px;border-radius:10px;margin-bottom:1px;
+        transition:background-color .15s ease}
+  .crow:hover{background:#f4f6f9}
+  .crow.on{background:#eef2f7}
+  .crow .crowT{display:flex;align-items:center;gap:7px;min-width:0}
+  .crow .ct{font-size:13px;font-weight:600;color:var(--ink-1);letter-spacing:var(--tr-body);
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .crow.past .ct{font-weight:500;color:var(--ink-3)}
+  .crow .nbar{margin-top:7px}
+  .crow.past .nbar{opacity:.75}
+
+  /* 새 캠페인 — 점선 상자를 두르면 저것도 목록의 한 줄로 읽힌다.
+     목록 밖에서 조용히 기다리는 한 줄로 둔다 */
+  .cnew{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;
+        margin-top:18px;padding:11px 10px;border-radius:10px;
+        font-size:12.5px;font-weight:600;color:#98a2b0;
+        box-shadow:inset 0 0 0 1px #e8edf3;
+        transition:color .15s ease, box-shadow .15s ease, background-color .15s ease}
+  .cnew:hover{color:var(--ink-2);background:#f8fafc;box-shadow:inset 0 0 0 1px #dbe3ec}
+  .cnew .cnewP{font-size:15px;line-height:1;font-weight:400}
+  .crow.on::before{content:"";position:absolute;left:-7px;top:50%;transform:translateY(-50%);
+                   width:3px;height:20px;border-radius:999px;background:var(--ink-1)}
 
   .rbtn{display:flex;align-items:center;gap:8px;border-radius:10px;color:#64748b;
         transition:background-color .15s ease, color .15s ease}
@@ -1355,6 +1405,18 @@
 
         <div id="colL" class="flex-1 min-w-0 min-h-0 flex flex-col">
 
+          <!-- 2.5 · 진행 흐름 — 성과와 인플루언서 사이에 숨통을 낸다.
+               최근 소식은 아래 표가 이미 하던 얘기였다. 흐름은 표가 못 하는 얘기다 —
+               지금 사람들이 어느 단계에 몰려 있는지는 여기서만 한눈에 보인다 -->
+          <section id="flowSec" class="shrink-0">
+            <div class="sechd"><h2>진행 흐름</h2><span id="fpSum" class="num text-[10.5px] text-slate-500"></span>
+              <button id="flowTog" onclick="toggleFlow()" class="hbtn" style="margin-left:auto"
+                      aria-expanded="true" title="흐름 접기" aria-label="흐름 접기">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </button></div>
+            <div class="fpWave" id="fpWave"></div>
+          </section>
+
           <!-- 1 · 대시보드 — 숫자가 스스로 말한다. 라벨을 얹지 않는다 -->
 
           <section id="dashSec" class="shrink-0">
@@ -1362,14 +1424,6 @@
             <div id="dash"></div>
           </section>
 
-
-          <!-- 2.5 · 진행 흐름 — 성과와 인플루언서 사이에 숨통을 낸다.
-               최근 소식은 아래 표가 이미 하던 얘기였다. 흐름은 표가 못 하는 얘기다 —
-               지금 사람들이 어느 단계에 몰려 있는지는 여기서만 한눈에 보인다 -->
-          <section id="flowSec" class="shrink-0">
-            <div class="sechd"><h2>진행 흐름</h2><span id="fpSum" class="num text-[10.5px] text-slate-500"></span></div>
-            <div class="fpWave" id="fpWave"></div>
-          </section>
 
           <!-- 3 · 진행상황 — 박스 하나에 전원. 20~30명이어도 여기 안에서만 흐른다 -->
           <!-- 3 · 진행상황 — 3행 높이에 맞춘다. flex-1 이면 남는 세로를 전부 먹고 안이 텅 빈다 -->
@@ -1382,13 +1436,11 @@
                 <button id="progPick" onclick="chatAboutPicked()" class="cta hidden text-[10.5px] font-bold px-2.5 py-1.5 rounded-lg whitespace-nowrap"></button>
               </div>
               <div class="flex items-center gap-1.5 shrink-0">
-                <button id="fStage" onclick="openFilter('stage')" class="fbtn">진행 단계 <b id="fStageV"></b>
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></button>
-                <button id="fFol" onclick="openFilter('fol')" class="fbtn">팔로워 <b id="fFolV"></b>
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></button>
-                <button id="fCost" onclick="openFilter('cost')" class="fbtn">단가 <b id="fCostV"></b>
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></button>
-                <button id="fSort" onclick="openFilter('sort')" class="fbtn">정렬 <b id="fSortV"></b>
+                <!-- 필터 넷을 늘 펴 두니 머리줄이 필터밭이 됐다. 하나로 접고
+                     걸린 개수만 옆에 붙인다 — 무엇이 걸렸는지는 열어서 본다 -->
+                <button id="fAll" onclick="openFilter('filters')" class="fbtn">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M7 12h10M10 18h4"/></svg>
+                  필터<b id="fAllV"></b>
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></button>
                 <button id="fReset" onclick="resetFilters()" class="fbtn hidden" title="필터 초기화">
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v6h6M20 20v-6h-6M20 9A8 8 0 006 5.3M4 15a8 8 0 0014 3.7"/></svg>
@@ -2302,33 +2354,32 @@ function renderNav() {
 
   /* 진행 중 — 지금 보고 있는 달. 기간과 인원까지 */
   const liveHtml = live.map(cp =>
-      '<button onclick="pickCamp(\'' + cp.id + '\')" class="crow w-full text-left px-3 py-2.5 rounded-xl mb-1 bg-white'
-    + (cp.id === S.camp && S.view === 'camp' ? ' on' : '') + '" style="'
-    + 'box-shadow:0 0 0 1px rgba(16,185,129,.34), 0 2px 6px rgba(17,19,24,.05), 0 10px 26px -20px rgba(16,185,129,.50)">'
-    + '<span class="flex items-center gap-2">'
-    +   '<span class="dot on shrink-0" style="background:#10b981"></span>'
-    +   '<span class="text-[12.5px] font-semibold text-slate-900 truncate min-w-0">' + esc(cp.title) + '</span>'
+      '<button onclick="pickCamp(\'' + cp.id + '\')" class="crow'
+    + (cp.id === S.camp && S.view === 'camp' ? ' on' : '') + '">'
+    + '<span class="crowT">'
+    +   '<span class="dot shrink-0" style="background:#10b981"></span>'
+    +   '<span class="ct">' + esc(cp.title) + '</span>'
     + '</span>'
     + navBar(upCount(cp.id), cp.n, '#10b981')
     + '</button>').join('');
 
   /* 지난 캠페인 — 캠페인이 쌓인다는 것만 말한다. 기간·인원·배지는 뺀다 */
   const pastHtml = past.map(cp =>
-      '<button onclick="pickCamp(\'' + cp.id + '\')" class="crow w-full text-left px-3 py-2 rounded-xl mb-1'
-    + ' bg-slate-50 border border-slate-200/70 flex items-center gap-2'
+      '<button onclick="pickCamp(\'' + cp.id + '\')" class="crow past'
     + (cp.id === S.camp && S.view === 'camp' ? ' on' : '') + '">'
-    + '<span class="min-w-0 flex-1"><span class="block text-[12px] font-medium text-slate-500 truncate">' + esc(cp.title) + '</span>'
-    + navBar(upCount(cp.id), cp.n, '#94a3b8') + '</span></button>').join('');
+    + '<span class="crowT"><span class="ct">' + esc(cp.title) + '</span></span>'
+    + navBar(upCount(cp.id), cp.n, '#c3cbd6') + '</button>').join('');
 
-  const sec = (title, html) => html
-    ? '<div class="pt-3 first:pt-1"><div class="px-2 pb-1.5 num t-label text-[9.5px] text-slate-500">'
-      + title + '</div>' + html + '</div>' : '';
+  /* 9.5px 대문자 라벨은 구분선으로도 안 읽혔다. 제목으로 세운다 */
+  const sec = (title, n2, html) => html
+    ? '<div class="csec"><div class="csecT">' + title
+      + '<span class="num">' + n2 + '</span></div>' + html + '</div>' : '';
 
   nav.innerHTML =
-    sec('<span class="text-emerald-600">진행 중</span>', liveHtml)
-    + sec('지난 캠페인', pastHtml)
-    + '<div class="w-full mt-3 text-[12px] font-semibold text-slate-400 border border-dashed border-slate-300 px-3 py-2.5 rounded-xl flex items-center justify-center gap-1.5">'
-    + '<span class="text-[14px] leading-none">+</span> 새 캠페인 의뢰</div>';
+    sec('진행 중', live.length, liveHtml)
+    + sec('지난 캠페인', past.length, pastHtml)
+    + '<button onclick="na(\'새 캠페인 의뢰\', \'실제 화면에서는 담당자에게 바로 의뢰가 들어갑니다.\')" class="cnew">'
+    + '<span class="cnewP">+</span> 새 캠페인 의뢰</button>';
 }
 
 /* 사이드바를 접는다. 본문과 하단 CTA 는 --rail 을 보고 따라온다.
@@ -2758,6 +2809,27 @@ function fhump(x0, w, h) {
   return d + ' L' + (x0 + w).toFixed(1) + ' ' + FVH + ' Z';
 }
 
+/* null = 자동(일하기 시작하면 접힌다) · true = 펴 둠 · false = 접어 둠.
+   한 번이라도 손대면 그 뜻을 따른다 — 자동이 사람 손을 이기면 안 된다 */
+let FLOW_PIN = null;
+function toggleFlow() {
+  FLOW_PIN = $('flowSec').classList.contains('slim');
+  syncFlow();
+}
+function syncFlow() {
+  const sec = $('flowSec');
+  if (!sec) return;
+  const busy = PSTATE.open !== null || PICK.size > 0;
+  const slim = FLOW_PIN === null ? busy : !FLOW_PIN;
+  sec.classList.toggle('slim', slim);
+  const b = $('flowTog');
+  if (b) {
+    b.setAttribute('aria-expanded', slim ? 'false' : 'true');
+    const t = slim ? '흐름 펼치기' : '흐름 접기';
+    b.title = t; b.setAttribute('aria-label', t);
+  }
+}
+
 function renderFlow() {
   const box = $('fpWave');
   if (!box) return;
@@ -2995,7 +3067,7 @@ const TCOLS = [
                 h:c => c.er.toFixed(1) + '% 참여' },
   { k:'stage',  t:'단계',      num:0, def:1, w:92,
                 v:c => { const st = STAGE[c.stage] || STAGE.make;
-                         return '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded ' + st.cls + '">'
+                         return '<span class="text-[11px] font-bold px-2 py-1 rounded-md ' + st.cls + '">'
                               + st.label + '</span>'; } },
   /* 진행을 보다가 바로 적는 자리다. 맨 끝에 두면 적으러 가는 길이 멀다 */
   { k:'memo',   t:'메모',      num:0, def:1, w:72, nosort:1, v:c => memoCell(c) },
@@ -3219,6 +3291,7 @@ function renderProg() {
   bindDrag();
   paintPick();
   if (PSTATE.open !== null) { paintDet(); paintEmb(); paintMemoPanel(); }
+  syncFlow();
   fitProgRows();
   layoutProgGrid();
   renderFlow();
@@ -3258,9 +3331,9 @@ function progTable(list) {
           + '" onclick="openPeek(' + i + ', event)">'
           + '<td><span class="pbox cursor-pointer" data-i="' + i + '" onclick="togglePick(' + i + ', event)">'
           +   box(PICK.has(i)) + '</span></td>'
-          + '<td><button onclick="openPeek(' + i + ', event)" class="flex items-center gap-2 text-left">'
-          +   avatar(c, i, 24) + '<span class="font-bold text-slate-900">' + esc(c.name) + '</span>'
-          +   '<span class="num text-[10.5px] text-slate-500">' + esc(c.handle) + '</span></button></td>'
+          + '<td><button onclick="openPeek(' + i + ', event)" class="tname">'
+          +   avatar(c, i, 32) + '<span class="tn">' + esc(c.name) + '</span>'
+          +   '<span class="th num">' + esc(c.handle) + '</span></button></td>'
           + cols.map(x => '<td class="' + (x.num ? 'r num' : '') + '">' + x.v(c) + '</td>').join('')
           + '</tr>'
           /* 누른 사람은 그 자리에서 열린다 — 위아래 사람이 그대로 남아야 견줄 수 있다 */
@@ -3288,19 +3361,19 @@ function setView(v) { PSTATE.view = v; PSTATE.panel = null; $('progFilter').clas
    버그였던 자리. 하위 칩을 눌러도 패널을 다시 그리지 않아 상단 라벨과 어긋났다.
    값을 바꾸는 길은 전부 setFilter() 하나로 모은다 */
 function paintFilterBtns() {
-  $('fStageV').textContent = label(STAGE_BANDS, PSTATE.stage);
-  $('fFolV').textContent   = label(FOL_BANDS, PSTATE.fol);
-  $('fCostV').textContent  = label(COST_BANDS, PSTATE.cost);
-  $('fSortV').textContent  = label(SORTS, PSTATE.sort);
+  /* 걸린 것이 몇 개인지만 단추에 붙인다. 무엇이 걸렸는지는 열어서 본다 */
+  const nOn = ['stage', 'fol', 'cost'].filter(k => PSTATE[k] !== 'all').length;
+  const fa = $('fAll'), fav = $('fAllV');
+  if (fav) fav.textContent = nOn ? ' ' + nOn : '';
+  if (fa) {
+    fa.classList.toggle('on', PSTATE.panel === 'filters');
+    if (PSTATE.panel !== 'filters') fa.classList.toggle('act', nOn > 0);
+    else fa.classList.remove('act');
+  }
 
-  ['Stage', 'Fol', 'Cost', 'Sort', 'Export', 'Cols'].forEach(function (n2) {
+  ['Export', 'Cols'].forEach(function (n2) {
     const b = $('f' + n2);
     if (b) b.classList.toggle('on', PSTATE.panel === n2.toLowerCase());
-  });
-  /* 걸려 있는 필터는 버튼 자체가 진해진다 */
-  [['fStage', 'stage'], ['fFol', 'fol'], ['fCost', 'cost']].forEach(function (x) {
-    const b = $(x[0]);
-    if (b && PSTATE.panel !== x[1]) b.classList.toggle('act', PSTATE[x[1]] !== 'all');
   });
 
   const dirty = PSTATE.stage !== PDEFAULT.stage || PSTATE.fol !== PDEFAULT.fol
@@ -3341,6 +3414,27 @@ function drawPanel() {
       +   '<button onclick="copyLink()" class="text-[10.5px] font-bold text-slate-500 hover:text-slate-900 whitespace-nowrap">복사</button>'
       + '</span>'
       + '<span class="text-[10.5px] text-slate-500">지금 걸린 필터 그대로 나갑니다</span>'
+      + '</div>';
+
+  } else if (PSTATE.panel === 'filters') {
+    /* 한 판에 네 줄. 줄마다 무엇을 거르는지 이름표가 앞에 선다 */
+    const row = function (t, html) {
+      return '<div class="frow"><span class="frt">' + t + '</span>'
+        + '<span class="frc">' + html + '</span></div>';
+    };
+    const band = function (k, bands, of) {
+      const cnt = {}; base.forEach(c => { const b = of(c); cnt[b] = (cnt[b] || 0) + 1; });
+      return bands.map(x => chip(PSTATE[k] === x[0], x[1],
+        x[0] === 'all' ? base.length : (cnt[x[0]] || 0),
+        "setFilter('" + k + "','" + x[0] + "')")).join('');
+    };
+    h = '<div class="fpanel">'
+      + row('진행 단계', band('stage', STAGE_BANDS, c => c.stage))
+      + row('팔로워',   band('fol',   FOL_BANDS,   c => folBand(c.fol)))
+      + row('단가',     band('cost',  COST_BANDS,  c => costBand(c.cost)))
+      + row('정렬', SORTS.map(x => chip(PSTATE.sort === x[0],
+            x[1] + (PSTATE.sort === x[0] ? ' <span class="num">' + (PSTATE.dir > 0 ? '↑' : '↓') + '</span>' : ''),
+            null, "sortBy('" + x[0] + "')")).join(''))
       + '</div>';
 
   } else if (PSTATE.panel === 'sort') {
@@ -3452,6 +3546,8 @@ function paintPick() {
   document.querySelectorAll('#prog .pbox').forEach(el => {
     el.innerHTML = box(PICK.has(+el.dataset.i));
   });
+
+  syncFlow();
 
   const b = $('progPick');
   b.classList.toggle('hidden', PICK.size === 0);
