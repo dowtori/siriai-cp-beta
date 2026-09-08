@@ -430,6 +430,13 @@
   #rail:not(.mini) .mini-only{display:none}
   #rail.mini{padding-left:0;padding-right:0}
 
+  /* 로고는 접었을 때도 로고로 읽혀야 한다 — 기호 하나만 놓으면 뭐지 모른다.
+     타일 안에 넣고, 접혀 있을 때만 누르면 펼쳐진다 */
+  #railLogo{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;
+            background:#0f172a;flex:none;transition:transform .16s ease, box-shadow .16s ease}
+  #rail:not(.mini) #railLogo{pointer-events:none}
+  #rail.mini #railLogo:hover{transform:translateY(-1px);
+                             box-shadow:0 6px 16px -8px rgba(15,23,42,.6)}
   .rbtn{display:flex;align-items:center;gap:8px;border-radius:10px;color:#64748b;
         transition:background-color .15s ease, color .15s ease}
   .rbtn:hover{background:#f1f5f9;color:#0f172a}
@@ -650,7 +657,9 @@
 
     <!-- SIRIAI -->
     <div class="lgrow pt-5 pb-4 flex items-center gap-2.5 shrink-0">
-      <span class="sym w-[25px] h-[25px] text-slate-900 shrink-0" role="img" aria-label="SIRIAI"></span>
+      <button id="railLogo" onclick="toggleMini()" title="사이드바 펼치기" aria-label="SIRIAI">
+        <span class="sym w-[19px] h-[19px] text-white" role="img" aria-hidden="true"></span>
+      </button>
       <span class="min-w-0 full">
         <span class="wm block w-[53px] h-[18px] text-slate-900" role="img" aria-label="Siriai"></span>
         <span class="block t-label text-[8.5px] text-slate-500 mt-[6px]">Campaign Console</span>
