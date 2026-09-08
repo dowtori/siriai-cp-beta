@@ -482,10 +482,17 @@
   #flowPop .fpHead span{font-size:10.5px;color:#64748b}
   .fpWave{position:relative;height:126px}
   .fpWave svg{position:absolute;left:0;right:0;bottom:42px;width:100%;height:52px;display:block}
-  .fpWave .fseg{fill:#0f172a;fill-opacity:calc(var(--o) * .18);transition:fill-opacity .16s ease}
+  .fpWave .fseg{fill:var(--c,#0f172a);fill-opacity:calc(var(--o) * .30);
+                transition:fill-opacity .16s ease}
   .fpWave.on .fseg{fill-opacity:calc(var(--o) * .09)}
   .fpWave .fseg.hot{fill-opacity:calc(var(--o) * .92)}
-  .fpWave .fbase{position:absolute;left:0;right:0;bottom:42px;height:1px;background:rgba(15,23,42,.08)}
+  /* 바닥선이 오른쪽에서 화살촉으로 끝난다 — 어디로 가는 흐름인지 한 번에 읽힌다 */
+  .fpWave .fbase{position:absolute;left:0;right:8px;bottom:42px;height:1px;
+                 background:linear-gradient(90deg,rgba(15,23,42,.10),rgba(16,185,129,.42))}
+  .fpWave .fbase i{position:absolute;right:-1px;top:-3px;width:7px;height:7px;
+                   border-top:1.5px solid rgba(16,185,129,.55);
+                   border-right:1.5px solid rgba(16,185,129,.55);
+                   transform:rotate(45deg)}
   .fpWave .fav{position:absolute;transform:translateX(-50%);width:22px;height:22px;border-radius:50%;
                background:#fff;box-shadow:0 0 0 2px #fff,0 1px 4px rgba(15,23,42,.18);
                transition:transform .16s ease}
@@ -653,6 +660,26 @@
   .fbtn b{font-weight:700;opacity:.72}
   .vbtn{font-size:10.5px;font-weight:700;color:#64748b;padding:5px 9px;transition:all .17s ease}
   .vbtn.on{background:#0f172a;color:#fff}
+
+  /* 전환이 있다는 걸 모르면 표만 보고 끝난다. 빛이 오른쪽에서 왼쪽으로 한 번 훑고 지나가
+     "여기 눌러볼 수 있다" 를 알린다. 손이 닿으면 멈춘다 — 계속 반짝이면 그건 소음이다 */
+  .dmchip{font-size:12px;font-weight:600;color:#64748b;background:#f1f5f9;
+          padding:8px 12px;border-radius:10px;transition:all .15s ease}
+  .dmchip:hover{background:#e6ecf3}
+  .dmchip.on{background:#0f172a;color:#fff}
+
+  .vsw{position:relative;overflow:hidden}
+  .vsw::after{content:'';position:absolute;top:0;bottom:0;width:46px;pointer-events:none;
+              background:linear-gradient(100deg,transparent,rgba(15,23,42,.14),transparent);
+              transform:translateX(0);animation:vshine 2.6s ease-in-out 3}
+  .vsw:hover::after{animation:none;opacity:0}
+  @keyframes vshine{
+    0%   {transform:translateX(150%);opacity:0}
+    18%  {opacity:1}
+    62%  {transform:translateX(-150%);opacity:0}
+    100% {transform:translateX(-150%);opacity:0}
+  }
+  @media (prefers-reduced-motion:reduce){ .vsw::after{animation:none;opacity:0} }
 
   /* 표 보기 — 팔로워·단가로 훑을 때는 이쪽이 빠르다 */
   #ptable{flex:1 1 auto;min-height:0;overflow:auto;padding:0 10px 10px}
@@ -1063,8 +1090,10 @@
      대화가 우하단 부유물이 된 뒤로 본문은 레일 오른쪽 전부다.
      레일이 접히면 --rail 이 64px 로 바뀌므로 중앙도 저절로 따라온다 */
   @media (min-width:1280px){
-    #dock{left:calc(50vw + var(--rail) / 2);
-          width:min(1060px,calc(100vw - var(--rail) - 48px));
+    /* 화면 정중앙에 세운다. 다만 폭을 그대로 두면 레일을 덮으므로
+       양쪽 레일 폭만큼 비워 두고 그 안에서만 넓힌다 — 가운데이면서 안 겹친다 */
+    #dock{left:50vw;
+          width:min(1060px,calc(100vw - var(--rail) * 2 - 48px));
           /* 레일이 움직이면 같은 속도로 따라온다. 안 그러면 독만 먼저 튄다 */
           transition:left .26s cubic-bezier(.22,.61,.36,1),
                      width .26s cubic-bezier(.22,.61,.36,1)}
@@ -1282,7 +1311,7 @@
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v6h6M20 20v-6h-6M20 9A8 8 0 006 5.3M4 15a8 8 0 0014 3.7"/></svg>
                   초기화</button>
                 <span class="w-px h-4 bg-slate-200 mx-0.5"></span>
-                <span class="flex items-center rounded-lg overflow-hidden bg-white" style="box-shadow:var(--lift-1)">
+                <span class="vsw flex items-center rounded-lg bg-white" style="box-shadow:var(--lift-1)">
                   <button id="vKan" onclick="setView('card')" class="vbtn">카드</button>
                   <button id="vTab" onclick="setView('table')" class="vbtn">표</button>
                 </span>
@@ -1358,31 +1387,40 @@
 </div>
 
 <!-- ══ 하단 독 ══ -->
-<div id="dock" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 w-[min(1060px,calc(100vw-32px))]">
-  <div class="bg-white rounded-[20px] pl-5 pr-4 sm:pl-6 py-6 flex items-center gap-4" style="box-shadow:var(--lift-4)">
-    <div id="dockIcon" class="w-12 h-12 rounded-2xl grid place-items-center shrink-0" style="background:#fdf0f0">
-      <svg class="w-6 h-6" style="color:var(--od-red)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-    </div>
+<div id="dock" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[min(1120px,calc(100vw-32px))]">
+  <div class="relative bg-white rounded-[24px] px-6 sm:px-10 pt-8 pb-8 text-center" style="box-shadow:var(--lift-4)">
 
-    <div class="min-w-0 flex-1 hidden md:block">
-      <div class="text-[16.5px] font-bold text-slate-900 keep leading-snug">가장 쉽고 감각적인 캠페인, 15분이면 설명드려요</div>
-    </div>
-
-    <form onsubmit="dockSend(event)" class="hidden lg:flex items-center gap-2 shrink-0">
-      <label for="dkBrand" class="sr-only">브랜드명</label>
-      <input id="dkBrand" required placeholder="브랜드명" autocomplete="organization"
-             class="w-[150px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[13.5px] px-3.5 py-3.5 rounded-xl focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
-      <label for="dkContact" class="sr-only">전화번호 또는 이메일</label>
-      <input id="dkContact" required placeholder="전화번호 또는 이메일"
-             class="w-[188px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[13.5px] px-3.5 py-3.5 rounded-xl focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
-      <button type="submit" class="cta-red press text-[15.5px] font-bold px-8 py-4 rounded-xl whitespace-nowrap">보내기</button>
-    </form>
-
-    <button onclick="openSheet('sh-booking')" class="cta-red press lg:hidden text-[15.5px] font-bold px-7 py-4 rounded-xl whitespace-nowrap shrink-0">문의하기</button>
-
-    <button onclick="dock(false)" class="shrink-0 w-10 h-10 grid place-items-center rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition" aria-label="바 내리기" title="잠시 내려두기">
+    <button onclick="dock(false)" class="absolute top-4 right-4 w-9 h-9 grid place-items-center rounded-xl text-slate-300 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="바 내리기" title="잠시 내려두기">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
     </button>
+
+    <div class="text-[21px] sm:text-[23px] font-bold text-slate-900 keep leading-snug" style="letter-spacing:var(--tr-display)">
+      이 화면, 우리 브랜드로도 보고 싶으신가요?
+    </div>
+    <div class="text-[13.5px] text-slate-500 keep mt-2">
+      브랜드명만 주시면 담당자가 연락드려 <b class="text-slate-700 font-semibold">데모 페이지를 만들어 보내드립니다</b>
+    </div>
+
+    <form onsubmit="demoOpen(event)" class="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+      <label for="dkBrand" class="sr-only">브랜드명</label>
+      <input id="dkBrand" placeholder="브랜드명" autocomplete="organization"
+             class="w-[170px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[14px] px-4 py-4 rounded-xl focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
+      <label for="dkContact" class="sr-only">전화번호 또는 이메일</label>
+      <input id="dkContact" placeholder="전화번호 또는 이메일"
+             class="w-[210px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[14px] px-4 py-4 rounded-xl focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
+
+      <!-- 주 버튼. 리드가 할 일이 브랜드명 하나뿐이고 받는 것이 손에 잡힌다 -->
+      <button type="submit" class="cta-red press text-[16px] font-bold px-9 py-4 rounded-xl whitespace-nowrap inline-flex items-center gap-2">
+        데모 캠페인 제작
+        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M3 12h18"/></svg>
+      </button>
+
+      <!-- 보조. 먼저 묻고 싶은 사람의 퇴로다. 같은 무게로 두면 둘 다 안 눌린다 -->
+      <button type="button" onclick="openSheet('sh-booking')"
+              class="press text-[15px] font-semibold text-slate-600 hover:text-slate-900 px-6 py-4 rounded-xl hover:bg-slate-100 transition whitespace-nowrap">
+        문의하기
+      </button>
+    </form>
   </div>
 </div>
 
@@ -1613,6 +1651,53 @@
 <div id="flowPop" role="tooltip" aria-hidden="true">
   <div class="fpHead"><b>진행 흐름</b><span id="fpSum"></span></div>
   <div class="fpWave" id="fpWave"></div>
+</div>
+
+<!-- 데모 캠페인 신청 — 하단에 적은 값을 그대로 들고 온다 -->
+<div id="sh-demo" class="sheet fixed inset-0 z-[68] bg-slate-900/50 flex items-end justify-center" onclick="bgClose(event,'sh-demo')">
+  <div class="panel bg-white w-full max-w-[540px] rounded-t-3xl px-7 pt-5 pb-8" role="dialog" aria-modal="true" aria-labelledby="dmTitle">
+    <div class="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5"></div>
+    <div class="flex items-start justify-between gap-4">
+      <h2 id="dmTitle" class="text-[19px] font-bold text-slate-900">데모 캠페인 제작</h2>
+      <button onclick="closeSheet('sh-demo')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1 -mt-0.5" aria-label="닫기">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <p class="text-[12.5px] text-slate-500 mt-1.5 keep">
+      브랜드에 맞춘 화면을 만들어 링크로 보내드립니다. 담당자가 먼저 연락드려 방향만 짧게 확인해요.
+    </p>
+
+    <form onsubmit="demoSend(event)" class="mt-5 space-y-3">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label for="dmBrand" class="block text-xs font-medium text-slate-600 mb-1.5">브랜드</label>
+          <input id="dmBrand" required placeholder="브랜드명"
+                 class="w-full text-sm bg-slate-50 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white transition" style="box-shadow:var(--ring)">
+        </div>
+        <div>
+          <label for="dmContact" class="block text-xs font-medium text-slate-600 mb-1.5">연락처</label>
+          <input id="dmContact" required placeholder="전화번호 또는 이메일"
+                 class="w-full text-sm bg-slate-50 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white transition" style="box-shadow:var(--ring)">
+        </div>
+      </div>
+      <div>
+        <label for="dmLink" class="block text-xs font-medium text-slate-600 mb-1.5">브랜드 인스타그램 또는 홈페이지 <span class="text-slate-400 font-normal">(선택)</span></label>
+        <input id="dmLink" placeholder="@brand 또는 brand.co.kr"
+               class="w-full text-sm bg-slate-50 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white transition" style="box-shadow:var(--ring)">
+      </div>
+      <div>
+        <span class="block text-xs font-medium text-slate-600 mb-1.5">생각하시는 규모</span>
+        <div id="dmSize" class="flex gap-2">
+          <button type="button" class="dmchip on" data-v="10명 내외">10명 내외</button>
+          <button type="button" class="dmchip" data-v="20명 내외">20명 내외</button>
+          <button type="button" class="dmchip" data-v="30명 이상">30명 이상</button>
+          <button type="button" class="dmchip" data-v="아직 미정">아직 미정</button>
+        </div>
+      </div>
+      <button type="submit" class="cta-red press w-full text-[15px] font-bold py-4 rounded-xl mt-1">보내기</button>
+      <p class="text-[11.5px] text-slate-500 text-center keep pt-1">둘러보기 화면이라 실제로 전송되지는 않습니다.</p>
+    </form>
+  </div>
 </div>
 
 <div id="toast" role="status" aria-live="polite" class="toast fixed bottom-28 left-1/2 z-[80] bg-slate-900 text-white text-xs px-4 py-3 rounded-xl flex items-start gap-2.5 max-w-[min(460px,92vw)]" style="box-shadow:0 8px 20px rgba(0,0,0,.18), 0 30px 60px -24px rgba(0,0,0,.6)">
@@ -2544,6 +2629,15 @@ function flowData() {
    막대가 아니라 면이다. 구간마다 따로 세워 하나로 이어 붙지 않게 했다. */
 const FTIER_H = [1, 0.72, 0.46, 0.26, 0.15];
 const FTIER_O = [1, 0.78, 0.56, 0.40, 0.30];
+
+/* 다섯 덩어리가 각각 서 있으면 순서가 안 읽힌다.
+   왼쪽 잉크에서 오른쪽 그린으로 색을 건너보내 한 방향으로 흐르게 한다 —
+   맨 오른쪽이 초록이라는 것만으로 "저기가 끝" 이 읽힌다 */
+const FROM = [15, 23, 42], TO = [16, 185, 129];
+function fcolor(t) {
+  const c = FROM.map((v, i) => Math.round(v + (TO[i] - v) * t));
+  return 'rgb(' + c.join(',') + ')';
+}
 const FW = 1000, FVH = 100, FFILL = 0.66, FPEAK = 52, FBASE = 42;
 
 function fhump(x0, w, h) {
@@ -2567,16 +2661,17 @@ function renderFlow() {
   const seg = FLOW.map(function (f, i) {
     const t = uniq.indexOf(counts[i]);
     return { key: f[0], label: f[1], n: counts[i], one: by[i][0],
-             h: FTIER_H[t] || 0.12, o: FTIER_O[t] || 0.3 };
+             h: FTIER_H[t] || 0.12, o: FTIER_O[t] || 0.3,
+             c: fcolor(FLOW.length > 1 ? i / (FLOW.length - 1) : 1) };
   });
 
   box.innerHTML =
       '<svg viewBox="0 0 ' + FW + ' ' + FVH + '" preserveAspectRatio="none" aria-hidden="true">'
     +   seg.map(function (x, i) {
-          return '<path class="fseg" data-seg="' + i + '" style="--o:' + x.o + '" d="'
+          return '<path class="fseg" data-seg="' + i + '" style="--o:' + x.o + ';--c:' + x.c + '" d="'
             + fhump(i * slot + pad, slot * FFILL, x.h) + '"/>';
         }).join('')
-    + '</svg><div class="fbase"></div>'
+    + '</svg><div class="fbase"><i></i></div>'
     + seg.map(function (x, i) {
         if (!x.one) return '';
         const more = x.n - 1;
@@ -2656,6 +2751,13 @@ document.addEventListener('focusout', function (e) {
   if (e.target.closest && e.target.closest('[data-flowpop]')) flowPopHide();
 });
 /* 팝오버 위에 있는 동안은 닫지 않는다 — 단계를 짚으려면 들어가야 한다 */
+document.addEventListener('click', function (e) {
+  const chip = e.target.closest && e.target.closest('#dmSize .dmchip');
+  if (!chip) return;
+  chip.parentNode.querySelectorAll('.dmchip').forEach(function (b) { b.classList.remove('on'); });
+  chip.classList.add('on');
+});
+
 document.addEventListener('DOMContentLoaded', function () {
   const pop = $('flowPop');
   if (!pop) return;
@@ -2816,7 +2918,8 @@ let dragging = false;
    그리고 무엇을 기준으로 놓인 건지 카드에 적는다 — 그게 없으면 목록은 그냥 더미다 */
 const PSTATE = {
   stage: 'all', fol: 'all', cost: 'all', sort: 'stage', dir: 1,
-  view: 'card', open: null, panel: null
+  /* 표가 먼저다. 인물 카드는 훑어보는 화면이고, 담당자가 실제로 쓰는 건 표다 */
+  view: 'table', open: null, panel: null
 };
 const PDEFAULT = { stage: 'all', fol: 'all', cost: 'all', sort: 'stage', dir: 1 };
 
@@ -3810,6 +3913,28 @@ function toast(msg, kind) {
 }
 
 /* 바에서 바로 남긴다. 팝업을 한 번 더 여는 것보다 손이 덜 간다. */
+/* 하단에서 적은 값을 그대로 들고 시트를 연다 — 같은 걸 두 번 치게 하지 않는다 */
+function demoOpen(e) {
+  if (e) e.preventDefault();
+  $('dmBrand').value = $('dkBrand').value.trim();
+  $('dmContact').value = $('dkContact').value.trim();
+  openSheet('sh-demo');
+  setTimeout(function () {
+    const first = $('dmBrand').value ? ($('dmContact').value ? $('dmLink') : $('dmContact')) : $('dmBrand');
+    first.focus();
+  }, 340);
+}
+
+function demoSend(e) {
+  e.preventDefault();
+  const brand = $('dmBrand').value.trim();
+  const size = ($('dmSize').querySelector('.dmchip.on') || {}).dataset;
+  closeSheet('sh-demo');
+  $('dkBrand').value = ''; $('dkContact').value = '';
+  na('데모 캠페인 신청', esc(brand) + ' 담당자님, 실제 화면에서는 여기서 바로 접수되고 '
+     + '담당자가 연락드려 ' + (size ? esc(size.v) + ' 규모의 ' : '') + '데모 페이지를 만들어 보내드립니다.');
+}
+
 function dockSend(e) {
   e.preventDefault();
   const b = $('dkBrand'), c = $('dkContact');
