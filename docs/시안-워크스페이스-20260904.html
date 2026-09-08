@@ -66,7 +66,7 @@
     margin:0; overflow:hidden;
     /* siriai.co.kr 과 같은 스택. Inter Tight 에 한글이 없어 자연히 Noto Sans KR 로 떨어진다 */
     font-family:'Inter Tight','Noto Sans KR',Helvetica,Arial,sans-serif;
-    background:#f1f5f9; color:#0f172a;
+    background:#fff; color:#0f172a;
     letter-spacing:var(--tr-body);
     -webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;
@@ -330,8 +330,64 @@
                display:flex;flex-direction:column;min-height:0}
   #pemb{animation-delay:.06s}
   #pdet .din, #pemb .din{flex:1 1 auto;min-height:0;overflow-y:auto;padding:14px}
-  /* 칸이 넓어지면 라벨과 값 사이가 텅 빈다 — 한 줄이 너무 길어지기 전에 두 줄로 나눈다 */
-  #pdet .dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 24px}
+  /* ── 인물 상세 ─────────────────────────────────────────
+     넓어진 칸을 버튼 길이로 채우면 안 된다. 여백으로 채우고 글자는 자기 폭만 쓴다 */
+  .dsheet{padding:18px 20px 20px;display:flex;flex-direction:column;gap:0}
+  .dhead{display:flex;align-items:center;gap:12px}
+  .dhead .dname{display:block;font-size:17px;font-weight:700;color:var(--ink-1);
+                letter-spacing:var(--tr-title);line-height:1.25}
+  .dhead .dhandle{display:block;font-style:normal;font-size:12px;color:var(--ink-4);
+                  margin-top:1px}
+
+  /* 진행 — 얇은 선 하나와 점 다섯. 막대를 다섯 장 세우면 그것부터 눈에 든다 */
+  .dflow{position:relative;height:46px;margin:22px 8px 4px}
+  .dtrack{position:absolute;left:0;right:0;top:4px;height:2px;background:#e8edf3;
+          border-radius:999px;display:block}
+  .dfill{display:block;height:100%;background:var(--ink-1);border-radius:999px;
+         transition:width .4s cubic-bezier(.22,.61,.36,1)}
+  .dstep{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;
+         align-items:center;gap:9px}
+  .dstep::before{content:"";width:10px;height:10px;border-radius:999px;background:#fff;
+                 box-shadow:0 0 0 2px #dbe3ec}
+  .dstep.done::before{background:var(--ink-1);box-shadow:0 0 0 2px #fff}
+  .dstep.now::before{background:var(--ink-1);box-shadow:0 0 0 3px #fff, 0 0 0 5px rgba(15,23,42,.16)}
+  .dstep i{font-style:normal;font-size:10px;font-weight:600;color:var(--ink-4);
+           white-space:nowrap;letter-spacing:var(--tr-small)}
+  .dstep.done i, .dstep.now i{color:var(--ink-2);font-weight:700}
+  /* 양 끝 라벨은 밖으로 나가지 않게 붙여 세운다 */
+  .dstep:first-child{transform:none;align-items:flex-start}
+  .dstep:last-child{transform:translateX(-100%);align-items:flex-end}
+
+  /* 지표 — 라벨 위, 값 아래. 넉 칸이 한 줄 */
+  .dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));
+         gap:16px 20px;margin-top:18px;padding-top:18px;border-top:1px solid #eef2f7}
+  .dcell i{display:block;font-style:normal;font-size:10.5px;color:var(--ink-4);
+           letter-spacing:var(--tr-small);white-space:nowrap}
+  .dcell b{display:block;font-size:15.5px;font-weight:700;color:var(--ink-1);
+           letter-spacing:-.02em;margin-top:3px;white-space:nowrap}
+
+  /* 파트너십 코드 — 눌러서 복사한다 */
+  .dcode{display:flex;align-items:center;gap:10px;margin-top:18px;padding:11px 13px;
+         border-radius:11px;background:#f8fafc;box-shadow:inset 0 0 0 1px #eef2f7;
+         transition:box-shadow .16s ease,background-color .16s ease}
+  .dcode:hover{background:#f1f5f9;box-shadow:inset 0 0 0 1px #dbe3ec}
+  .dcode i{font-style:normal;font-size:10.5px;color:var(--ink-4);
+           letter-spacing:var(--tr-small);white-space:nowrap}
+  .dcode b{flex:1;min-width:0;text-align:left;font-size:12.5px;font-weight:700;
+           color:var(--ink-1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dcode svg{width:15px;height:15px;flex:none;color:var(--ink-4)}
+
+  /* 버튼 — 자기 글자 폭만. 칸이 넓어져도 늘어나지 않는다 */
+  .dact{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:18px}
+  .dbtn{display:inline-flex;align-items:center;gap:7px;flex:none;
+         padding:9px 14px 9px 12px;border-radius:10px;
+         font-size:12px;font-weight:700;color:var(--ink-2);
+         background:#fff;box-shadow:var(--lift-1);
+         transition:box-shadow .16s ease,color .16s ease,transform .16s ease}
+  .dbtn:hover{color:var(--ink-1);box-shadow:var(--lift-2);transform:translateY(-1px)}
+  .dbtn:active{transform:translateY(0);box-shadow:var(--ring)}
+  .dbtn svg{width:15px;height:15px;flex:none;color:var(--ink-4)}
+  .dbtn:hover svg{color:var(--ink-2)}
   @keyframes detIn{
     from{opacity:0;transform:translateX(-14px)}
     to  {opacity:1;transform:none}
@@ -407,33 +463,44 @@
   #camBanner.hero #heroDash .text-slate-300{color:rgba(255,255,255,.35)}
   #camBanner.hero #heroDash .dico{opacity:.72}
 
-  /* 진행 흐름 — 꼭지점 네 개. 원 크기가 곧 그 단계에 있는 인원이다.
-     사이는 가는 선으로만 잇는다 — 선에 두께를 주면 그림이 되고 정보가 아니게 된다 */
-  #flow{display:flex;align-items:flex-start;padding:20px 26px 18px}
-  .fstep{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:11px;
-         cursor:pointer;position:relative}
-  .fwrap{position:relative;width:100%;height:60px;display:flex;align-items:center;justify-content:center}
-  .fline{position:absolute;top:50%;left:-50%;right:50%;height:2px;background:#e8edf3;
-         transform:translateY(-50%)}
-  .fstep:first-child .fline{display:none}
-  .fdot{position:relative;z-index:1;border-radius:999px;display:grid;place-items:center;
-        color:#fff;font-weight:700;letter-spacing:-.02em;
-        box-shadow:0 0 0 4px #fff, 0 6px 16px -6px rgba(15,23,42,.30);
-        transition:transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s ease}
-  .fdot.zero{background:#f1f5f9 !important;color:#cbd5e1;box-shadow:0 0 0 4px #fff, inset 0 0 0 2px #e2e8f0}
-  /* 마감 표식 — 사람 수를 세는 원과 섞이면 안 된다. 좁게 서고 점선으로 이어진다 */
-  .fstep.fend{flex:0 0 78px}
-  .fend .fline{background:none;border-top:2px dashed #e2e8f0;height:0}
-  .fdot.rep{width:36px;height:36px;background:#fff;color:#cbd5e1;
-            box-shadow:0 0 0 4px #fff, inset 0 0 0 2px #e2e8f0}
-  .fdot.rep svg{width:17px;height:17px}
-  .fdot.rep.open{background:var(--od-ink);color:#fff;box-shadow:0 0 0 4px #fff}
-  .flab{font-size:11.5px;font-weight:700;color:#94a3b8;white-space:nowrap;transition:color .15s ease}
-  .fsub{font-size:10px;color:#cbd5e1;white-space:nowrap;margin-top:-6px}
-  /* 짚은 곳만 살아난다 */
-  #flow.hit .fdot{opacity:.42}
-  #flow.hit .fstep.on .fdot{opacity:1;transform:scale(1.06)}
-  #flow.hit .fstep.on .flab{color:#0f172a}
+  /* 진행 흐름 — 눈금 위에 얹은 곡선.
+     도형을 키워 인원을 말하면 도형이 정보를 가린다. 선의 모양이 곧 분포다 */
+  #flow{position:relative;padding:6px 2px 0}
+  /* 그림 자리 — 점의 백분율이 이 높이를 기준으로 잡힌다 */
+  .fplot{position:relative;height:112px}
+  .fsvg{display:block;width:100%;height:112px;overflow:visible}
+  .fsvg .fgrid{stroke:#e8edf3;stroke-width:1}
+  .fsvg .fbase{stroke:#dbe3ec;stroke-width:1}
+  .fsvg .fpath{fill:none;stroke:var(--ink-1);stroke-width:2;stroke-linecap:round;
+               stroke-linejoin:round;vector-effect:non-scaling-stroke;
+               transition:opacity .16s ease}
+  /* 짚은 단계의 사람들만 남는다 — 선은 물러나고 그 지점만 남는다 */
+  #flow.hit .fpath{opacity:.34}
+  #flow.hit .farea{opacity:.34}
+
+  /* 점 · 라벨은 HTML 로 얹는다 — SVG 안 글자는 자간과 굵기가 이 화면과 어긋난다 */
+  .fpt{position:absolute;width:9px;height:9px;border-radius:999px;background:var(--ink-1);
+       transform:translate(-50%,-50%);box-shadow:0 0 0 3px #fff;
+       transition:transform .18s cubic-bezier(.22,.61,.36,1), opacity .16s ease}
+  .fpt.zero{background:#fff;box-shadow:0 0 0 2px #dbe3ec}
+  #flow.hit .fpt{opacity:.30}
+  #flow.hit .fpt.on{opacity:1;transform:translate(-50%,-50%) scale(1.45)}
+
+  /* 눌러서 거르는 자리 — 세로 띠 하나가 한 단계다 */
+  .fhit{position:absolute;top:0;bottom:0;cursor:pointer;border-radius:10px;
+        transition:background-color .16s ease}
+  .fhit:hover{background:rgba(15,23,42,.032)}
+
+  .flabs{display:flex;margin-top:2px}
+  .flab{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;
+        cursor:pointer}
+  .flab i{font-style:normal;font-size:11px;font-weight:600;color:var(--ink-4);
+          letter-spacing:var(--tr-small);white-space:nowrap;transition:color .15s ease}
+  .flab b{font-size:14px;font-weight:800;color:var(--ink-2);letter-spacing:-.02em;
+          transition:color .15s ease}
+  #flow.hit .flab i, #flow.hit .flab b{color:#cbd5e1}
+  #flow.hit .flab.on i{color:var(--ink-3)}
+  #flow.hit .flab.on b{color:var(--ink-1)}
   /* 흐름에서 한 단계를 짚으면 아래 진행상황에서 그 사람들만 남는다 */
   .pcard{transition:box-shadow .18s ease,background-color .18s ease,opacity .16s ease}
   .pcard.dim{opacity:.26}
@@ -554,10 +621,39 @@
      그 열이 화면 바닥까지 자라야 진행상황이 남는 높이를 받는다 */
   @media (min-width:1280px){ #bodyRow{align-items:stretch} }
 
-  /* 셋이 같은 간격 · 같은 테두리면 무엇을 먼저 볼지 알 수 없다.
-     '지금 상태'(지표 + 흐름)를 붙여 한 덩어리로 두고, '작업'(진행상황)을 떼어 놓는다 */
-  #dashSec{margin-bottom:10px}
-  #flowRow{margin-bottom:20px}
+  /* ── 화이트 베이스 ─────────────────────────────────────
+     면을 겹치지 않는다. 바탕은 하나이고 섹션은 제목과 여백으로 나뉜다.
+     카드 셋을 나란히 얹으면 셋이 같은 무게로 읽힌다 */
+  #dashSec{margin-bottom:20px}
+  #flowRow{margin-bottom:16px}
+  /* 패널의 껍데기를 벗긴다 — 남는 것은 제목과 내용이다 */
+  #flowSec, #progSec{background:transparent;box-shadow:none;border-radius:0}
+  #flowSec > header, #progSec > header{padding:0 2px 9px;border-bottom:0}
+  .pnl h2{font-size:14.5px;font-weight:700;letter-spacing:var(--tr-title)}
+  /* 섹션 제목 — 크기와 여백이 위계를 만든다 */
+  .sechd{display:flex;align-items:baseline;gap:9px;padding:0 2px 9px}
+  .sechd h2{font-size:14.5px;font-weight:700;color:var(--ink-1);
+            letter-spacing:var(--tr-title)}
+
+  /* 성과 — 넷이 한 면에 서고 사이는 세로 선 하나. 네 장의 카드가 아니다 */
+  #dash{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+  #dash > .dcard{background:transparent;box-shadow:none;border-radius:0;
+                 padding:0 22px;border-left:1px solid #eef2f7}
+  #dash > .dcard:first-child{border-left:0;padding-left:2px}
+  #dash > .dcard:last-child{padding-right:2px}
+  @media (max-width:1279px){
+    #dash{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 0}
+    #dash > .dcard:nth-child(odd){border-left:0;padding-left:2px}
+  }
+
+  /* 목록은 스크롤 상자다 — 여기만 경계를 갖는다. 그것도 선 하나로 */
+  #prog{border-top:1px solid #eef2f7;padding:10px 0 0}
+  /* 카드도 떠 있지 않다. 테두리 한 겹, 짚으면 그때 들린다 */
+  .pcard{background:#fff;box-shadow:inset 0 0 0 1px #eef2f7}
+  .pcard:hover{box-shadow:inset 0 0 0 1px #dbe3ec, var(--lift-1)}
+  .pcard[data-open="1"]{box-shadow:inset 0 0 0 1.5px var(--accent), var(--lift-1);background:#fff}
+  /* 상세와 콘텐츠는 목록 위에 얹히는 것이라 한 겹 들린다 */
+  #pdet, #pemb{box-shadow:inset 0 0 0 1px #e8edf3, var(--lift-1)}
   /* 흐름은 두 덩어리를 잇는 다리다 — 같은 흰 카드로 세우면 셋이 나란해진다.
      간격만으로 나눈다 — 흰 카드는 그대로 두고 위아래 사이를 벌린다 */
 
@@ -1074,7 +1170,8 @@
           <!-- 1 · 대시보드 — 숫자가 스스로 말한다. 라벨을 얹지 않는다 -->
 
           <section id="dashSec" class="shrink-0">
-            <div id="dash" class="grid grid-cols-2 xl:grid-cols-4 gap-2.5"></div>
+            <div class="sechd"><h2>성과</h2></div>
+            <div id="dash"></div>
           </section>
 
           <!-- 2 · 흐름 + 자료 — 왼쪽은 어디에 몰려 있는지, 오른쪽은 가져갈 것 -->
@@ -1086,7 +1183,7 @@
                   <h2>진행 흐름</h2>
                   <span id="flowSum" class="num text-[10.5px] text-slate-500"></span>
                 </div>
-                <span class="t-label num text-[9.5px] text-slate-400">리스트 → 리포트</span>
+                <span class="t-label num text-[9.5px] text-slate-400">리스트 → 업로드</span>
               </header>
               <div id="flow" class="relative"></div>
             </div>
@@ -1099,7 +1196,7 @@
           <section id="progSec" class="pnl shrink-0">
             <header>
               <div class="flex items-center gap-2.5 min-w-0">
-                <h2>진행상황</h2>
+                <h2>참여 인플루언서</h2>
                 <button id="progAll" onclick="pickAllProg()" class="flex items-center gap-1.5 text-[10.5px] font-bold text-slate-600 hover:text-slate-900 transition whitespace-nowrap"></button>
                 <button id="progPick" onclick="chatAboutPicked()" class="cta hidden text-[10.5px] font-bold px-2.5 py-1.5 rounded-lg whitespace-nowrap"></button>
               </div>
@@ -2344,60 +2441,128 @@ function flowData() {
   return FLOW.map(f => CREATORS.filter(c => c.stage === f[0]));
 }
 
-/* 리포트는 캠페인이 끝나는 지점이다. 전원이 올라와야 열린다 */
-function reportState() {
-  const all = selected();
-  const up = all.filter(c => c.stage === 'live');
-  const open = all.length > 0 && up.length === all.length;
-  const last = up.map(c => c.upAt).sort().pop();
-  return { open: open, up: up.length, n: all.length,
-           at: open && last ? dshift(last, 3) : '' };
+
+/* 눈금 위 곡선. 점 다섯 개를 부드럽게 잇고 아래를 은은하게 채운다.
+   제어점까지 기준선 안으로 눌러 둔다 — 그러지 않으면 0 인 칸 옆에서 선이 바닥을 뚫는다 */
+const FV = { W: 1000, H: 112, padX: 46, top: 18, base: 26 };
+
+function fcurve(pts, y0) {
+  if (pts.length < 2) return '';
+  const t = 0.20;
+  const cl = y => Math.max(FV.top - 6, Math.min(y0, y));
+  let d = 'M' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    const c1x = p1.x + (p2.x - p0.x) * t, c1y = cl(p1.y + (p2.y - p0.y) * t);
+    const c2x = p2.x - (p3.x - p1.x) * t, c2y = cl(p2.y - (p3.y - p1.y) * t);
+    d += ' C' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) + ',' + c2x.toFixed(1) + ' '
+       + c2y.toFixed(1) + ',' + p2.x.toFixed(1) + ' ' + p2.y.toFixed(1);
+  }
+  return d;
 }
 
-const FCOLOR = ['#cbd5e1', '#aab8c6', '#8fa0b2', '#5c6f85', '#10b981'];
-
-/* 꼭지점 네 개. 원 크기가 곧 인원이라 어디에 몰려 있는지가 크기로 읽힌다.
-   사이는 가는 선으로만 잇는다 — 선을 두껍게 하면 그림이 되고 정보가 아니게 된다 */
 function renderFlow() {
   const box = $('flow');
   if (!box) return;
   const by = flowData();
   const total = by.reduce((a, g) => a + g.length, 0);
   const max = Math.max(1, ...by.map(g => g.length));
+  const y0 = FV.H - FV.base;
+  const plot = y0 - FV.top;
+  const nStep = FLOW.length;
+  const gap = (FV.W - FV.padX * 2) / (nStep - 1);
+  const pts = FLOW.map(function (f, k) {
+    return { x: FV.padX + k * gap, y: y0 - (by[k].length / max) * plot, v: by[k].length };
+  });
+  const line = fcurve(pts, y0);
+  const area = line + ' L' + pts[pts.length - 1].x.toFixed(1) + ' ' + y0
+             + ' L' + pts[0].x.toFixed(1) + ' ' + y0 + ' Z';
 
-  box.innerHTML = FLOW.map(function (f, k) {
-    const n2 = by[k].length;
-    /* 28 ~ 58px. 0 명이면 가장 작게, 빈 원으로 */
-    const d = n2 ? Math.round(28 + (n2 / max) * 30) : 26;
-    const fs = n2 ? Math.max(12, Math.round(d * 0.42)) : 11;
-    return '<div class="fstep" data-k="' + k + '">'
-      + '<span class="fwrap"><span class="fline"></span>'
-      +   '<span class="fdot num' + (n2 ? '' : ' zero') + '" style="width:' + d + 'px;height:' + d
-      +   'px;font-size:' + fs + 'px;background:' + FCOLOR[k] + '">' + n2 + '</span></span>'
-      + '<span class="flab">' + f[1] + '</span>'
-      + '</div>';
-  }).join('') + repStep() + '<div id="flowTip" role="status"></div>';
+  box.innerHTML =
+      /* 점은 그림 높이를 기준으로 얹는다 — 라벨까지 포함한 높이로 재면 아래로 밀린다 */
+      '<div class="fplot">'
+    + '<svg class="fsvg" viewBox="0 0 ' + FV.W + ' ' + FV.H + '" preserveAspectRatio="none"'
+    + ' aria-hidden="true">'
+    +   '<defs><linearGradient id="fgrad" x1="0" y1="0" x2="0" y2="1">'
+    +     '<stop offset="0" stop-color="#0f172a" stop-opacity=".17"/>'
+    +     '<stop offset="1" stop-color="#0f172a" stop-opacity="0"/></linearGradient></defs>'
+    +   '<g class="fgrid">'
+    +     pts.map(p => '<line x1="' + p.x.toFixed(1) + '" y1="' + FV.top
+             + '" x2="' + p.x.toFixed(1) + '" y2="' + y0 + '"/>').join('')
+    +   '</g>'
+    +   '<line class="fbase" x1="' + FV.padX + '" y1="' + y0
+    +     '" x2="' + (FV.W - FV.padX) + '" y2="' + y0 + '"/>'
+    +   '<path class="farea" d="' + area + '" fill="url(#fgrad)"/>'
+    +   '<path class="fpath" d="' + line + '"/>'
+    + '</svg>'
+    /* 점은 곡선 위에 정확히 앉아야 한다 — 백분율로 얹는다 */
+    + pts.map(function (p, k) {
+        return '<span class="fpt' + (p.v ? '' : ' zero') + '" data-k="' + k
+          + '" style="left:' + (p.x / FV.W * 100).toFixed(3) + '%;top:'
+          + (p.y / FV.H * 100).toFixed(3) + '%"></span>';
+      }).join('')
+    + pts.map(function (p, k) {
+        const half = gap / 2;
+        const l = Math.max(0, p.x - half), r = Math.min(FV.W, p.x + half);
+        return '<span class="fhit" data-k="' + k + '" style="left:'
+          + (l / FV.W * 100).toFixed(3) + '%;width:' + ((r - l) / FV.W * 100).toFixed(3) + '%"></span>';
+      }).join('')
+    + '</div>'
+    + '<div class="flabs">'
+    +   FLOW.map(function (f, k) {
+          return '<span class="flab" data-k="' + k + '"><b class="num">' + by[k].length
+            + '</b><i>' + f[1] + '</i></span>';
+        }).join('')
+    + '</div>'
+    + '<div id="flowTip" role="status"></div>';
 
   $('flowSum').textContent = total + '명';
   bindFlow(by);
 }
 
-/* 마감 표식 — 원이 아니다. 인원을 세는 자리가 아니라는 걸 모양이 말해야 한다 */
-function repStep() {
-  const r = reportState();
-  return '<div class="fstep fend" data-k="rep">'
-    + '<span class="fwrap"><span class="fline dash"></span>'
-    +   '<span class="fdot rep' + (r.open ? ' open' : '') + '">'
-    +     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'
-    +     '<path stroke-linecap="round" stroke-linejoin="round" d="M8 4h6l4 4v12H6V4h2z"/>'
-    +     '<path stroke-linecap="round" d="M9 13h6M9 16.5h4"/></svg>'
-    +   '</span></span>'
-    + '<span class="flab">리포트</span>'
-    + '</div>';
+function bindFlow(by) {
+  const box = $('flow'), tip = $('flowTip');
+  if (!box || !tip) return;
+  const K = FLOW.length;
+
+  function on(k) {
+    const grp = by[k];
+    box.classList.add('hit');
+    box.querySelectorAll('.fpt, .flab').forEach(function (e) {
+      e.classList.toggle('on', +e.dataset.k === k);
+    });
+    const face = grp.slice(0, 3).map(c => avatar(c, CREATORS.indexOf(c), 20)).join('');
+    const names = grp.slice(0, 3).map(c => c.name).join(' · ');
+    const rest = grp.length > 3 ? ' 외 ' + (grp.length - 3) + '명' : '';
+    tip.innerHTML = '<div class="text-[11.5px] font-bold">' + FLOW[k][1]
+        + ' <span class="num">' + grp.length + '</span>명</div>'
+      + (grp.length
+         ? '<div class="tw">' + face + '<span class="text-[10.5px]" style="color:rgba(255,255,255,.82)">'
+           + esc(names) + esc(rest) + '</span></div>'
+         : '<div class="text-[10.5px] mt-1" style="color:rgba(255,255,255,.72)">아직 없어요</div>');
+    tip.style.left = ((k + 0.5) / K * 100) + '%';
+    tip.style.top = '18px';
+    tip.classList.add('on');
+    flowFocus(FLOW[k][0]);
+  }
+
+  function off() {
+    box.classList.remove('hit');
+    box.querySelectorAll('.on').forEach(e => e.classList.remove('on'));
+    tip.classList.remove('on');
+    flowFocus(null);
+  }
+
+  box.querySelectorAll('.fhit, .flab').forEach(function (z) {
+    const k = +z.dataset.k;
+    z.addEventListener('mouseenter', function () { on(k); });
+    z.addEventListener('click', function () { setFilter('stage', FLOW[k][0]); });
+  });
+  box.addEventListener('mouseleave', off);
 }
 
 /* 흐름에서 한 단계를 짚으면 아래 진행상황에서 그 사람들만 남는다.
-   위에서 본 수위가 아래 어느 카드인지 눈으로 이어져야 한다 */
+   위에서 본 분포가 아래 어느 카드인지 눈으로 이어져야 한다 */
 function flowFocus(stage) {
   const g = $('pgrid');
   if (!g) return;
@@ -2405,56 +2570,6 @@ function flowFocus(stage) {
   g.querySelectorAll('.pcard').forEach(function (el) {
     const c = CREATORS[+el.dataset.i];
     el.classList.toggle('dim', !!stage && (!c || c.stage !== stage));
-  });
-}
-
-function bindFlow(by) {
-  const box = $('flow'), tip = $('flowTip');
-  if (!box || !tip) return;
-  const K = FLOW.length;
-  /* 마감 표식은 사람을 거르는 자리가 아니다 — 눌러도 필터가 걸리지 않는다 */
-  box.querySelectorAll('.fstep.fend').forEach(function (z) {
-    z.addEventListener('mouseenter', function () {
-      const r = reportState();
-      box.classList.add('hit');
-      box.querySelectorAll('.fstep').forEach(e => e.classList.toggle('on', e === z));
-      tip.innerHTML = '<div class="text-[11.5px] font-bold">리포트</div>'
-        + '<div class="text-[10.5px] mt-1" style="color:rgba(255,255,255,.82)">'
-        + (r.open ? esc(r.at) + ' 전달 예정'
-                  : '업로드 <span class="num">' + r.up + '</span>/<span class="num">' + r.n
-                    + '</span> 끝나면 열려요')
-        + '</div>';
-      tip.style.left = '94%';
-      tip.style.top = '24px';
-      tip.classList.add('on');
-      flowFocus(null);
-    });
-  });
-  box.querySelectorAll('.fstep:not(.fend)').forEach(function (z) {
-    const k = +z.dataset.k;
-    z.addEventListener('mouseenter', function () {
-      const grp = by[k];
-      box.classList.add('hit');
-      box.querySelectorAll('.fstep').forEach(e => e.classList.toggle('on', +e.dataset.k === k));
-      const face = grp.slice(0, 3).map(c => avatar(c, CREATORS.indexOf(c), 20)).join('');
-      const names = grp.slice(0, 3).map(c => c.name).join(' · ');
-      const rest = grp.length > 3 ? ' 외 ' + (grp.length - 3) + '명' : '';
-      tip.innerHTML = '<div class="text-[11.5px] font-bold">' + FLOW[k][1] + ' <span class="num">' + grp.length + '</span>명</div>'
-        + (grp.length
-           ? '<div class="tw">' + face + '<span class="text-[10.5px]" style="color:rgba(255,255,255,.82)">' + esc(names) + esc(rest) + '</span></div>'
-           : '<div class="text-[10.5px] mt-1" style="color:rgba(255,255,255,.72)">아직 없어요</div>');
-      tip.style.left = ((k + 0.5) / K * 100) + '%';
-      tip.style.top = '24px';
-      tip.classList.add('on');
-      flowFocus(FLOW[k][0]);
-    });
-    z.addEventListener('click', function () { setFilter('stage', FLOW[k][0]); });
-  });
-  box.addEventListener('mouseleave', function () {
-    box.classList.remove('hit');
-    box.querySelectorAll('.on').forEach(e => e.classList.remove('on'));
-    tip.classList.remove('on');
-    flowFocus(null);
   });
 }
 
@@ -2563,8 +2678,9 @@ function setGlass(on) {
 }
 /* 기본은 켬. 한 번 끄면 그 선택을 기억한다 */
 (function () {
-  let on = true;
-  try { on = localStorage.getItem('odGlass') !== '0'; } catch (e) {}
+  /* 흰 바탕에서는 흐릴 것이 없다 — 켜려면 setGlass(true) */
+  let on = false;
+  try { on = localStorage.getItem('odGlass') === '1'; } catch (e) {}
   if (document.body) document.body.classList.toggle('glass', on);
   else addEventListener('DOMContentLoaded', () => document.body.classList.toggle('glass', on));
 })();
@@ -3157,49 +3273,70 @@ function paintDet() {
   if (!det || PSTATE.open === null) return;
   const i = PSTATE.open, c = CREATORS[i];
   if (!c) return;
-  const st = STAGE[c.stage] || STAGE.make;
   const cur = FLOW.findIndex(f => f[0] === c.stage);
-  const row = (k, v) => '<div class="flex items-baseline justify-between gap-3 py-1.5">'
-    + '<span class="text-[10.5px] text-slate-500 shrink-0">' + k + '</span>'
-    + '<span class="num text-[11.5px] font-semibold text-slate-900 truncate">' + v + '</span></div>';
 
-  det.innerHTML = '<div class="din">'
-    + '<div class="flex items-start gap-2.5">' + avatar(c, i, 36)
-    +   '<div class="min-w-0 flex-1"><div class="text-[13px] font-bold text-slate-900 truncate">' + esc(c.name) + '</div>'
-    +   '<div class="num text-[10.5px] text-slate-500 truncate">' + esc(c.handle) + '</div></div>'
-    +   '<button onclick="closePeek()" class="hbtn shrink-0 -mt-0.5 -mr-1" aria-label="닫기" title="닫기">'
-    +     '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div>'
-    /* 단계가 다섯이 됐다 — 네 칸에 넣으면 마지막이 아래로 떨어진다 */
-    + '<div class="mt-3.5 grid grid-cols-5 gap-1">'
+  /* 지표 한 칸 — 라벨을 위에 얹고 값을 아래에 둔다.
+     라벨과 값을 한 줄 양끝에 두면 칸이 넓어질수록 사이가 벌어진다 */
+  const cell = (k, v, wide) => '<div class="dcell' + (wide ? ' w2' : '') + '">'
+    + '<i>' + k + '</i><b class="num">' + v + '</b></div>';
+
+  det.innerHTML = '<div class="din dsheet">'
+    /* 머리 — 누구인지 */
+    + '<div class="dhead">' + avatar(c, i, 44)
+    +   '<span class="min-w-0 flex-1">'
+    +     '<b class="dname">' + esc(c.name) + '</b>'
+    +     '<i class="dhandle num">' + esc(c.handle) + '</i>'
+    +   '</span>'
+    +   '<button onclick="closePeek()" class="hbtn shrink-0" aria-label="닫기" title="닫기">'
+    +     '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">'
+    +     '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>'
+    + '</div>'
+
+    /* 진행 — 얇은 선 위 점 다섯 개. 지금 어디인지 하나만 진하다 */
+    + '<div class="dflow">'
+    +   '<span class="dtrack"><span class="dfill" style="width:'
+    +     (cur < 0 ? 0 : cur / (FLOW.length - 1) * 100) + '%"></span></span>'
     +   FLOW.map(function (f, k) {
-          return '<div class="flex flex-col gap-1.5">'
-            + '<div class="h-1 rounded-full" style="background:'
-            +   (k < cur ? '#0f172a' : k === cur ? '#10b981' : '#e2e8f0') + '"></div>'
-            + '<div class="text-[9.5px] text-center leading-tight keep ' + (k <= cur ? 'font-bold text-slate-800' : 'text-slate-400')
-            + '">' + f[1] + '</div></div>';
+          return '<span class="dstep' + (k < cur ? ' done' : k === cur ? ' now' : '') + '"'
+            + ' style="left:' + (k / (FLOW.length - 1) * 100) + '%">'
+            + '<i>' + f[1] + '</i></span>';
         }).join('')
     + '</div>'
-    + '<div class="dg mt-3 pt-3 border-t border-slate-100">'
-    +   row(c.up ? '업로드' : '업로드 예정', c.due)
-    +   row('팔로워', kw(c.fol))
-    +   row('함께한 횟수', c.works + '회')
-    +   row('참여율', c.er.toFixed(1) + '%')
-    +   row('제안 단가', won(c.cost))
-    +   (c.up ? row('조회수', n(c.views)) : '')
-    +   (c.codeOn ? row('파트너십 코드', '<span class="mono text-[10.5px]">' + esc(c.code) + '</span>') : '')
+
+    /* 지표 */
+    + '<div class="dgrid">'
+    +   cell('팔로워', kw(c.fol))
+    +   cell('참여율', c.er.toFixed(1) + '%')
+    +   cell('제안 단가', won(c.cost))
+    +   cell(c.up ? '조회수' : '업로드 예정', c.up ? n(c.views) : esc(c.due))
+    +   cell('함께한 횟수', c.works + '회')
+    +   cell(c.up ? '업로드' : '단계', c.up ? esc(c.due) : (STAGE[c.stage] || {}).label || '-')
     + '</div>'
-    + '<div class="mt-3 flex flex-col gap-1.5">'
-    +   '<button onclick="chatAbout(' + i + ', event)" class="btn text-[11px] font-bold text-slate-700 py-2.5 rounded-lg">대화에 담기</button>'
-    +   '<button onclick="na(\'인스타그램\', \'실제 화면에서는 이 크리에이터의 인스타그램 계정이 새 창에서 열립니다.\')"'
-    +     ' class="btn text-[11px] font-bold text-slate-700 py-2.5 rounded-lg">인스타그램</button>'
-    +   (c.up
-        ? '<button onclick="na(\'콘텐츠 보기\', \'실제 화면에서는 업로드된 릴스가 새 창에서 열립니다.\')" class="cta text-[11px] font-bold py-2.5 rounded-lg">콘텐츠 보기</button>'
-        : '<span class="grid place-items-center text-[11px] font-semibold text-slate-400 bg-slate-50 rounded-lg py-2.5">업로드 전</span>')
+
+    /* 파트너십 코드 — 눌러서 복사한다 */
+    + (c.codeOn
+       ? '<button class="dcode" onclick="copy(\'' + c.code + '\')" title="눌러서 복사">'
+         + '<i>파트너십 코드</i><b class="mono">' + esc(c.code) + '</b>'
+         + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">'
+         + '<rect x="9" y="9" width="11" height="11" rx="2.5"/>'
+         + '<path stroke-linecap="round" d="M15 5H6a2 2 0 00-2 2v9"/></svg></button>'
+       : '')
+
+    /* 버튼은 글자 폭만 쓴다 */
+    + '<div class="dact">'
+    +   '<button onclick="chatAbout(' + i + ', event)" class="dbtn">'
+    +     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">'
+    +     '<path stroke-linecap="round" stroke-linejoin="round" d="M20 15a2 2 0 01-2 2H8l-4 4V6a2 2 0 012-2h12a2 2 0 012 2z"/></svg>'
+    +     '대화에 담기</button>'
+    +   '<button onclick="na(\'인스타그램\', \'실제 화면에서는 이 크리에이터의 계정이 새 창에서 열립니다.\')"'
+    +     ' class="dbtn">'
+    +     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">'
+    +     '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/>'
+    +     '<circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>'
+    +     '인스타그램</button>'
     + '</div></div>';
 }
 
-
-/* 콘텐츠 — 올라간 릴스가 여기에 붙는다. 데모라 자리를 보여 주고 실제 화면을 말한다 */
 function paintEmb() {
   const emb = $('pemb');
   if (!emb || PSTATE.open === null) return;
