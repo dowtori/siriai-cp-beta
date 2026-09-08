@@ -1090,6 +1090,9 @@
   .peekStack > div{flex:none;height:auto;animation:none}
   .peekStack .din{flex:none;overflow:visible;padding:16px}
   .peekStack #pemb .din{padding:14px}
+  /* '크게 열어라' 의 실체는 여기다 — 릴이 손톱만 하면 시트를 연 뜻이 없다 */
+  .peekStack .embFrame{height:clamp(380px,54vh,580px);min-height:0}
+  .peekStack .embOff{height:220px;min-height:0}
   @media (prefers-reduced-motion:reduce){ #peekOv, .peekCard{animation:none} }
   .peekHd{flex:none;display:flex;align-items:center;gap:11px;padding:16px 18px;background:#fff;
           border-bottom:1px solid #e9eef4}
