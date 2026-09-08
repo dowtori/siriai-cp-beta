@@ -996,9 +996,12 @@
                 background:#fff}
   /* 위에 붙은 배너 · 흐름 · 성과 밑으로 들어가면 안 된다. 그 아래에 선다.
      --topH 는 JS 가 붙은 덩어리의 키를 재서 넣는다 */
-  #ptable th{position:sticky;top:calc(var(--topH,0px) - 1px);
+  /* 굴리려고 끌면 머리글 글자가 파랗게 잡혔다 */
+  #ptable th{user-select:none;-webkit-user-select:none;
+             position:sticky;top:calc(var(--topH,0px) - 1px);
              z-index:2;background:#f8fafc;padding:0;
-             border-bottom:1px solid #e9eef4;white-space:nowrap}
+             border-bottom:1px solid #e9eef4;white-space:nowrap;
+             box-shadow:0 1px 0 rgba(15,23,42,.04)}
   #ptable th button{width:100%;display:flex;align-items:center;gap:3px;padding:16px 18px;
                     font-size:11.5px;font-weight:600;color:#64748b;white-space:nowrap;
                     letter-spacing:var(--tr-small)}
@@ -1014,7 +1017,13 @@
   /* 한 줄이 숨 쉴 자리. 좌우도 같이 벌린다 — 값이 칸 벽에 붙으면
      칸이 몇 개인지부터 세게 된다 */
   #ptable td{padding:22px 18px;font-size:14px;color:#334155;border-bottom:1px solid #f1f5f9;
-             white-space:nowrap}
+             white-space:nowrap;vertical-align:middle}
+  /* 고른 칸 — 34px 에 좌우 여백 36px 을 주니 체크박스가 칸 밖으로 밀려
+     이름 칸을 밟았다. 여백을 걷고 가운데 세운다 */
+  #ptable th.cbx, #ptable td.cbx{padding-left:0;padding-right:0;text-align:center}
+  #ptable td.cbx .pbox{display:inline-flex;align-items:center;justify-content:center}
+  /* 이름 칸은 왼쪽 여백을 조금 줄여 고른 칸과 붙지 않게 */
+  #ptable th:nth-child(2), #ptable td:nth-child(2){padding-left:6px}
   /* 한 칸에 이름과 계정을 위아래로. 계정을 옆 열로 빼 두었더니 두 칸 다
      반이 비었다 — 붙여 놓으면 한 칸이 차고 한 칸이 통째로 남는다 */
   #ptable .tname{display:flex;align-items:center;gap:11px;text-align:left;
@@ -3764,12 +3773,12 @@ function progTable(list) {
     + '</th>';
 
   /* 이름 칸의 몫. 아바타와 이름만 남았으니 숫자 칸의 한 배 반이면 된다 */
-  const NAMEW = 216;
+  const NAMEW = 200;
   const wsum  = NAMEW + cols.reduce((a, x) => a + (x.w || 78), 0);
   const pw    = w => (w / wsum * 100).toFixed(3) + '%';
 
   return '<div id="ptable" class="scroll scroll-thin"><table><thead><tr>'
-    + '<th style="width:34px"></th>'
+    + '<th class="cbx" style="width:58px"></th>'
     /* 폭을 안 주면 이 열이 남는 자리를 혼자 먹어 이름과 다음 열이 양끝으로 갈린다.
        못 박아 두면 남는 것은 모든 열에 고루 퍼진다 */
     /* 폭을 px 로 못 박고 이름만 비워 두면, 남는 자리를 이름 혼자 다 먹어
@@ -3785,7 +3794,7 @@ function progTable(list) {
         const opened = PSTATE.open === i;
         return '<tr data-i="' + i + '" class="' + (PICK.has(i) ? 'pick ' : '') + (opened ? 'on' : '')
           + '" onclick="openPeek(' + i + ', event)">'
-          + '<td><span class="pbox cursor-pointer" data-i="' + i + '" onclick="togglePick(' + i + ', event)">'
+          + '<td class="cbx"><span class="pbox cursor-pointer" data-i="' + i + '" onclick="togglePick(' + i + ', event)">'
           +   box(PICK.has(i)) + '</span></td>'
           + '<td><button onclick="openPeek(' + i + ', event)" class="tname">'
           +   avatar(c, i, 34)
