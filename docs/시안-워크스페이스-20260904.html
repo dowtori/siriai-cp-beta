@@ -237,7 +237,10 @@
   #prog{display:flex;gap:10px;padding:10px;min-height:0;overflow:hidden}
   /* 열 수는 화면 폭이 아니라 layoutProgGrid() 가 정한다 — 박스 크기를 먼저 지키고,
      한 열에 담을 수 있는 인원을 넘을 때만 열을 하나 더 쓴다 */
-  #pgrid{flex:1 1 0;min-width:0;overflow-y:auto;padding-right:2px;
+  /* 스크롤 상자라 가장자리에서 잔린다. 카드 테두리는 box-shadow 로
+     그린 1px 링이어서 상자 밖으로 1px 나가 있다 — 그 1px 이 잔렸다.
+     선택된 카드는 1.5px 이라 4px 을 둔다 */
+  #pgrid{flex:1 1 0;min-width:0;overflow-y:auto;padding:4px;
          display:grid;grid-template-columns:minmax(0,1fr);
          gap:var(--pgap);align-content:start}
   /* 열 수는 상세가 열리기 전에 바뀌는데 폭은 0.4초 뒤에 좁아진다.
@@ -1872,8 +1875,9 @@ function layoutProgGrid() {
   /* 트랙을 미리 항해 둔다. minmax 로 맡기면 상세가 열리는 첫 프레임에
      아직 넓은 폭을 나눠 420 까지 벌어진다 — 카드 폭이 뒤바뀌어보인다.
      12px 는 스크롤바와 오른쪽 여백 몰이다 */
+  /* 18px = 좌우 여백 8 + 스크롤바 몴이 */
   const track = Math.min(PCARD_MAX,
-    Math.max(200, Math.floor((availW - (cols - 1) * PGAP - 12) / cols)));
+    Math.max(200, Math.floor((availW - (cols - 1) * PGAP - 18) / cols)));
   grid.style.gridTemplateColumns = 'repeat(' + cols + ', ' + track + 'px)';
   grid.style.justifyContent = 'start';
 
