@@ -1634,7 +1634,6 @@
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                 </button></div>
               <div class="fpWave" id="fpWave"></div>
-              <div class="fline" id="fpLine" aria-hidden="true"></div>
             </section>
 
             <!-- 1 · 대시보드 — 숫자가 스스로 말한다. 라벨을 얹지 않는다 -->
@@ -3198,48 +3197,11 @@ function renderFlow() {
       }).join('');
 
   $('fpSum').textContent = counts.reduce((a, b) => a + b, 0) + '명 · 리스트 → 업로드';
-  renderLine(seg, counts);
   bindFlow(seg);
 }
 
-/* 위에 붙었을 때 쓰는 선. 파도와 '같은 자리' 에 찍는다 —
-   파도는 한 구간의 한가운데(10 · 30 · 50 · 70 · 90%)에 서 있는데,
-   선을 0 · 25 · 50 · 75 · 100% 에 찍어 두었더니 바뀌는 순간 점들이
-   옆으로 튀었다. 구간 계산을 파도와 하나로 맞춘다 */
-function renderLine(seg, counts) {
-  const box = $('fpLine');
-  if (!box) return;
-  const step = 100 / FLOW.length;      /* 한 구간 = 20% (파도와 같다) */
-  const at   = i => (i + 0.5) * step;  /* 구간 한가운데 = 파도의 봉우리 자리 */
-  const half = step / 2;
-
-  let lastAt = 0;
-  seg.forEach(function (x, i) { if (counts[i]) lastAt = i; });
-  /* 선은 첫 점에서 끝 점까지만 긋는다. 칸 끝까지 늘이면 점 밖으로 선이 남는다 */
-  const span = at(FLOW.length - 1) - at(0);
-  const fill = span ? (at(lastAt) - at(0)) / span * 100 : 0;
-
-  box.innerHTML =
-      '<span class="ftrack" style="left:' + at(0) + '%;right:' + at(0) + '%">'
-    +   '<span class="ffill" style="width:' + fill + '%"></span></span>'
-    + seg.map(function (x, i) {
-        return '<span class="fnode' + (counts[i] ? ' has' : '')
-          + (PSTATE.stage === x.key ? ' sel' : '') + '"'
-          + ' data-seg="' + i + '" style="left:' + at(i) + '%;--c:' + x.c + '">'
-          + '<span class="fdot"></span>'
-          + '<b class="fn num">' + counts[i] + '</b>'
-          + '<i class="fl">' + x.label + '</i></span>';
-      }).join('')
-    + seg.map(function (x, i) {
-        return '<span class="fhit" data-seg="' + i + '" role="button" tabindex="0"'
-          + ' title="' + esc(x.label) + ' ' + counts[i] + '명만 보기"'
-          + ' aria-pressed="' + (PSTATE.stage === x.key ? 'true' : 'false') + '"'
-          + ' style="left:' + (i * step) + '%;width:' + step + '%"></span>';
-      }).join('');
-}
-
 function bindFlow(seg) {
-  const boxes = [$('fpWave'), $('fpLine')].filter(Boolean);
+  const boxes = [$('fpWave')].filter(Boolean);
   const marks = [];
   boxes.forEach(function (b) {
     [].slice.call(b.querySelectorAll('.fseg,.fav,.flab,.fnode')).forEach(function (e) { marks.push(e); });
