@@ -120,7 +120,9 @@
      펼치면(hero) 그때만 카드로 떠오른다 */
   /* 상자(topStack) 안으로 들어왔으니 밖으로 삐져나갈 이유가 없다.
      -20px 이 sticky 상자 위로 20px 튀어나가 화면 밖으로 잘리고 있었다 */
-  #camBanner{background:#fff;color:#0f172a;margin:0;padding:0;
+  #camBanner{background:#fff;color:#0f172a;
+             margin-left:calc(var(--gut) * -1);margin-right:calc(var(--gut) * -1);
+             padding-left:var(--gut);padding-right:var(--gut);
              border-bottom:1px solid #e8edf3}
   /* 첫 화면은 사진 한 장이다. 여백도 모서리도 없이 화면을 채운다 —
      둘레에 흰 띠가 남으면 사진이 아니라 '사진이 든 카드' 가 된다.
@@ -305,11 +307,15 @@
      계속 변하는데, 그 값을 재서 아래 덩어리를 붙이니 어느 프레임에서는
      둘 사이에 틈이 생기고 그 틈으로 표가 비쳤다.
      애초에 붙어야 할 것은 흐름과 성과였다. 배너는 같이 올라간다 */
-  /* 좌우로 늘리지 않는다. 늘렸더니 왼쪽 레일 위까지 흰 면이 덮었다.
-     배너가 이 안에 들어왔으니 배너가 알아서 제 폭을 쓴다 */
+  /* 떠 있는 띠는 화면 가로 전체를 덮는다. 여백 안쪽에서만 덮으면
+     스크롤되는 표가 그 옆으로 지나가며 잘려 보인다.
+     --gut 을 그대로 되돌려 쓰니 #pad 의 테두리 상자와 정확히 같다 —
+     레일을 침범할 수가 없다. 안의 내용만 다시 여백에 맞춘다 */
   #topStack{position:sticky;top:0;z-index:20;background:#fff;
+            margin-left:calc(var(--gut) * -1);margin-right:calc(var(--gut) * -1);
+            padding-left:var(--gut);padding-right:var(--gut);
             transition:box-shadow .3s ease, background-color .3s ease,
-                       padding .30s cubic-bezier(.22,.61,.36,1)}
+                       padding-bottom .34s cubic-bezier(.22,.61,.36,1)}
   #topStack > section{margin-top:22px;transition:margin-top .30s cubic-bezier(.22,.61,.36,1)}
   /* ── 떠 있는 상태 ─────────────────────────────────────────
      스위치를 던지듯 갈아 끼우지 않는다. 닫히고 열리는 것만 있다 —
@@ -636,32 +642,30 @@
   .fline .fnode.first{transform:none !important;align-items:flex-start}
   .fline .fnode.last{transform:translateX(-100%) !important;align-items:flex-end}
 
-  /* 펼침과 붙음이 서로 다른 물건을 쓴다. 파도는 안쪽이 전부 절대 위치라
-     바깥만 줄이면 조각들이 제자리에 남아 겹친다 — 줄이지 말고 접는다 */
-  #flowSec, #dashSec{overflow:hidden;max-height:520px;
-    transition:max-height .34s cubic-bezier(.22,.61,.36,1), opacity .22s ease, margin-top .34s cubic-bezier(.22,.61,.36,1)}
-  #topStack.stuck #flowSec,
-  #topStack.stuck #dashSec{max-height:0;opacity:0;margin-top:0}
+  /* 자리는 그대로. 파도가 접히면서 선이 열린다 — 둘 다 높이로만 움직인다.
+     파도를 '줄이려' 하면 안쪽 조각이 전부 절대 위치라 제자리에 남아 겹친다.
+     줄이지 말고 접어야 한다 */
+  #fpWave{overflow:hidden;max-height:150px;
+          transition:max-height .34s cubic-bezier(.22,.61,.36,1), opacity .22s ease}
+  #fpLine{overflow:hidden;max-height:0;opacity:0;
+          transition:max-height .34s cubic-bezier(.22,.61,.36,1), opacity .24s ease .04s}
+  #topStack.stuck #fpWave{max-height:0;opacity:0}
+  #topStack.stuck #fpLine{max-height:60px;opacity:1}
 
-  /* 압축 바 — 선 하나와 숫자 넷. 붙어 있는 동안 이것만 남는다 */
-  #miniBar{overflow:hidden;max-height:0;opacity:0;margin-top:0;
-           display:flex;align-items:center;gap:clamp(20px,2.4vw,44px);
-           transition:max-height .34s cubic-bezier(.22,.61,.36,1), opacity .24s ease .04s, margin .34s cubic-bezier(.22,.61,.36,1)}
-  #topStack.stuck #miniBar{max-height:76px;opacity:1;margin-top:10px;margin-bottom:2px}
-  /* 상자가 overflow:hidden 이라(높이를 여닫으려면 필요하다) 안쪽이 조금만
-     넘쳐도 양 끝이 잘린다. 실제로 '리스트 전달' 의 첫 글자와 '9/20' 의 끝이
-     잘려 있었다. 둘 다 줄어들 수 있게 두고, 선은 양 끝을 안으로 들인다 */
-  #miniBar .fline{flex:1 1 auto;min-width:0;padding:0 10px}
-  #miniNums{flex:0 1 auto;min-width:0;display:flex;align-items:center;
-            gap:clamp(12px,1.4vw,26px);padding-right:2px}
-  .mn{display:flex;flex-direction:column;gap:2px;white-space:nowrap;min-width:0}
-  .mn i{font-style:normal;font-size:10.5px;color:var(--ink-4);letter-spacing:var(--tr-small);
-        overflow:hidden;text-overflow:ellipsis}
-  .mn b{font-size:16px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-display);
-        line-height:1.1}
-  .mn b .text-slate-400{color:#c3cbd6;font-weight:600}
-  @media (max-width:1100px){ #miniNums .mn:nth-child(n+4){display:none} }
-  @media (max-width:860px){  #miniNums{display:none} }
+  /* 제목은 접힌다 */
+  #topStack .sechd{overflow:hidden;max-height:40px;
+                   transition:max-height .34s cubic-bezier(.22,.61,.36,1), opacity .22s ease, padding .34s cubic-bezier(.22,.61,.36,1)}
+  #topStack.stuck .sechd{max-height:0;opacity:0;padding-bottom:0}
+
+  /* 변환지표(전일 대비 · 남은 인원)만 닫힌다 — 요청한 그대로 */
+  #topStack .dcard > div:nth-of-type(3),
+  #topStack .dcard > div:nth-of-type(4){overflow:hidden;max-height:56px;
+    transition:max-height .34s cubic-bezier(.22,.61,.36,1), opacity .22s ease, margin-top .34s cubic-bezier(.22,.61,.36,1)}
+  #topStack.stuck .dcard > div:nth-of-type(3),
+  #topStack.stuck .dcard > div:nth-of-type(4){max-height:0;opacity:0;margin-top:0}
+  #topStack .dcard > div:nth-of-type(2) .num{transition:font-size .34s cubic-bezier(.22,.61,.36,1)}
+  #topStack.stuck .dcard > div:nth-of-type(2) .num{font-size:21px}
+  #flowSec, #dashSec{transition:margin-top .34s cubic-bezier(.22,.61,.36,1)}
 
   /* 사람을 고르거나 펼치기 시작하면 자리를 내준다 */
   .fline{height:56px}
@@ -1612,6 +1616,7 @@
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                 </button></div>
               <div class="fpWave" id="fpWave"></div>
+              <div class="fline" id="fpLine" aria-hidden="true"></div>
             </section>
 
             <!-- 1 · 대시보드 — 숫자가 스스로 말한다. 라벨을 얹지 않는다 -->
@@ -1620,11 +1625,6 @@
               <div id="dash"></div>
             </section>
 
-            <!-- 붙었을 때만 열리는 압축 바. 위 둘이 접히면서 이것이 열린다 -->
-            <div id="miniBar" aria-hidden="true">
-              <div class="fline" id="fpLine"></div>
-              <div id="miniNums"></div>
-            </div>
       </div>
       <!-- 본문 2단 — 좌: 대시보드 · 에셋 · 진행상황 / 우: 대화창 -->
       <div id="bodyRow" class="flex-1 min-h-0 mt-3 flex flex-col xl:flex-row gap-3">
@@ -3021,16 +3021,6 @@ function renderDash() {
       });
 
   $('dash').innerHTML = html;
-  /* 붙었을 때 쓰는 압축 바. 같은 값을 두 번 계산하지 않고 카드에서 뽑는다 */
-  const mn = $('miniNums');
-  if (mn) {
-    mn.innerHTML = [].slice.call($('dash').children).map(function (c) {
-      const lab = c.children[0] && c.children[0].firstElementChild;
-      const val = c.children[1];
-      if (!lab || !val) return '';
-      return '<span class="mn"><i>' + lab.textContent + '</i><b>' + val.innerHTML + '</b></span>';
-    }).join('');
-  }
 }
 
 /* ══════════ 2 · 에셋 ══════════
