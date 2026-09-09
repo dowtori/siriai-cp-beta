@@ -877,7 +877,6 @@
   body.glass #flowSec .cmSep,
   body.glass #flowSec .fbase{background:rgba(15,23,42,.14)}
   /* 유리 위의 흰 알약(단계 칩)은 더 하얘야 뜬다 */
-  body.glass .hstep .hs{background:rgba(255,255,255,.66)}
   @media (prefers-reduced-transparency:reduce){
     body.glass #flowSec{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}
     body.glass #flowSec::before{display:none}
@@ -920,122 +919,71 @@
                  padding:2px 7px;border-radius:var(--r-full)}
   .rchip.hot .rx{color:var(--od-red)}
 
-  /* 홈 타일 — 캠페인 하나가 타일 하나다. 색은 상태가 정한다 */
-  .htile{position:relative;border-radius:var(--r-md);overflow:hidden;aspect-ratio:4 / 3;
-         display:flex;flex-direction:column;justify-content:flex-end;padding:14px;
-         text-align:left;color:#fff;transition:transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s ease;
-         box-shadow:var(--lift-2)}
-  .htile:hover{transform:translateY(-3px);box-shadow:var(--lift-3)}
-  .htile .hbg{position:absolute;inset:0;background-size:cover;background-position:center}
-  .htile .hsc{position:absolute;inset:0;
-              background:linear-gradient(180deg,rgba(15,23,42,.10) 0%,rgba(15,23,42,.62) 62%,rgba(15,23,42,.86) 100%)}
-  .htile .hin{position:relative}
-  .htile .hnum{position:absolute;top:12px;right:12px;z-index:1;font-size:10px;font-weight:700;
-               padding:3px 8px;border-radius:var(--r-full);
-               background:rgba(255,255,255,.18);
-               -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-               box-shadow:inset 0 0 0 1px rgba(255,255,255,.24)}
+
+  /* ══ 푸터 ════════════════════════════════════════════════════════
+     끝이 없으면 한 페이지로 안 읽힌다 — 스크롤이 그냥 멈추는 것과, 끝났다고
+     말해 주는 것은 다르다. siriai.co.kr 의 푸터를 그대로 따른다:
+     검은 면 · 로고 + 세 열 · 사업자 정보 · 저작권. 같은 회사의 같은 발이다.
+
+     #pad 의 좌우 여백(--gut) 밖까지 밀어 화면 끝에 닿게 한다. 화면 끝에 닿는
+     면이라 모서리는 직선이다 — 떠 있는 것만 둥글다 */
+  /* #pad 는 flex 세로 상자다. 기본 flex-shrink:1 이라 앞 내용이 넘치는 순간
+     푸터가 0 으로 눌렸고, 그 안의 검은 면만 넘쳐 나와 본문을 덮었다 */
+  #foot{flex:none;
+        margin:88px calc(var(--gut) * -1) calc(-1 * (max(var(--dockH, 0px), 72px) + 40px));
+        padding:0 var(--gut);background:#000;color:#f5f5f4;
+        border-radius:0;position:relative;z-index:1}
+  #pad.heroOn #foot{display:none}
+  .ftCols{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:36px;
+          padding:clamp(44px,6vh,72px) 0 clamp(32px,4vh,52px)}
+  .ftLogo{height:20px;width:110px;color:#f5f5f4;opacity:.92;display:block}
+  .ftCol h4{font-weight:600;font-size:12px;letter-spacing:.04em;
+            color:rgba(245,245,245,.5);margin:0 0 14px}
+  .ftCol a, .ftCol button{display:block;font-size:14px;color:#f5f5f4;text-decoration:none;
+            padding:6px 0;width:fit-content;text-align:left;letter-spacing:-.008em;
+            transition:color .3s, transform .3s}
+  .ftCol a:hover, .ftCol button:hover{color:var(--od-red);transform:translateX(3px)}
+  .ftBiz{padding:22px 0 12px;font-size:12px;line-height:1.75;
+         color:rgba(245,245,245,.45);border-top:1px solid rgba(255,255,255,.14)}
+  .ftBiz p{margin:0 0 4px;max-width:64em;word-break:keep-all}
+  .ftBiz a{color:inherit}
+  /* #pad 의 하단 예약분을 음수 마진으로 되돌려 검은 면이 화면 끝까지 가게 했다.
+     그러면 독이 저작권 줄 위에 앉으므로, 그 높이만큼 안쪽을 비운다 */
+  .ftCopy{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+          padding:0 0 calc(max(var(--dockH, 0px), 72px) + clamp(26px,4vh,44px));
+          font-size:13px;color:rgba(245,245,245,.45)}
+  .ftDemo{color:rgba(245,245,245,.3)}
+  @media (max-width:900px){
+    .ftCols{grid-template-columns:1fr 1fr;gap:28px}
+    .ftLogo{grid-column:1 / -1}
+    .ftCopy{flex-direction:column;gap:6px}
+  }
 
   /* ══ 홈 ══════════════════════════════════════════════════════════
-     캠페인 하나가 아니라 넉 달 전체를 보는 자리다. 지금까지 여기 있던 것은
-     타일 넉 장과 '4건 · 진행 중 1' 한 줄이 전부였다 — 안에서 본 것보다 적었다.
+     레퍼런스(siriai-portfolio)의 Home 과 같은 넷: 정체 → 한 문장 → 심볼 → 설명.
+     한때 여기에 성적표 · 진행 중 · 아카이브 · 클로징을 쌓아 봤는데, 그러면 홈이
+     또 하나의 대시보드가 된다. 캠페인 안에 이미 있는 것을 여기서 한 번 더 읽게
+     만들 이유가 없다 — 캠페인을 고르는 일은 왼쪽 목록이 하고, 신청은 아래 독이
+     받는다. 홈이 할 일은 '무엇을 보고 있는지' 한 번 말하는 것뿐이다.
 
-     포트폴리오 사이트(siriai-portfolio)의 Home 과 같은 순서로 쌓는다:
-     정체(eyebrow) → 한 문장 → 심볼 → 설명. 그 아래로 증거를 붙인다.
-     다만 100vh 히어로와 50px 제목은 안 가져온다 — 저건 '한 화면 = 한 문장' 을
-     위한 장치라, 운영 도구의 홈에 그대로 쓰면 첫 화면에서 얻는 정보가 0 이 된다 */
-  #homeIn{max-width:1180px;margin:0 auto;padding-bottom:8px}
-  .hsec{margin-top:56px}
-  .hsec:first-child{margin-top:0}
-
-  .hhero{background:var(--panel);box-shadow:var(--lift-panel);border-radius:var(--r-md);
-         padding:clamp(34px,4.6vw,60px) 32px;text-align:center}
-  .hbrand{display:inline-flex;align-items:center;gap:9px;margin-bottom:18px}
-  .hbrand .ebw-od{width:62px;height:16px;color:var(--od-ink)}
-  .hbrand .ebw-si{width:44px;height:16px;color:var(--ink-2);opacity:.9}
+     100vh 히어로는 안 쓴다. 왼쪽에 목록이 있는 도구라, 화면 하나를 문장 하나로
+     비워 두면 목록이 갈 곳 없는 장식이 된다 */
+  #homeIn{min-height:100%;display:flex;align-items:center;justify-content:center;
+          padding:clamp(32px,6vh,72px) 16px}
+  .hhero{max-width:560px;text-align:center}
+  .hbrand{display:inline-flex;align-items:center;gap:9px;margin-bottom:22px}
+  .hbrand .ebw-od{width:66px;height:17px;color:var(--od-ink)}
+  .hbrand .ebw-si{width:47px;height:17px;color:var(--ink-2);opacity:.9}
   .hbrand .ebx{font-size:12px}
-  /* 데모라는 사실을 홈에서 다시 말한다. 진입 안내는 한 번 뜨고 사라져서,
-     둘러보고 돌아온 사람에게는 아무 표시도 남지 않았다 */
-  .hdemo{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;
-         letter-spacing:var(--tr-label);text-transform:uppercase;
-         color:var(--od-red);background:rgba(220,39,45,.09);
-         padding:5px 11px;border-radius:var(--r-full);margin-bottom:16px}
-  .hhero h1{font-size:clamp(25px,3vw,34px);font-weight:700;line-height:1.3;
+  .hhero h1{font-size:clamp(27px,3.4vw,38px);font-weight:700;line-height:1.3;
             letter-spacing:var(--tr-display);color:var(--ink-1);word-break:keep-all}
-  .hsym{width:68px;height:68px;margin:26px auto 22px;color:var(--od-ink);
-        filter:drop-shadow(0 12px 22px rgba(15,23,42,.16))}
-  .hhero p{font-size:13.5px;line-height:1.78;color:var(--ink-3);
-           max-width:520px;margin:0 auto;word-break:keep-all}
+  .hsym{width:76px;height:76px;margin:30px auto 26px;color:var(--od-ink);
+        filter:drop-shadow(0 12px 24px rgba(15,23,42,.16))}
+  .hhero p{font-size:14px;line-height:1.8;color:var(--ink-3);word-break:keep-all;margin:0}
+  .hnote{margin-top:14px !important;font-size:12px !important;color:var(--ink-4) !important}
+  @media (max-width:640px){ .brk{display:none} .hsym{width:60px;height:60px;margin:24px auto 20px} }
 
-  /* 성적표 — 전 캠페인 합산. 안에서는 절대 안 보이는 숫자라야
-     '아, 이게 쌓이는구나' 가 된다 */
-  #homeKpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-  #homeKpi > .dcard{background:var(--panel);box-shadow:var(--lift-ctl);
-                    border-radius:var(--r-md);padding:16px 18px}
-  @media (max-width:1023px){ #homeKpi{grid-template-columns:repeat(2,minmax(0,1fr))} }
-  @media (max-width:560px) { #homeKpi{grid-template-columns:minmax(0,1fr)} }
 
-  /* 지금 돌고 있는 것 — 홈에서 캠페인 안으로 들어가는 다리 */
-  .hlive{background:var(--panel);box-shadow:var(--lift-panel);border-radius:var(--r-md);
-         padding:20px 24px 22px;width:100%;text-align:left;display:block;
-         transition:box-shadow .18s ease,transform .18s ease}
-  .hlive:hover{box-shadow:var(--lift-pop);transform:translateY(-1px)}
-  .hstep{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px}
-  .hstep .hs{display:flex;align-items:baseline;gap:6px;flex:none;padding:5px 10px;
-             border-radius:var(--r-sm);background:var(--panel-2);
-             box-shadow:inset 0 0 0 1px var(--hair)}
-  .hstep .hs b{font-size:13px;font-weight:700;color:var(--ink-1)}
-  .hstep .hs em{font-style:normal;font-size:10.5px;color:var(--ink-3)}
-  .hstep .hs.r-done{opacity:.55;background:transparent;box-shadow:inset 0 0 0 1px #e6ebf3}
-  .hstep .hs.r-next{opacity:.38}
-  .hstep .hs.r-past{opacity:.66}
-  .hstep .hs.r-now{background:var(--ink-1);box-shadow:none}
-  .hstep .hs.r-now b{color:#fff;font-size:15px}
-  .hstep .hs.r-now em{color:rgba(255,255,255,.72)}
-  .hstep .hs.r-end b{color:#047857}
-  .hstep .hs .fchk{width:13px;height:13px}
-  .hstep .hsep{flex:1 1 6px;min-width:6px;height:1px;background:#e2e8f0}
-  .hnext{margin-top:18px;padding-top:16px;border-top:1px solid var(--hair);
-         display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  .hnext .hn{display:inline-flex;align-items:baseline;gap:6px;font-size:11.5px;color:var(--ink-2)}
-  .hnext .hn b{font-weight:600;color:var(--ink-1)}
-
-  /* 타일 — 지난 캠페인이 '죽은 회색 사각형' 이었다. 실적이 있는데 배지만 남았다 */
-  .htile .hmeta{position:relative;display:flex;align-items:center;gap:8px;margin-top:8px;
-                font-size:10.5px;color:rgba(255,255,255,.86)}
-  .htile .hmeta i{width:2px;height:2px;border-radius:var(--r-full);
-                  background:rgba(255,255,255,.5);flex:none}
-
-  /* 클로징 — 스크롤 끝의 결론. 떠 있는 독이 '안내' 라면 이쪽은 '결론' 이다 */
-  .hclose{background:var(--ink-1);color:#fff;border-radius:var(--r-md);
-          padding:clamp(28px,3.6vw,44px) 32px;text-align:center;box-shadow:var(--lift-panel)}
-  .hclose h2{font-size:clamp(19px,2.2vw,24px);font-weight:700;line-height:1.44;
-             letter-spacing:var(--tr-display);word-break:keep-all}
-  .hclose p{font-size:13px;line-height:1.7;color:rgba(255,255,255,.62);
-            margin-top:12px;word-break:keep-all}
-  .hcta{display:flex;align-items:center;justify-content:center;gap:10px;
-        flex-wrap:wrap;margin-top:26px}
-  .hcta .hb{font-size:14px;font-weight:700;padding:13px 26px;border-radius:var(--r-sm);
-            transition:filter .15s ease,background-color .15s ease}
-  .hcta .hb1{background:var(--od-red);color:#fff;
-             box-shadow:0 8px 22px -10px rgba(220,39,45,.75)}
-  .hcta .hb1:hover{filter:brightness(1.07)}
-  .hcta .hb2{background:rgba(255,255,255,.12);color:#fff}
-  .hcta .hb2:hover{background:rgba(255,255,255,.2)}
-  .hagain{margin-top:18px;font-size:11.5px;color:rgba(255,255,255,.5);
-          text-decoration:underline;text-underline-offset:3px}
-  .hagain:hover{color:rgba(255,255,255,.85)}
-
-  /* 검색 결과 — 위계대로 묶는다 */
-  .sgrp{margin-bottom:18px}
-  .sgrp > h3{font-size:9.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
-             font-family:'JetBrains Mono',ui-monospace,monospace;color:#94a3b8;
-             padding:0 4px 7px}
-  .srow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
-        background:#fff;border-radius:var(--r-sm);padding:10px 12px;margin-bottom:6px;
-        box-shadow:var(--lift-1);transition:box-shadow .15s ease,transform .15s ease}
-  .srow:hover{box-shadow:var(--lift-ctl-h);transform:translateY(-1px)}
-  .srow mark{background:#fef08a;color:inherit;border-radius:var(--r-xs);padding:0 1px}
 
   /* 필터 · 보기 전환 */
   /* 한 줄에 선 단추는 키가 같아야 한다. 안쪽 여백으로 키가 정해지면
@@ -2112,22 +2060,6 @@
         <div id="homeIn"></div>
       </section>
 
-      <!-- 검색 — 두 글자부터 반응한다. 엔터는 필요 없다 -->
-      <section id="searchView" class="hidden flex-1 min-h-0 flex flex-col">
-        <div class="shrink-0 relative mb-4">
-          <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path stroke-linecap="round" d="M16 16l4.5 4.5"/></svg>
-          <input id="searchIn" type="search" autocomplete="off"
-                 placeholder="캠페인 · 인플루언서 · 자료 · 대화에서 찾기"
-                 oninput="runSearch(this.value)" onkeydown="if(event.key==='Escape')go('camp')"
-                 class="w-full bg-white rd-md pl-11 pr-11 py-3.5 text-[13.5px] text-slate-900 placeholder:text-slate-400 focus:outline-none"
-                 style="box-shadow:var(--lift-2)">
-          <button onclick="go('camp')" class="hbtn absolute right-3 top-1/2 -translate-y-1/2" aria-label="닫기" title="닫기 (Esc)">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
-        </div>
-        <div id="searchOut" class="flex-1 min-h-0 overflow-y-auto scroll scroll-thin"></div>
-      </section>
-
       <!-- 붙는 것은 셋이 한 덩어리다 — 어느 캠페인인지(배너) · 어디까지
            왔는지(흐름) · 숫자가 얼마인지(성과). 배너만 밖에 두었더니
            그 키를 재서 아래를 대야 했고, 재는 동안 틈이 생겼다 -->
@@ -2286,6 +2218,39 @@
         </div>
 
       </div>
+
+      <!-- ══ 푸터 ══ 끝이 없으면 한 페이지로 안 읽힌다. 화면이 어디서 끝나는지,
+           이걸 만든 곳이 어디인지가 바닥에 적혀 있어야 '사이트' 가 된다.
+           siriai.co.kr 의 푸터를 그대로 따른다 — 같은 회사의 같은 발이다 -->
+      <footer id="foot">
+        <div class="ftCols">
+          <span class="wm ftLogo" role="img" aria-label="SIRIAI"></span>
+          <div class="ftCol">
+            <h4>스튜디오</h4>
+            <a href="https://siriai-portfolio.vercel.app/" target="_blank" rel="noopener">포트폴리오</a>
+            <a href="https://siriai-business.vercel.app/#contact" target="_blank" rel="noopener">문의하기</a>
+          </div>
+          <div class="ftCol">
+            <h4>약관</h4>
+            <a href="https://siriai.co.kr/Terms.html" target="_blank" rel="noopener">이용약관</a>
+            <a href="https://siriai.co.kr/Privacy.html" target="_blank" rel="noopener">개인정보처리방침</a>
+          </div>
+          <div class="ftCol">
+            <h4>이 화면</h4>
+            <button type="button" onclick="showTut()">둘러보기 안내</button>
+            <button type="button" onclick="demoOpen()">데모 캠페인 신청</button>
+          </div>
+        </div>
+        <div class="ftBiz">
+          <p>상호 시리아이(SIRIAI) · 대표 김동현 · 사업자등록번호 405-23-02027 · 통신판매신고번호 제2024-서울용산-1589호</p>
+          <p>서울특별시 용산구 한강대로 293, 4층 A호 (갈월동, 성원빌딩) · 대표전화 070-7576-1944 ·
+             개인정보보호책임자 박슬범 (<a href="mailto:sbsiriai@gmail.com">sbsiriai@gmail.com</a>)</p>
+        </div>
+        <div class="ftCopy">
+          <span>© 2026 SIRIAI. All rights reserved.</span>
+          <span class="ftDemo">브랜드 워크스페이스 · 둘러보기용 화면</span>
+        </div>
+      </footer>
     </div>
   </div>
 </div>
@@ -3010,7 +2975,32 @@ const ICON = {
 /* ── 화면 ─────────────────────────────────────────────────
    캠페인 한 건을 보는 화면이 기본이고, 그 위에 홈과 검색이 있다.
    위계상 위에 있는 것일수록 넓게 내려다본다 */
-function go(v) {
+/* ── 주소 ──────────────────────────────────────────────────────────
+   홈과 캠페인은 다른 화면인데 주소가 하나였다. 그러면 뒤로 가기가 화면 밖으로
+   나가 버리고, "이 캠페인 좀 봐" 하고 링크를 보낼 수도 없다.
+
+     /          홈
+     /c/2608    26년 8월 캠페인
+
+   vercel.json 의 rewrite 가 /c/* 를 index.html 로 돌려준다 — 새로고침해도 산다 */
+const urlFor = (v, id) => v === 'camp' ? '/c/' + id : '/';
+function syncURL(replace) {
+  const p = urlFor(S.view, S.camp);
+  if (location.pathname === p) return;
+  try { history[replace ? 'replaceState' : 'pushState']({ v: S.view, c: S.camp }, '', p); } catch (e) {}
+}
+function readURL() {
+  const m = location.pathname.match(/^\/c\/([\w-]+)/);
+  return (m && ROSTERS[m[1]]) ? { v: 'camp', c: m[1] } : { v: 'home', c: null };
+}
+addEventListener('popstate', function () {
+  const r = readURL();
+  if (r.v === 'camp') pickCamp(r.c, true);
+  else go('home', true);
+});
+
+/* fromURL 이면 주소를 다시 쓰지 않는다 — 뒤로 가기가 제자리를 맴돈다 */
+function go(v, fromURL) {
   S.view = v;
   const camp = v === 'camp';
   /* 독은 이 배열에 없다. 데모 신청은 페이지 전체에 대한 제안이지 캠페인 표에
@@ -3020,7 +3010,6 @@ function go(v) {
     const e = $(id); if (e) e.classList.toggle('hidden', !camp);
   });
   $('homeView').classList.toggle('hidden', v !== 'home');
-  $('searchView').classList.toggle('hidden', v !== 'search');
   /* heroOn 은 캠페인 첫 화면 전용 규칙이다(padding:0). 홈까지 들고 가면
      타일이 화면 끝에 붙고 독 자리도 안 비워진다 */
   $('pad').classList.toggle('heroOn', camp && $('camBanner').classList.contains('hero'));
@@ -3028,19 +3017,13 @@ function go(v) {
   if (v === 'camp') { fitProgRows(); }
   renderNav();
   syncDockH();   /* 뷰가 바뀌면 독이 먹는 자리를 다시 잰다 */
+  if (!fromURL) syncURL();
 }
 
 /* 접혀 있을 때 이 줄은 유일하게 남은 넓은 표식이다 — 그때는 펴는 단추가 된다 */
 function brandHome() {
   if ($('rail').classList.contains('mini')) return toggleMini();
   go('home');
-}
-
-function openSearch() {
-  go('search');
-  const el = $('searchIn');
-  el.value = ''; $('searchOut').innerHTML = searchHint();
-  setTimeout(() => el.focus(), 30);
 }
 
 /* ── 홈 ───────────────────────────────────────────────────────────
@@ -3070,237 +3053,26 @@ function homeTotals() {
 }
 
 function renderHome() {
-  const t = homeTotals();
-  const liveCp = CAMPAIGNS.filter(c => c.state === 'live');
-  const months = CAMPAIGNS.length
-    ? CAMPAIGNS[CAMPAIGNS.length - 1].m + '~' + CAMPAIGNS[0].m + '월' : '';
-  const er   = t.views ? (t.react / t.views * 100) : 0;
-  const perV = t.views ? (t.cost / t.views) : 0;
-  const donePct = Math.ceil(t.up / Math.max(1, t.crew) * 100);
-
-  /* ── S1 히어로 ── */
-  const hero =
-      '<section class="hsec hhero">'
+  /* 레퍼런스와 같은 넷: 정체 → 한 문장 → 심볼 → 설명. 그 아래로는 아무것도 없다.
+     성적표 · 진행 중 · 아카이브를 쌓아 봤더니 홈이 또 하나의 대시보드가 됐다 —
+     캠페인 안에 이미 있는 것을 홈에서 한 번 더 읽게 만들 이유가 없다.
+     캠페인을 고르는 일은 왼쪽 목록이 한다. 여기는 '무엇을 보고 있는지' 만 말한다 */
+  $('homeIn').innerHTML =
+      '<section class="hhero">'
     +   '<span class="hbrand">'
     +     '<span class="odw-mark ebw ebw-od" role="img" aria-label="ODDTYPE"></span>'
     +     '<span class="ebx">&times;</span>'
     +     '<span class="wm ebw ebw-si" role="img" aria-label="SIRIAI"></span>'
     +   '</span>'
-    +   '<div><span class="hdemo">Demo workspace</span></div>'
-    +   '<h1>브랜드가 캠페인을 굴리는 화면,<br>있는 그대로 보여드립니다.</h1>'
+    +   '<h1>오드타입 캠페인을<br>직접 열어보세요.</h1>'
     +   '<span class="sym hsym" role="img" aria-label="SIRIAI"></span>'
-    +   '<p>오드타입이 지난 넉 달간 실제로 쓴 운영 화면을 그대로 재현했습니다. '
-    +     '왼쪽에서 캠페인을 열면 명단 · 자료 · 대화까지 전부 눌러볼 수 있습니다.<br>'
-    +     '<span class="text-slate-400">저장 · 내려받기 등 일부 기능은 동작하지 않습니다.</span></p>'
+    +   '<p>인플루언서 선정부터 업로드까지, 넉 달간 실제로 돌아간 기록입니다. <br class="brk">'
+    +     '왼쪽 메뉴에서 캠페인을 둘러보세요.</p>'
+    +   '<p class="hnote">둘러보기용 화면이라 저장 · 내려받기는 동작하지 않습니다.</p>'
     + '</section>';
-
-  /* ── S2 성적표 — 전 캠페인 합산 ── */
-  const kpi =
-      '<section class="hsec">'
-    +   '<div class="sechd"><h2>넉 달 동안 쌓인 것</h2>'
-    +     '<span class="secN num">캠페인 ' + CAMPAIGNS.length + '건 · ' + months + '</span></div>'
-    +   '<div id="homeKpi">'
-    +     dashCard({
-            label: '누적 조회수', val: n(t.views), unit: '회', icon: DICO.eye, tone: 'ico-v',
-            foot: dStrong(kw(t.views)) + dMuted('업로드 ' + t.up + '건')
-          })
-    +     dashCard({
-            label: '누적 반응 수', val: n(t.react), unit: '건', icon: DICO.heart, tone: 'ico-r',
-            foot: dStrong(er.toFixed(2) + '%') + dMuted('평균 반응률')
-          })
-    +     dashCard({
-            label: '누적 집행 예산', val: won(t.cost), icon: DICO.won, tone: 'ico-w',
-            foot: dStrong(perV.toFixed(2) + '원') + dMuted('조회 1회당')
-          })
-    +     dashCard({
-            label: '협업 크리에이터', val: t.crew, unit: '명', icon: DICO.play, tone: 'ico-p',
-            bar: dBar(donePct, '#10b981'),
-            foot: dStrong(donePct + '%') + dMuted('업로드 완료 ' + t.up + ' / ' + t.crew)
-          })
-    +   '</div>'
-    + '</section>';
-
-  /* ── S3 지금 돌고 있는 것 — 홈에서 캠페인 안으로 들어가는 다리 ── */
-  const liveHtml = liveCp.map(function (cp) {
-    const sel = selOf(cp.id), u = upOf(cp.id);
-    const pct = sel.length ? Math.ceil(u.length / sel.length * 100) : 0;
-    const by  = FLOW.map(f => sel.filter(c => c.stage === f[0]).length);
-    const hrank = flowRank(by);
-    /* 아직 안 올라온 사람 중 마감이 가까운 순으로 셋 */
-    const next = sel.filter(c => !c.up).slice()
-                    .sort((a, b) => a.due < b.due ? -1 : 1).slice(0, 3);
-    return '<button class="hlive" onclick="pickCamp(&quot;' + cp.id + '&quot;)">'
-      + '<div class="flex items-baseline justify-between gap-4 flex-wrap">'
-      +   '<div class="flex items-center gap-2.5 min-w-0">'
-      +     '<span class="dot" style="background:#10b981"></span>'
-      +     '<span class="text-[15px] font-bold text-slate-900 truncate">' + esc(cp.title) + '</span>'
-      +     '<span class="num text-[11px] text-slate-400">' + esc(cp.period) + '</span>'
-      +   '</div>'
-      +   '<span class="num text-[13px] font-bold text-slate-900">' + pct
-      +     '<span class="text-slate-400">%</span></span>'
-      + '</div>'
-      + '<div class="mt-2.5">' + dBar(pct, '#10b981') + '</div>'
-      + '<div class="hstep">'
-      +   FLOW.map(function (f, i) {
-            return '<span class="hs r-' + hrank[i] + '">'
-              + fnum(by[i], hrank[i]) + '<em>' + esc(f[1].split(' ')[0]) + '</em></span>';
-          }).join('<i class="hsep"></i>')
-      + '</div>'
-      + (next.length
-          ? '<div class="hnext"><span class="text-[10.5px] font-semibold text-slate-400">다음 업로드</span>'
-            + next.map(c => '<span class="hn"><b>' + esc(c.name) + '</b>'
-                + '<span class="num text-slate-400">' + esc(c.due) + '</span></span>').join('')
-            + '</div>'
-          : '')
-      + '</button>';
-  }).join('');
-  const liveSec = liveHtml
-    ? '<section class="hsec"><div class="sechd"><h2>지금 돌고 있는 것</h2>'
-      + '<span class="secN num">' + liveCp.length + '건</span></div>' + liveHtml + '</section>'
-    : '';
-
-  /* ── S4 아카이브 — 지난 캠페인도 실적을 갖고 있다.
-     '정산 완료' 배지만 남겨 두면 죽은 회색 사각형이 된다 ── */
-  const tiles = CAMPAIGNS.map(function (cp) {
-    const on = cp.state === 'live';
-    const sel = selOf(cp.id), u = upOf(cp.id);
-    const pct = sel.length ? Math.ceil(u.length / sel.length * 100) : 0;
-    /* 진행 중인 달만 사진을 쓴다. 지난 달은 잉크 면으로 가라앉힌다 */
-    const bg = on
-      ? 'background-image:var(--od-hero)'
-      : 'background:linear-gradient(160deg,#334155 0%,#0f172a 100%)';
-    return '<button class="htile" onclick="pickCamp(&quot;' + cp.id + '&quot;)">'
-      + '<span class="hbg" style="' + bg + '"></span><span class="hsc"></span>'
-      + '<span class="hnum num">' + pct + '%</span>'
-      + '<span class="hin">'
-      +   '<span class="num block text-[10px]" style="color:rgba(255,255,255,.72)">' + cp.period + '</span>'
-      +   '<span class="block text-[14px] font-bold mt-1 leading-snug keep">' + esc(cp.title) + '</span>'
-      +   '<span class="hmeta num">' + kw(sum(u, 'views')) + ' 조회<i></i>'
-      +     won(sum(sel, 'cost')) + '<i></i>' + sel.length + '명</span>'
-      +   '<span class="inline-flex items-center gap-1.5 mt-2 text-[10px] font-bold px-2 py-0.5 rd-full"'
-      +     ' style="background:rgba(255,255,255,.18)">'
-      +     (on ? '<span class="dot on" style="background:#34d399"></span>' : '')
-      +     esc(cp.badge) + '</span>'
-      + '</span></button>';
-  }).join('');
-  const archive =
-      '<section class="hsec">'
-    +   '<div class="sechd"><h2>캠페인 아카이브</h2>'
-    +     '<span class="secN num">' + CAMPAIGNS.length + '건</span></div>'
-    +   '<div id="homeGrid" class="grid gap-3" style="grid-template-columns:repeat(auto-fill,minmax(232px,1fr))">'
-    +     tiles + '</div>'
-    + '</section>';
-
-  /* ── S5 결론 — 떠 있는 독이 '안내' 라면 이쪽은 스크롤 끝의 '결론' 이다.
-     진입 안내(#tut)는 한 번 뜨고 사라져 다시 볼 방법이 없었다. 여기 둔다 ── */
-  const close =
-      '<section class="hsec hclose">'
-    +   '<h2>여기까지가 오드타입의 넉 달입니다.<br>같은 화면을 브랜드명 하나로 만들어 드립니다.</h2>'
-    +   '<p>담당자가 브랜드에 맞춰 데모 페이지를 구성해 보내드립니다. 비용은 들지 않습니다.</p>'
-    +   '<div class="hcta">'
-    +     '<button class="hb hb1 press" onclick="demoOpen()">데모 캠페인 제작</button>'
-    +     '<button class="hb hb2 press" onclick="openSheet(&quot;sh-booking&quot;)">15분 커피챗</button>'
-    +   '</div>'
-    +   '<div><button class="hagain" onclick="showTut()">둘러보기 안내 다시 보기</button></div>'
-    + '</section>';
-
-  $('homeIn').innerHTML = hero + kpi + liveSec + archive + close;
 }
 
-/* ── 검색 ─────────────────────────────────────────────────
-   묶음은 정보 위계 그대로다: 캠페인 → 인플루언서 → 자료 → 대화.
-   큰 것에서 작은 것으로 내려가야 눈이 덜 튄다.
-   자료를 넣은 이유 — 브랜드가 실제로 찾는 것이 "그 가이드 어디 있죠" 다. */
-const SCATS = [
-  { k: 'camp',  t: '캠페인' },
-  { k: 'infl',  t: '인플루언서' },
-  { k: 'asset', t: '자료' },
-  { k: 'chat',  t: '대화' }
-];
 
-const searchHint = () =>
-  '<div class="text-center text-[12px] text-slate-400 py-10 keep">두 글자부터 찾기 시작합니다.<br>'
-  + '이름 · 핸들 · 코드 · 캠페인명 · 나눈 이야기에서 찾습니다.</div>';
-
-const hi = (t, q) => {
-  const i = String(t).toLowerCase().indexOf(q);
-  if (i < 0) return esc(t);
-  return esc(String(t).slice(0, i)) + '<mark>' + esc(String(t).slice(i, i + q.length))
-    + '</mark>' + esc(String(t).slice(i + q.length));
-};
-
-function runSearch(v) {
-  const q = (v || '').trim().toLowerCase();
-  const out = $('searchOut');
-  /* 한 글자에 반응하면 화면이 통째로 흔들린다 */
-  if (q.length < 2) { out.innerHTML = searchHint(); return; }
-
-  const hit = { camp: [], infl: [], asset: [], chat: [] };
-
-  CAMPAIGNS.forEach(cp => {
-    if ((cp.title + ' ' + cp.period + ' ' + cp.badge).toLowerCase().includes(q))
-      hit.camp.push({ t: cp.title, s: cp.period + ' · ' + cp.badge, act: "pickCamp('" + cp.id + "')" });
-  });
-
-  Object.keys(ROSTERS).forEach(cid => {
-    const cp = CAMPAIGNS.find(x => x.id === cid);
-    ROSTERS[cid].forEach(c => {
-      if (!c.sel) return;
-      const hay = (c.name + ' ' + c.handle + ' ' + (c.code || '')).toLowerCase();
-      if (!hay.includes(q)) return;
-      hit.infl.push({
-        t: c.name, s: c.handle + ' · ' + (cp ? cp.title : ''),
-        av: c, cid: cid, i: ROSTERS[cid].indexOf(c),
-        act: "goPerson('" + cid + "'," + ROSTERS[cid].indexOf(c) + ")",
-      });
-    });
-  });
-
-  ASSETS.forEach((a, i) => {
-    if ((a.t + ' ' + assetSub(a)).toLowerCase().includes(q))
-      hit.asset.push({ t: a.t, s: assetSub(a), act: 'openAsset(' + i + ')' });
-  });
-
-  CHAT.forEach((m, i) => {
-    if (m.who === 'sys' || !m.text.toLowerCase().includes(q)) return;
-    hit.chat.push({
-      t: m.text, s: (m.who === 'brand' ? '보낸 메시지' : 'SIRIAI 캠페인팀') + ' · ' + m.at,
-      act: 'goChat()', long: true,
-    });
-  });
-
-  const total = SCATS.reduce((a, c) => a + hit[c.k].length, 0);
-  if (!total) {
-    out.innerHTML = '<div class="text-center text-[12px] text-slate-400 py-10 keep">'
-      + '<b class="text-slate-600">' + esc(v) + '</b> 로 찾은 것이 없어요.</div>';
-    return;
-  }
-
-  out.innerHTML = SCATS.filter(c => hit[c.k].length).map(function (c) {
-    return '<div class="sgrp"><h3>' + c.t + ' <span class="num">' + hit[c.k].length + '</span></h3>'
-      + hit[c.k].slice(0, 8).map(function (r) {
-          return '<button class="srow" onclick="' + r.act + '">'
-            + (r.av ? avatar(r.av, r.i, 30) : '')
-            + '<span class="min-w-0 flex-1 leading-tight">'
-            +   '<span class="block text-[12.5px] font-semibold text-slate-900 '
-            +     (r.long ? 'keep' : 'truncate') + '">' + hi(r.t, q) + '</span>'
-            +   '<span class="block num text-[10.5px] text-slate-500 truncate mt-0.5">' + esc(r.s) + '</span>'
-            + '</span>'
-            + '<svg class="w-3.5 h-3.5 shrink-0 text-slate-300" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>'
-            + '</button>';
-        }).join('')
-      + (hit[c.k].length > 8
-         ? '<div class="text-[10.5px] text-slate-400 px-4 pt-1">외 ' + (hit[c.k].length - 8) + '건</div>'
-         : '')
-      + '</div>';
-  }).join('');
-}
-
-/* 검색에서 사람을 고르면 그 캠페인으로 가서 그 사람을 연다 */
-function goPerson(cid, i) {
-  if (cid !== S.camp) pickCamp(cid); else go('camp');
-  setTimeout(function () { PSTATE.view = 'card'; openPeek(i); }, 60);
-}
 function goChat() { go('camp'); setTimeout(() => setChat(true), 60); }
 
 /* 그 달에 몇 명이 올라갔나. 레일에서 이름 옆에 붙는 숫자다 */
@@ -3468,15 +3240,16 @@ function toggleMini() {
   }, 300);
 }
 
-function pickCamp(id) {
+function pickCamp(id, fromURL) {
   if (!ROSTERS[id]) { toggleRail(false); return; }
-  if (id === S.camp) { go('camp'); toggleRail(false); return; }
+  if (id === S.camp && S.view === 'camp') { toggleRail(false); return; }
+  if (id === S.camp) { go('camp', fromURL); toggleRail(false); return; }
   S.camp = id;
   CREATORS = ROSTERS[id];
   CODEPICK.clear(); CODECOPY.clear(); FILEPICK.clear();
   S.nudge = false;
   render(); buildReport(); buildCal();
-  go('camp');
+  go('camp', fromURL);
   toggleRail(false);
   const cp = camp();
   toast(cp.state === 'live'
@@ -6253,17 +6026,23 @@ if (window.ResizeObserver) {
   })
     .observe($('main'));
 }
+/* 주소가 화면을 정한다. /c/2608 로 들어오면 그 캠페인이, / 로 들어오면 홈이 뜬다 —
+   링크로 보낸 화면이 링크를 연 사람에게도 그대로 열린다 */
+const BOOT = readURL();
+if (BOOT.v === 'camp' && BOOT.c !== S.camp) { S.camp = BOOT.c; CREATORS = ROSTERS[BOOT.c]; }
 render();
-/* 첫 화면은 배너가 펼쳐진 상태다. 대시보드를 그 안으로 옮겨 둔 채로 시작한다 */
-if ($('camBanner').classList.contains('hero')) {
+buildGuide();
+buildReport();
+buildCal();
+go(BOOT.v, true);
+syncURL(true);   /* 알 수 없는 주소로 들어왔으면 / 로 정리한다 */
+/* 캠페인 첫 화면은 배너가 펼쳐진 상태다. 대시보드를 그 안으로 옮겨 둔 채로 시작한다 */
+if (BOOT.v === 'camp' && $('camBanner').classList.contains('hero')) {
   syncDockH();
   /* heroOn 이 #pad 의 여백을 0 으로 만든다. 재기 전에 붙여야 화면 전체가 나온다 —
      순서가 반대면 독 자리(200px 넘게)만큼 사진이 짧아진다 */
   $('pad').classList.add('heroOn');
   $('camBanner').style.height = heroHeight() + 'px';
 }
-buildGuide();
-buildReport();
-buildCal();
 lockBody(true);          /* 진입 안내가 떠 있는 동안은 뒤가 안 움직인다 */
 </script>
