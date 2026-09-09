@@ -2736,11 +2736,13 @@ function goChat() { go('camp'); setTimeout(() => setChat(true), 60); }
 
 /* 그 달에 몇 명이 올라갔나. 레일에서 이름 옆에 붙는 숫자다 */
 const upCount = id => (ROSTERS[id] || []).filter(c => c.sel && c.up).length;
-/* 숫자만 붙이면 날짜처럼 읽힌다. 막대가 있어야 '몇 명 중 몇 명' 으로 읽힌다 */
+/* 9/20 은 날짜로도 읽히고, 20 이 뭔지 매번 되짚어야 한다. 레일에서 알고 싶은 것은
+   '어디까지 왔나' 하나뿐이다 — 비율 하나로 말한다. 소수점은 올린다:
+   20명 중 1명이 올라온 것을 5% 로 깎아 0 에 붙이면 시작한 것이 시작 안 한 것으로 읽힌다 */
 const navBar = (up, n, color) => {
-  const p = n ? Math.round(up / n * 100) : 0;
+  const p = n ? Math.ceil(up / n * 100) : 0;
   return '<span class="nbar mt-1.5"><span class="nb"><span style="width:' + p + '%;background:' + color + '"></span></span>'
-    + '<span class="num text-[10px] font-bold text-slate-500 shrink-0">' + up + '<span class="text-slate-300">/</span>' + n + '</span></span>';
+    + '<span class="num text-[10px] font-bold text-slate-500 shrink-0">' + p + '<span class="text-slate-400">%</span></span></span>';
 };
 
 function renderNav() {
