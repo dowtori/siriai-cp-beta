@@ -217,8 +217,18 @@
   .cmStep .cmDot{width:6px;height:6px;border-radius:var(--r-full);background:#cbd5e1;flex:none}
   .cmStep b{font-size:13px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-title)}
   .cmStep em{font-style:normal;font-size:11px;color:var(--ink-3);letter-spacing:var(--tr-small)}
-  .cmStep.zero{opacity:.42}
-  .cmStep.zero b{color:var(--ink-3)}
+  /* 단계의 지위 — flowRank() 가 매긴다. 다섯이 같은 무게로 서 있으면
+     숫자를 서로 비교해야 '어디까지 왔나' 를 알 수 있다 */
+  .cmStep.r-done{opacity:.5}
+  .cmStep.r-done em{color:var(--ink-4)}
+  .cmStep.r-next{opacity:.34}
+  .cmStep.r-next b{color:var(--ink-4)}
+  .cmStep.r-past{opacity:.62}
+  .cmStep.r-now{background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair)}
+  .cmStep.r-now b{font-size:15px}
+  .cmStep.r-now em{color:var(--ink-1);font-weight:600}
+  .cmStep.r-end b{color:#047857}
+  .fchk{width:12px;height:12px;color:#059669;flex:none;display:block}
   .cmStep.hot{background:#eef2f7}
   .cmStep.sel{background:var(--ink-1)}
   .cmStep.sel b, .cmStep.sel em{color:#fff}
@@ -298,6 +308,55 @@
   }
   #camBanner:not(.hero) #resBar{display:flex;align-items:center;gap:8px;
           white-space:nowrap;overflow:visible}
+
+  /* ── 자료 카드 ─────────────────────────────────────────────────────
+     헤더의 칩은 스크롤한 뒤에 쓰는 단축키다. 그것만 두었더니 브랜드가
+     받아 갈 것 넷이 라벨처럼 읽혔고, 첫 화면에서는 아예 숨겨져 있었다.
+     카드에는 아이콘 타일 · 이름 · 상태 · 동사가 다 들어간다 — 눌러도 되는지를
+     묻지 않게 하는 것이 이 넷의 유일한 할 일이다 */
+  #resGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .rcard{display:flex;align-items:center;gap:12px;text-align:left;
+         padding:13px 14px;border-radius:var(--r-md);
+         background:var(--panel);box-shadow:var(--lift-ctl);
+         transition:box-shadow .16s ease,transform .16s ease}
+  .rcard:not(.off):hover{box-shadow:var(--lift-ctl-h);transform:translateY(-2px)}
+  .rcard:not(.off):active{transform:translateY(0);box-shadow:var(--lift-ctl)}
+  .rcIco{flex:none;width:36px;height:36px;border-radius:var(--r-sm);display:grid;
+         place-items:center;background:var(--panel-2);color:var(--ink-2);
+         box-shadow:inset 0 0 0 1px var(--hair);transition:background-color .16s ease,color .16s ease}
+  .rcIco svg{width:18px;height:18px;display:block}
+  .rcTx{flex:1 1 auto;min-width:0}
+  .rcT{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;
+       color:var(--ink-1);letter-spacing:var(--tr-title);
+       white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rcN{font-style:normal;font-size:10px;font-weight:700;line-height:1;flex:none;
+       padding:2.5px 5px;border-radius:var(--r-xs);color:var(--ink-2);background:#eef2f7}
+  .rcS{display:block;font-size:11px;color:var(--ink-4);letter-spacing:var(--tr-small);margin-top:3px;
+       white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* 동사 — 이 카드가 무엇을 하는지 늘 적혀 있다 */
+  .rcGo{flex:none;display:inline-flex;align-items:center;gap:4px;
+        font-size:11.5px;font-weight:700;color:var(--ink-2);
+        padding:6px 9px 6px 11px;border-radius:var(--r-full);background:var(--panel-2);
+        box-shadow:inset 0 0 0 1px var(--hair);
+        transition:background-color .16s ease,color .16s ease,box-shadow .16s ease}
+  .rcGo svg{width:12px;height:12px;flex:none;transition:transform .16s ease}
+  .rcard:not(.off):hover .rcGo{background:var(--ink-1);color:#fff;box-shadow:none}
+  .rcard:not(.off):hover .rcIco{background:#eef2f7;color:var(--ink-1)}
+  /* 받을 것이 있는 하나만 붉다. 넷이 다 붉으면 아무것도 안 붉다 */
+  .rcard.hot .rcIco{background:rgba(220,39,45,.09);color:var(--od-red);
+                    box-shadow:inset 0 0 0 1px rgba(220,39,45,.18)}
+  .rcard.hot .rcN{color:#fff;background:var(--od-red)}
+  .rcard.hot .rcGo{color:var(--od-red);background:rgba(220,39,45,.09);
+                   box-shadow:inset 0 0 0 1px rgba(220,39,45,.18)}
+  .rcard.hot:hover .rcGo{background:var(--od-red);color:#fff;box-shadow:none}
+  .rcard.hot:hover .rcIco{background:var(--od-red);color:#fff;box-shadow:none}
+  /* 아직 없는 것은 눌러 보고 알게 하지 않는다 */
+  .rcard.off{background:transparent;box-shadow:inset 0 0 0 1px #e3e8f0;cursor:default}
+  .rcard.off .rcT{color:var(--ink-4)}
+  .rcard.off .rcIco{background:transparent;color:#d3dae3;box-shadow:inset 0 0 0 1px #e8edf3}
+  .rcard.off .rcGo{color:#c3cbd6;background:transparent;box-shadow:inset 0 0 0 1px #e8edf3}
+  @media (max-width:1279px){ #resGrid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+  @media (max-width:560px) { #resGrid{grid-template-columns:minmax(0,1fr)} }
   /* 좁아지면 브랜드 표기를 접는다 — 왼쪽 목록 맨 위에 이미 있다 */
   @media (max-width:1439px){ #camBanner:not(.hero) #ebBrand{display:none} }
   #eyebrow{color:rgba(255,255,255,.60)}
@@ -688,6 +747,33 @@
   .fpWave .flab b{display:block;font-size:13px;font-weight:700;line-height:1;letter-spacing:-.02em}
   .fpWave .flab i{display:block;font-size:10px;font-style:normal;color:#64748b;margin-top:4px}
   .fpWave .flab.hot b{color:#e2483d}
+
+  /* ── 단계의 지위 ── 지나간 것은 작게, 지금은 크게, 쌓인 것은 초록으로.
+     전부 같은 크기로 세워 두면 숫자 다섯 개를 눈으로 비교해야 한다 */
+  .fpWave .flab em{display:block;font-style:normal;font-size:8.5px;font-weight:700;
+                   letter-spacing:var(--tr-label);text-transform:uppercase;margin-top:3px}
+  .fpWave .flab .fchk{width:14px;height:14px;margin:0 auto}
+  .fpWave .flab.r-done{opacity:.5}
+  .fpWave .flab.r-done em{color:#059669}
+  .fpWave .flab.r-next{opacity:.3}
+  .fpWave .flab.r-past{opacity:.6}
+  .fpWave .flab.r-past b{font-size:12px;color:var(--ink-3)}
+  /* 지금 단계 — 이 화면의 주어다. 숫자를 키우고 라벨을 세운다 */
+  .fpWave .flab.r-now b{font-size:22px;color:var(--ink-1)}
+  .fpWave .flab.r-now i{color:var(--ink-1);font-weight:600;font-size:11px}
+  .fpWave .flab.r-now em{color:var(--od-red)}
+  .fpWave .flab.r-end b{font-size:17px;color:#047857}
+  .fpWave .flab.r-end i{color:#047857;font-weight:600}
+
+  /* 파도도 같이 물러난다 — 지나간 구간이 지금 구간만큼 짙으면 위계가 없다 */
+  .fpWave .fseg.r-done, .fpWave .fseg.r-next{fill-opacity:calc(var(--o) * .10)}
+  .fpWave .fseg.r-past{fill-opacity:calc(var(--o) * .18)}
+  .fpWave .fseg.r-now {fill-opacity:calc(var(--o) * .52)}
+  .fpWave.on .fseg.r-now{fill-opacity:calc(var(--o) * .09)}
+  /* 지나간 단계의 얼굴은 흐리게 — 다시 볼 일이 별로 없는 사람들이다 */
+  .fpWave .fav.r-done, .fpWave .fav.r-next{opacity:.35}
+  .fpWave .fav.r-past{opacity:.55}
+  .fpWave .fav.r-now{box-shadow:0 0 0 2px #fff, 0 0 0 4px rgba(15,23,42,.14)}
   .fpWave .fhit{position:absolute;top:0;bottom:34px;cursor:pointer;border-radius:var(--r-sm);
                 transition:background-color .16s ease}
   .fpWave .fhit:hover{background:rgba(15,23,42,.032)}
@@ -746,28 +832,56 @@
   .dbar{flex:1 1 auto;min-width:28px;height:4px;border-radius:var(--r-full);background:#e8edf3;
         overflow:hidden;display:block}
   .dbar > span{display:block;height:100%;border-radius:var(--r-full);transition:width .5s cubic-bezier(.22,.61,.36,1)}
-  /* ── 시험 · 대시보드 유리 ─────────────────────────────
-     첫 화면의 지표는 사진 위 유리다. 접은 화면에서도 같은 재료를 쓰면 한 물건으로 읽힌다.
-     여기 규칙은 전부 body.glass 안에 있다 — setGlass(false) 한 줄로 되돌아온다 */
-  body.glass #dash{position:relative;isolation:isolate}
-  body.glass #dash::before,
-  body.glass #dash::after{content:"";position:absolute;inset:-14px -12px -12px;
-                             border-radius:var(--r-lg);z-index:-1;pointer-events:none}
-  /* 뒤에 사진이 없으니 사진을 아주 크게 흐려 깐다 — 유리가 흐릴 것을 만들어 준다 */
-  body.glass #dash::before{background-image:var(--od-hero);
-                              background-size:cover;background-position:center 24%;
-                              filter:blur(38px) saturate(1.3);opacity:.40}
-  /* 사진이 그대로 비치면 숫자가 안 읽힌다 — 흰 안개를 한 겹 덮는다 */
-  body.glass #dash::after{background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.70))}
-  body.glass .dcard{background:rgba(255,255,255,.56);
-                    -webkit-backdrop-filter:blur(22px) saturate(1.5);
-                            backdrop-filter:blur(22px) saturate(1.5);
-                    box-shadow:inset 0 0 0 1px rgba(255,255,255,.66),
-                               0 12px 34px -16px rgba(15,23,42,.32)}
-  body.glass .dcard .border-slate-100{border-color:rgba(15,23,42,.09)}
-  body.glass .dpill{background:rgba(255,255,255,.62)}
-  body.glass .dpill.up{background:rgba(16,185,129,.22);color:#04674a}
-  body.glass .dbar{background:rgba(15,23,42,.10)}
+  /* ── 진행 상태 · 유리판 ────────────────────────────────────────────
+     전에는 지표 카드 넉 장에 각각 유리를 입혔다. 그러면 흰 판 위에 유리 카드가
+     넷 뜨는 '박스인박스' 가 되고, 재질이 네 번 반복돼 오히려 싸구려로 보인다.
+
+     유리는 하나여야 한다 — 판 전체를 유리로 만들고 카드는 그 안의 글자로 둔다.
+     뒤에 깔리는 것은 이 캠페인의 히어로 사진이다. 흐릴 것이 있어야 유리가
+     성립하고, 마침 이 판이 요약하는 대상이 그 캠페인이다. 재질이 내용을 말한다.
+
+     음수 z-index 를 안 쓴다. isolation 으로 제 안에 층을 만들고 0/1 로만 쌓는다 —
+     -1 은 조상 배경이 하나라도 칠해지는 순간 사라진다(#progSec::before 가 그랬다) */
+  body.glass #flowSec{position:relative;isolation:isolate;overflow:hidden;
+                      background:rgba(255,255,255,.66);
+                      -webkit-backdrop-filter:blur(20px) saturate(1.4);
+                              backdrop-filter:blur(20px) saturate(1.4);
+                      box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),
+                                 0 0 0 1px rgba(17,19,24,.06),
+                                 0 2px 6px rgba(17,19,24,.05),
+                                 0 18px 40px -18px rgba(17,19,24,.30)}
+  body.glass #flowSec::before,
+  body.glass #flowSec::after{content:"";position:absolute;inset:0;z-index:0;
+                             border-radius:inherit;pointer-events:none}
+  /* 사진을 크게 흐려 깐다. 클립되는 상자라 조금 키워서 흐린 가장자리를 밀어낸다 */
+  body.glass #flowSec::before{background-image:var(--od-hero);
+                              background-size:cover;background-position:center 20%;
+                              filter:blur(40px) saturate(1.55);
+                              transform:scale(1.2);opacity:.62}
+  /* 사진이 그대로 비치면 숫자가 안 읽힌다. 위에서 아래로 옅어지는 안개 —
+     위쪽(제목·파도)은 조금 비치고, 아래쪽(숫자)은 확실히 덮는다 */
+  body.glass #flowSec::after{background:
+      linear-gradient(158deg,rgba(255,255,255,.60) 0%,rgba(255,255,255,.80) 46%,rgba(255,255,255,.90) 100%)}
+  /* 윗면의 반사 — 이 한 줄이 있어야 '유리' 고, 없으면 '흐린 배경' 이다 */
+  body.glass #flowSec{border-top:1px solid rgba(255,255,255,.85)}
+  body.glass #flowSec > *{position:relative;z-index:1}
+  /* 유리 위에서는 경계선도 유리여야 한다 */
+  body.glass #dash{border-left-color:rgba(15,23,42,.10)}
+  body.glass #dash > .dcard{border-left-color:rgba(15,23,42,.10)}
+  body.glass .dcard .border-slate-100{border-color:rgba(15,23,42,.11)}
+  body.glass #flowSec .dpill{background:rgba(255,255,255,.72);
+                             box-shadow:inset 0 0 0 1px rgba(15,23,42,.06)}
+  body.glass #flowSec .dpill.up{background:rgba(16,185,129,.24);color:#04674a;
+                                box-shadow:inset 0 0 0 1px rgba(4,103,74,.14)}
+  body.glass #flowSec .dbar{background:rgba(15,23,42,.12)}
+  body.glass #flowSec .cmSep,
+  body.glass #flowSec .fbase{background:rgba(15,23,42,.14)}
+  /* 유리 위의 흰 알약(단계 칩)은 더 하얘야 뜬다 */
+  body.glass .hstep .hs{background:rgba(255,255,255,.66)}
+  @media (prefers-reduced-transparency:reduce){
+    body.glass #flowSec{background:var(--panel);-webkit-backdrop-filter:none;backdrop-filter:none}
+    body.glass #flowSec::before{display:none}
+  }
 
   /* 변화 알약 — 작게 적으면 아무도 안 본다 */
   .dpill{display:inline-flex;align-items:center;gap:3px;flex:none;
@@ -872,7 +986,14 @@
              box-shadow:inset 0 0 0 1px var(--hair)}
   .hstep .hs b{font-size:13px;font-weight:700;color:var(--ink-1)}
   .hstep .hs em{font-style:normal;font-size:10.5px;color:var(--ink-3)}
-  .hstep .hs.zero b{color:var(--ink-4)}
+  .hstep .hs.r-done{opacity:.55;background:transparent;box-shadow:inset 0 0 0 1px #e6ebf3}
+  .hstep .hs.r-next{opacity:.38}
+  .hstep .hs.r-past{opacity:.66}
+  .hstep .hs.r-now{background:var(--ink-1);box-shadow:none}
+  .hstep .hs.r-now b{color:#fff;font-size:15px}
+  .hstep .hs.r-now em{color:rgba(255,255,255,.72)}
+  .hstep .hs.r-end b{color:#047857}
+  .hstep .hs .fchk{width:13px;height:13px}
   .hstep .hsep{flex:1 1 6px;min-width:6px;height:1px;background:#e2e8f0}
   .hnext{margin-top:18px;padding-top:16px;border-top:1px solid var(--hair);
          display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -1377,8 +1498,42 @@
   .wname{font-size:13px;font-weight:600;color:var(--ink-1);letter-spacing:var(--tr-title);
          max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .wmeta{font-size:11px;color:var(--ink-4);letter-spacing:var(--tr-small);margin-top:-7px;
-         white-space:nowrap}
+         white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:5px}
+  .wmeta i{width:2px;height:2px;border-radius:var(--r-full);background:#cbd5e1;flex:none}
   .wempty{padding:34px 2px;font-size:13px;color:var(--ink-4)}
+
+  /* 선반이 바닥 위에 그냥 놓여 있으면 영역으로 안 읽힌다 — 판을 깐다 */
+  .wpanel{background:var(--panel);box-shadow:var(--lift-panel);border-radius:var(--r-md);
+          padding:6px 14px 2px}
+  /* 이 줄에서 할 수 있는 일 */
+  .wall{margin-left:auto;flex:none;display:inline-flex;align-items:center;gap:6px;
+        font-size:11.5px;font-weight:700;color:var(--ink-2);
+        padding:6px 11px;border-radius:var(--r-full);
+        background:var(--panel);box-shadow:var(--lift-ctl);
+        transition:box-shadow .16s ease,transform .16s ease,background-color .16s ease,color .16s ease}
+  .wall svg{width:12px;height:12px;flex:none}
+  .wall:hover{background:var(--ink-1);color:#fff;box-shadow:var(--lift-ctl-h);transform:translateY(-1px)}
+  .wall:active{transform:translateY(0);box-shadow:var(--lift-ctl)}
+  /* 조회수 상위 셋 — 스물두 개에 다 붙이면 순위가 아니라 목록 번호가 된다 */
+  .wrank{position:absolute;left:1px;top:1px;z-index:2;width:22px;height:22px;
+         border-radius:var(--r-full);display:grid;place-items:center;
+         font-size:10.5px;font-weight:800;color:#fff;background:var(--od-ink);
+         box-shadow:0 0 0 3px #fff}
+  .wcard:nth-child(1) .wrank{background:var(--od-red)}
+  /* 눌러서 무엇이 나오는지 — 손을 올리면 사진 위에 적힌다 */
+  .wveil{position:absolute;inset:7px;z-index:1;border-radius:var(--r-full);
+         display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;
+         background:rgba(15,23,42,.52);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
+         opacity:0;transition:opacity .18s ease}
+  .wcard:hover .wveil{opacity:1}
+  /* 줄 끝의 다음 행동 */
+  .wringM{background:none;box-shadow:inset 0 0 0 2px #dbe3ec}
+  .wringM::before{display:none}
+  .wplus{display:grid;place-items:center;width:100%;height:100%;color:var(--ink-3);
+         transition:color .18s ease}
+  .wplus svg{width:26px;height:26px}
+  .wmore:hover .wringM{box-shadow:inset 0 0 0 2px var(--ink-1), var(--lift-ctl-h)}
+  .wmore:hover .wplus{color:var(--ink-1)}
 
   /* 한 영역 안에서 왼쪽은 그림, 오른쪽은 숫자. 둘 사이는 선 하나다 */
   .nowBody{display:grid;grid-template-columns:minmax(0,1fr) clamp(420px,32%,560px);
@@ -2024,6 +2179,14 @@
 
       <div id="topStack">
 
+            <!-- 자료 — 헤더의 칩은 스크롤한 뒤에 쓰는 단축키다. 그것만 있으면
+                 브랜드가 '받아 갈 것' 이 라벨처럼 읽히고 아무도 안 누른다.
+                 받아 갈 것에는 받아 갈 것의 자리를 준다 -->
+            <section id="resSec" class="shrink-0">
+              <div class="sechd"><h2>캠페인 자료</h2>
+                <span id="resN" class="secN num"></span></div>
+              <div id="resGrid"></div>
+            </section>
 
             <!-- 하나의 영역이다. 파도도 숫자도 아래 표를 요약한 것이라
                  따로 세우면 같은 말을 두 번 하는 것으로 읽힌다.
@@ -2102,11 +2265,21 @@
                  나오는 유일한 자리이고 이 화면의 결과물이다 -->
             <section id="workSec">
               <div class="sechd"><h2>업로드된 콘텐츠</h2>
-                <span id="workN" class="secN num"></span></div>
-              <!-- .edge 는 좌우 끝 그림자다. 스크롤 상자에 직접 걸면 그림자가
-                   내용과 같이 밀려 나가므로 안 움직이는 껍데기에 건다 -->
-              <div id="workEdge" class="edge">
-                <div id="workRow" class="shelf scroll-thin"></div>
+                <span id="workN" class="secN num"></span>
+                <!-- 선반만 있고 아무 행동도 없으면 '구경거리' 로 끝난다.
+                     이 줄에서 할 수 있는 일을 옆에 붙여 둔다 -->
+                <button id="workAll" class="wall" onclick="openDrawer('dw-files')">
+                  원본 전체 받기
+                  <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+                </button></div>
+              <!-- 바닥 위에 동그라미만 굴러다니면 영역으로 안 읽힌다.
+                   판을 깔아 준다 — 그 위에서야 '콘텐츠 선반' 이 된다 -->
+              <div class="wpanel">
+                <!-- .edge 는 좌우 끝 그림자다. 스크롤 상자에 직접 걸면 그림자가
+                     내용과 같이 밀려 나가므로 안 움직이는 껍데기에 건다 -->
+                <div id="workEdge" class="edge">
+                  <div id="workRow" class="shelf scroll-thin"></div>
+                </div>
               </div>
             </section>
           </section>
@@ -2517,22 +2690,22 @@ const LIVE_ROSTER = [
   { name:'노아름', handle:'@areum_no',      roman:'AREUM',   disc:10, fol: 46000, er:5.4, cost:200000, due:'08.11', views:268000, likes:10900, cmts: 340, saves:2800, extra:[],               sel:true,  up:true  },
   { name:'문가온', handle:'@gaon_moon',     roman:'GAON',    disc:15, fol: 39000, er:6.7, cost:190000, due:'08.12', views:231000, likes: 9600, cmts: 310, saves:2400, extra:[],               sel:true,  up:true  },
 
-  /* 검수 중 4 — 초안은 받았고 우리가 보고 있다 */
-  { name:'최유진', handle:'@eujin_style',   roman:'EUJIN',   disc:15, fol: 58000, er:8.1, cost:200000, due:'08.14', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false },
-  { name:'하지원', handle:'@jiwon_ha',      roman:'JIWON',   disc:10, fol: 52000, er:6.9, cost:200000, due:'08.15', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false },
-  { name:'서지호', handle:'@jiho.seo',      roman:'JIHO',    disc:20, fol: 48000, er:7.3, cost:190000, due:'08.16', views:0, likes:0, cmts:0, saves:0, extra:['틱톡'],          sel:true, up:false },
+  /* 업로드 완료 12 — 여기까지가 올라온 사람이다 */
+  { name:'최유진', handle:'@eujin_style',   roman:'EUJIN',   disc:15, fol: 58000, er:8.1, cost:200000, due:'08.14', views:398000, likes:17900, cmts: 640, saves:4300, extra:[],               sel:true,  up:true  },
+  { name:'하지원', handle:'@jiwon_ha',      roman:'JIWON',   disc:10, fol: 52000, er:6.9, cost:200000, due:'08.15', views:317000, likes:12600, cmts: 430, saves:3200, extra:[],               sel:true,  up:true  },
+  { name:'서지호', handle:'@jiho.seo',      roman:'JIHO',    disc:20, fol: 48000, er:7.3, cost:190000, due:'08.16', views:296000, likes:12400, cmts: 450, saves:3000, extra:['틱톡'],          sel:true,  up:true  },
+
+  /* 제작 중 8 — 제품을 받았고 지금 만들고 있다 */
   { name:'권소미', handle:'@somi_kwon',     roman:'SOMI',    disc:15, fol: 44000, er:6.1, cost:180000, due:'08.17', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false },
 
-  /* 제작 중 4 */
   { name:'박소연', handle:'@soyeon_makeup', roman:'SOYEON',  disc:10, fol: 41000, er:6.2, cost:180000, due:'08.18', views:0, likes:0, cmts:0, saves:0, extra:['스레드'],        sel:true, up:false },
   { name:'배다현', handle:'@dahyun_bae',    roman:'DAHYUN',  disc:15, fol: 37000, er:5.9, cost:170000, due:'08.19', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false },
   { name:'유은채', handle:'@eunchae_yu',    roman:'EUNCHAE', disc:10, fol: 34000, er:6.4, cost:170000, due:'08.20', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false },
   { name:'신유리', handle:'@yuri_shin',     roman:'YURI',    disc:20, fol: 31000, er:5.7, cost:160000, due:'08.21', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false },
 
-  /* 배송 중 3 — 제품이 아직 가는 중 */
-  { name:'조미르', handle:'@mireu_jo',      roman:'MIREU',   disc:15, fol: 28000, er:6.8, cost:160000, due:'08.23', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false, collab:'talk' },
-  { name:'남시연', handle:'@siyeon_nam',    roman:'SIYEON',  disc:10, fol: 25000, er:5.2, cost:150000, due:'08.24', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false, collab:'talk' },
-  { name:'한서율', handle:'@seoyul.log',    roman:'SEOYUL',  disc:10, fol: 23000, er:5.1, cost:150000, due:'08.25', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false, collab:'talk' },
+  { name:'조미르', handle:'@mireu_jo',      roman:'MIREU',   disc:15, fol: 28000, er:6.8, cost:160000, due:'08.23', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false },
+  { name:'남시연', handle:'@siyeon_nam',    roman:'SIYEON',  disc:10, fol: 25000, er:5.2, cost:150000, due:'08.24', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false },
+  { name:'한서율', handle:'@seoyul.log',    roman:'SEOYUL',  disc:10, fol: 23000, er:5.1, cost:150000, due:'08.25', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false },
 
   /* 선정 전 2 — 명단에는 있지만 아직 확정이 아니다 */
   { name:'정다인', handle:'@dain_kit',      roman:'DAIN',    disc:15, fol: 27000, er:4.6, cost:150000, due:'08.27', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:false, up:false },
@@ -2568,11 +2741,15 @@ const REPEATS = [4, 2, 1, 3, 1, 2, 1, 5, 1, 2, 1, 1, 3, 1, 1, 2, 1, 1, 1, 2, 1, 
 LIVE_ROSTER.forEach(function (c, i) { c.works = REPEATS[i] || 1; });
 
 /* 이번 캠페인의 사건 기록 — 실제로는 어드민이 찍는다.
-   0~8 올라왔고 · 9~16 만드는 중 · 17~18 가는 중 · 19 보낼 차례 · 20~21 고르기 전 */
+   0~11 올라왔고 · 12~19 만드는 중 · 20~21 아직 고르기 전.
+
+   앞선 시점에는 선정·배송에도 사람이 남아 있었다. 그러면 다섯 단계에 사람이
+   골고루 흩어져서 "지금 어디까지 왔나" 가 안 읽힌다 — 어느 캠페인이든
+   실제로는 앞 단계가 먼저 비고 뒤가 채워진다. 선정과 배송은 끝났고,
+   제작 8 · 업로드 12 로 무게가 뒤로 넘어간 시점을 보여준다 */
 LIVE_ROSTER.forEach(function (c, i) {
-  if (i <= 8)       { c.upAt  = c.due; c.gotAt = dshift(c.due, -7); c.sentAt = dshift(c.due, -9); }
-  else if (i <= 16) { c.gotAt = dshift(c.due, -7); c.sentAt = dshift(c.due, -9); }
-  else if (i <= 18) { c.sentAt = dshift(c.due, -9); }
+  if (i <= 11)      { c.upAt  = c.due; c.gotAt = dshift(c.due, -7); c.sentAt = dshift(c.due, -9); }
+  else if (i <= 19) { c.gotAt = dshift(c.due, -7); c.sentAt = dshift(c.due, -9); }
 });
 
 const done = (name, handle, roman, disc, fol, er, cost, due, views, likes, cmts, saves, extra) =>
@@ -2948,6 +3125,7 @@ function renderHome() {
     const sel = selOf(cp.id), u = upOf(cp.id);
     const pct = sel.length ? Math.ceil(u.length / sel.length * 100) : 0;
     const by  = FLOW.map(f => sel.filter(c => c.stage === f[0]).length);
+    const hrank = flowRank(by);
     /* 아직 안 올라온 사람 중 마감이 가까운 순으로 셋 */
     const next = sel.filter(c => !c.up).slice()
                     .sort((a, b) => a.due < b.due ? -1 : 1).slice(0, 3);
@@ -2964,8 +3142,8 @@ function renderHome() {
       + '<div class="mt-2.5">' + dBar(pct, '#10b981') + '</div>'
       + '<div class="hstep">'
       +   FLOW.map(function (f, i) {
-            return '<span class="hs' + (by[i] ? '' : ' zero') + '">'
-              + '<b class="num">' + by[i] + '</b><em>' + esc(f[1].split(' ')[0]) + '</em></span>';
+            return '<span class="hs r-' + hrank[i] + '">'
+              + fnum(by[i], hrank[i]) + '<em>' + esc(f[1].split(' ')[0]) + '</em></span>';
           }).join('<i class="hsep"></i>')
       + '</div>'
       + (next.length
@@ -3356,15 +3534,16 @@ function renderMini() {
   const react = sum(up, 'likes') + sum(up, 'cmts') + sum(up, 'saves');
   const cur = (PSTATE.stage && PSTATE.stage !== 'all') ? PSTATE.stage : null;
 
+  const rank = flowRank(by.map(g => g.length));
   box.innerHTML =
       '<div class="cmFlow">'
     +   FLOW.map(function (f, i) {
           const n0 = by[i].length;
-          return '<button class="cmStep' + (n0 ? '' : ' zero') + (cur === f[0] ? ' sel' : '') + '"'
+          return '<button class="cmStep r-' + rank[i] + (cur === f[0] ? ' sel' : '') + '"'
             + ' data-seg="' + i + '" data-key="' + f[0] + '"'
             + ' title="' + esc(f[1]) + ' ' + n0 + '명만 보기">'
             + '<i class="cmDot"' + (n0 ? ' style="background:' + fcolor(FLOW.length > 1 ? i / (FLOW.length - 1) : 1) + '"' : '') + '></i>'
-            + '<b class="num">' + n0 + '</b>'
+            + fnum(n0, rank[i])
             + '<em>' + esc(f[1].split(' ')[0]) + '</em></button>';
         }).join('<i class="cmSep"></i>')
     + '</div>'
@@ -3798,6 +3977,41 @@ function flowData() {
   return FLOW.map(f => CREATORS.filter(c => c.stage === f[0]));
 }
 
+/* ── 단계의 지위 ──────────────────────────────────────────────────────
+   다섯 단계를 같은 무게로 세워 두면 '지금 어디까지 왔나' 를 숫자 다섯 개를
+   서로 비교해서 알아내야 한다. 그건 대시보드가 할 일을 사람에게 미룬 것이다.
+
+   실제 캠페인은 앞에서 뒤로 흐른다 — 리스트·선정·배송은 지나가면 다시 볼 일이
+   거의 없고, 남는 것은 '지금 무엇이 벌어지는가' 와 '얼마나 쌓였는가' 둘이다.
+   그래서 단계마다 지위를 매긴다:
+
+     done — 지나갔고 아무도 안 남았다        → 숫자 대신 체크. 가장 작게
+     past — 지나갔는데 남은 사람이 있다      → 옅게. 잔여로 읽힌다
+     now  — 지금 일이 벌어지는 곳            → 가장 크게. 이 화면의 주어다
+     next — 아직 오지 않았다                 → 가장 옅게
+     end  — 마지막 단계에 쌓인 결과          → 초록. 완료의 색
+
+   '지금' 은 마지막을 뺀 단계 중 인원이 가장 많은 곳이다. 같으면 뒤쪽이 이긴다 —
+   캠페인은 앞으로 가지 뒤로 가지 않는다. 선정에 15명이 몰려 있으면 선정이
+   '지금' 이고, 제작에 8명이면 제작이 '지금' 이다. 앞이 전부 비었으면 남은 것은
+   결과뿐이라 마지막이 '지금' 이 된다 */
+function flowRank(counts) {
+  const last = counts.length - 1;
+  let now = -1, best = 0;
+  for (let i = 0; i < last; i++) if (counts[i] > 0 && counts[i] >= best) { best = counts[i]; now = i; }
+  if (now < 0) now = last;
+  return counts.map(function (v, i) {
+    if (i === now)  return 'now';
+    if (i === last) return v ? 'end' : 'next';
+    if (i < now)    return v ? 'past' : 'done';
+    return v ? 'past' : 'next';
+  });
+}
+/* 완료된 단계는 숫자가 0 이다. 0 을 그대로 두면 '아직 아무도 없다' 로 읽힌다 —
+   지나간 0 과 아직 안 온 0 은 다른 말이라, 지나간 쪽에는 체크를 준다 */
+const FCHK = '<svg class="fchk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4.5 4.5L19 7"/></svg>';
+const fnum = (v, rank) => rank === 'done' ? FCHK : '<b class="num">' + v + '</b>';
+
 
 /* ── 진행 흐름 파도 ───────────────────────────────────────────────
    높이는 인원수에 비례하지 않는다. 비중 순위로만 정한다 — 서로 다른 값이
@@ -3856,9 +4070,10 @@ function renderFlow() {
   const uniq = [...new Set(counts)].sort((a, b) => b - a);
   const slot = FW / FLOW.length, pad = slot * (1 - FFILL) / 2, step = 100 / FLOW.length;
 
+  const rank = flowRank(counts);
   const seg = FLOW.map(function (f, i) {
     const t = uniq.indexOf(counts[i]);
-    return { key: f[0], label: f[1], n: counts[i], one: by[i][0],
+    return { key: f[0], label: f[1], n: counts[i], one: by[i][0], rank: rank[i],
              h: FTIER_H[t] || 0.12, o: FTIER_O[t] || 0.3,
              c: fcolor(FLOW.length > 1 ? i / (FLOW.length - 1) : 1) };
   });
@@ -3866,21 +4081,24 @@ function renderFlow() {
   box.innerHTML =
       '<svg viewBox="0 0 ' + FW + ' ' + FVH + '" preserveAspectRatio="none" aria-hidden="true">'
     +   seg.map(function (x, i) {
-          return '<path class="fseg" data-seg="' + i + '" style="--o:' + x.o + ';--c:' + x.c + '" d="'
+          return '<path class="fseg r-' + x.rank + '" data-seg="' + i + '" style="--o:' + x.o + ';--c:' + x.c + '" d="'
             + fhump(i * slot + pad, slot * FFILL, x.h) + '"/>';
         }).join('')
     + '</svg><div class="fbase"><i></i></div>'
     + seg.map(function (x, i) {
         if (!x.one) return '';
         const more = x.n - 1;
-        return '<div class="fav" data-seg="' + i + '" style="left:' + ((i + .5) * step)
+        return '<div class="fav r-' + x.rank + '" data-seg="' + i + '" style="left:' + ((i + .5) * step)
           + '%;bottom:' + (FBASE + FPEAK + 8) + 'px">'
           + (x.one.pic ? '<img src="' + x.one.pic + '" alt="">' : '')
           + (more > 0 ? '<b>+' + more + '</b>' : '') + '</div>';
       }).join('')
     + seg.map(function (x, i) {
-        return '<div class="flab" data-seg="' + i + '" style="left:' + ((i + .5) * step) + '%">'
-          + '<b class="num">' + x.n + '</b><i>' + x.label + '</i></div>';
+        /* 지금 단계에만 '진행 중' 을 붙인다. 다섯 개에 전부 붙이면 아무것도 안 붙인 것과 같다 */
+        return '<div class="flab r-' + x.rank + '" data-seg="' + i + '" style="left:' + ((i + .5) * step) + '%">'
+          + fnum(x.n, x.rank) + '<i>' + x.label + '</i>'
+          + (x.rank === 'now' ? '<em>진행 중</em>' : '')
+          + (x.rank === 'done' ? '<em>완료</em>' : '') + '</div>';
       }).join('')
     + seg.map(function (x, i) {
         return '<span class="fhit" data-seg="' + i + '" style="left:' + (i * step)
@@ -4021,7 +4239,12 @@ function saveSet() {
 /* 자료 칩 — 아이콘에만 색을 쓴다. 받을 것이 있는 칩만 붉게 도드라진다 */
 /* 자료 넷에 색을 넷 쓰면 헤더가 색표가 된다. 아이콘 모양이 이미 무엇인지 말한다 */
 
+/* 자료마다 눌렀을 때 벌어지는 일이 다르다. 그 동사를 칩 안에 적어 둔다 —
+   화살표만 있으면 '무언가 되긴 하겠지' 에서 끝난다 */
+const A_VERB = { 'dw-files': '받기', 'dw-code': '복사', 'dw-guide': '열기', 'dw-report': '열기' };
+
 function renderAssets() {
+  renderResGrid();
   $('resBar').innerHTML = ASSETS.map(function (a, i) {
     const n2 = assetN(a);
     const off = n2 === 0;
@@ -4046,6 +4269,40 @@ function renderAssets() {
   }).join('');
 }
 
+/* 본문의 자료 — 칩이 아니라 카드다. 아이콘 타일 · 이름 · 상태 · 동사가
+   한 장 안에 다 있으면 '눌러도 되는 것' 을 묻지 않는다 */
+function renderResGrid() {
+  const box = $('resGrid');
+  if (!box) return;
+  const ready = ASSETS.filter(a => assetN(a) > 0).length;
+  const lab = $('resN');
+  if (lab) lab.textContent = ready + ' / ' + ASSETS.length + '건 준비됨';
+
+  box.innerHTML = ASSETS.map(function (a, i) {
+    const n2 = assetN(a), off = n2 === 0;
+    const hot = a.dw === 'dw-files' && n2 > 0;
+    const down = a.dw === 'dw-files';
+    const arrow = down
+      ? 'M12 4v12m0 0l-4-4m4 4l4-4M4 20h16'
+      : 'M14 4h6v6M20 4l-8 8M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5';
+    return '<button class="rcard' + (hot ? ' hot' : '') + (off ? ' off' : '') + '"'
+      + ' onclick="openAsset(' + i + ')"' + (off ? ' aria-disabled="true"' : '')
+      + ' title="' + esc(a.t) + ' · ' + esc(off ? '아직 없음' : assetSub(a)) + '">'
+      + '<span class="rcIco">'
+      +   '<svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">'
+      +   '<path stroke-linecap="round" stroke-linejoin="round" d="' + A_ICON[a.ic] + '"/></svg></span>'
+      + '<span class="rcTx">'
+      +   '<span class="rcT">' + esc(a.t)
+      +     (A_COUNTED[a.dw] && n2 > 0 ? '<i class="rcN num">' + n2 + '</i>' : '') + '</span>'
+      +   '<span class="rcS num">' + esc(off ? '아직 없음' : assetSub(a)) + '</span>'
+      + '</span>'
+      + '<span class="rcGo">' + (off ? '대기' : A_VERB[a.dw] || '열기')
+      +   '<svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">'
+      +   '<path stroke-linecap="round" stroke-linejoin="round" d="' + arrow + '"/></svg></span>'
+      + '</button>';
+  }).join('');
+}
+
 /* 화면에서 제일 큰 버튼이 알림만 띄우면 다음 클릭이 없다.
    이미 만들어 둔 서랍이 있는 것은 진짜로 연다. */
 /* 대시보드 유리를 켜고 끈다. 시험 중이라 한 줄로 되돌릴 수 있게 둔다 */
@@ -4055,11 +4312,12 @@ function setGlass(on) {
   try { localStorage.setItem('odGlass', yes ? '1' : '0'); } catch (e) {}
   return yes ? '유리 켬' : '유리 끔 — 원래 화면';
 }
-/* 기본은 켬. 한 번 끄면 그 선택을 기억한다 */
+/* 기본은 켬. 한 번 끄면 그 선택을 기억한다.
+   전에는 꺼 두었다 — 바닥이 흰색이라 흐릴 것이 없었기 때문이다.
+   바닥을 파고 판이 뜨면서 유리가 성립한다 */
 (function () {
-  /* 흰 바탕에서는 흐릴 것이 없다 — 켜려면 setGlass(true) */
-  let on = false;
-  try { on = localStorage.getItem('odGlass') === '1'; } catch (e) {}
+  let on = true;
+  try { const v = localStorage.getItem('odGlass'); if (v !== null) on = v === '1'; } catch (e) {}
   if (document.body) document.body.classList.toggle('glass', on);
   else addEventListener('DOMContentLoaded', () => document.body.classList.toggle('glass', on));
 })();
@@ -5021,19 +5279,35 @@ function renderWork() {
   if (lab) lab.textContent = up.length ? up.length + '건' : '';
   const play = '<svg viewBox="0 0 12 14" fill="currentColor" aria-hidden="true">'
              + '<path d="M1 1.2v11.6a.6.6 0 0 0 .92.5l9.2-5.8a.6.6 0 0 0 0-1L1.92.7A.6.6 0 0 0 1 1.2z"/></svg>';
+  /* 조회수 순위 — 상위 셋에만 자리를 매긴다. 스물두 개에 번호를 다 붙이면
+     그건 순위가 아니라 목록 번호다 */
+  const rank = up.slice().sort((a, b) => b.views - a.views).slice(0, 3);
+  const rankOf = c => rank.indexOf(c) + 1;
+
   box.innerHTML = up.length
     ? up.map(function (c) {
-        const i = CREATORS.indexOf(c);
+        const i = CREATORS.indexOf(c), r = rankOf(c);
         return '<button class="wcard" onclick="openRow(' + i + ', event)"'
           + ' title="' + esc(c.name) + '님 · ' + esc(c.handle) + ' · '
-          +   esc(c.due) + ' 업로드 · ' + n(c.views) + ' 조회">'
+          +   esc(c.due) + ' 업로드 · ' + n(c.views) + ' 조회 — 눌러서 콘텐츠 보기">'
           + '<span class="wring">' + avatar(c, i, WRING_PIC)
           +   '<span class="wplay">' + play + '</span>'
+          +   (r ? '<span class="wrank num">' + r + '</span>' : '')
+          +   '<span class="wveil">보기</span>'
           + '</span>'
           + '<span class="wname">' + esc(c.name) + '</span>'
-          + '<span class="wmeta num">' + n(c.views) + ' 조회</span>'
+          + '<span class="wmeta num">' + kw(c.views) + ' 조회<i></i>' + esc(c.due) + '</span>'
           + '</button>';
       }).join('')
+      /* 줄 끝에서 끊기면 '여기까지가 전부인가' 를 묻게 된다. 다음 행동을 놓아 둔다 */
+      + '<button class="wcard wmore" onclick="openDrawer(\'dw-files\')"'
+      + ' title="원본 콘텐츠 전체 보기">'
+      + '<span class="wring wringM"><span class="wplus">'
+      +   '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>'
+      + '</span></span>'
+      + '<span class="wname">전체 원본</span>'
+      + '<span class="wmeta num">' + up.length + '건 받기</span>'
+      + '</button>'
     : '<div class="wempty">업로드가 시작되면 이 자리에 올라옵니다</div>';
 
   bindShelfDrag(box);
