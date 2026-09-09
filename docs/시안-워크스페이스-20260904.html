@@ -901,30 +901,42 @@
   /* 한 줄에 선 단추는 키가 같아야 한다. 안쪽 여백으로 키가 정해지면
      글자 수에 따라 미세하게 달라진다 — 키를 못 박는다 */
   /* ── 머리줄의 단계 줄 ─────────────────────────────────────────────
-     필터이면서 '지금 어디까지 왔나' 이기도 하다. 파도와 같은 지위를 쓴다 —
-     지나간 단계는 졸아들어 이름만 남고, 지금 단계가 선다.
-     여섯을 같은 크기로 늘어놓으면 머리줄이 또 칩밭이 된다 */
-  .sbar{display:flex;align-items:center;gap:3px;min-width:0;overflow:hidden}
-  .sb{display:inline-flex;align-items:baseline;gap:4px;flex:none;
-      height:24px;padding:0 8px;border-radius:var(--r-sm);
-      transition:background-color .14s ease,color .14s ease,opacity .14s ease}
+     칩 여섯 개를 제목 옆에 흩어 놓았더니 머리줄이 또 칩밭이 됐다. 이건 여섯 개의
+     단추가 아니라 하나의 물건이다 — 다섯 단계를 가로지르는 자 하나.
+     그래서 한 판에 얹고 칸막이로 나눈다. 바로 옆 카드/표 전환(.vsw)이 쓰는
+     문법과 같다 — 머리줄에 두 가지 문법이 있을 이유가 없다.
+
+     이름은 파도와 같은 말을 쓴다. 여태 같은 다섯 단계를 두 벌로 부르고 있었다 —
+     파도는 '선정', 필터는 '발송 준비'. 바로 위아래에 붙어 있는데 말이 달랐다.
+
+     0 인 단계는 0 을 안 쓴다. 지나간 0 은 '아직 없다' 가 아니라 '끝났다' 라서,
+     파도와 같은 체크를 준다. 폭도 그만큼 준다 */
+  .sbar{display:inline-flex;align-items:stretch;flex:none;height:26px;min-width:0;
+        border-radius:var(--r-sm);background:var(--panel-2);
+        box-shadow:inset 0 0 0 1px var(--hair);overflow:hidden}
+  .sb{position:relative;display:inline-flex;align-items:center;gap:5px;padding:0 9px;
+      transition:background-color .14s ease}
+  .sb + .sb::before{content:'';position:absolute;left:0;top:5px;bottom:5px;
+                    width:1px;background:#e4e9f0}
   .sb i{font-style:normal;font-size:10.5px;font-weight:600;color:var(--ink-3);
         letter-spacing:var(--tr-small);white-space:nowrap}
-  .sb b{font-size:11.5px;font-weight:700;color:var(--ink-1)}
-  .sb:hover{background:#eef2f7}
+  .sb b{font-size:11.5px;font-weight:700;color:var(--ink-1);font-variant-numeric:tabular-nums}
+  .sb .sdot{width:5px;height:5px;border-radius:var(--r-full);flex:none}
+  .sb .fchk{width:11px;height:11px}
+  .sb:hover{background:rgba(15,23,42,.05)}
+  /* 지위 — 색과 무게만. 이 안에서 크기를 흔들면 칸막이가 어긋난다 */
+  .sb.r-done i{color:var(--ink-4)}
+  .sb.r-next i{color:#c3cbd6}
+  .sb.r-past i{color:var(--ink-3)}
+  .sb.r-now  i{color:var(--ink-1);font-weight:700}
+  .sb.r-end  b{color:#047857}
+  /* 고른 칸만 칠한다. '지금' 과 '고른 것' 은 다른 말이라 표현도 달라야 한다 */
   .sb.on{background:var(--ink-1)}
   .sb.on i{color:rgba(255,255,255,.7)}
   .sb.on b{color:#fff}
-  /* 지위 — 지나간 단계는 이름만, 지금 단계는 면을 갖는다 */
-  .sb.r-done{opacity:.45}
-  .sb.r-done b{color:var(--ink-4)}
-  .sb.r-next{opacity:.34}
-  .sb.r-past{opacity:.68}
-  .sb.r-now{background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair)}
-  .sb.r-now i{color:var(--ink-1);font-weight:700}
-  .sb.r-end b{color:#047857}
-  .sb.r-all{box-shadow:inset 0 0 0 1px var(--hair)}
-  /* 좁아지면 지나간 단계부터 접는다 — 어차피 0 이다 */
+  .sb.on .fchk{color:#6ee7b7}
+  .sb.on:hover{background:#1e293b}
+  /* 좁아지면 끝난 단계부터 접는다 — 체크 하나가 접힌다고 잃는 것이 없다 */
   @media (max-width:1439px){ .sb.r-done, .sb.r-next{display:none} }
   @media (max-width:1279px){ .sbar{display:none} }
 
@@ -2135,7 +2147,6 @@
                 <h2>인플루언서</h2>
                 <!-- 단계는 서랍 안에 있을 것이 아니다. 이 표를 보는 이유의 절반이
                      '지금 어느 단계에 누가 있나' 라서, 제목 옆에 늘 펴 둔다 -->
-                <span class="hdiv"></span>
                 <div id="stageBar" class="sbar"></div>
                 <button id="progAll" onclick="pickAllProg()" class="flex items-center gap-1.5 text-[10.5px] font-bold text-slate-600 hover:text-slate-900 transition whitespace-nowrap"></button>
                 <button id="progPick" onclick="chatAboutPicked()" class="cta hidden text-[10.5px] font-bold px-2.5 py-1.5 rd-sm whitespace-nowrap"></button>
@@ -4572,18 +4583,30 @@ function renderStageBar() {
   const sel = selected();
   const cnt = {};
   sel.forEach(c => { cnt[c.stage] = (cnt[c.stage] || 0) + 1; });
-  const rank = flowRank(FLOW.map(f => cnt[f[0]] || 0));
-  const rankOf = k => { const i = FLOW.findIndex(f => f[0] === k); return i < 0 ? '' : rank[i]; };
+  const counts = FLOW.map(f => cnt[f[0]] || 0);
+  const rank = flowRank(counts);
 
-  box.innerHTML = STAGE_BANDS.map(function (x) {
-    const k = x[0], all = k === 'all';
-    const n2 = all ? sel.length : (cnt[k] || 0);
-    const r  = all ? 'all' : rankOf(k);
+  /* 첫 칸은 '전체' 다 — 거르는 것이 아니라 거른 것을 푸는 자리 */
+  let h = '<button class="sb r-all' + (PSTATE.stage === 'all' ? ' on' : '') + '"'
+        + ' onclick="setFilter(&quot;stage&quot;,&quot;all&quot;)" title="전체 ' + sel.length + '명">'
+        + '<i>전체</i><b class="num">' + sel.length + '</b></button>';
+
+  h += FLOW.map(function (f, i2) {
+    const k = f[0], n2 = counts[i2], r = rank[i2];
+    /* 파도와 같은 말, 같은 색 */
+    const label = f[1].split(' ')[0];
+    const dot = n2
+      ? '<span class="sdot" style="background:' + fcolor(FLOW.length > 1 ? i2 / (FLOW.length - 1) : 1) + '"></span>'
+      : '';
     return '<button class="sb r-' + r + (PSTATE.stage === k ? ' on' : '') + '"'
       + ' onclick="setFilter(&quot;stage&quot;,&quot;' + k + '&quot;)"'
-      + ' title="' + esc(x[1]) + ' ' + n2 + '명만 보기">'
-      + '<i>' + esc(x[1]) + '</i><b class="num">' + n2 + '</b></button>';
+      + ' title="' + esc(f[1]) + ' ' + n2 + '명만 보기">'
+      + dot + '<i>' + esc(label) + '</i>'
+      + (r === 'done' ? FCHK : '<b class="num">' + n2 + '</b>')
+      + '</button>';
   }).join('');
+
+  box.innerHTML = h;
 }
 
 /* 열려 있는 패널을 다시 그린다. 토글은 하지 않는다 */
