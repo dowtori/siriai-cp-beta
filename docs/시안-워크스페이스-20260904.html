@@ -960,28 +960,34 @@
   }
 
   /* ══ 홈 ══════════════════════════════════════════════════════════
-     레퍼런스(siriai-portfolio)의 Home 과 같은 넷: 정체 → 한 문장 → 심볼 → 설명.
-     한때 여기에 성적표 · 진행 중 · 아카이브 · 클로징을 쌓아 봤는데, 그러면 홈이
-     또 하나의 대시보드가 된다. 캠페인 안에 이미 있는 것을 여기서 한 번 더 읽게
-     만들 이유가 없다 — 캠페인을 고르는 일은 왼쪽 목록이 하고, 신청은 아래 독이
-     받는다. 홈이 할 일은 '무엇을 보고 있는지' 한 번 말하는 것뿐이다.
+     자사 포트폴리오(siriai-portfolio)의 Home 을 그대로 옮긴다. 값은 실측이다 —
+     eyebrow 14/700/.12em → 대제목 clamp(30,4vw,50)/1.2/-.02em → 심볼 120 →
+     서브 15/1.75. 간격 20 / 40 / 36. 등장은 오른쪽에서 90px, .45s.
 
-     100vh 히어로는 안 쓴다. 왼쪽에 목록이 있는 도구라, 화면 하나를 문장 하나로
-     비워 두면 목록이 갈 곳 없는 장식이 된다 */
-  #homeIn{min-height:100%;display:flex;align-items:center;justify-content:center;
-          padding:clamp(32px,6vh,72px) 16px}
-  .hhero{max-width:560px;text-align:center}
-  .hbrand{display:inline-flex;align-items:center;gap:9px;margin-bottom:22px}
-  .hbrand .ebw-od{width:66px;height:17px;color:var(--od-ink)}
-  .hbrand .ebw-si{width:47px;height:17px;color:var(--ink-2);opacity:.9}
-  .hbrand .ebx{font-size:12px}
-  .hhero h1{font-size:clamp(27px,3.4vw,38px);font-weight:700;line-height:1.3;
-            letter-spacing:var(--tr-display);color:var(--ink-1);word-break:keep-all}
-  .hsym{width:76px;height:76px;margin:30px auto 26px;color:var(--od-ink);
-        filter:drop-shadow(0 12px 24px rgba(15,23,42,.16))}
-  .hhero p{font-size:14px;line-height:1.8;color:var(--ink-3);word-break:keep-all;margin:0}
-  .hnote{margin-top:14px !important;font-size:12px !important;color:var(--ink-4) !important}
-  @media (max-width:640px){ .brk{display:none} .hsym{width:60px;height:60px;margin:24px auto 20px} }
+     다른 것은 하나뿐이다: 맨 위가 워드마크 이미지가 아니라 SIRIAI 글자다 */
+  /* 레퍼런스와 같이 한 화면을 통째로 쓴다. #pad 의 하단 예약분(독 자리)까지
+     밀어야 푸터가 화면 안으로 올라오지 않는다 — 푸터는 굴려서 만나는 것이다 */
+  .home-hero{min-height:100vh;
+             display:flex;align-items:center;justify-content:center;
+             padding:60px 40px;text-align:center;
+             animation:homeHeroIn .45s cubic-bezier(.16,1,.3,1)}
+  @keyframes homeHeroIn{ from{transform:translateX(90px);opacity:0} to{transform:none;opacity:1} }
+  @media (prefers-reduced-motion:reduce){ .home-hero{animation:none} }
+  .home-hero-inner{max-width:640px}
+  .home-hero-brand{font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+                   color:var(--ink-3);margin-bottom:20px}
+  .home-hero-title{font-size:clamp(30px,4vw,50px);font-weight:700;line-height:1.2;
+                   letter-spacing:-.02em;color:var(--ink-1);margin:0 0 40px;word-break:keep-all}
+  .home-hero-symbol{width:120px;height:120px;margin:0 auto 36px;display:block;
+                    color:var(--od-ink);filter:drop-shadow(0 12px 24px rgba(0,0,0,.15))}
+  .home-hero-sub{font-size:15px;line-height:1.75;color:var(--ink-3);margin:0;word-break:keep-all}
+  @media (max-width:640px){
+    .home-hero{padding:40px 24px}
+    .home-hero-symbol{width:88px;height:88px}
+    .home-hero-symbol, .home-hero-title{margin-bottom:28px}
+    .brk{display:none}
+  }
+
 
 
 
@@ -2056,7 +2062,7 @@
     <div id="pad" class="flex-1 min-h-0 flex flex-col px-4 sm:px-6 pt-5 pb-4">
 
       <!-- 홈 — 캠페인 하나가 아니라 넉 달 전체. 둘러보고 돌아오는 자리다 -->
-      <section id="homeView" class="hidden flex-1 min-h-0 overflow-y-auto scroll scroll-thin">
+      <section id="homeView" class="hidden">
         <div id="homeIn"></div>
       </section>
 
@@ -2779,6 +2785,11 @@ const CAMPAIGNS = [
 ];
 CAMPAIGNS.forEach(c => { c.n = ROSTERS[c.id].filter(x => x.sel).length; });
 
+/* 주소에 쓰는 이름. id('2608')는 우리 안에서만 통하는 번호라 링크에 적으면
+   받은 사람에게 아무 말도 안 한다. 연-월이면 붙여 놓기만 해도 순서가 읽힌다 */
+const BRAND_SLUG = 'oddtype';
+CAMPAIGNS.forEach(c => { c.slug = c.y + '-' + String(c.m).padStart(2, '0'); });
+
 const camp   = () => CAMPAIGNS.find(c => c.id === S.camp);
 const isLive = () => camp().state === 'live';
 
@@ -2979,22 +2990,44 @@ const ICON = {
    홈과 캠페인은 다른 화면인데 주소가 하나였다. 그러면 뒤로 가기가 화면 밖으로
    나가 버리고, "이 캠페인 좀 봐" 하고 링크를 보낼 수도 없다.
 
-     /          홈
-     /c/2608    26년 8월 캠페인
+     /oddtype           브랜드 홈
+     /oddtype/2026-08   26년 8월 인플루언서 캠페인
 
-   vercel.json 의 rewrite 가 /c/* 를 index.html 로 돌려준다 — 새로고침해도 산다 */
-const urlFor = (v, id) => v === 'camp' ? '/c/' + id : '/';
+   경로가 곧 문장이다 — 받은 사람이 열기 전에 무엇인지 안다. id('2608')는
+   우리 안에서만 통하는 번호라 링크에 적으면 아무 말도 안 한다.
+   브랜드를 앞에 두는 이유는 캠페인이 브랜드에 속한 것이기 때문이다.
+   브랜드가 여럿이 되어도 이름이 겹치지 않는다.
+
+   vercel.json 의 rewrite 가 이 두 갈래를 index.html 로 돌려준다 — 새로고침해도 산다 */
+const urlFor = (v, id) => {
+  if (v !== 'camp') return '/' + BRAND_SLUG;
+  const cp = CAMPAIGNS.find(c => c.id === id);
+  return '/' + BRAND_SLUG + '/' + (cp ? cp.slug : id);
+};
 function syncURL(replace) {
   const p = urlFor(S.view, S.camp);
   if (location.pathname === p) return;
   try { history[replace ? 'replaceState' : 'pushState']({ v: S.view, c: S.camp }, '', p); } catch (e) {}
 }
+/* 주소를 못 읽으면 null 이다 — 루트로 들어온 경우가 여기다. 어디로 보낼지는
+   bootRoute() 가 정한다 */
 function readURL() {
-  const m = location.pathname.match(/^\/c\/([\w-]+)/);
-  return (m && ROSTERS[m[1]]) ? { v: 'camp', c: m[1] } : { v: 'home', c: null };
+  const seg = location.pathname.split('/').filter(Boolean);
+  if (seg[0] !== BRAND_SLUG) return null;
+  if (!seg[1]) return { v: 'home', c: null };
+  const cp = CAMPAIGNS.find(c => c.slug === seg[1] || c.id === seg[1]);
+  return cp ? { v: 'camp', c: cp.id } : { v: 'home', c: null };
+}
+/* 루트(/)는 콜드메일 링크가 여는 자리다. 브랜드 홈이 아니라 지금 돌고 있는
+   캠페인의 첫 화면으로 보낸다 — 받은 사람이 처음 보는 것이 사진이어야 한다 */
+function bootRoute() {
+  const r = readURL();
+  if (r) return r;
+  const live = CAMPAIGNS.find(c => c.state === 'live') || CAMPAIGNS[0];
+  return { v: 'camp', c: live.id };
 }
 addEventListener('popstate', function () {
-  const r = readURL();
+  const r = bootRoute();
   if (r.v === 'camp') pickCamp(r.c, true);
   else go('home', true);
 });
@@ -3053,23 +3086,17 @@ function homeTotals() {
 }
 
 function renderHome() {
-  /* 레퍼런스와 같은 넷: 정체 → 한 문장 → 심볼 → 설명. 그 아래로는 아무것도 없다.
-     성적표 · 진행 중 · 아카이브를 쌓아 봤더니 홈이 또 하나의 대시보드가 됐다 —
-     캠페인 안에 이미 있는 것을 홈에서 한 번 더 읽게 만들 이유가 없다.
-     캠페인을 고르는 일은 왼쪽 목록이 한다. 여기는 '무엇을 보고 있는지' 만 말한다 */
+  /* 자사 포트폴리오의 Home 을 그대로 옮긴다. 넷이 전부다 —
+     정체 · 한 문장 · 심볼 · 설명. 여기서 더 얹으면 홈이 또 대시보드가 된다.
+     맨 위만 다르다: 워드마크 이미지 대신 SIRIAI 글자 */
   $('homeIn').innerHTML =
-      '<section class="hhero">'
-    +   '<span class="hbrand">'
-    +     '<span class="odw-mark ebw ebw-od" role="img" aria-label="ODDTYPE"></span>'
-    +     '<span class="ebx">&times;</span>'
-    +     '<span class="wm ebw ebw-si" role="img" aria-label="SIRIAI"></span>'
-    +   '</span>'
-    +   '<h1>오드타입 캠페인을<br>직접 열어보세요.</h1>'
-    +   '<span class="sym hsym" role="img" aria-label="SIRIAI"></span>'
-    +   '<p>인플루언서 선정부터 업로드까지, 넉 달간 실제로 돌아간 기록입니다. <br class="brk">'
+      '<div class="home-hero"><div class="home-hero-inner">'
+    +   '<div class="home-hero-brand">SIRIAI</div>'
+    +   '<h1 class="home-hero-title">감각적인 비주얼을<br>만나보세요.</h1>'
+    +   '<span class="sym home-hero-symbol" role="img" aria-label="SIRIAI"></span>'
+    +   '<p class="home-hero-sub">브랜드의 아이덴티티에 가장 근접한 인플루언서 큐레이션. <br class="brk">'
     +     '왼쪽 메뉴에서 캠페인을 둘러보세요.</p>'
-    +   '<p class="hnote">둘러보기용 화면이라 저장 · 내려받기는 동작하지 않습니다.</p>'
-    + '</section>';
+    + '</div></div>';
 }
 
 
@@ -6028,7 +6055,7 @@ if (window.ResizeObserver) {
 }
 /* 주소가 화면을 정한다. /c/2608 로 들어오면 그 캠페인이, / 로 들어오면 홈이 뜬다 —
    링크로 보낸 화면이 링크를 연 사람에게도 그대로 열린다 */
-const BOOT = readURL();
+const BOOT = bootRoute();
 if (BOOT.v === 'camp' && BOOT.c !== S.camp) { S.camp = BOOT.c; CREATORS = ROSTERS[BOOT.c]; }
 render();
 buildGuide();
