@@ -65,14 +65,49 @@
     --tr-small  : .038em;    /* 11~12.5px 짧은 라벨 */
     --tr-label  : .14em;     /* 10px 대문자 라벨 */
 
-    /* 깊이 — 테두리 1px 대신 그림자 세 겹을 쌓는다.
-       링(경계) + 접촉(가까운 그림자) + 앰비언트(멀고 넓은 그림자).
-       admin /today 에서 쓰는 방식이다. */
-    --ring  : 0 0 0 1px rgba(17,19,24,.08);
-    --lift-1: 0 0 0 1px rgba(17,19,24,.07), 0 1px 2px rgba(17,19,24,.04);
-    --lift-2: 0 0 0 1px rgba(17,19,24,.08), 0 2px 6px rgba(17,19,24,.05), 0 10px 26px -18px rgba(17,19,24,.30);
-    --lift-3: 0 0 0 1px rgba(17,19,24,.09), 0 4px 12px rgba(17,19,24,.06), 0 18px 44px -22px rgba(17,19,24,.42);
-    --lift-4: 0 0 0 1px rgba(17,19,24,.10), 0 8px 20px rgba(17,19,24,.08), 0 40px 80px -32px rgba(17,19,24,.55);
+    /* ── 바닥과 면 ──────────────────────────────────────────────
+       애플뮤직도 스포티파이도 결국 같은 구조다: 바닥을 한 단 낮추고
+       그 위에 면을 띄운다. 스포티파이는 검정 바닥에 #121212 패널을 8px 틈으로
+       띄우고, 애플뮤직은 바닥과 패널의 명도차를 2%만 두는 대신 1px 스트로크와
+       큰 앰비언트 그림자로 층을 만든다. 공통점은 '바닥이 패널보다 낮다'는 것.
+
+       이 파일은 그 전제가 없었다. body 도 #fff, 레일도 #fff, 패널도 #fff 라
+       흰색이 네 겹으로 겹쳤고, 그래서 그림자를 얹어도 뜰 데가 없었다.
+       먼저 바닥을 판다 */
+    --ground  : #eceff5;   /* 바닥 — 흰 패널과 1.15:1. 스포티파이의 검정↔#121212(1.12:1)와 같은 급 */
+    --ground-2: #f4f6fa;   /* 레일 — 바닥과 패널 사이. 크롬이라 본문보다 조금 뒤에 선다 */
+    --panel   : #ffffff;
+    --panel-2 : #f8fafd;   /* 패널 안 보조면 — 필터 띠·표 머리줄 */
+    --hair    : rgba(17,19,24,.07);   /* 패널 안을 가르는 유일한 선 */
+
+    /* ── 마감 ───────────────────────────────────────────────────
+       스물한 종이 뒤섞여 있었다. '버튼' 한 역할에만 7·8·9·10·12·999 여섯 종.
+       네 단으로 줄인다. 단계 차이가 곧 그 단계에서 쓸 수 있는 안쪽 여백이다 —
+       24-8=16, 16-6=10, 10-4=6. 동심 라운딩이 저절로 맞는다.
+
+       규칙 하나: 화면 끝이나 패널 끝에 닿는 면은 0 이다. 떠 있는 것만 둥글다.
+       (애플뮤직도 같다 — 우측 패널은 창에 붙어 0, 인셋 사이드바는 떠서 20) */
+    --r-xs  : 6px;     /* 마크 — 배지·체크박스·썸네일 */
+    --r-sm  : 10px;    /* 컨트롤 — 버튼·입력·칩 */
+    --r-md  : 16px;    /* 카드·패널 */
+    --r-lg  : 24px;    /* 부유물 — 독·시트·안내 */
+    --r-full: 999px;
+
+    /* ── 고도 ───────────────────────────────────────────────────
+       역할로 이름을 바꾼다. 예전에는 26px 짜리 필터 버튼의 호버와 부유 대화창이
+       같은 토큰(--lift-2)을 썼다 — 그래서 위계가 안 생겼다.
+       spread 를 blur 의 절반 안으로 조여야 그림자가 실제로 밖으로 나온다 */
+    --ring      : 0 0 0 1px rgba(17,19,24,.08);
+    --lift-ctl  : 0 0 0 1px rgba(17,19,24,.07), 0 1px 2px rgba(17,19,24,.05);
+    --lift-ctl-h: 0 0 0 1px rgba(17,19,24,.10), 0 3px 8px rgba(17,19,24,.07);
+    --lift-panel: 0 0 0 1px rgba(17,19,24,.05), 0 2px 6px rgba(17,19,24,.05), 0 14px 30px -16px rgba(17,19,24,.26);
+    --lift-pop  : 0 0 0 1px rgba(17,19,24,.08), 0 6px 16px rgba(17,19,24,.07), 0 26px 56px -22px rgba(17,19,24,.42);
+    --lift-over : 0 0 0 1px rgba(17,19,24,.10), 0 8px 20px rgba(17,19,24,.08), 0 44px 84px -28px rgba(17,19,24,.52);
+    /* 예전 이름 — 남은 참조가 새 사다리를 보게 한다 */
+    --lift-1: var(--lift-ctl);
+    --lift-2: var(--lift-panel);
+    --lift-3: var(--lift-pop);
+    --lift-4: var(--lift-over);
     --c1: 112px;               /* 고정 1열(선정) 폭 — sticky 오프셋과 반드시 같은 값을 쓴다 */
     --c2: 208px;               /* 고정 2열(크리에이터) 폭 */
     /* --rail 은 위(16행)에서 이미 정했다 */
@@ -88,7 +123,11 @@
   /* 24px 로 조여 두니 표가 화면 끝까지 벌어지고, 그 안에서 값들이 저마다
      멀어졌다. 여백을 키우면 표가 좁아지고 값이 서로 가까워진다 —
      한 시야에 들어오는 폭이 되는 것이 먼저다 */
-  #pad{overflow-y:auto;overflow-x:hidden;
+  /* 바닥은 셸에서 본문까지 그대로 이어진다. 한 층이라도 흰색으로 두면
+     그 지점에서 층이 도로 무너진다 */
+  #shell{background:var(--ground)}
+  #main {background:var(--ground)}
+  #pad{overflow-y:auto;overflow-x:hidden;background:var(--ground);
        padding-top:0;padding-left:var(--gut);padding-right:var(--gut);
        padding-bottom:calc(max(var(--dockH, 0px), 72px) + 40px)}
   #bodyRow{width:100%}
@@ -104,7 +143,7 @@
        바탕이 헬베티카 계열 그로테스크라는 것 — 그게 이 화면의 목소리다 */
     font-family:'Inter Tight','Noto Sans KR',Helvetica,Arial,sans-serif;
     font-weight:400;
-    background:#fff; color:#0f172a;
+    background:var(--ground); color:#0f172a;
     letter-spacing:var(--tr-body);
     -webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;
@@ -126,10 +165,14 @@
      펼치면(hero) 그때만 카드로 떠오른다 */
   /* 상자(topStack) 안으로 들어왔으니 밖으로 삐져나갈 이유가 없다.
      -20px 이 sticky 상자 위로 20px 튀어나가 화면 밖으로 잘리고 있었다 */
-  #camBanner{background:#fff;color:#0f172a;
+  #camBanner{background:var(--panel);color:#0f172a;
              margin-left:calc(var(--gut) * -1);margin-right:calc(var(--gut) * -1);
              padding-left:var(--gut);padding-right:var(--gut);
-             border-bottom:1px solid #e8edf3}
+             border-bottom:1px solid var(--hair);
+             transition:box-shadow .22s ease}
+  /* 붙었을 때만 들린다. 늘 그림자를 달고 있으면 그건 층이 아니라 장식이다 */
+  #pad.cond #camBanner:not(.hero){border-bottom-color:transparent;
+             box-shadow:0 1px 0 rgba(17,19,24,.07), 0 12px 26px -18px rgba(17,19,24,.30)}
   /* 첫 화면은 사진 한 장이다. 여백도 모서리도 없이 화면을 채운다 —
      둘레에 흰 띠가 남으면 사진이 아니라 '사진이 든 카드' 가 된다.
      자리는 #pad.heroOn 이 padding 을 0 으로 놓아 비운다 */
@@ -165,10 +208,10 @@
     padding:0 clamp(20px,1.6vw,26px) 11px;position:relative;z-index:2}
   .cmFlow{display:flex;align-items:center;flex:1 1 auto;min-width:0}
   .cmSep{flex:1 1 auto;min-width:10px;height:1px;background:#e2e8f0;margin:0 clamp(6px,.7vw,12px)}
-  .cmStep{display:flex;align-items:center;gap:6px;flex:none;padding:3px 7px;border-radius:8px;
+  .cmStep{display:flex;align-items:center;gap:6px;flex:none;padding:3px 7px;border-radius:var(--r-sm);
           transition:background-color .15s ease}
   .cmStep:hover{background:#f1f5f9}
-  .cmStep .cmDot{width:6px;height:6px;border-radius:50%;background:#cbd5e1;flex:none}
+  .cmStep .cmDot{width:6px;height:6px;border-radius:var(--r-full);background:#cbd5e1;flex:none}
   .cmStep b{font-size:13px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-title)}
   .cmStep em{font-style:normal;font-size:11px;color:var(--ink-3);letter-spacing:var(--tr-small)}
   .cmStep.zero{opacity:.42}
@@ -206,7 +249,7 @@
      바닥 그림자를 주고, 오른쪽에 내려받기 화살표를 세운다.
      눌러서 무엇이 일어나는지가 칩 안에 다 있어야 한다 */
   #camPad .rchip .rb{display:none}
-  #camPad .rchip{height:32px;padding:0 9px 0 11px;gap:7px;border:0;border-radius:10px;
+  #camPad .rchip{height:32px;padding:0 9px 0 11px;gap:7px;border:0;border-radius:var(--r-sm);
                  background:#fff;box-shadow:var(--lift-1);
                  transition:box-shadow .15s ease, transform .13s ease, background-color .15s ease}
   #camPad .rchip .ri{width:15px;height:15px;color:var(--ink-3);transition:color .15s ease}
@@ -217,7 +260,7 @@
                      transition:color .15s ease, transform .15s ease}
   /* 몇 건인지. 셀 수 있는 것에만 붙고, 0 이면 아예 안 붙는다 */
   #camPad .rchip .rn{display:inline-grid;place-items:center;min-width:17px;height:17px;
-                     padding:0 4px;border-radius:6px;margin-left:-2px;
+                     padding:0 4px;border-radius:var(--r-xs);margin-left:-2px;
                      font-size:10.5px;font-weight:700;line-height:1;
                      color:var(--ink-1);background:#eef2f7;
                      transition:color .15s ease, background-color .15s ease}
@@ -284,7 +327,7 @@
               transition:top .3s ease, bottom .3s ease}
   /* 사진의 가장 밝은 우상단에 겹친다 — 밑에 어두운 알약을 깐다 */
   #camBanner.hero #heroToggle{top:10px;bottom:auto;transform:none;
-                              background:rgba(35,31,32,.45);border-radius:10px}
+                              background:rgba(35,31,32,.45);border-radius:var(--r-sm)}
   #heroChev{transition:transform .3s cubic-bezier(.22,.61,.36,1)}
   #camBanner.hero #heroChev{transform:rotate(180deg)}
 
@@ -350,7 +393,9 @@
   #camBanner:not(.hero){position:sticky;top:0;z-index:30;
                         margin-left:calc(var(--gut) * -1);margin-right:calc(var(--gut) * -1);
                         padding-left:var(--gut);padding-right:var(--gut)}
-  #topStack > section{margin-top:30px;transition:margin-top .30s cubic-bezier(.22,.61,.36,1)}
+  /* 배너와 진행 상태는 같은 '요약 덩어리' 다 — 붙여 둔다.
+     영역과 영역 사이(56·64)와 확실히 갈라져야 리듬이 생긴다 */
+  #topStack > section{margin-top:24px;transition:margin-top .30s cubic-bezier(.22,.61,.36,1)}
   /* 붙으면 성과는 숫자만 남긴다. 전일 대비 · 남은 인원 같은 것은 표를 읽는
      동안에는 필요 없다 — 필요해지면 위로 올리면 된다 */
 
@@ -381,23 +426,37 @@
     background:currentColor; display:block;
   }
 
+
+  /* 마감 유틸 — 테일윈드의 반경 사다리(6/8/12/16/24)는 우리 것(6/10/16/24)과
+     어긋난다. 마크업에서는 이 다섯만 쓴다. 클래스 이름이 곧 등급이라
+     '여기는 왜 12 인가' 를 다시 묻지 않아도 된다 */
+  .rd-xs  {border-radius:var(--r-xs)}
+  .rd-sm  {border-radius:var(--r-sm)}
+  .rd-md  {border-radius:var(--r-md)}
+  .rd-lg  {border-radius:var(--r-lg)}
+  .rd-full{border-radius:var(--r-full)}
+  .rd-lg-t{border-radius:var(--r-lg) var(--r-lg) 0 0}
+
   /* 깊이 — 카드는 테두리를 쓰지 않는다 */
-  .surface   {background:#fff;box-shadow:var(--lift-2);border-radius:16px}
-  .surface-sm{background:#fff;box-shadow:var(--lift-1);border-radius:12px}
+  .surface   {background:var(--panel);box-shadow:var(--lift-panel);border-radius:var(--r-md)}
+  .surface-sm{background:var(--panel);box-shadow:var(--lift-ctl);border-radius:var(--r-sm)}
 
   /* 패널 — 대화창 · 에셋 · 진행상황이 같은 머리글을 쓴다.
      떠 있는 라벨 대신 박스가 자기 이름을 갖게 하는 것이 '완성된 화면'의 조건이다. */
-  .pnl       {background:#fff;box-shadow:var(--lift-2);border-radius:16px;display:flex;flex-direction:column;overflow:hidden}
+  .pnl       {background:var(--panel);box-shadow:var(--lift-panel);border-radius:var(--r-md);
+              display:flex;flex-direction:column;overflow:hidden}
+  /* 바닥 위에 놓인 판과, 그 위를 덮는 부유물은 같은 고도일 수 없다 */
+  .pnl-float {box-shadow:var(--lift-over)}
   /* 카드(#progCard)로 한 겹 감싸면서 이 선택자가 안 맞게 됐다.
      그래서 머리줄이 flex 가 아니라 block 으로 떨어졌고, 제목 묶음과
      컨트롤 묶음이 세로로 겹쳐 체크박스가 아래 것에 묻혔다 */
   /* 이 줄이 위로 사라지면 표를 조금만 내려도 필터도 보기 전환도 못 누른다.
      떠 있는 덩어리 바로 아래에 같이 붙는다 */
-  #progCard > header{position:sticky;top:var(--hdrH,0px);z-index:6;background:#fff;
-                     border-radius:16px 16px 0 0}
+  #progCard > header{position:sticky;top:var(--hdrH,0px);z-index:6;background:var(--panel);
+                     border-radius:var(--r-md) var(--r-md) 0 0}
   .pnl > header, #progCard > header{flex:none;display:flex;align-items:center;
                 justify-content:space-between;gap:16px;
-                  padding:9px 13px;border-bottom:1px solid #f1f5f9}
+                  padding:9px 13px;border-bottom:1px solid var(--hair)}
   .pnl h2    {font-size:12.5px;font-weight:700;color:#0f172a;letter-spacing:var(--tr-body);
               white-space:nowrap}
   /* 필터가 많은 좁은 화면에서는 제목을 눌러 쪼개지 말고 머리를 두 줄로 쓴다 */
@@ -409,14 +468,13 @@
 
   /* 점은 그냥 점이다. 숨 쉬게 만들면 '지금 방송 중' 같은 신호가 되는데,
      여기는 두 달째 도는 캠페인 목록이다. 계속 깜빡일 이유가 없다 */
-  .dot{display:inline-block;width:6px;height:6px;border-radius:9999px;
+  .dot{display:inline-block;width:6px;height:6px;border-radius:var(--r-full);
        background:currentColor;flex:none}
 
   /* 사람 카드를 대화창으로 끌어다 놓는다 */
-  .pcard{cursor:pointer;transition:box-shadow .18s ease,background-color .18s ease}
-  .pcard:hover{box-shadow:var(--lift-2)}
+  .pcard{cursor:pointer;transition:box-shadow .18s ease,background-color .18s ease,transform .18s ease}
+  .pcard:hover{box-shadow:var(--lift-ctl-h)}
   .pcard.dragging{opacity:.4}
-  .pcard.on{box-shadow:0 0 0 1.5px var(--accent), var(--lift-1);background:#f8fafc}
 
   /* 진행상황 — 열이 사람을 가두지 않는다. 한 판에 놓고 폭에 따라 칸이 늘고 준다.
      단계는 카드의 배지가 말한다. 스크롤은 아래로 하나뿐이다 */
@@ -426,7 +484,7 @@
   /* 스크롤 상자라 가장자리에서 잔린다. 카드 테두리는 box-shadow 로
      그린 1px 링이어서 상자 밖으로 1px 나가 있다 — 그 1px 이 잔렸다.
      선택된 카드는 1.5px 이라 4px 을 둔다 */
-  #pgrid{flex:1 1 0;min-width:0;padding:4px;
+  #pgrid{flex:1 1 0;min-width:0;padding:6px;
          display:grid;grid-template-columns:minmax(0,1fr);
          gap:var(--pgap);align-content:start}
   /* 열 수는 상세가 열리기 전에 바뀌는데 폭은 0.4초 뒤에 좁아진다.
@@ -451,7 +509,7 @@
   @media (prefers-reduced-motion:reduce){ #pdet.pin, #pemb.pin, #pmemo.pin{animation:none} }
   /* 단계는 배지가 아니라 누를 수 있는 버튼이다 — 누르면 진행 플로우가 열린다 */
   .pstage{display:inline-flex;align-items:center;gap:4px;flex:none;
-          font-size:10.5px;font-weight:700;padding:3px 7px;border-radius:7px;
+          font-size:10.5px;font-weight:700;padding:3px 7px;border-radius:var(--r-xs);
           white-space:nowrap;transition:filter .16s ease}
   .pstage:hover{filter:brightness(.94)}
   .pcard{padding:14px 11px 14px 13px}
@@ -461,7 +519,7 @@
 
   /* 카드를 누르면 목록은 한 열로 서고, 남은 두 칸에 정보와 콘텐츠가 선다.
      맨 오른쪽에 두면 어느 카드의 것인지 알 수 없다 */
-  #pdet, #pemb, #pmemo{background:#fff;border-radius:14px;overflow:hidden;
+  #pdet, #pemb, #pmemo{background:#fff;border-radius:var(--r-md);overflow:hidden;
                box-shadow:0 0 0 1.5px rgba(15,23,42,.10), var(--lift-2);
                animation:detIn .26s cubic-bezier(.22,.61,.36,1) both;
                display:flex;flex-direction:column;min-height:0}
@@ -487,13 +545,13 @@
   /* 진행 — 얇은 선 하나와 점 다섯. 막대를 다섯 장 세우면 그것부터 눈에 든다 */
   .dflow{position:relative;height:44px;margin:12px 8px 0}
   .dtrack{position:absolute;left:0;right:0;top:4px;height:2px;background:#eef2f7;
-          border-radius:999px;display:block}
-  .dfill{display:block;height:100%;background:#a7dcc4;border-radius:999px;
+          border-radius:var(--r-full);display:block}
+  .dfill{display:block;height:100%;background:#a7dcc4;border-radius:var(--r-full);
          transition:width .4s cubic-bezier(.22,.61,.36,1)}
   .dstep{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;
          align-items:center;gap:9px}
   /* 남은 단계 — 속이 빈 점 */
-  .dstep::before{content:"";width:9px;height:9px;border-radius:999px;background:#fff;
+  .dstep::before{content:"";width:9px;height:9px;border-radius:var(--r-full);background:#fff;
                  box-shadow:0 0 0 2px #dbe3ec;margin-top:.5px}
   /* 지난 단계 — 찼지만 물러나 있다 */
   .dstep.done::before{background:#a7dcc4;box-shadow:0 0 0 2px #fff}
@@ -525,7 +583,7 @@
      이 줄도 내용 폭만 쓴다 */
   .dcode{display:inline-flex;align-self:flex-start;align-items:center;gap:10px;
          margin-top:16px;padding:9px 12px;
-         border-radius:11px;background:#f8fafc;box-shadow:inset 0 0 0 1px #eef2f7;
+         border-radius:var(--r-sm);background:#f8fafc;box-shadow:inset 0 0 0 1px #eef2f7;
          transition:box-shadow .16s ease,background-color .16s ease}
   .dcode:hover{background:#f1f5f9;box-shadow:inset 0 0 0 1px #dbe3ec}
   .dcode i{font-style:normal;font-size:10.5px;color:var(--ink-4);
@@ -538,17 +596,17 @@
      버튼은 내용 바로 아래에 선다 */
   .dact{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
   .dbtn{display:inline-flex;align-items:center;gap:7px;flex:none;
-         padding:9px 14px 9px 12px;border-radius:10px;
+         padding:9px 14px 9px 12px;border-radius:var(--r-sm);
          font-size:12px;font-weight:700;color:var(--ink-2);
          background:#fff;box-shadow:var(--lift-1);
          transition:box-shadow .16s ease,color .16s ease,transform .16s ease}
-  .dbtn:hover{color:var(--ink-1);box-shadow:var(--lift-2);transform:translateY(-1px)}
+  .dbtn:hover{color:var(--ink-1);box-shadow:var(--lift-ctl-h);transform:translateY(-1px)}
   .dbtn:active{transform:translateY(0);box-shadow:var(--ring)}
   .dbtn svg{width:15px;height:15px;flex:none;color:var(--ink-4)}
   .dbtn:hover svg{color:var(--ink-2)}
   /* 이 화면에서 할 일 하나만 채워 둔다 */
   .dbtn.dbtnP{background:var(--ink-1);color:#fff;box-shadow:none}
-  .dbtn.dbtnP:hover{background:#1e293b;color:#fff;box-shadow:var(--lift-2)}
+  .dbtn.dbtnP:hover{background:#1e293b;color:#fff;box-shadow:var(--lift-ctl-h)}
   .dbtn.dbtnP svg, .dbtn.dbtnP:hover svg{color:rgba(255,255,255,.78)}
   @keyframes detIn{
     from{opacity:0;transform:translateX(-14px)}
@@ -558,11 +616,11 @@
   #pemb .din{padding:12px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
   /* 릴스는 세로다. 칸에 100%/100% 로 밀어 넣으면 위아래가 잘린다 —
      임베드가 갖고 나오는 크기를 그대로 두고 칸에 맞게 줄인다 */
-  .embFrame{flex:1 1 auto;min-height:220px;border-radius:12px;overflow:hidden;
+  .embFrame{flex:1 1 auto;min-height:220px;border-radius:var(--r-sm);overflow:hidden;
             background:#f1f5f9;position:relative}
   .embFrame iframe{position:absolute;left:0;top:0;border:0;background:#fff;
                    transform-origin:0 0}
-  .embOff{flex:1 1 auto;min-height:220px;border-radius:12px;
+  .embOff{flex:1 1 auto;min-height:220px;border-radius:var(--r-sm);
           background:#f8fafc;border:1px dashed #cbd5e1;display:grid;place-items:center;
           font-size:11.5px;color:#94a3b8;text-align:center;line-height:1.7}
 
@@ -614,12 +672,12 @@
                    border-top:1.5px solid rgba(16,185,129,.55);
                    border-right:1.5px solid rgba(16,185,129,.55);
                    transform:rotate(45deg)}
-  .fpWave .fav{position:absolute;transform:translateX(-50%);width:22px;height:22px;border-radius:50%;
+  .fpWave .fav{position:absolute;transform:translateX(-50%);width:22px;height:22px;border-radius:var(--r-full);
                background:#fff;box-shadow:0 0 0 2px #fff,0 1px 4px rgba(15,23,42,.18);
                transition:transform .16s ease}
-  .fpWave .fav img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+  .fpWave .fav img{width:100%;height:100%;border-radius:var(--r-full);object-fit:cover;display:block}
   .fpWave .fav b{position:absolute;right:-7px;bottom:-3px;font-size:8.5px;font-weight:700;color:#0f172a;
-                 background:#fff;border-radius:999px;padding:0 3.5px;line-height:12px;
+                 background:#fff;border-radius:var(--r-full);padding:0 3.5px;line-height:12px;
                  box-shadow:0 0 0 1px rgba(15,23,42,.08)}
   .fpWave .fav.hot{transform:translateX(-50%) scale(1.18)}
   .fpWave .flab{position:absolute;bottom:6px;transform:translateX(-50%);text-align:center;
@@ -627,7 +685,7 @@
   .fpWave .flab b{display:block;font-size:13px;font-weight:700;line-height:1;letter-spacing:-.02em}
   .fpWave .flab i{display:block;font-size:10px;font-style:normal;color:#64748b;margin-top:4px}
   .fpWave .flab.hot b{color:#e2483d}
-  .fpWave .fhit{position:absolute;top:0;bottom:34px;cursor:pointer;border-radius:10px;
+  .fpWave .fhit{position:absolute;top:0;bottom:34px;cursor:pointer;border-radius:var(--r-sm);
                 transition:background-color .16s ease}
   .fpWave .fhit:hover{background:rgba(15,23,42,.032)}
 
@@ -639,13 +697,13 @@
   .fline{position:relative;height:78px;
          transition:height .3s cubic-bezier(.22,.61,.36,1)}
   .fline .ftrack{position:absolute;left:9px;right:9px;top:15px;height:2px;
-                 background:#e6ebf2;border-radius:999px}
-  .fline .ffill{display:block;height:100%;border-radius:999px;
+                 background:#e6ebf2;border-radius:var(--r-full)}
+  .fline .ffill{display:block;height:100%;border-radius:var(--r-full);
                 background:linear-gradient(90deg,#0f172a,#10b981);
                 transition:width .5s cubic-bezier(.22,.61,.36,1)}
   .fline .fnode{position:absolute;top:0;transform:translateX(-50%);
                 display:flex;flex-direction:column;align-items:center;gap:0}
-  .fline .fdot{width:12px;height:12px;border-radius:999px;margin-top:10px;
+  .fline .fdot{width:12px;height:12px;border-radius:var(--r-full);margin-top:10px;
                background:#fff;box-shadow:0 0 0 2px #cbd5e1;
                transition:transform .18s cubic-bezier(.22,.61,.36,1),
                           box-shadow .18s ease, background-color .18s ease}
@@ -665,8 +723,8 @@
   .fline .fnode.sel .fn{color:var(--ink-1)}
   .fline .fnode.sel .fl{color:var(--ink-1);font-weight:700}
   .fline .fnode.sel .fl::after{content:'';display:block;height:2px;margin-top:3px;
-                               border-radius:2px;background:var(--c,#0f172a)}
-  .fline .fhit{position:absolute;top:0;bottom:0;cursor:pointer;border-radius:10px;
+                               border-radius:var(--r-full);background:var(--c,#0f172a)}
+  .fline .fhit{position:absolute;top:0;bottom:0;cursor:pointer;border-radius:var(--r-sm);
                transition:background-color .16s ease}
   .fline .fhit:hover{background:rgba(15,23,42,.03)}
   /* 양 끝 이름표가 밖으로 나가지 않게 붙여 세운다 */
@@ -682,16 +740,16 @@
   #flowTog svg{transition:transform .3s cubic-bezier(.22,.61,.36,1)}
   #flowSec.slim #flowTog svg{transform:rotate(-180deg)}
 
-  .dbar{flex:1 1 auto;min-width:28px;height:4px;border-radius:999px;background:#e8edf3;
+  .dbar{flex:1 1 auto;min-width:28px;height:4px;border-radius:var(--r-full);background:#e8edf3;
         overflow:hidden;display:block}
-  .dbar > span{display:block;height:100%;border-radius:999px;transition:width .5s cubic-bezier(.22,.61,.36,1)}
+  .dbar > span{display:block;height:100%;border-radius:var(--r-full);transition:width .5s cubic-bezier(.22,.61,.36,1)}
   /* ── 시험 · 대시보드 유리 ─────────────────────────────
      첫 화면의 지표는 사진 위 유리다. 접은 화면에서도 같은 재료를 쓰면 한 물건으로 읽힌다.
      여기 규칙은 전부 body.glass 안에 있다 — setGlass(false) 한 줄로 되돌아온다 */
   body.glass #dash{position:relative;isolation:isolate}
   body.glass #dash::before,
   body.glass #dash::after{content:"";position:absolute;inset:-14px -12px -12px;
-                             border-radius:22px;z-index:-1;pointer-events:none}
+                             border-radius:var(--r-lg);z-index:-1;pointer-events:none}
   /* 뒤에 사진이 없으니 사진을 아주 크게 흐려 깐다 — 유리가 흐릴 것을 만들어 준다 */
   body.glass #dash::before{background-image:var(--od-hero);
                               background-size:cover;background-position:center 24%;
@@ -710,7 +768,7 @@
 
   /* 변화 알약 — 작게 적으면 아무도 안 본다 */
   .dpill{display:inline-flex;align-items:center;gap:3px;flex:none;
-         padding:3px 9px 3px 7px;border-radius:999px;line-height:1.15;
+         padding:3px 9px 3px 7px;border-radius:var(--r-full);line-height:1.15;
          font-size:19px;font-weight:800;letter-spacing:-.03em;
          background:#e8edf3;color:#41506a}
   .dpill.up{background:#c9f5e1;color:#04674a}
@@ -729,10 +787,10 @@
   #resBar{scrollbar-width:none}
   #resBar::-webkit-scrollbar{display:none}
   .rchip{display:inline-flex;align-items:center;gap:8px;flex:none;
-         background:#fff;border:1px solid #e8edf3;border-radius:12px;
+         background:#fff;border:1px solid #e8edf3;border-radius:var(--r-sm);
          padding:8px 12px 8px 11px;white-space:nowrap;
          transition:border-color .15s ease, box-shadow .15s ease, transform .15s ease}
-  .rchip:hover{border-color:#cbd5e1;box-shadow:var(--lift-2);transform:translateY(-1px)}
+  .rchip:hover{border-color:#cbd5e1;box-shadow:var(--lift-ctl-h);transform:translateY(-1px)}
   .rchip .ri{width:17px;height:17px;flex:none;color:#64748b}
   .rchip .ri svg{width:100%;height:100%;display:block}
   .rchip .rt{font-size:12.5px;font-weight:700;color:#0f172a}
@@ -742,11 +800,11 @@
   .rchip.hot{border-color:#0f172a}
   .rchip.hot .ri, .rchip.hot .rx{color:#0f172a}
   .rchip.hot .rb{background:var(--od-red);color:#fff;font-weight:700;
-                 padding:2px 7px;border-radius:999px}
+                 padding:2px 7px;border-radius:var(--r-full)}
   .rchip.hot .rx{color:var(--od-red)}
 
   /* 홈 타일 — 캠페인 하나가 타일 하나다. 색은 상태가 정한다 */
-  .htile{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4 / 3;
+  .htile{position:relative;border-radius:var(--r-md);overflow:hidden;aspect-ratio:4 / 3;
          display:flex;flex-direction:column;justify-content:flex-end;padding:14px;
          text-align:left;color:#fff;transition:transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s ease;
          box-shadow:var(--lift-2)}
@@ -756,7 +814,7 @@
               background:linear-gradient(180deg,rgba(15,23,42,.10) 0%,rgba(15,23,42,.62) 62%,rgba(15,23,42,.86) 100%)}
   .htile .hin{position:relative}
   .htile .hnum{position:absolute;top:12px;right:12px;z-index:1;font-size:10px;font-weight:700;
-               padding:3px 8px;border-radius:999px;
+               padding:3px 8px;border-radius:var(--r-full);
                background:rgba(255,255,255,.18);
                -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
                box-shadow:inset 0 0 0 1px rgba(255,255,255,.24)}
@@ -767,22 +825,22 @@
              font-family:'JetBrains Mono',ui-monospace,monospace;color:#94a3b8;
              padding:0 4px 7px}
   .srow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
-        background:#fff;border-radius:12px;padding:10px 12px;margin-bottom:6px;
+        background:#fff;border-radius:var(--r-sm);padding:10px 12px;margin-bottom:6px;
         box-shadow:var(--lift-1);transition:box-shadow .15s ease,transform .15s ease}
-  .srow:hover{box-shadow:var(--lift-2);transform:translateY(-1px)}
-  .srow mark{background:#fef08a;color:inherit;border-radius:3px;padding:0 1px}
+  .srow:hover{box-shadow:var(--lift-ctl-h);transform:translateY(-1px)}
+  .srow mark{background:#fef08a;color:inherit;border-radius:var(--r-xs);padding:0 1px}
 
   /* 필터 · 보기 전환 */
   /* 한 줄에 선 단추는 키가 같아야 한다. 안쪽 여백으로 키가 정해지면
      글자 수에 따라 미세하게 달라진다 — 키를 못 박는다 */
   .fbtn{display:inline-flex;align-items:center;gap:5px;height:26px;font-size:10.5px;font-weight:700;
-        color:var(--ink-2);background:#fff;box-shadow:var(--lift-1);padding:0 9px;border-radius:8px;
+        color:var(--ink-2);background:#fff;box-shadow:var(--lift-1);padding:0 9px;border-radius:var(--r-sm);
         white-space:nowrap;
         transition:box-shadow .17s ease,color .17s ease,background-color .17s ease,transform .17s ease}
   /* 그림자만 한 겹 올리는 것으로는 손이 닿았는지가 잘 안 읽혔다. 상단 바의
      .btn(가이드라인 · 성과 보고서)이 하는 말 — 뜨고 · 면이 차고 · 누르면
      내려앉는다 — 을 같이 쓴다. 색은 늘리지 않는다(슬레이트 안에서 끝낸다) */
-  .fbtn:hover{color:#0f172a;background:#f8fafc;box-shadow:var(--lift-2);transform:translateY(-1px)}
+  .fbtn:hover{color:#0f172a;background:#f8fafc;box-shadow:var(--lift-ctl-h);transform:translateY(-1px)}
   .fbtn:active{box-shadow:var(--ring);transform:translateY(0)}
   .fbtn.on{background:#0f172a;color:#fff;box-shadow:none}
   /* 켜진 단추는 띄우지 않는다 — 이미 눌려 있는 것이 상태다. 면만 한 톤 올린다 */
@@ -809,18 +867,18 @@
      그래서 끝점이 둘이다 — 메모로 남기거나, 대화로 보내거나. */
   /* 투명한 + 하나로는 눌리는 자리로 안 보였다. 면을 깔고 키운다 */
   .mcell{display:inline-flex;align-items:center;justify-content:center;gap:5px;
-         height:34px;min-width:38px;padding:0 11px;border-radius:10px;
+         height:34px;min-width:38px;padding:0 11px;border-radius:var(--r-sm);
          font-size:13px;font-weight:700;color:#94a3b8;
          background:#f4f6f9;box-shadow:inset 0 0 0 1px #e8edf3;
          transition:background-color .14s ease,color .14s ease,box-shadow .14s ease}
   .mcell:hover{background:var(--ink-1);color:#fff;box-shadow:none}
   .mcell.has{color:var(--ink-1);background:#fff;box-shadow:var(--lift-1)}
   .mcell.has:hover{color:#fff;background:var(--ink-1);box-shadow:none}
-  .mcell .mdot{width:6px;height:6px;border-radius:50%;background:var(--od-red,#e2483d);flex:none}
+  .mcell .mdot{width:6px;height:6px;border-radius:var(--r-full);background:var(--od-red,#e2483d);flex:none}
   .mcell:hover .mdot{background:#fff}
   .mcell svg{width:17px;height:17px;stroke-width:2.2}
 
-  #memoPop{position:fixed;z-index:80;width:322px;background:#fff;border-radius:16px;
+  #memoPop{position:fixed;z-index:80;width:322px;background:#fff;border-radius:var(--r-md);
            box-shadow:0 0 0 1px rgba(15,23,42,.08),0 8px 20px rgba(15,23,42,.08),
                       0 28px 56px -26px rgba(15,23,42,.6);
            opacity:0;visibility:hidden;transform:translateY(-6px) scale(.985);transform-origin:top center;
@@ -830,15 +888,15 @@
           padding:12px 12px 8px}
   .mpWho{font-size:12.5px;font-weight:700;color:#0f172a;letter-spacing:var(--tr-body)}
   .mpWho span{font-weight:400;color:#94a3b8;margin-left:5px}
-  .mpX{width:26px;height:26px;display:grid;place-items:center;border-radius:8px;color:#94a3b8}
+  .mpX{width:26px;height:26px;display:grid;place-items:center;border-radius:var(--r-sm);color:#94a3b8}
   .mpX:hover{background:#f1f5f9;color:#0f172a}
 
   .mpList{max-height:196px;overflow:auto;padding:0 12px;display:flex;flex-direction:column;gap:7px}
   .mpList:empty{display:none}
   /* 칸반 카드처럼 — 왼쪽에 성격을 표시하는 띠를 두고 본문은 흰 면에 얹는다 */
-  .mcard{position:relative;background:#fff;border-radius:11px;padding:9px 10px 9px 13px;
+  .mcard{position:relative;background:#fff;border-radius:var(--r-sm);padding:9px 10px 9px 13px;
          box-shadow:var(--lift-1);animation:mcIn .22s cubic-bezier(.22,.61,.36,1) both}
-  .mcard::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;
+  .mcard::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:var(--r-xs);
                  background:#cbd5e1}
   .mcard.sent::before{background:var(--od-red,#e2483d)}
   .mcard.done::before{background:#10b981}
@@ -848,7 +906,7 @@
   .mcard .mmeta{font-size:10px;color:#94a3b8;font-variant-numeric:tabular-nums}
   .mcard .macts{display:flex;gap:2px;opacity:0;transition:opacity .14s ease}
   .mcard:hover .macts,.mcard:focus-within .macts{opacity:1}
-  .macts button{width:24px;height:24px;display:grid;place-items:center;border-radius:7px;color:#94a3b8}
+  .macts button{width:24px;height:24px;display:grid;place-items:center;border-radius:var(--r-xs);color:#94a3b8}
   .macts button:hover{background:#f1f5f9;color:#0f172a}
   .macts button svg{width:14px;height:14px;stroke-width:2}
   .mcard.out{animation:mcOut .2s ease both}
@@ -863,19 +921,19 @@
            line-height:1.8;color:#a3adba}
   .pmNew{flex:none;padding:10px 0 12px;background:#fff}
   .pmNew textarea{width:100%;resize:none;font-size:12px;line-height:1.55;color:#0f172a;
-                  background:#f5f7fa;border-radius:11px;padding:9px 10px;max-height:104px;
+                  background:#f5f7fa;border-radius:var(--r-sm);padding:9px 10px;max-height:104px;
                   box-shadow:var(--ring)}
   .pmNew textarea:focus{outline:none;background:#fff}
   .pmNew textarea::placeholder{color:#a3adba}
 
   .mpNew{padding:10px 12px 12px}
   .mpNew textarea{width:100%;resize:none;font-size:12px;line-height:1.55;color:#0f172a;
-                  background:#f5f7fa;border-radius:11px;padding:9px 10px;max-height:104px;
+                  background:#f5f7fa;border-radius:var(--r-sm);padding:9px 10px;max-height:104px;
                   box-shadow:var(--ring)}
   .mpNew textarea:focus{outline:none;background:#fff}
   .mpNew textarea::placeholder{color:#a3adba}
   .mpBtns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
-  .mpb{font-size:11.5px;font-weight:700;padding:9px 8px;border-radius:10px;
+  .mpb{font-size:11.5px;font-weight:700;padding:9px 8px;border-radius:var(--r-sm);
        color:#334155;background:#f1f5f9;transition:all .14s ease}
   .mpb:hover{background:#e6ecf3}
   .mpb.send{color:#fff;background:var(--od-red,#e2483d)}
@@ -895,7 +953,7 @@
          font-size:12.5px;color:#245c46}
   .pkbar b{font-weight:700;color:#124632}
   .pkbar button{font-size:12px;font-weight:700;color:#0f6b4c;
-                padding:5px 10px;border-radius:8px;background:rgba(255,255,255,.7);
+                padding:5px 10px;border-radius:var(--r-sm);background:rgba(255,255,255,.7);
                 transition:background-color .15s ease}
   .pkbar button:hover{background:#fff}
   .pkbar .pkx{margin-left:auto;color:var(--ink-3);background:transparent}
@@ -918,19 +976,19 @@
   .pfPerL{font-style:normal;font-size:11.5px;color:var(--ink-4);letter-spacing:var(--tr-small)}
   /* 테두리로 묶어 두면 세 알약이 '한 벌의 설정' 으로 읽힌다 —
      오른쪽 끝의 장 번호와 생김새부터 다르다 */
-  .pfPerBox{display:flex;align-items:center;gap:2px;padding:2px;border-radius:9px;
+  .pfPerBox{display:flex;align-items:center;gap:2px;padding:2px;border-radius:var(--r-sm);
             background:#f4f6f9;box-shadow:inset 0 0 0 1px #e6ebf1}
-  .pfP{min-width:28px;height:22px;padding:0 7px;border-radius:7px;
+  .pfP{min-width:28px;height:22px;padding:0 7px;border-radius:var(--r-xs);
        font-size:11.5px;font-weight:700;color:var(--ink-3);
        transition:background-color .15s ease,color .15s ease}
   .pfP:hover{background:#f1f5f9;color:var(--ink-1)}
   .pfP.on{background:#fff;color:var(--ink-1);box-shadow:var(--lift-1)}
   .pfNav{display:flex;align-items:center;gap:3px;margin-left:auto}
-  .pfB{height:26px;padding:0 10px;border-radius:8px;font-size:11.5px;font-weight:700;
+  .pfB{height:26px;padding:0 10px;border-radius:var(--r-sm);font-size:11.5px;font-weight:700;
        color:var(--ink-3);transition:background-color .15s ease,color .15s ease}
   .pfB:hover{background:#f1f5f9;color:var(--ink-1)}
   .pfB[disabled]{opacity:.35;pointer-events:none}
-  .pfN{min-width:26px;height:26px;padding:0 6px;border-radius:8px;
+  .pfN{min-width:26px;height:26px;padding:0 6px;border-radius:var(--r-sm);
        font-size:11.5px;font-weight:700;color:var(--ink-3);
        transition:background-color .15s ease,color .15s ease}
   .pfN:hover{background:#f1f5f9;color:var(--ink-1)}
@@ -942,7 +1000,7 @@
   }
 
   .dmchip{font-size:12px;font-weight:600;color:#64748b;background:#f1f5f9;
-          padding:8px 12px;border-radius:10px;transition:all .15s ease}
+          padding:8px 12px;border-radius:var(--r-sm);transition:all .15s ease}
   .dmchip:hover{background:#e6ecf3}
   .dmchip.on{background:#0f172a;color:#fff}
 
@@ -1026,11 +1084,13 @@
   /* th 의 브라우저 기본값이 가운데 정렬이다. 정렬되는 열은 안쪽이 flex 라
      그 값을 안 타고, 정렬 없는 열(.thlab)만 block 이라 그대로 타서 '메모'
      라벨만 44px 밀려 있었다. 표의 머리글은 전부 아래 값과 같은 자리에 선다 */
+  /* 4% 검정 1px 은 흰 위에서 대비 1.05:1 — 눈으로 못 잡는다.
+     머리줄은 표 본문 위에 떠 있어야 스크롤 중에 자기 자리를 지킨다 */
   #ptable th{text-align:left;user-select:none;-webkit-user-select:none;
              position:sticky;top:calc(var(--hdrH,0px) + var(--toolH,0px) - 1px);
-             z-index:2;background:#f8fafc;padding:0;
-             border-bottom:1px solid #e9eef4;white-space:nowrap;
-             box-shadow:0 1px 0 rgba(15,23,42,.04)}
+             z-index:2;background:var(--panel-2);padding:0;
+             border-bottom:1px solid var(--hair);white-space:nowrap;
+             box-shadow:0 1px 0 rgba(17,19,24,.07), 0 8px 16px -14px rgba(17,19,24,.22)}
   #ptable th button{width:100%;display:flex;align-items:center;gap:3px;padding:16px 18px;
                     font-size:11.5px;font-weight:600;color:#64748b;white-space:nowrap;
                     letter-spacing:var(--tr-small)}
@@ -1071,7 +1131,7 @@
   /* 상세로 가는 화살 — 있는 줄 알아볼 만큼만 보이고, 짚으면 또렷해진다 */
   #ptable th.go, #ptable td.go{padding-left:0;padding-right:12px;text-align:right}
   .rgo{display:inline-flex;align-items:center;justify-content:center;
-       width:30px;height:30px;border-radius:9px;color:#b6c0cd;
+       width:30px;height:30px;border-radius:var(--r-sm);color:#b6c0cd;
        transition:color .15s ease, background-color .15s ease}
   .rgo svg{width:15px;height:15px}
   #ptable tr:hover .rgo{color:var(--ink-3)}
@@ -1082,7 +1142,7 @@
   #ptable .tdue i{font-size:11px;font-style:normal;line-height:1.15;color:var(--ink-4)}
   /* 단계 배지 — 표 안에서 제일 먼저 읽히는 것이라 작으면 안 된다 */
   #ptable .tstage{display:inline-flex;align-items:center;height:28px;padding:0 11px;
-                  border-radius:8px;font-size:12.5px;font-weight:700;
+                  border-radius:var(--r-sm);font-size:12.5px;font-weight:700;
                   letter-spacing:var(--tr-body)}
   #ptable tr:last-child td{border-bottom:0}
   #ptable tr.on td{background:#f8fafc}
@@ -1118,7 +1178,7 @@
   .peekHd b{font-size:15px;font-weight:700;color:var(--ink-1);letter-spacing:var(--tr-title)}
   .peekHd i{font-style:normal;font-size:12px;color:var(--ink-4)}
   .peekX{margin-left:auto;width:32px;height:32px;display:grid;place-items:center;
-         border-radius:9px;color:var(--ink-3);font-size:19px;line-height:1;
+         border-radius:var(--r-sm);color:var(--ink-3);font-size:19px;line-height:1;
          transition:background-color .15s ease, color .15s ease}
   .peekX:hover{background:#f1f5f9;color:var(--ink-1)}
   .peekCard .pexpIn{animation:none}
@@ -1152,8 +1212,12 @@
   /* 대화가 오른쪽 열이던 시절엔 위로 붙여야 했다. 지금 자식은 왼쪽 열 하나뿐이고,
      그 열이 화면 바닥까지 자라야 진행상황이 남는 높이를 받는다 */
   @media (min-width:1280px){ #bodyRow{align-items:stretch} }
-  /* 패널의 껍데기를 벗긴다 — 남는 것은 제목과 내용이다 */
-  #flowSec{background:transparent;box-shadow:none;border-radius:0}
+  /* 껍데기를 벗겨 두었더니 '영역' 이 아니라 여백 위에 놓인 글자 뭉치가 됐다.
+     바닥이 생겼으니 이제 면을 준다 — 여기서부터 진행 상태는 하나의 판이다.
+     안의 세로 구분선(#dash 의 border-left)도 그제서야 '패널 안 divider' 로 말이 된다 */
+  #flowSec{background:var(--panel);box-shadow:var(--lift-panel);
+           border-radius:var(--r-md);padding:18px 24px 20px}
+  #flowSec .sechd{padding:0 0 14px}
 
   /* 인플루언서는 이 화면의 맨 아래 층이다. 성과·소식과 같은 평면에 있으면
      세 영역이 전부 같은 무게로 읽힌다. 띄우지 말고 파 내려간다 —
@@ -1165,20 +1229,18 @@
      표 머리글이 페이지 스크롤에 안 붙고 있었다 */
   /* 위 덩어리(흐름·성과)와 확실히 떨어뜨린다. 붙어 있으면 어디까지가
      요약이고 어디부터 명단인지 안 보인다 */
-  #progSec{position:relative;background:transparent;border-radius:0;padding:44px 0 0;
-           box-shadow:none;margin-top:36px;overflow:visible}
-  /* 층은 목록이 끝나는 자리에서 같이 끝난다. 화면 밖까지 끌고 가면
-     표 아래로 빈 바닥만 길게 남는다 */
-  /* 층은 표보다 조금 더 내려가서 끝난다 — 딱 맞춰 끝내면 표가 낭떠러지에 선다 */
-  /* 아래 층은 화면 끝까지 간다. #pad 의 overflow-x 가 잘라 주니
-     넉넉하게 밀어 두면 어떤 폭에서도 끝까지 닿는다 */
-  #progSec::before{content:'';position:absolute;z-index:-1;
-                   left:-100vw;right:-100vw;top:0;bottom:-40px;
-                   background:#f4f6f9;
-                   box-shadow:inset 0 1px 0 rgba(15,23,42,.06)}
-  #progSec > #progCard > header{padding:20px 24px;border-bottom:1px solid #f1f5f9}
-  #progFilter{padding:16px 24px;border-bottom:1px solid #f1f5f9;background:#fbfcfd}
-  #progSec > #progCard > header h2{color:var(--ink-1);font-size:15px}
+  /* ::before 로 화면 밖까지 회색 판을 깔던 hack 은 걷어낸다. 이제 페이지 바닥
+     자체가 --ground 라 이 판은 중복이고, left/right:-100vw + z-index:-1 은
+     조상 배경이 하나라도 칠해지는 순간(방금 #pad 를 칠했다) 그대로 사라진다.
+     간격은 36+44=80 이 아니라 56 하나로 말한다 — 위가 이제 면을 가졌으니
+     경계는 여백이 아니라 면이 긋는다 */
+  #progSec{position:relative;background:transparent;border-radius:0;padding:0;
+           box-shadow:none;margin-top:56px;overflow:visible}
+  #progSec > #progCard > header{padding:20px 24px;border-bottom:1px solid var(--hair)}
+  #progFilter{padding:16px 24px;border-bottom:1px solid var(--hair);background:var(--panel-2)}
+  /* 본문 높이의 절반 이상을 차지하는 영역이 제목은 가장 작았다 —
+     17%짜리 진행 상태(17px/700)보다도. 같은 급으로 올린다 */
+  #progSec > #progCard > header h2{color:var(--ink-1);font-size:17px;font-weight:700;line-height:22px}
   .pnl h2{font-size:14.5px;font-weight:600;letter-spacing:var(--tr-title)}
   /* 섹션 제목 — 크기와 여백이 위계를 만든다 */
   /* 애플뮤직의 섹션 제목 — 크고, 아래로 넉넉히 */
@@ -1193,7 +1255,7 @@
      흰 바탕에 그림과 글자만 있고, 깊이는 그림 크기가 만든다 */
   /* 링 지름은 한 군데서 정한다. avatar() 에 넘기는 사진 크기(108px)와
      padding 7px 이 여기에 물려 있다 — 122 = 108 + 7*2 */
-  #workSec{margin-top:49px;padding-bottom:8px;--wring:122px}
+  #workSec{margin-top:64px;padding-bottom:8px;--wring:122px}
   /* 스토리 줄 — 넉 장의 세로 썸네일이 화면을 채우고 끝났다. 사람이 먼저
      보이고 동그란 것이 여럿 늘어서야 훑는 재미가 생긴다. 인스타의 그 줄이다 */
   .shelf{display:flex;gap:clamp(16px,1.5vw,26px);overflow-x:auto;overflow-y:hidden;
@@ -1210,19 +1272,19 @@
   /* 링 — 그라데이션 테를 두르고 그 안에 흰 틈을 한 겹 남긴다.
      브랜드 레드를 축으로 잡아, 무지개가 아니라 우리 것으로 읽히게 한다 */
   .wring{position:relative;flex:none;display:grid;place-items:center;
-         width:var(--wring);height:var(--wring);border-radius:50%;padding:7px;
+         width:var(--wring);height:var(--wring);border-radius:var(--r-full);padding:7px;
          background:conic-gradient(from 150deg,#f9c449,var(--od-red) 34%,#c026d3 62%,#6366f1 84%,#f9c449);
          transition:transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease}
-  .wring::before{content:'';position:absolute;inset:4px;border-radius:50%;background:#fff}
+  .wring::before{content:'';position:absolute;inset:4px;border-radius:var(--r-full);background:#fff}
   /* 사진 크기는 avatar() 가 인라인으로 박아 준다 — 여기서 다시 재지 않는다.
      avatar 의 ring-1 회색 실선은 링 안에서 군더더기라 지운다 */
-  .wring img,.wring svg{position:relative;border-radius:50%;display:block;box-shadow:none}
+  .wring img,.wring svg{position:relative;border-radius:var(--r-full);display:block;box-shadow:none}
   .wcard:hover .wring{transform:translateY(-3px) scale(1.03);box-shadow:var(--lift-3)}
   .wcard:active .wring{transform:translateY(-1px) scale(1.01)}
   /* 재생 표식 — 이것이 영상이라는 말은 이 하나면 된다.
      링 위에 얹으니 흰 테를 둘러 링과 겹쳐 보이지 않게 한다 */
   .wplay{position:absolute;right:1px;bottom:1px;z-index:2;
-         width:30px;height:30px;border-radius:50%;
+         width:30px;height:30px;border-radius:var(--r-full);
          display:grid;place-items:center;color:#fff;
          background:var(--od-ink);box-shadow:0 0 0 3px #fff}
   .wplay svg{width:11px;height:11px;margin-left:1px}
@@ -1252,16 +1314,26 @@
      overflow:hidden 으로 모서리를 자르면 이 카드가 스크롤 상자가 되고,
      그러면 표 머리글이 페이지 스크롤에 안 붙는다. 세 번째 같은 함정이다 —
      모서리는 맨 위(머리줄)와 맨 아래(마감)에서 직접 둥글린다 */
-  #progCard{background:#fff;border-radius:16px;box-shadow:var(--lift-1)}
-  #progSec > #progCard > header{border-radius:16px 16px 0 0}
-  .pfoot{border-radius:0 0 16px 16px}
+  /* 이 화면에서 가장 큰 면인데 가장 얕게 떠 있었다(blur 2px). 판으로 올린다 */
+  #progCard{background:var(--panel);border-radius:var(--r-md);box-shadow:var(--lift-panel)}
+  #progSec > #progCard > header{border-radius:var(--r-md) var(--r-md) 0 0;
+                                box-shadow:0 1px 0 rgba(17,19,24,.05);
+                                transition:box-shadow .22s ease}
+  #pad.cond #progSec > #progCard > header{box-shadow:0 1px 0 rgba(17,19,24,.07),
+                                0 10px 20px -16px rgba(17,19,24,.26)}
+  .pfoot{border-radius:0 0 var(--r-md) var(--r-md)}
   #prog{border-top:0;padding:0}
-  /* 카드도 떠 있지 않다. 테두리 한 겹, 짚으면 그때 들린다 */
-  .pcard{background:#fff;box-shadow:inset 0 0 0 1px #eef2f7}
-  .pcard:hover{box-shadow:inset 0 0 0 1px #dbe3ec, var(--lift-1)}
-  .pcard[data-open="1"]{box-shadow:inset 0 0 0 1.5px var(--accent), var(--lift-1);background:#fff}
+  /* 안쪽으로 그린 선은 카드를 '띄우지' 않고 '파낸다'. 밖으로 낸다 */
+  .pcard{background:var(--panel);box-shadow:var(--lift-ctl)}
+  .pcard:hover{box-shadow:var(--lift-ctl-h);transform:translateY(-1px)}
+  /* 선택 링이 호버에 지워지고 있었다 — .on 과 :hover 가 특이도 동률인데
+     :hover 가 뒤에 있었다. 선택 규칙을 뒤로 옮겨서 이긴다 */
+  .pcard.on,
+  .pcard.on:hover{box-shadow:0 0 0 1.5px var(--pick-line), var(--lift-ctl);background:var(--pick)}
+  .pcard[data-open="1"],
+  .pcard[data-open="1"]:hover{box-shadow:0 0 0 1.5px var(--accent), var(--lift-panel);background:var(--panel)}
   /* 상세와 콘텐츠는 목록 위에 얹히는 것이라 한 겹 들린다 */
-  #pdet, #pemb, #pmemo{box-shadow:inset 0 0 0 1px #e8edf3, var(--lift-1)}
+  #pdet, #pemb, #pmemo{box-shadow:var(--lift-pop)}
   /* 흐름은 두 덩어리를 잇는 다리다 — 같은 흰 카드로 세우면 셋이 나란해진다.
      간격만으로 나눈다 — 흰 카드는 그대로 두고 위아래 사이를 벌린다 */
 
@@ -1274,7 +1346,7 @@
   }
 
   /* 머리줄에 선 것들과 같은 키다. 28 로 두면 이것만 4px 크다 */
-  .hbtn{width:26px;height:26px;display:grid;place-items:center;border-radius:8px;color:var(--ink-4);
+  .hbtn{width:26px;height:26px;display:grid;place-items:center;border-radius:var(--r-sm);color:var(--ink-4);
         transition:background-color .17s ease,color .17s ease,box-shadow .17s ease}
   /* 면만 차고 깊이가 없었다. 링을 한 겹 얹어 '떠 있는 단추' 로 만든다.
      transform 은 쓰지 않는다 — 이 클래스 일부가 -translate-y-1/2 로 자리를
@@ -1284,7 +1356,7 @@
   .hbtn[disabled]{opacity:.3;pointer-events:none}
   /* 부유 버튼 — 유리. 사진 위에 떠도 화면 위에 떠도 같은 재료로 읽힌다 */
   #chatFab{display:flex;align-items:center;gap:9px;height:52px;padding:0 18px 0 15px;
-           border-radius:999px;color:#fff;position:relative;
+           border-radius:var(--r-full);color:#fff;position:relative;
            background:rgba(15,23,42,.62);
            -webkit-backdrop-filter:blur(16px) saturate(1.3);
                    backdrop-filter:blur(16px) saturate(1.3);
@@ -1293,7 +1365,7 @@
   #chatFab .fabT{font-size:13px;font-weight:700;letter-spacing:var(--tr-body);white-space:nowrap}
   #chatFab:hover{transform:translateY(-2px);
                  box-shadow:inset 0 0 0 1px rgba(255,255,255,.28), 0 18px 38px -14px rgba(15,23,42,.72)}
-  #chatFab #fabDot{position:absolute;top:9px;right:11px;width:8px;height:8px;border-radius:999px;
+  #chatFab #fabDot{position:absolute;top:9px;right:11px;width:8px;height:8px;border-radius:var(--r-full);
                    background:var(--od-red);box-shadow:0 0 0 2px rgba(15,23,42,.55)}
   /* 연 곳에서 닫는다 — 열려 있는 동안 버튼은 사라지지 않고 동그란 닫기가 된다 */
   #chatFab .fabX{display:none;width:19px;height:19px}
@@ -1307,16 +1379,16 @@
   /* 채팅방 — 예전 열과 같은 폭, 화면 높이에 맞춰 줄어든다 */
   /* 머리 — 아바타 한 개와 이름 한 줄. 우하단 부유물이라 제목을 두 번 쓸 자리가 없다 */
   #chatHead{gap:10px;padding:11px 12px 11px 13px}
-  .chAv{width:30px;height:30px;border-radius:999px;flex:none;display:grid;place-items:center;
+  .chAv{width:30px;height:30px;border-radius:var(--r-full);flex:none;display:grid;place-items:center;
         background:#0f172a}
   /* 같은 사람이 잇달아 말하면 붙여 놓는다. 시각은 마지막 것에만 */
   #chatLog > div + div{margin-top:0}
-  .cbub{font-size:12.5px;line-height:1.6;padding:8px 11px;border-radius:14px;
+  .cbub{font-size:12.5px;line-height:1.6;padding:8px 11px;border-radius:var(--r-md);
         word-break:keep-all;max-width:100%}
   .cme{background:#0f172a;color:#fff;border-bottom-right-radius:5px}
   .cthem{background:#f1f5f9;color:#1e293b;border-bottom-left-radius:5px}
   .ctime{font-size:9px;color:#cbd5e1;margin-top:2px}
-  .cimg{max-width:210px;border-radius:14px;display:block;box-shadow:var(--lift-1)}
+  .cimg{max-width:210px;border-radius:var(--r-md);display:block;box-shadow:var(--lift-1)}
   /* 닫기 버튼 위로 올라앉는다 — 겹치면 어느 쪽을 누르는지 알 수 없다 */
   #chatPane{position:absolute;right:0;bottom:64px;width:376px;
             height:min(600px, calc(100vh - 196px));
@@ -1336,21 +1408,21 @@
   .cta-red:hover{background:var(--od-red-dark)}
   .cta-red:active{transform:translateY(1px)}
   .cta{background:#0f172a;color:#fff;transition:background-color .17s ease,box-shadow .17s ease,transform .14s ease}
-  .cta:hover{background:#1e293b;box-shadow:var(--lift-2)}
+  .cta:hover{background:#1e293b;box-shadow:var(--lift-ctl-h)}
   .cta:active{transform:translateY(1px)}
 
   /* 무엇이 일어나는지 항목마다 적는다. 정지 상태에서도 누르는 자리로 읽혀야 한다 */
   .act{display:inline-flex;align-items:center;gap:5px;flex:none;margin-left:4px;
        font-size:12px;font-weight:700;color:#334155;background:#fff;
-       padding:7px 10px;border-radius:9px;box-shadow:var(--lift-1);
+       padding:7px 10px;border-radius:var(--r-sm);box-shadow:var(--lift-1);
        transition:background-color .17s ease,color .17s ease,box-shadow .17s ease}
   .araise:hover .act{background:#0f172a;color:#fff;box-shadow:none}
 
   .araise  {transition:box-shadow .2s ease, transform .2s ease, background-color .17s ease}
-  .araise:hover {box-shadow:var(--lift-2);transform:translateY(-1px)}
+  .araise:hover {box-shadow:var(--lift-ctl-h);transform:translateY(-1px)}
   .araise:active{box-shadow:var(--lift-1);transform:translateY(0)}
   .raise   {transition:box-shadow .2s ease, transform .2s ease}
-  .raise:hover{box-shadow:var(--lift-3);transform:translateY(-1px)}
+  .raise:hover{box-shadow:var(--lift-ctl-h);transform:translateY(-1px)}
   .raise:active{box-shadow:var(--lift-1);transform:translateY(0)}
   .press   {transition:box-shadow .14s ease, transform .14s ease}
   .press:active{transform:translateY(1px)}
@@ -1358,10 +1430,10 @@
   /* 버튼 — 테두리 1px 대신 링을 쓴다. 올리면 뜨고 누르면 눌린다.
      '누를 수 있다'는 것이 색이 아니라 높이로 읽혀야 한다. */
   .btn{
-    background:#fff; box-shadow:var(--lift-1); border-radius:10px;
+    background:#fff; box-shadow:var(--lift-1); border-radius:var(--r-sm);
     transition:box-shadow .17s ease, transform .17s ease, background-color .17s ease;
   }
-  .btn:hover {box-shadow:var(--lift-2); transform:translateY(-1px)}
+  .btn:hover {box-shadow:var(--lift-ctl-h); transform:translateY(-1px)}
   .btn:active{box-shadow:var(--ring);   transform:translateY(0)}
 
   /* 왼쪽 실선 하나면 충분하다. 면·선·글로우·버튼색을 겹쳐 바르면 상태가 아니라 소음이 된다 */
@@ -1375,8 +1447,12 @@
   /* 레일은 늘 맨 위다. static 으로 두면 본문의 z-index 를 가진 것들
      (떠 있는 바 20, 배너)이 레일의 경계선과 그림자를 덮어, 어느 구간에서는
      레일이 아래로 묻힌 것처럼 보인다 */
-  #rail{position:relative;z-index:40;
-        box-shadow:1px 0 0 rgba(17,19,24,.06), 8px 0 24px -20px rgba(17,19,24,.45);
+  /* 레일은 본문이 아니라 크롬이다. 바닥과 패널 사이 톤에 두면 '뒤에 선 면' 이
+     되고, 본문의 흰 패널이 저절로 앞으로 나온다.
+     예전 앰비언트는 blur 24 에 spread -20 이라 도달거리가 4px 도 안 됐다 —
+     계산상 안 보이는 그림자였다. spread 를 blur 의 절반 안으로 조인다 */
+  #rail{position:relative;z-index:40;background:var(--ground-2);
+        box-shadow:1px 0 0 rgba(17,19,24,.07), 14px 0 30px -16px rgba(17,19,24,.13);
         width:var(--rail);min-width:var(--rail)}
   /* 접고 펴는 동안에만 애니메이션을 건다. 늘 걸어 두면 창 크기를 바꿀 때마다 끌린다 */
   #rail.anim{transition:width .26s cubic-bezier(.22,.61,.36,1),
@@ -1389,14 +1465,14 @@
 
   /* 브랜드 머리 — 표식 하나와 이름 하나. 이 줄에 다른 것을 더 얹지 않는다 */
   .bhead{width:100%;display:flex;align-items:center;gap:10px;text-align:left;
-         padding:8px 8px 8px 6px;margin:0 -6px;border-radius:12px;
+         padding:8px 8px 8px 6px;margin:0 -6px;border-radius:var(--r-sm);
          transition:background-color .15s ease}
   .bhead:hover{background:#f4f6f9}
   /* 펼쳤을 때는 워드마크 그대로. 브랜드 이름을 옆에 또 쓰지 않는다 —
      로고가 이름이다 */
   .bwm{width:96px;height:24px;flex:1 1 auto;min-width:0;color:var(--ink-1)}
   /* 접혔을 때만 타일. 64px 폭에서는 이것 말고 방법이 없다 */
-  .bmark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;
+  .bmark{width:34px;height:34px;border-radius:var(--r-sm);display:grid;place-items:center;flex:none;
          background:var(--od-red);
          box-shadow:0 1px 2px rgba(197,32,43,.28), 0 6px 14px -10px rgba(197,32,43,.9)}
   /* 눌러서 어디로 간다는 것만 아주 조용히 알린다 */
@@ -1408,8 +1484,8 @@
   #rail.mini .bmark{transition:transform .16s ease}
   /* 캠페인 행 — 누를 수 있다는 티를 낸다. 지금 보고 있는 것은 왼쪽에 표시 */
   .nbar{display:flex;align-items:center;gap:8px;min-width:0}
-  .nbar .nb{flex:1 1 auto;height:3px;border-radius:999px;background:#eaeef4;overflow:hidden;display:block}
-  .nbar .nb > span{display:block;height:100%;border-radius:999px}
+  .nbar .nb{flex:1 1 auto;height:3px;border-radius:var(--r-full);background:#eaeef4;overflow:hidden;display:block}
+  .nbar .nb > span{display:block;height:100%;border-radius:var(--r-full)}
 
   /* ── 캠페인 목록 ──────────────────────────────────────────
      줄마다 흰 상자에 테두리에 그림자를 두르니 목록이 아니라 카드 무더기였다.
@@ -1421,7 +1497,7 @@
   .csecT .num{font-size:11.5px;font-weight:600;color:#b3bcc9}
 
   .crow{position:relative;display:block;width:100%;text-align:left;
-        padding:9px 10px;border-radius:10px;margin-bottom:1px;
+        padding:9px 10px;border-radius:var(--r-sm);margin-bottom:1px;
         transition:background-color .15s ease}
   .crow:hover{background:#f4f6f9}
   .crow.on{background:#eef2f7}
@@ -1435,16 +1511,16 @@
   /* 새 캠페인 — 점선 상자를 두르면 저것도 목록의 한 줄로 읽힌다.
      목록 밖에서 조용히 기다리는 한 줄로 둔다 */
   .cnew{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;
-        margin-top:18px;padding:11px 10px;border-radius:10px;
+        margin-top:18px;padding:11px 10px;border-radius:var(--r-sm);
         font-size:12.5px;font-weight:600;color:#98a2b0;
         box-shadow:inset 0 0 0 1px #e8edf3;
         transition:color .15s ease, box-shadow .15s ease, background-color .15s ease}
   .cnew:hover{color:var(--ink-2);background:#f8fafc;box-shadow:inset 0 0 0 1px #dbe3ec}
   .cnew .cnewP{font-size:15px;line-height:1;font-weight:400}
   .crow.on::before{content:"";position:absolute;left:-7px;top:50%;transform:translateY(-50%);
-                   width:3px;height:20px;border-radius:999px;background:var(--ink-1)}
+                   width:3px;height:20px;border-radius:var(--r-full);background:var(--ink-1)}
 
-  .rbtn{display:flex;align-items:center;gap:8px;border-radius:10px;color:#64748b;
+  .rbtn{display:flex;align-items:center;gap:8px;border-radius:var(--r-sm);color:#64748b;
         transition:background-color .15s ease, color .15s ease}
   .rbtn:hover{background:#f1f5f9;color:#0f172a}
   .rbtn:active{background:#e2e8f0}
@@ -1460,7 +1536,7 @@
   #rail.mini #railFoot .rbtn{width:40px;height:40px;flex:none;padding:0;justify-content:center}
 
   /* 접힌 캠페인 표식 — 진행 중 하나, 끝난 것 하나. 그 이상은 접힌 폭에서 못 읽는다 */
-  .cmini{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+  .cmini{width:40px;height:40px;border-radius:var(--r-sm);display:grid;place-items:center;
          position:relative;transition:background-color .15s ease}
   .cmini:hover{filter:brightness(.97)}
   .cmini b{font-size:12px;font-weight:700;line-height:1}
@@ -1503,7 +1579,7 @@
     background:rgba(100,116,139,.20);
     border:4px solid transparent;      /* 이 테두리가 썸을 얇게 만든다 */
     background-clip:content-box;
-    border-radius:999px;
+    border-radius:var(--r-full);
     transition:background-color .18s ease;
   }
   .scroll:hover::-webkit-scrollbar-thumb{background:rgba(100,116,139,.42);background-clip:content-box}
@@ -1554,6 +1630,9 @@
   .drawer.open{visibility:visible;opacity:1}
   .drawer > .panel{transform:translateX(100%);transition:transform .32s cubic-bezier(.22,.61,.36,1)}
   .drawer.open > .panel{transform:translateX(0)}
+  /* 화면 맨 위를 덮는 것들인데 그림자가 하나도 없었다 — 고도 순서가 뒤집혀
+     있었다는 뜻이다. 창 끝에 붙으니 모서리는 직선으로 둔다(애플뮤직의 우측 패널) */
+  .drawer > .panel, .sheet > .panel{box-shadow:var(--lift-over)}
 
   .sheet{visibility:hidden;opacity:0;transition:opacity .22s ease,visibility .22s ease}
   .sheet.open{visibility:visible;opacity:1}
@@ -1564,10 +1643,13 @@
   .toast.show{transform:translate(-50%,0);opacity:1}
 
   /* ── 하단 독 — 접으면 튜토리얼에 집중할 수 있다 ─────────────── */
-  #dock{transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .24s ease}
-  #dock.down{transform:translateY(calc(100% + 24px));opacity:0;pointer-events:none}
-  #dockTab{transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .24s ease;transform:translate(-50%,150%);opacity:0;pointer-events:none}
-  #dockTab.up{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+  /* 화면을 옮겨도 남는다. 데모 신청은 이 페이지 전체의 일이지 캠페인 표에 딸린
+     부속이 아니다 — go() 가 더 이상 이것을 숨기지 않는다 */
+  #dock{transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .24s ease,visibility .24s ease}
+  /* translateX(-50%) 를 같이 안 쓰면 내려가면서 제 폭의 절반만큼 오른쪽으로 튄다 */
+  #dock.down{transform:translate(-50%,calc(100% + 24px));opacity:0;pointer-events:none;visibility:hidden}
+  #dockTab{transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .24s ease,visibility .24s ease;transform:translate(-50%,150%);opacity:0;pointer-events:none;visibility:hidden}
+  #dockTab.up{transform:translate(-50%,0);opacity:1;pointer-events:auto;visibility:visible}
 
   /* ── 진입 안내 ─────────────────────────────────────────────── */
   #tut{transition:opacity .3s ease,visibility .3s ease}
@@ -1577,7 +1659,7 @@
 
   /* ── 초점 — 키보드로 다녀도 길을 잃지 않게 ─────────────────── */
   a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible{
-    outline:2px solid #4f46e5;outline-offset:2px;border-radius:8px;
+    outline:2px solid #4f46e5;outline-offset:2px;border-radius:var(--r-sm);
   }
 
   @media (prefers-reduced-motion:reduce){
@@ -1614,9 +1696,19 @@
        양쪽 레일 폭만큼 비워 두고 그 안에서만 넓힌다 — 가운데이면서 안 겹친다 */
     #dock{left:50vw;
           width:min(1060px,calc(100vw - var(--rail) * 2 - 48px));
-          /* 레일이 움직이면 같은 속도로 따라온다. 안 그러면 독만 먼저 튄다 */
-          transition:left .26s cubic-bezier(.22,.61,.36,1),
+          /* 레일이 움직이면 같은 속도로 따라온다. 안 그러면 독만 먼저 튄다.
+             transform 계열을 여기서 갈아치우면 데스크톱에서 접기 애니메이션이
+             통째로 사라진다 — 덧붙인다 */
+          transition:transform .34s cubic-bezier(.22,.61,.36,1),
+                     opacity .24s ease, visibility .24s ease,
+                     left .26s cubic-bezier(.22,.61,.36,1),
                      width .26s cubic-bezier(.22,.61,.36,1)}
+  }
+  /* 레일이 고정으로 바뀌는 1080 과 독이 중앙에 서는 1280 사이가 비어 있었다.
+     그 구간에서 독이 레일을 최대 216px 덮는다 — 레일 폭만큼만 비켜선다 */
+  @media (min-width:1081px) and (max-width:1279px){
+    #dock{left:calc(var(--rail) / 2 + 50vw);
+          width:min(1060px,calc(100vw - var(--rail) - 48px))}
   }
   /* 히어로가 화면을 채우는 동안 그 아래로 밀려난 본문은 잘라 둔다 */
   /* 예전에는 한 화면에 가두려고 잘랐다. 이제 아래로 흐른다 */
@@ -1626,9 +1718,15 @@
      고정을 풀어 표 전체를 옆으로 넘겨 보게 하고, 독은 세로로 쌓는다. */
   @media (max-width:640px){
     #dock{bottom:0;width:100%}
-    #dock > div{border-radius:18px 18px 0 0;flex-wrap:wrap;gap:.75rem;padding:1rem}
-    #dock .min-w-0{flex:1 1 100%;order:1}
-    #dock > div > button:first-of-type{flex:1 1 auto;order:2;justify-content:center}
+    /* .min-w-0 도 button:first-of-type 도 이 마크업에는 없다 — 세 줄이 죽어 있었고
+       그래서 폰에서 독이 화면의 절반을 먹었다. 실제로 접히는 규칙으로 바꾼다 */
+    #dock > div{border-radius:var(--r-lg) var(--r-lg) 0 0;padding:1rem 1rem 1.15rem}
+    #dock > div > div:nth-of-type(1){font-size:17px}
+    #dock > div > div:nth-of-type(2){display:none}   /* 부제 한 줄은 접는다 */
+    #dock form{margin-top:.75rem;gap:.5rem}
+    #dock form input{flex:1 1 140px;width:auto;padding:.75rem 1rem}
+    #dock form button{flex:1 1 100%;padding:.85rem 1rem}
+    #chatDock{bottom:calc(var(--dockH, 0px) + 12px)}   /* 독 위로 올린다 */
   }
   @media (max-width:1080px){
     #rail{position:fixed;left:0;top:0;bottom:0;z-index:60;transform:translateX(-100%);
@@ -1642,7 +1740,9 @@
      테일윈드 .hidden 은 (0,1,0) 이라 #camBanner.hero (1,1,0) 를 못 이긴다.
      같은 특이도로 맞추고 뒤에 둬서 이기게 한다. 전역 !important 는 쓰지 않는다 —
      hidden lg:flex 같은 반응형 조합까지 같이 죽는다 */
-  #camBanner.hidden, #bodyRow.hidden, #dock.hidden{display:none}
+  /* #dock 은 더 이상 go() 가 숨기지 않는다. 안전망으로만 남긴다.
+     #topStack 은 캠페인의 진행 상태다 — 홈에서 같이 새어 나오고 있었다 */
+  #camBanner.hidden, #bodyRow.hidden, #topStack.hidden, #dock.hidden{display:none}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════
@@ -1651,7 +1751,7 @@
 <div id="shell" class="h-full flex">
 
   <!-- ══ 좌측 레일 — 브랜드의 캠페인 전체가 여기 산다 ══ -->
-  <aside id="rail" class="bg-white flex flex-col overflow-hidden">
+  <aside id="rail" class="flex flex-col overflow-hidden">
 
     <!-- 브랜드 — 이 자리는 브랜드 하나로 충분하다.
          누르면 캠페인 전체가 열린다(로고를 누르면 처음으로 가는 그것) -->
@@ -1716,7 +1816,7 @@
           <input id="searchIn" type="search" autocomplete="off"
                  placeholder="캠페인 · 인플루언서 · 자료 · 대화에서 찾기"
                  oninput="runSearch(this.value)" onkeydown="if(event.key==='Escape')go('camp')"
-                 class="w-full bg-white rounded-2xl pl-11 pr-11 py-3.5 text-[13.5px] text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                 class="w-full bg-white rd-md pl-11 pr-11 py-3.5 text-[13.5px] text-slate-900 placeholder:text-slate-400 focus:outline-none"
                  style="box-shadow:var(--lift-2)">
           <button onclick="go('camp')" class="hbtn absolute right-3 top-1/2 -translate-y-1/2" aria-label="닫기" title="닫기 (Esc)">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -1732,10 +1832,10 @@
       <!-- 제목 — 오드타입 배너 -->
       <div id="camBanner" onclick="heroTap(event)" class="hero shrink-0 relative overflow-hidden">
         <div id="camArt" aria-hidden="true"></div>
-        <button id="railBtn" onclick="event.stopPropagation();toggleRail(true)" class="hidden items-center justify-center w-9 h-9 rounded-lg text-white/85 hover:bg-white/15 transition" aria-label="캠페인 목록 열기">
+        <button id="railBtn" onclick="event.stopPropagation();toggleRail(true)" class="hidden items-center justify-center w-9 h-9 rd-sm text-white/85 hover:bg-white/15 transition" aria-label="캠페인 목록 열기">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
-        <button id="heroToggle" onclick="toggleHero(event)" class="w-8 h-8 grid place-items-center rounded-lg text-white/70 hover:text-white hover:bg-white/15 transition" aria-expanded="true" aria-label="캠페인 화면 접기" title="접기">
+        <button id="heroToggle" onclick="toggleHero(event)" class="w-8 h-8 grid place-items-center rd-sm text-white/70 hover:text-white hover:bg-white/15 transition" aria-expanded="true" aria-label="캠페인 화면 접기" title="접기">
           <svg id="heroChev" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <!-- 글자를 대문자에 자간만 벌려 로고인 척하고 있었다. 둘 다 워드마크를
@@ -1749,7 +1849,7 @@
           <div id="eyebrow" class="num t-label text-[10px] mb-2"></div>
           <h1 class="tight-h1 text-[26px] font-semibold text-white flex flex-wrap items-center gap-2.5 keep">
             <span id="campTitle"></span>
-            <span id="campBadge" class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap text-white"
+            <span id="campBadge" class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rd-full whitespace-nowrap text-white"
                   style="background:rgba(255,255,255,.13)"></span>
           </h1>
           <!-- 자료 — 캠페인 제목과 같은 높이에 선다. 한 줄 아래로 내려가면 곁가지로 읽힌다.
@@ -1768,7 +1868,7 @@
         <div id="heroSlot" class="relative z-[2] px-5 sm:px-6 pb-12"></div>
 
         <button id="heroNudge" onclick="toggleHero(event)" aria-label="접고 자세히 보기" title="접고 자세히 보기"
-                class="absolute left-1/2 bottom-3 z-[3] w-9 h-9 place-items-center rounded-full text-white/85 hover:text-white transition"
+                class="absolute left-1/2 bottom-3 z-[3] w-9 h-9 place-items-center rd-full text-white/85 hover:text-white transition"
                 style="background:rgba(255,255,255,.16);transform:translateX(-50%)">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
         </button>
@@ -1794,7 +1894,7 @@
 
       </div>
       <!-- 본문 2단 — 좌: 대시보드 · 에셋 · 진행상황 / 우: 대화창 -->
-      <div id="bodyRow" class="flex-1 min-h-0 mt-3 flex flex-col xl:flex-row gap-3">
+      <div id="bodyRow" class="flex-1 min-h-0 flex flex-col">
 
         <div id="colL" class="flex-1 min-w-0 min-h-0 flex flex-col">
 
@@ -1811,7 +1911,7 @@
               <div class="flex items-center gap-2.5 min-w-0">
                 <h2>인플루언서</h2>
                 <button id="progAll" onclick="pickAllProg()" class="flex items-center gap-1.5 text-[10.5px] font-bold text-slate-600 hover:text-slate-900 transition whitespace-nowrap"></button>
-                <button id="progPick" onclick="chatAboutPicked()" class="cta hidden text-[10.5px] font-bold px-2.5 py-1.5 rounded-lg whitespace-nowrap"></button>
+                <button id="progPick" onclick="chatAboutPicked()" class="cta hidden text-[10.5px] font-bold px-2.5 py-1.5 rd-sm whitespace-nowrap"></button>
               </div>
               <div class="flex items-center shrink-0">
                 <div class="hgrp">
@@ -1827,7 +1927,7 @@
                 </div>
                 <span class="hdiv"></span>
                 <div class="hgrp">
-                <span class="vsw flex items-center rounded-lg bg-white" style="box-shadow:var(--lift-1)">
+                <span class="vsw flex items-center rd-sm bg-white" style="box-shadow:var(--lift-1)">
                   <button id="vKan" onclick="setView('card')" class="vbtn">카드</button>
                   <button id="vTab" onclick="setView('table')" class="vbtn">표</button>
                 </span>
@@ -1864,7 +1964,6 @@
           </section>
         </div>
 
-        </div>
       </div>
     </div>
   </div>
@@ -1909,9 +2008,9 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21 16l-5-5-6 6"/></svg>
               </label>
               <textarea id="chatInput" rows="1" placeholder="필요한 것을 적어 주세요"
-                class="flex-1 min-w-0 resize-none text-[12.5px] text-slate-900 placeholder:text-slate-400 bg-slate-50 rounded-xl px-3 py-2.5 focus:outline-none focus:bg-white"
+                class="flex-1 min-w-0 resize-none text-[12.5px] text-slate-900 placeholder:text-slate-400 bg-slate-50 rd-sm px-3 py-2.5 focus:outline-none focus:bg-white"
                 style="box-shadow:var(--ring);max-height:104px" oninput="chatGrow(this)" onkeydown="chatKey(event)"></textarea>
-              <button type="submit" class="cta shrink-0 w-10 h-10 grid place-items-center rounded-xl" aria-label="보내기" title="보내기 (Enter)">
+              <button type="submit" class="cta shrink-0 w-10 h-10 grid place-items-center rd-sm" aria-label="보내기" title="보내기 (Enter)">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
               </button>
             </form>
@@ -1920,9 +2019,9 @@
 
 <!-- ══ 하단 독 ══ -->
 <div id="dock" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[min(1120px,calc(100vw-32px))]">
-  <div class="relative bg-white rounded-[24px] px-6 sm:px-10 pt-8 pb-8 text-center" style="box-shadow:var(--lift-4)">
+  <div class="relative bg-white rd-lg px-6 sm:px-10 pt-8 pb-8 text-center" style="box-shadow:var(--lift-4)">
 
-    <button onclick="dock(false)" class="absolute top-4 right-4 w-9 h-9 grid place-items-center rounded-xl text-slate-300 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="바 내리기" title="잠시 내려두기">
+    <button onclick="dock(false)" class="absolute top-4 right-4 w-9 h-9 grid place-items-center rd-sm text-slate-300 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="바 내리기" title="잠시 내려두기">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
     </button>
 
@@ -1936,13 +2035,13 @@
     <form onsubmit="demoOpen(event)" class="mt-6 flex flex-wrap items-center justify-center gap-2.5">
       <label for="dkBrand" class="sr-only">브랜드명</label>
       <input id="dkBrand" placeholder="브랜드명" autocomplete="organization"
-             class="w-[170px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[14px] px-4 py-4 rounded-xl focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
+             class="w-[170px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[14px] px-4 py-4 rd-sm focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
       <label for="dkContact" class="sr-only">전화번호 또는 이메일</label>
       <input id="dkContact" placeholder="전화번호 또는 이메일"
-             class="w-[210px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[14px] px-4 py-4 rounded-xl focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
+             class="w-[210px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[14px] px-4 py-4 rd-sm focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
 
       <!-- 주 버튼. 리드가 할 일이 브랜드명 하나뿐이고 받는 것이 손에 잡힌다 -->
-      <button type="submit" class="btn-go press text-[16px] font-bold px-9 py-4 rounded-xl whitespace-nowrap inline-flex items-center gap-2">
+      <button type="submit" class="btn-go press text-[16px] font-bold px-9 py-4 rd-sm whitespace-nowrap inline-flex items-center gap-2">
         데모 캠페인 제작
         <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M3 12h18"/></svg>
       </button>
@@ -1950,21 +2049,21 @@
       <!-- 보조. 먼저 묻고 싶은 사람의 퇴로다. 글자만 두었더니 버튼으로 안 보였다 —
            면과 테두리는 주되, 색과 결은 주 버튼에만 남긴다 -->
       <button type="button" onclick="openSheet('sh-booking')"
-              class="btn-ask press text-[15px] font-bold px-8 py-4 rounded-xl whitespace-nowrap">
+              class="btn-ask press text-[15px] font-bold px-8 py-4 rd-sm whitespace-nowrap">
         문의하기
       </button>
     </form>
   </div>
 </div>
 
-<button id="dockTab" onclick="dock(true)" class="fixed bottom-5 left-1/2 z-40 bg-slate-900 text-white text-[13.5px] font-semibold pl-5 pr-4 py-3.5 rounded-full flex items-center gap-2 hover:bg-slate-800 press" style="box-shadow:0 4px 24px rgba(0,0,0,.28)">
+<button id="dockTab" onclick="dock(true)" class="fixed bottom-5 left-1/2 z-40 bg-slate-900 text-white text-[13.5px] font-semibold pl-5 pr-4 py-3.5 rd-full flex items-center gap-2 hover:bg-slate-800 press" style="box-shadow:0 4px 24px rgba(0,0,0,.28)">
   데모 신청 열기
   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
 </button>
 
 <!-- ══ 진입 안내 ══ -->
 <div id="tut" class="fixed inset-0 z-[70] bg-slate-900/55 backdrop-blur-sm flex items-center justify-center p-5" onclick="if(event.target===this)hideTut()">
-  <div class="card bg-white rounded-3xl w-full max-w-[640px] overflow-hidden" style="box-shadow:var(--lift-4)" role="dialog" aria-modal="true" aria-labelledby="tutTitle">
+  <div class="card bg-white rd-lg w-full max-w-[640px] overflow-hidden" style="box-shadow:var(--lift-4)" role="dialog" aria-modal="true" aria-labelledby="tutTitle">
     <img id="tutImg" class="hidden w-full block" alt="">
     <div class="px-9 pt-7 pb-9">
     <h2 id="tutTitle" class="text-[24px] sm:text-[29px] font-bold text-slate-900 leading-[1.32] mt-6 keep sm:whitespace-nowrap">
@@ -1976,12 +2075,12 @@
       트렌드를 이끌어가는 브랜드를 팔로업해보세요.
     </p>
 
-    <p class="flex items-start gap-2.5 text-[13px] text-slate-500 mt-7 keep bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5">
+    <p class="flex items-start gap-2.5 text-[13px] text-slate-500 mt-7 keep bg-slate-50 border border-slate-200 rd-sm px-4 py-3.5">
       <svg class="w-3.5 h-3.5 shrink-0 mt-[1px] text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       저장·내려받기 등 일부 기능은 동작하지 않습니다.
     </p>
 
-    <button onclick="hideTut()" class="mt-5 w-full text-[17px] font-bold text-white bg-slate-900 hover:bg-slate-800 py-3.5 rounded-xl transition">
+    <button onclick="hideTut()" class="mt-5 w-full text-[17px] font-bold text-white bg-slate-900 hover:bg-slate-800 py-3.5 rd-sm transition">
       둘러보기 시작
     </button>
     </div>
@@ -1990,7 +2089,7 @@
 
 <!-- ══ 드로어: 캘린더 ══ -->
 <div id="dw-calendar" class="drawer fixed inset-0 z-[65] bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-calendar')">
-  <div class="panel bg-white w-full max-w-[520px] h-full border-l border-slate-200 flex flex-col" role="dialog" aria-modal="true" aria-label="업로드 일정">
+  <div class="panel bg-white w-full max-w-[520px] h-full flex flex-col" role="dialog" aria-modal="true" aria-label="업로드 일정">
     <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
       <div>
         <div class="num text-[10px] font-bold tracking-[.16em] text-slate-500 uppercase">Upload calendar</div>
@@ -2002,8 +2101,8 @@
     </div>
     <div class="px-6 py-5 overflow-y-auto scroll scroll-thin flex-1">
       <div class="flex items-center gap-4 text-[11px] text-slate-600 mb-4">
-        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>업로드 완료</span>
-        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-400"></span>업로드 예정</span>
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rd-full bg-emerald-500"></span>업로드 완료</span>
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rd-full bg-slate-400"></span>업로드 예정</span>
       </div>
       <div id="calGrid" class="grid grid-cols-7 gap-1 text-center"></div>
     </div>
@@ -2012,7 +2111,7 @@
 
 <!-- ══ 드로어: 가이드라인 ══ -->
 <div id="dw-guide" class="drawer fixed inset-0 z-[65] bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-guide')">
-  <div class="panel bg-white w-full max-w-[760px] h-full border-l border-slate-200 flex flex-col" role="dialog" aria-modal="true" aria-label="가이드라인">
+  <div class="panel bg-white w-full max-w-[760px] h-full flex flex-col" role="dialog" aria-modal="true" aria-label="가이드라인">
     <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
       <div>
         <div class="num text-[10px] font-bold tracking-[.16em] text-slate-500 uppercase">Guideline</div>
@@ -2024,16 +2123,16 @@
     </div>
     <div class="px-5 py-4 flex-1 min-h-0 flex flex-col gap-3" id="guideBody"></div>
     <div class="px-6 py-4 border-t border-slate-100 flex gap-2">
-      <button onclick="askGuide()" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-3 rounded-xl transition">수정 요청하기</button>
-      <a href="https://oddtype-inviteb.vercel.app/" target="_blank" rel="noopener" class="px-5 grid place-items-center text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">새 창에서</a>
-      <button onclick="closeDrawer('dw-guide')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">닫기</button>
+      <button onclick="askGuide()" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-3 rd-sm transition">수정 요청하기</button>
+      <a href="https://oddtype-inviteb.vercel.app/" target="_blank" rel="noopener" class="px-5 grid place-items-center text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rd-sm transition">새 창에서</a>
+      <button onclick="closeDrawer('dw-guide')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rd-sm transition">닫기</button>
     </div>
   </div>
 </div>
 
 <!-- ══ 드로어: 중간 보고서 ══ -->
 <div id="dw-report" class="drawer fixed inset-0 z-[65] bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-report')">
-  <div class="panel bg-white w-full max-w-[560px] h-full border-l border-slate-200 flex flex-col" role="dialog" aria-modal="true" aria-label="중간 성과 보고서">
+  <div class="panel bg-white w-full max-w-[560px] h-full flex flex-col" role="dialog" aria-modal="true" aria-label="중간 성과 보고서">
     <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
       <div>
         <div id="reportKicker" class="num text-[10px] font-bold tracking-[.16em] text-slate-500 uppercase">Interim report</div>
@@ -2046,11 +2145,11 @@
     </div>
     <div class="px-6 py-5 overflow-y-auto scroll scroll-thin flex-1 space-y-5" id="reportBody"></div>
     <div class="px-6 py-4 border-t border-slate-100 flex gap-2">
-      <button onclick="na('보고서 PDF', '실제 화면에서는 표지까지 붙은 PDF가 내려받아집니다.')" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-3 rounded-xl transition flex items-center justify-center gap-2">
+      <button onclick="na('보고서 PDF', '실제 화면에서는 표지까지 붙은 PDF가 내려받아집니다.')" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 py-3 rd-sm transition flex items-center justify-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
         PDF 내려받기
       </button>
-      <button onclick="closeDrawer('dw-report')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">닫기</button>
+      <button onclick="closeDrawer('dw-report')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rd-sm transition">닫기</button>
     </div>
   </div>
 </div>
@@ -2058,7 +2157,7 @@
 <!-- ══ 드로어: 추가 옵션 — 화면에 안 띄운 것들을 한 번에 ══ -->
 <!-- 원본 콘텐츠 — 우리가 받아 둔 것을 브랜드가 여기서 바로 가져간다 -->
 <div id="dw-files" class="drawer fixed inset-0 z-[65] bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-files')">
-  <div class="panel bg-white w-full max-w-[480px] h-full border-l border-slate-200 flex flex-col" role="dialog" aria-modal="true" aria-label="원본 콘텐츠">
+  <div class="panel bg-white w-full max-w-[480px] h-full flex flex-col" role="dialog" aria-modal="true" aria-label="원본 콘텐츠">
     <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
       <div>
         <div class="num text-[10px] font-bold tracking-[.16em] text-slate-500 uppercase">Raw files</div>
@@ -2070,15 +2169,15 @@
     </div>
     <div class="px-6 py-5 overflow-y-auto scroll scroll-thin flex-1 space-y-2" id="fileBody"></div>
     <div class="px-6 py-4 border-t border-slate-100 flex gap-2">
-      <button id="fileGet" onclick="grabPicked()" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 py-3 rounded-xl transition"></button>
-      <button onclick="closeDrawer('dw-files')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">닫기</button>
+      <button id="fileGet" onclick="grabPicked()" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 py-3 rd-sm transition"></button>
+      <button onclick="closeDrawer('dw-files')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rd-sm transition">닫기</button>
     </div>
   </div>
 </div>
 
 <!-- 파트너십 코드 — 무료분은 열려 있고, 유료분은 닫힌 채 골라서 요청한다 -->
 <div id="dw-set" class="drawer fixed inset-0 z-[65] bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-set')">
-  <div class="panel bg-white w-full max-w-[440px] h-full border-l border-slate-200 flex flex-col" role="dialog" aria-modal="true" aria-label="설정">
+  <div class="panel bg-white w-full max-w-[440px] h-full flex flex-col" role="dialog" aria-modal="true" aria-label="설정">
     <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
       <div>
         <div class="num t-label text-[10px] text-slate-500">Settings</div>
@@ -2090,14 +2189,14 @@
     </div>
     <div class="px-6 py-5 overflow-y-auto scroll scroll-thin flex-1" id="setBody"></div>
     <div class="px-6 py-4 border-t border-slate-100 flex gap-2">
-      <button onclick="saveSet()" class="cta flex-1 text-xs font-bold py-3 rounded-xl">저장</button>
-      <button onclick="closeDrawer('dw-set')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">닫기</button>
+      <button onclick="saveSet()" class="cta flex-1 text-xs font-bold py-3 rd-sm">저장</button>
+      <button onclick="closeDrawer('dw-set')" class="px-5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rd-sm transition">닫기</button>
     </div>
   </div>
 </div>
 
 <div id="dw-code" class="drawer fixed inset-0 z-[65] bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-code')">
-  <div class="panel bg-white w-full max-w-[480px] h-full border-l border-slate-200 flex flex-col" role="dialog" aria-modal="true" aria-label="파트너십 코드">
+  <div class="panel bg-white w-full max-w-[480px] h-full flex flex-col" role="dialog" aria-modal="true" aria-label="파트너십 코드">
     <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
       <div>
         <div class="num text-[10px] font-bold tracking-[.16em] text-slate-500 uppercase">Partnership code</div>
@@ -2110,15 +2209,15 @@
     <div class="px-6 py-5 overflow-y-auto scroll scroll-thin flex-1 space-y-2" id="codeBody"></div>
     <div class="px-6 py-4 border-t border-slate-100">
       <div class="flex gap-2">
-        <button id="codeCopy" onclick="copyCodes()" class="flex-1 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 disabled:bg-slate-50 disabled:text-slate-300 py-3 rounded-xl transition"></button>
-        <button id="codeAsk" onclick="askCodes()" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 py-3 rounded-xl transition"></button>
+        <button id="codeCopy" onclick="copyCodes()" class="flex-1 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 disabled:bg-slate-50 disabled:text-slate-300 py-3 rd-sm transition"></button>
+        <button id="codeAsk" onclick="askCodes()" class="flex-1 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 py-3 rd-sm transition"></button>
       </div>
     </div>
   </div>
 </div>
 
 <div id="dw-more" class="drawer fixed inset-0 z-[65] bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-more')">
-  <div class="panel bg-white w-full max-w-[560px] h-full border-l border-slate-200 flex flex-col" role="dialog" aria-modal="true" aria-label="추가 옵션">
+  <div class="panel bg-white w-full max-w-[560px] h-full flex flex-col" role="dialog" aria-modal="true" aria-label="추가 옵션">
     <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between gap-4">
       <div>
         <div class="num t-label text-[10px] text-slate-500">All options</div>
@@ -2135,28 +2234,28 @@
         <div class="text-xs font-bold text-slate-900 mb-2.5">일괄 작업</div>
         <div class="flex flex-wrap gap-2">
           <button onclick="na('원본 일괄 받기', '캠페인이 끝나면 전체 원본이 zip 한 개로 인도됩니다.')"
-            class="btn hover:bg-slate-50 text-[11.5px] font-semibold text-slate-700 px-3 py-2 rounded-lg press">원본 일괄</button>
+            class="btn hover:bg-slate-50 text-[11.5px] font-semibold text-slate-700 px-3 py-2 rd-sm press">원본 일괄</button>
           <button onclick="na('2차 활용 신청', '실제 화면에서는 접수 후 담당자가 확인하고 회신드립니다.')"
-            class="btn hover:bg-slate-50 text-[11.5px] font-semibold text-slate-700 px-3 py-2 rounded-lg press">2차 활용 신청</button>
+            class="btn hover:bg-slate-50 text-[11.5px] font-semibold text-slate-700 px-3 py-2 rd-sm press">2차 활용 신청</button>
           <button onclick="closeDrawer('dw-more');openDrawer('dw-report')"
-            class="btn hover:bg-slate-50 text-[11.5px] font-semibold text-slate-700 px-3 py-2 rounded-lg press">성과 보고서</button>
+            class="btn hover:bg-slate-50 text-[11.5px] font-semibold text-slate-700 px-3 py-2 rd-sm press">성과 보고서</button>
           <button onclick="na('전체 항목 CSV', '표에 안 띄운 지표까지 전부 들어간 CSV 가 내려받아집니다.')"
-            class="btn hover:bg-slate-50 text-[11.5px] font-semibold text-slate-700 px-3 py-2 rounded-lg press">전체 항목 CSV</button>
+            class="btn hover:bg-slate-50 text-[11.5px] font-semibold text-slate-700 px-3 py-2 rd-sm press">전체 항목 CSV</button>
         </div>
       </div>
 
       <div id="moreBody" class="space-y-6"></div>
     </div>
     <div class="px-6 py-4 border-t border-slate-100">
-      <button onclick="closeDrawer('dw-more')" class="w-full text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 py-3 rounded-xl transition">닫기</button>
+      <button onclick="closeDrawer('dw-more')" class="w-full text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 py-3 rd-sm transition">닫기</button>
     </div>
   </div>
 </div>
 
 <!-- ══ 바텀시트: 문의 ══ -->
 <div id="sh-booking" class="sheet fixed inset-0 z-[68] bg-slate-900/50 flex items-end justify-center" onclick="bgClose(event,'sh-booking')">
-  <div class="panel bg-white w-full max-w-[520px] rounded-t-3xl border-t border-slate-200 px-6 pt-5 pb-7" role="dialog" aria-modal="true" aria-labelledby="bkTitle">
-    <div class="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5"></div>
+  <div class="panel bg-white w-full max-w-[520px] rd-lg-t px-6 pt-5 pb-7" role="dialog" aria-modal="true" aria-labelledby="bkTitle">
+    <div class="w-10 h-1 rd-full bg-slate-200 mx-auto mb-5"></div>
     <div class="flex items-start justify-between gap-4">
       <h2 id="bkTitle" class="text-lg font-bold text-slate-900">커피챗 신청</h2>
       <button onclick="closeSheet('sh-booking')" class="text-slate-500 hover:text-slate-700 p-1 -mr-1 -mt-0.5" aria-label="닫기">
@@ -2167,13 +2266,13 @@
     <form onsubmit="book(event)" class="mt-5 space-y-3">
       <div>
         <label for="bkBrand" class="block text-xs font-medium text-slate-600 mb-1.5">브랜드</label>
-        <input id="bkBrand" required placeholder="브랜드명" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-slate-400 focus:bg-white transition">
+        <input id="bkBrand" required placeholder="브랜드명" class="w-full text-sm bg-slate-50 border border-slate-200 rd-sm px-3.5 py-3 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-slate-400 focus:bg-white transition">
       </div>
       <div>
         <label for="bkContact" class="block text-xs font-medium text-slate-600 mb-1.5">연락처 / 이메일</label>
-        <input id="bkContact" required placeholder="010-0000-0000 또는 name@company.com" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-slate-400 focus:bg-white transition">
+        <input id="bkContact" required placeholder="010-0000-0000 또는 name@company.com" class="w-full text-sm bg-slate-50 border border-slate-200 rd-sm px-3.5 py-3 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:border-slate-400 focus:bg-white transition">
       </div>
-      <button type="submit" class="w-full text-sm font-bold text-white bg-slate-900 hover:bg-slate-800 py-3.5 rounded-xl transition mt-1">보내기</button>
+      <button type="submit" class="w-full text-sm font-bold text-white bg-slate-900 hover:bg-slate-800 py-3.5 rd-sm transition mt-1">보내기</button>
       <p class="text-[11px] text-slate-500 text-center keep pt-1">둘러보기 화면이라 실제로 전송되지는 않습니다.</p>
     </form>
   </div>
@@ -2204,8 +2303,8 @@
 
 <!-- 데모 캠페인 신청 — 하단에 적은 값을 그대로 들고 온다 -->
 <div id="sh-demo" class="sheet fixed inset-0 z-[68] bg-slate-900/50 flex items-end justify-center" onclick="bgClose(event,'sh-demo')">
-  <div class="panel bg-white w-full max-w-[540px] rounded-t-3xl px-7 pt-5 pb-8" role="dialog" aria-modal="true" aria-labelledby="dmTitle">
-    <div class="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-5"></div>
+  <div class="panel bg-white w-full max-w-[540px] rd-lg-t px-7 pt-5 pb-8" role="dialog" aria-modal="true" aria-labelledby="dmTitle">
+    <div class="w-10 h-1 rd-full bg-slate-200 mx-auto mb-5"></div>
     <div class="flex items-start justify-between gap-4">
       <h2 id="dmTitle" class="text-[19px] font-bold text-slate-900">데모 캠페인 제작</h2>
       <button onclick="closeSheet('sh-demo')" class="text-slate-400 hover:text-slate-700 p-1 -mr-1 -mt-0.5" aria-label="닫기">
@@ -2221,18 +2320,18 @@
         <div>
           <label for="dmBrand" class="block text-xs font-medium text-slate-600 mb-1.5">브랜드</label>
           <input id="dmBrand" required placeholder="브랜드명"
-                 class="w-full text-sm bg-slate-50 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white transition" style="box-shadow:var(--ring)">
+                 class="w-full text-sm bg-slate-50 rd-sm px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white transition" style="box-shadow:var(--ring)">
         </div>
         <div>
           <label for="dmContact" class="block text-xs font-medium text-slate-600 mb-1.5">연락처</label>
           <input id="dmContact" required placeholder="전화번호 또는 이메일"
-                 class="w-full text-sm bg-slate-50 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white transition" style="box-shadow:var(--ring)">
+                 class="w-full text-sm bg-slate-50 rd-sm px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white transition" style="box-shadow:var(--ring)">
         </div>
       </div>
       <div>
         <label for="dmLink" class="block text-xs font-medium text-slate-600 mb-1.5">브랜드 인스타그램 또는 홈페이지 <span class="text-slate-400 font-normal">(선택)</span></label>
         <input id="dmLink" placeholder="@brand 또는 brand.co.kr"
-               class="w-full text-sm bg-slate-50 rounded-xl px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white transition" style="box-shadow:var(--ring)">
+               class="w-full text-sm bg-slate-50 rd-sm px-3.5 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white transition" style="box-shadow:var(--ring)">
       </div>
       <div>
         <span class="block text-xs font-medium text-slate-600 mb-1.5">생각하시는 규모</span>
@@ -2243,13 +2342,13 @@
           <button type="button" class="dmchip" data-v="아직 미정">아직 미정</button>
         </div>
       </div>
-      <button type="submit" class="cta-red press w-full text-[15px] font-bold py-4 rounded-xl mt-1">보내기</button>
+      <button type="submit" class="cta-red press w-full text-[15px] font-bold py-4 rd-sm mt-1">보내기</button>
       <p class="text-[11.5px] text-slate-500 text-center keep pt-1">둘러보기 화면이라 실제로 전송되지는 않습니다.</p>
     </form>
   </div>
 </div>
 
-<div id="toast" role="status" aria-live="polite" class="toast fixed bottom-28 left-1/2 z-[80] bg-slate-900 text-white text-xs px-4 py-3 rounded-xl flex items-start gap-2.5 max-w-[min(460px,92vw)]" style="box-shadow:0 8px 20px rgba(0,0,0,.18), 0 30px 60px -24px rgba(0,0,0,.6)">
+<div id="toast" role="status" aria-live="polite" class="toast fixed bottom-28 left-1/2 z-[80] bg-slate-900 text-white text-xs px-4 py-3 rd-sm flex items-start gap-2.5 max-w-[min(460px,92vw)]" style="box-shadow:0 8px 20px rgba(0,0,0,.18), 0 30px 60px -24px rgba(0,0,0,.6)">
   <span id="toastIcon" class="shrink-0 mt-[1px]"></span>
   <span id="toastMsg" class="keep leading-relaxed"></span>
 </div>
@@ -2563,7 +2662,7 @@ function avatar(c, i, size) {
   const s = size || 34, col = AV[i % AV.length];
   /* 실사진이 있으면 그것을 쓰고, 없으면 이니셜로 떨어진다 */
   if (c.pic) {
-    return '<img src="' + c.pic + '" alt="" aria-hidden="true" class="shrink-0 rounded-full object-cover ring-1 ring-slate-200/80"'
+    return '<img src="' + c.pic + '" alt="" aria-hidden="true" class="shrink-0 rd-full object-cover ring-1 ring-slate-200/80"'
       + ' style="width:' + s + 'px;height:' + s + 'px">';
   }
   return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 36 36" class="shrink-0" aria-hidden="true">'
@@ -2589,14 +2688,21 @@ const ICON = {
 function go(v) {
   S.view = v;
   const camp = v === 'camp';
-  ['camBanner', 'bodyRow', 'dock'].forEach(id => {
+  /* 독은 이 배열에 없다. 데모 신청은 페이지 전체에 대한 제안이지 캠페인 표에
+     딸린 부속이 아니다 — 화면을 옮겼다고 사라지면 돌아올 길이 없어진다.
+     #topStack(진행 상태)은 반대다. 캠페인 것이라 홈까지 따라오면 안 된다 */
+  ['camBanner', 'topStack', 'bodyRow'].forEach(id => {
     const e = $(id); if (e) e.classList.toggle('hidden', !camp);
   });
   $('homeView').classList.toggle('hidden', v !== 'home');
   $('searchView').classList.toggle('hidden', v !== 'search');
+  /* heroOn 은 캠페인 첫 화면 전용 규칙이다(padding:0). 홈까지 들고 가면
+     타일이 화면 끝에 붙고 독 자리도 안 비워진다 */
+  $('pad').classList.toggle('heroOn', camp && $('camBanner').classList.contains('hero'));
   if (v === 'home') renderHome();
   if (v === 'camp') { fitProgRows(); }
   renderNav();
+  syncDockH();   /* 뷰가 바뀌면 독이 먹는 자리를 다시 잰다 */
 }
 
 /* 접혀 있을 때 이 줄은 유일하게 남은 넓은 표식이다 — 그때는 펴는 단추가 된다 */
@@ -2630,7 +2736,7 @@ function renderHome() {
       + '<span class="hin">'
       +   '<span class="num block text-[10px]" style="color:rgba(255,255,255,.72)">' + cp.period + '</span>'
       +   '<span class="block text-[14px] font-bold mt-1 leading-snug keep">' + esc(cp.title) + '</span>'
-      +   '<span class="inline-flex items-center gap-1.5 mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full"'
+      +   '<span class="inline-flex items-center gap-1.5 mt-2 text-[10px] font-bold px-2 py-0.5 rd-full"'
       +     ' style="background:rgba(255,255,255,.18)">'
       +     (on ? '<span class="dot on" style="background:#34d399"></span>' : '')
       +     esc(cp.badge) + '</span>'
@@ -2851,7 +2957,7 @@ function renderHead() {
     + '<span class="ebper num">' + cp.y + '.' + esc(cp.period) + '</span>';
   $('campTitle').textContent = cp.title;
   /* 진행 중은 좋은 소식이다. 붉은 점은 '문제 있음' 으로 읽힌다 */
-  $('campBadge').innerHTML = '<span class="w-1.5 h-1.5 rounded-full" style="background:'
+  $('campBadge').innerHTML = '<span class="w-1.5 h-1.5 rd-full" style="background:'
     + (live ? '#10b981' : '#94a3b8') + '"></span>' + cp.badge;
   $('campBadge').classList.toggle('done', !live);
   $('reportTitle').textContent = live ? '8월 중간 성과 보고서' : cp.title + ' 최종 보고서';
@@ -2969,6 +3075,11 @@ function syncDockH() {
   document.documentElement.style.setProperty('--dockH', h + 'px');
 }
 addEventListener('resize', function () { syncDockH(); syncCond(); });
+/* 독 높이는 창 크기와 무관하게도 변한다 — 폼이 한 줄에서 두 줄로 접히는 순간이 그렇다.
+   resize 만 믿으면 그때마다 표 밑이 잘린다 */
+if (window.ResizeObserver) addEventListener('DOMContentLoaded', function () {
+  const d = $('dock'); if (d) new ResizeObserver(syncDockH).observe(d);
+});
 addEventListener('DOMContentLoaded', function () {
   const pad = $('pad');
   if (pad) pad.addEventListener('scroll', syncCond, { passive: true });
@@ -3223,7 +3334,7 @@ const dUp = t => '<span class="num text-[11px] font-bold text-emerald-700 inline
   + '<path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6"/></svg>' + t + '</span>';
 const dMuted = t => '<span class="text-[10.5px] text-slate-500 truncate">' + t + '</span>';
 const dStrong = t => '<span class="num text-[11px] font-bold text-slate-800 shrink-0">' + t + '</span>';
-const dDot = c => '<span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:' + c + '"></span>';
+const dDot = c => '<span class="w-1.5 h-1.5 rd-full shrink-0" style="background:' + c + '"></span>';
 /* 변화는 이 화면에서 값 다음으로 큰 글자다. 늘었는지 그대로인지가 색으로 먼저 읽힌다 */
 const dPill = (t, up) => '<span class="dpill' + (up ? ' up' : '') + '">'
   + (up ? '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">'
@@ -3482,15 +3593,15 @@ function renderSet() {
     '<label class="block mb-3"><span class="block text-[10.5px] font-semibold text-slate-500 mb-1.5">'
     + label + '</span>'
     + '<input data-g="' + g + '" data-k="' + k + '" value="' + esc(val || '') + '" placeholder="' + (ph || '')
-    + '" class="w-full bg-slate-50 rounded-xl px-3 py-2.5 text-[12.5px] text-slate-900 focus:outline-none focus:bg-white"'
+    + '" class="w-full bg-slate-50 rd-sm px-3 py-2.5 text-[12.5px] text-slate-900 focus:outline-none focus:bg-white"'
     + ' style="box-shadow:var(--ring)"></label>';
 
   const sw = (k, label, on) =>
     '<button onclick="toggleSet(\'' + k + '\')" class="w-full flex items-center justify-between gap-3 py-2.5">'
     + '<span class="text-[12.5px] text-slate-800">' + label + '</span>'
-    + '<span class="shrink-0 w-9 h-5 rounded-full transition relative" style="background:'
+    + '<span class="shrink-0 w-9 h-5 rd-full transition relative" style="background:'
     + (on ? 'var(--od-red)' : '#e2e8f0') + '">'
-    + '<span class="absolute top-0.5 w-4 h-4 rounded-full bg-white" style="left:'
+    + '<span class="absolute top-0.5 w-4 h-4 rd-full bg-white" style="left:'
     + (on ? '18px' : '2px') + ';box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .18s ease"></span></span></button>';
 
   const head = t => '<div class="t-label num text-[9.5px] text-slate-500 mb-2.5 mt-1">' + t + '</div>';
@@ -3514,7 +3625,7 @@ function renderSet() {
     + sw('weekly', '주간 요약', SET.notify.weekly)
     + '<div class="border-t border-slate-100 my-5"></div>'
     + head('대화')
-    + '<button onclick="chatResetLocal()" class="btn w-full text-[12px] font-bold text-slate-700 py-2.5 rounded-xl">대화를 처음 상태로 되돌리기</button>'
+    + '<button onclick="chatResetLocal()" class="btn w-full text-[12px] font-bold text-slate-700 py-2.5 rd-sm">대화를 처음 상태로 되돌리기</button>'
     + '<p class="text-[10.5px] text-slate-400 mt-2 keep">시연하며 남긴 시험 메시지를 지웁니다. 이 브라우저에만 적용됩니다.</p>';
 }
 
@@ -4080,7 +4191,7 @@ function drawPanel() {
       + '<button onclick="exportCsv()" class="fbtn">CSV 내려받기 <span class="num">' + progList().length + '</span></button>'
       + '<button onclick="na(\'구글 시트 연결\', \'실제 화면에서는 이 목록이 담긴 시트가 새 창에서 열립니다. 시트는 진행에 맞춰 자동으로 갱신됩니다.\')" class="fbtn">구글 시트로 열기</button>'
       + '<span class="w-px h-4 bg-slate-200 mx-0.5"></span>'
-      + '<span class="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg" style="box-shadow:var(--lift-1)">'
+      + '<span class="flex items-center gap-1.5 bg-white px-2 py-1.5 rd-sm" style="box-shadow:var(--lift-1)">'
       +   '<input id="shLink" readonly value="' + SHEET_URL + '" onclick="this.select()"'
       +     ' class="mono text-[10.5px] text-slate-600 bg-transparent w-[188px] focus:outline-none" aria-label="시트 링크">'
       +   '<button onclick="copyLink()" class="text-[10.5px] font-bold text-slate-500 hover:text-slate-900 whitespace-nowrap">복사</button>'
@@ -4521,9 +4632,9 @@ function paintEmb() {
   emb.innerHTML = '<div class="din">'
     + '<div class="flex items-center justify-between gap-2">'
     +   '<span class="t-label num text-[9.5px] text-slate-500">콘텐츠</span>'
-    +   (c.up ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded text-emerald-700 bg-emerald-50">'
+    +   (c.up ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rd-xs text-emerald-700 bg-emerald-50">'
                 + esc(c.due) + ' 업로드</span>'
-             : '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-500 bg-slate-100">'
+             : '<span class="text-[10px] font-bold px-1.5 py-0.5 rd-xs text-slate-500 bg-slate-100">'
                 + esc(c.due) + ' 예정</span>')
     + '</div>'
     + (c.up
@@ -4661,7 +4772,7 @@ function personChip(i, removable) {
   const c = CREATORS[i];
   if (!c) return '';
   const st = STAGE[c.stage] || STAGE.make;
-  return '<span class="inline-flex items-center gap-1.5 bg-white px-1.5 py-1 rounded-lg cursor-pointer align-middle"'
+  return '<span class="inline-flex items-center gap-1.5 bg-white px-1.5 py-1 rd-sm cursor-pointer align-middle"'
     + ' style="box-shadow:var(--lift-1)" onclick="openPeek(' + i + ',event)" title="눌러서 자세히 보기">'
     + avatar(c, i, 20)
     + '<span class="text-[10.5px] font-bold text-slate-900 truncate max-w-[92px]">' + esc(c.name) + '</span>'
@@ -4693,7 +4804,7 @@ function renderChat() {
      한 줄마다 시각이 붙으면 대화가 아니라 로그로 읽힌다 */
   $('chatLog').innerHTML = CHAT.map(function (m, i) {
     if (m.who === 'sys')
-      return '<div class="self-center text-[10px] text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full keep my-1.5">'
+      return '<div class="self-center text-[10px] text-slate-500 bg-slate-50 px-2.5 py-1 rd-full keep my-1.5">'
         + esc(m.text) + '</div>';
     const mine = m.who === 'brand';
     const next = CHAT[i + 1];
@@ -4706,7 +4817,7 @@ function renderChat() {
            + m.people.map(function (p) {
                const k = typeof p === 'number' ? p : CREATORS.findIndex(c => c.handle === p);
                return k >= 0 ? personChip(k, false)
-                 : '<span class="inline-flex items-center bg-white px-1.5 py-1 rounded-lg num text-[10px] font-bold text-slate-700" style="box-shadow:var(--lift-1)">' + esc(p) + '</span>';
+                 : '<span class="inline-flex items-center bg-white px-1.5 py-1 rd-sm num text-[10px] font-bold text-slate-700" style="box-shadow:var(--lift-1)">' + esc(p) + '</span>';
              }).join('') + '</div>'
          : '')
       + (m.img
@@ -4839,7 +4950,7 @@ function paintMemoPanel() {
     + '<div class="flex items-center justify-between gap-2 shrink-0">'
     +   '<span class="t-label num text-[9.5px] text-slate-500">메모</span>'
     +   (list.length
-        ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded '
+        ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rd-xs '
           + (open ? 'text-slate-700 bg-slate-100' : 'text-emerald-700 bg-emerald-50') + '">'
           + (open ? open + '건 남음' : '모두 완료') + '</span>'
         : '')
@@ -5218,14 +5329,14 @@ function buildGuide() {
   $('guideTitle').textContent = '오드타입 ' + cp.m + '월 가이드라인';
 
   $('guideBody').innerHTML =
-      '<div class="shrink-0 flex items-center gap-2.5 bg-slate-900 text-white rounded-xl px-3.5 py-2.5">'
+      '<div class="shrink-0 flex items-center gap-2.5 bg-slate-900 text-white rd-sm px-3.5 py-2.5">'
     +   '<svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">'
     +   '<path stroke-linecap="round" stroke-linejoin="round" d="M8 11V7a4 4 0 118 0v4m-9 0h10a1 1 0 011 1v7a1 1 0 01-1 1H7a1 1 0 01-1-1v-7a1 1 0 011-1z"/></svg>'
     +   '<span class="text-[11.5px] font-semibold keep">' + esc(cp.period.split(' – ')[0])
     +     ' 크리에이터 ' + sent + '명에게 전달 완료 — 지금부터는 수정 요청으로만 바뀝니다</span>'
     + '</div>'
     + '<iframe src="' + GUIDE_URL + '" title="오드타입 크리에이터 가이드"'
-    +   ' class="w-full flex-1 min-h-0 rounded-xl bg-white" style="border:1px solid #e2e8f0"'
+    +   ' class="w-full flex-1 min-h-0 rd-sm bg-white" style="border:1px solid #e2e8f0"'
     +   ' loading="lazy" referrerpolicy="no-referrer"></iframe>';
 }
 
@@ -5244,7 +5355,7 @@ function askGuide() {
    mid 는 '이 페이지에서 몇 사람만 골랐다' 는 자리 — 머리글의 전체 선택 칸이 쓴다.
    빈 칸 · 일부 · 전부가 눈으로 갈려야 눌러 본 것이 남는다 */
 function box(on, mid) {
-  return '<span class="shrink-0 w-[18px] h-[18px] rounded-md border-2 grid place-items-center transition '
+  return '<span class="shrink-0 w-[18px] h-[18px] rd-xs border-2 grid place-items-center transition '
     + (on || mid ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-300 text-transparent') + '">'
     + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="'
     + (on ? 'M5 13l4 4L19 7' : 'M6 12h12') + '"/></svg></span>';
@@ -5269,7 +5380,7 @@ function buildFiles() {
     + sel.map(c => {
         const i = CREATORS.indexOf(c), ready = isUp(c);
         /* 진행상황 카드와 같은 손놀림 — 박스를 누르면 잡힌다 */
-        return '<div class="' + (ready ? 'pcard' : '') + ' flex items-center gap-3 rounded-xl px-3.5 py-3 border '
+        return '<div class="' + (ready ? 'pcard' : '') + ' flex items-center gap-3 rd-sm px-3.5 py-3 border '
           + (ready ? 'bg-white border-slate-200' : 'bg-slate-50 border-slate-100')
           + (FILEPICK.has(i) ? ' on' : '') + '"'
           + (ready ? ' onclick="toggleFile(' + i + ')" title="눌러서 고르기"' : '') + '>'
@@ -5341,7 +5452,7 @@ function buildCodes() {
   const allFree = freeIdx.length > 0 && freeIdx.every(i => CODECOPY.has(i));
 
   const cbox = (on, act, label) =>
-    '<button onclick="' + act + '" class="shrink-0 w-[18px] h-[18px] rounded-md border-2 grid place-items-center transition '
+    '<button onclick="' + act + '" class="shrink-0 w-[18px] h-[18px] rd-xs border-2 grid place-items-center transition '
     + (on ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-300 text-transparent')
     + '" aria-label="' + label + '">'
     + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24">'
@@ -5356,7 +5467,7 @@ function buildCodes() {
     +     '건 · 유료 ' + paidIdx.length + '건</span></div>'
     + sel.map((c, k) => {
         const i = CREATORS.indexOf(c), paid = k >= FREE_CODES;
-        return '<div class="flex items-center gap-3 rounded-xl px-3.5 py-3 border '
+        return '<div class="flex items-center gap-3 rd-sm px-3.5 py-3 border '
           + (paid ? 'bg-slate-50 border-slate-100' : 'bg-white border-slate-200') + '">'
           + cbox(paid ? CODEPICK.has(i) : CODECOPY.has(i),
                  (paid ? 'toggleCode(' : 'toggleCopy(') + i + ')',
@@ -5368,10 +5479,10 @@ function buildCodes() {
           + '</div>'
           + (paid
              ? '<span class="num shrink-0 text-[11px] font-bold text-slate-400 tracking-[.14em]">••••••</span>'
-               + '<span class="shrink-0 text-[9.5px] font-bold text-slate-500 bg-slate-100 px-1.5 py-1 rounded-md whitespace-nowrap">유료</span>'
-             : '<button onclick="copy(\'' + esc(c.code) + '\')" class="shrink-0 mono text-[10.5px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-2 rounded-lg transition whitespace-nowrap">'
+               + '<span class="shrink-0 text-[9.5px] font-bold text-slate-500 bg-slate-100 px-1.5 py-1 rd-xs whitespace-nowrap">유료</span>'
+             : '<button onclick="copy(\'' + esc(c.code) + '\')" class="shrink-0 mono text-[10.5px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-2 rd-sm transition whitespace-nowrap">'
                + esc(c.code) + '</button>'
-               + '<span class="shrink-0 text-[9.5px] font-bold text-white bg-slate-900 px-1.5 py-1 rounded-md whitespace-nowrap">무료</span>')
+               + '<span class="shrink-0 text-[9.5px] font-bold text-white bg-slate-900 px-1.5 py-1 rd-xs whitespace-nowrap">무료</span>')
           + '</div>';
       }).join('');
 
@@ -5439,13 +5550,13 @@ function buildReport() {
   const withExtra = up.filter(c => c.extra.length);
   const plats = [...new Set(up.flatMap(c => c.extra))];
   $('reportBody').innerHTML =
-    '<div class="bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-[11.5px] text-slate-700 keep">'
+    '<div class="bg-slate-100 border border-slate-200 rd-sm px-4 py-3 text-[11.5px] text-slate-700 keep">'
     + '캠페인 진행 중입니다. 업로드 완료 ' + up.length + '건 기준이며, 남은 ' + (selected().length - up.length) + '건이 반영되면 수치가 올라갑니다.</div>'
     + '<div class="grid grid-cols-2 gap-2.5">' + [
       ['조회수', n(V)], ['좋아요', n(up.reduce((a, c) => a + c.likes, 0))],
       ['댓글', n(up.reduce((a, c) => a + c.cmts, 0))], ['저장', n(up.reduce((a, c) => a + c.saves, 0))]
     ].map(([t, v]) =>
-      '<div class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5">'
+      '<div class="bg-slate-50 border border-slate-200 rd-sm px-4 py-3.5">'
       + '<div class="text-[10.5px] text-slate-500">' + t + '</div>'
       + '<div class="num text-lg font-bold text-slate-900 mt-0.5">' + v + '</div></div>').join('') + '</div>'
     + '<div><div class="text-xs font-bold text-slate-900 mb-2.5">조회수 상위 ' + top.length + '건</div><div class="space-y-2">'
@@ -5455,11 +5566,11 @@ function buildReport() {
       + '<span class="text-xs font-semibold text-slate-900 truncate">' + esc(c.name)
       + ' <span class="num font-normal text-slate-500">' + esc(c.handle) + '</span></span>'
       + '<span class="num text-xs font-bold text-slate-900 shrink-0">' + n(c.views) + '</span></div>'
-      + '<div class="h-1.5 bg-slate-100 rounded-full mt-1.5 overflow-hidden"><div class="h-full bg-slate-900 rounded-full" style="width:'
+      + '<div class="h-1.5 bg-slate-100 rd-full mt-1.5 overflow-hidden"><div class="h-full bg-slate-900 rd-full" style="width:'
       + Math.round(c.views / max * 100) + '%"></div></div></div></div>').join('') + '</div></div>'
     + '<div><div class="text-xs font-bold text-slate-900 mb-2.5">추가 플랫폼 게시</div><div class="flex flex-wrap gap-1.5">'
     + (withExtra.length
-        ? withExtra.map(c => '<span class="text-[11px] font-medium text-slate-600 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg">'
+        ? withExtra.map(c => '<span class="text-[11px] font-medium text-slate-600 bg-white border border-slate-200 px-2.5 py-1.5 rd-sm">'
             + esc(c.name) + ' <span class="text-slate-500">' + c.extra.join(' · ') + '</span></span>').join('')
         : '<span class="text-[11px] text-slate-500">없음</span>')
     + '</div>' + (plats.length ? '<p class="text-[10.5px] text-slate-500 mt-2">' + plats.join(' · ') + '</p>' : '') + '</div>';
@@ -5478,9 +5589,9 @@ function buildCal() {
   if (first) h += '<div style="grid-column:span ' + first + '"></div>';
   for (let d = 1; d <= days; d++) {
     const list = marks[d] || [];
-    h += '<div class="min-h-[58px] rounded-lg border p-1.5 text-left ' + (list.length ? 'bg-white border-slate-200' : 'bg-slate-50/60 border-slate-100') + '">'
+    h += '<div class="min-h-[58px] rd-sm border p-1.5 text-left ' + (list.length ? 'bg-white border-slate-200' : 'bg-slate-50/60 border-slate-100') + '">'
       + '<span class="num text-[10.5px] ' + (list.length ? 'text-slate-700 font-semibold' : 'text-slate-500') + '">' + d + '</span>'
-      + list.map(m => '<div class="mt-1 text-[9.5px] font-medium leading-tight px-1 py-1 rounded border '
+      + list.map(m => '<div class="mt-1 text-[9.5px] font-medium leading-tight px-1 py-1 rd-xs border '
           + (isUp(m) ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-600 border-slate-200')
           + '">' + esc(m.name) + '</div>').join('') + '</div>';
   }
