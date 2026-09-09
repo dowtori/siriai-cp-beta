@@ -1751,6 +1751,13 @@
   .crow .ct{font-size:13px;font-weight:600;color:var(--ink-1);letter-spacing:var(--tr-body);
             white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
   .crow.past .ct{font-weight:500;color:var(--ink-3)}
+  /* 잠긴 줄 — 죽은 줄이 아니다. 누를 수는 있고, 누르면 왜 안 되는지 말해 준다.
+     그래서 호버는 살려 두되 색은 한 단 내린다 */
+  .crow.locked .ct{color:var(--ink-4)}
+  .crow.locked .clock{width:12px;height:12px;flex:none;margin-left:auto;
+                      color:#c3cbd6;transition:color .14s ease}
+  .crow.locked:hover .ct{color:var(--ink-3)}
+  .crow.locked:hover .clock{color:var(--ink-3)}
   .crow .nbar{margin-top:7px}
   .crow.past .nbar{opacity:.75}
 
@@ -3092,6 +3099,9 @@ function readURL() {
   if (seg[0] !== BRAND_SLUG) return null;
   if (!seg[1]) return { v: 'home', c: null };
   const cp = CAMPAIGNS.find(c => c.slug === seg[1] || c.id === seg[1]);
+  /* 지난 캠페인 주소는 안 연다. null 을 주면 bootRoute() 가 진행 중인 것으로
+     보내고, 기동 때의 syncURL(true) 이 주소도 그쪽으로 정리한다 */
+  if (cp && cp.state !== 'live') return null;
   return cp ? { v: 'camp', c: cp.id } : { v: 'home', c: null };
 }
 /* 루트(/)는 콜드메일 링크가 여는 자리다. 브랜드 홈이 아니라 지금 돌고 있는
@@ -3106,6 +3116,9 @@ addEventListener('popstate', function () {
   const r = bootRoute();
   if (r.v === 'camp') pickCamp(r.c, true);
   else go('home', true);
+  /* 열지 않은 주소(지난 캠페인 등)가 주소창에 남으면 새로고침 때 또 그리로 간다.
+     화면이 정한 자리로 주소를 맞춘다 — replaceState 라 뒤로 가기는 안 늘어난다 */
+  syncURL(true);
 });
 
 /* fromURL 이면 주소를 다시 쓰지 않는다 — 뒤로 가기가 제자리를 맴돈다 */
@@ -3221,11 +3234,14 @@ function renderNav() {
     + navBar(upCount(cp.id), cp.n, '#10b981')
     + '</button>').join('');
 
-  /* 지난 캠페인 — 캠페인이 쌓인다는 것만 말한다. 기간·인원·배지는 뺀다 */
+  /* 지난 캠페인 — 캠페인이 쌓인다는 것만 말한다. 기간·인원·배지는 뺀다.
+     둘러보기에서는 열지 않는다. 목록에서 지워 버리면 '캠페인이 쌓인다' 는 말이
+     같이 사라지므로, 자리와 진행율은 그대로 두고 자물쇠만 채운다 —
+     눌러보게 두고 왜 안 되는지 말해 주는 것이 이 화면의 규칙이다 */
   const pastHtml = past.map(cp =>
-      '<button onclick="pickCamp(\'' + cp.id + '\')" class="crow past'
-    + (cp.id === S.camp && S.view === 'camp' ? ' on' : '') + '">'
-    + '<span class="crowT"><span class="ct">' + esc(cp.title) + '</span></span>'
+      '<button onclick="lockedCamp(&quot;' + cp.id + '&quot;)" class="crow past locked"'
+    + ' title="' + esc(cp.title) + ' — 둘러보기에서는 열리지 않습니다">'
+    + '<span class="crowT"><span class="ct">' + esc(cp.title) + '</span>' + CLOCK + '</span>'
     + navBar(upCount(cp.id), cp.n, '#c3cbd6') + '</button>').join('');
 
   /* 9.5px 대문자 라벨은 구분선으로도 안 읽혔다. 제목으로 세운다 */
@@ -3319,6 +3335,16 @@ function renderRailWs() {
     + '<span class="mC">' + WICO.chev + '</span>';
 }
 
+/* 지난 캠페인은 둘러보기에서 열리지 않는다. 실제 화면에서는 그대로 남아 있다 */
+const CLOCK = '<svg class="clock" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">'
+  + '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7.5a4 4 0 018 0V11"/></svg>';
+function lockedCamp(id) {
+  const cp = CAMPAIGNS.find(c => c.id === id);
+  toggleRail(false);
+  na((cp ? cp.title : '지난 캠페인') + ' 열기',
+     '실제 화면에서는 지난 달의 명단 · 성과 · 원본이 그대로 남아 있습니다.');
+}
+
 /* 사이드바를 접는다. 본문과 하단 CTA 는 --rail 을 보고 따라온다.
    폭이 움직이는 동안 본문을 매 프레임 다시 재면 카드 스무 장이 같이 흔들려
    프레임이 떨어진다 — 움직이는 동안은 재지 않고 끝나고 한 번만 잰다 */
@@ -3345,6 +3371,9 @@ function toggleMini() {
 
 function pickCamp(id, fromURL) {
   if (!ROSTERS[id]) { toggleRail(false); return; }
+  /* 문이 하나만 잠기면 다른 문으로 들어온다. 여기서 한 번 더 막는다 */
+  const target = CAMPAIGNS.find(c => c.id === id);
+  if (target && target.state !== 'live') { lockedCamp(id); return; }
   if (id === S.camp && S.view === 'camp') { toggleRail(false); return; }
   if (id === S.camp) { go('camp', fromURL); toggleRail(false); return; }
   S.camp = id;
