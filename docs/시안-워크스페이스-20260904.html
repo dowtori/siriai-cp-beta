@@ -1240,6 +1240,16 @@
     .dockTabGlass{background:#0f172a}
   }
 
+  /* 데모를 누르면 자라는 칸. 위로 자라므로(독이 bottom 고정) 다른 것을 밀지 않는다 */
+  .dkMore{max-height:0;opacity:0;overflow:hidden;
+          transition:max-height .38s cubic-bezier(.22,.61,.36,1), opacity .22s ease,
+                     margin-top .38s cubic-bezier(.22,.61,.36,1)}
+  #dock.more .dkMore{max-height:200px;opacity:1;margin-top:20px}
+  .dkMoreIn{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:14px;
+            padding-top:20px;border-top:1px solid rgba(17,19,24,.10)}
+  .dkFld{flex:1 1 240px;min-width:0;max-width:400px;text-align:left}
+  .dkLb{display:block;font-size:11.5px;font-weight:600;color:var(--ink-3);
+        letter-spacing:var(--tr-small);margin-bottom:7px;white-space:nowrap}
   .dkIn{color:var(--ink-1);background:rgba(255,255,255,.55);
         box-shadow:inset 0 0 0 1px rgba(17,19,24,.10)}
   .dkIn::placeholder{color:#94a3b8}
@@ -1929,8 +1939,14 @@
   .sheet > .panel{transform:translateY(100%);transition:transform .32s cubic-bezier(.22,.61,.36,1)}
   .sheet.open > .panel{transform:translateY(0)}
 
-  .toast{transform:translate(-50%,150%);opacity:0;transition:transform .3s cubic-bezier(.22,.61,.36,1),opacity .3s ease}
+  /* 읽는 것이고 누르는 것이 아니다. transform 으로 화면 밖에 밀어 둬도 그 사각형은
+     여전히 hit-test 대상이고 z-index 가 80 이라 하단 중앙의 클릭을 통째로 가로챈다 —
+     커피챗 '보내기' 가 글자 부분만 눌리던 원인이 이것이다.
+     대체 안내에 넣은 메일 링크만 예외로 받는다 */
+  .toast{transform:translate(-50%,150%);opacity:0;pointer-events:none;
+         transition:transform .3s cubic-bezier(.22,.61,.36,1),opacity .3s ease}
   .toast.show{transform:translate(-50%,0);opacity:1}
+  .toast a{pointer-events:auto}
 
   /* ── 하단 독 — 접으면 튜토리얼에 집중할 수 있다 ─────────────── */
   /* 화면을 옮겨도 남는다. 데모 신청은 이 페이지 전체의 일이지 캠페인 표에 딸린
@@ -2360,7 +2376,7 @@
       브랜드명만 주시면 담당자가, <b class="text-slate-700 font-semibold">선정부터 완료까지 진행해볼 수 있는 데모 페이지</b>를 만들어 보내드립니다
     </div>
 
-    <form onsubmit="demoOpen(event)" class="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+    <form onsubmit="demoGo(event)" class="mt-6 flex flex-wrap items-center justify-center gap-2.5">
       <label for="dkBrand" class="sr-only">브랜드명</label>
       <input id="dkBrand" placeholder="브랜드명" autocomplete="organization"
              class="dkIn w-[170px] text-[14px] px-4 py-4 rd-sm focus:outline-none transition">
@@ -2376,11 +2392,36 @@
 
       <!-- 보조. 먼저 묻고 싶은 사람의 퇴로다. 글자만 두었더니 버튼으로 안 보였다 —
            면과 테두리는 주되, 색과 결은 주 버튼에만 남긴다 -->
-      <button type="button" onclick="openSheet('sh-booking')"
+      <button type="button" onclick="askNow()"
               class="btn-ask press text-[15px] font-bold px-8 py-4 rd-sm whitespace-nowrap">
         문의하기
       </button>
     </form>
+
+    <!-- 데모를 누르면 여기가 자란다. 방금 적은 두 값을 다시 묻지 않고 더 받을 것만 묻는다 -->
+    <div id="dkMore" class="dkMore">
+      <div class="dkMoreIn">
+        <div class="dkFld">
+          <label for="dkLink" class="dkLb">브랜드 인스타그램 또는 홈페이지
+            <span class="font-normal text-slate-400">선택</span></label>
+          <input id="dkLink" placeholder="@brand 또는 brand.co.kr"
+                 class="dkIn w-full text-[14px] px-4 py-3.5 rd-sm focus:outline-none transition">
+        </div>
+        <div class="shrink-0">
+          <div class="dkLb">생각하시는 규모</div>
+          <div id="dkSize" class="flex flex-wrap gap-2">
+            <button type="button" class="dmchip on" data-v="10명 내외">10명 내외</button>
+            <button type="button" class="dmchip" data-v="20명 내외">20명 내외</button>
+            <button type="button" class="dmchip" data-v="30명 이상">30명 이상</button>
+            <button type="button" class="dmchip" data-v="아직 미정">아직 미정</button>
+          </div>
+        </div>
+        <button type="button" onclick="demoSubmit()"
+                class="btn-go press text-[15px] font-bold px-8 py-3.5 rd-sm whitespace-nowrap shrink-0">
+          보내기
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -3998,7 +4039,7 @@ function bindFlow(seg) {
   });
 }
 document.addEventListener('click', function (e) {
-  const chip = e.target.closest && e.target.closest('#dmSize .dmchip');
+  const chip = e.target.closest && e.target.closest('#dmSize .dmchip, #dkSize .dmchip');
   if (!chip) return;
   chip.parentNode.querySelectorAll('.dmchip').forEach(function (b) { b.classList.remove('on'); });
   chip.classList.add('on');
@@ -5879,6 +5920,67 @@ function demoSend(e) {
     scale: size ? size.v : '',
     source: '콜드메일',
     memo: '데모 캠페인 신청 · ' + camp().title
+  }).then(function (ok) { if (!ok) inquiryFailed(); });
+}
+
+/* 칸이 비어 있으면 그 칸으로 커서를 옮기고 무엇이 필요한지 말한다 */
+function dkReady() {
+  const b = $('dkBrand'), c = $('dkContact');
+  if (!b.value.trim()) { b.focus(); toast('브랜드명을 적어 주세요.'); return null; }
+  if (!c.value.trim()) { c.focus(); toast('연락받을 곳을 적어 주세요.'); return null; }
+  return { brand: b.value.trim(), contact: c.value.trim() };
+}
+
+function dkClear() {
+  $('dock').classList.remove('more');
+  $('dkBrand').value = ''; $('dkContact').value = '';
+  if ($('dkLink')) $('dkLink').value = '';
+}
+
+/* 데모 — 모달을 하나 더 띄우고 방금 적은 값을 다시 보여주는 것은 손이 두 번 간다.
+   박스가 그 자리에서 자라고 더 받을 것만 묻는다 */
+function demoGo(e) {
+  if (e) e.preventDefault();
+  const v = dkReady();
+  if (!v) return;
+  const box = $('dock');
+  if (!box.classList.contains('more')) {
+    box.classList.add('more');
+    setTimeout(function () { const l = $('dkLink'); if (l) l.focus(); }, 260);
+    return;
+  }
+  demoSubmit();
+}
+
+function demoSubmit() {
+  const v = dkReady();
+  if (!v) return;
+  const link = $('dkLink') ? $('dkLink').value.trim() : '';
+  const size = ($('dkSize').querySelector('.dmchip.on') || {}).dataset;
+  dkClear();
+  /* 응답을 기다리게 하면 두 번 누른다 — 먼저 답하고 뒤에서 보낸다 */
+  toast('<strong class="font-semibold">' + esc(v.brand) + '</strong> 데모 캠페인 신청을 받았어요.'
+    + '<br><span class="text-slate-300">담당자가 확인 후 ' + (size ? esc(size.v) + ' 규모로 ' : '')
+    + '데모 페이지를 만들어 보내드립니다.</span>');
+  sendInquiry({
+    brand: v.brand, contact: v.contact, site: link,
+    scale: size ? size.v : '',
+    source: '콜드메일',
+    memo: '데모 캠페인 신청 · ' + camp().title
+  }).then(function (ok) { if (!ok) inquiryFailed(); });
+}
+
+/* 문의 — 두 칸이 이미 채워져 있다. 한 번에 끝낸다 */
+function askNow() {
+  const v = dkReady();
+  if (!v) return;
+  dkClear();
+  toast('<strong class="font-semibold">' + esc(v.brand) + '</strong> 문의를 받았어요.'
+    + '<br><span class="text-slate-300">영업일 기준 하루 안에 연락드릴게요.</span>');
+  sendInquiry({
+    brand: v.brand, contact: v.contact,
+    source: '콜드메일',
+    memo: '문의하기 · ' + camp().title
   }).then(function (ok) { if (!ok) inquiryFailed(); });
 }
 
