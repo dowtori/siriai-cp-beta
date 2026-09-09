@@ -228,7 +228,6 @@
   .cmStep.r-next b{color:var(--ink-4)}
   .cmStep.r-past{opacity:.62}
   .cmStep.r-now{background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--hair)}
-  .cmStep.r-now b{font-size:15px}
   .cmStep.r-now em{color:var(--ink-1);font-weight:600}
   .cmStep.r-end b{color:#047857}
   .fchk{width:12px;height:12px;color:#059669;flex:none;display:block}
@@ -751,30 +750,31 @@
   .fpWave .flab i{display:block;font-size:10px;font-style:normal;color:#64748b;margin-top:4px}
   .fpWave .flab.hot b{color:#e2483d}
 
-  /* ── 단계의 지위 ── 지나간 것은 작게, 지금은 크게, 쌓인 것은 초록으로.
-     전부 같은 크기로 세워 두면 숫자 다섯 개를 눈으로 비교해야 한다 */
+  /* ── 단계의 지위 ──────────────────────────────────────────────────
+     위계는 산(파도의 부피)이 진다. 글자는 크기를 건드리지 않는다 —
+     22px 짜리 숫자로 '지금' 을 말하려던 것이 레이아웃만 흔들었다.
+     여기서는 색과 무게만 쓴다. 크기는 전부 기본값이다 */
   .fpWave .flab em{display:block;font-style:normal;font-size:8.5px;font-weight:700;
                    letter-spacing:var(--tr-label);text-transform:uppercase;margin-top:3px}
   .fpWave .flab .fchk{width:14px;height:14px;margin:0 auto}
-  .fpWave .flab.r-done{opacity:.5}
+  .fpWave .flab.r-done{opacity:.55}
   .fpWave .flab.r-done em{color:#059669}
-  .fpWave .flab.r-next{opacity:.3}
-  .fpWave .flab.r-past{opacity:.6}
-  .fpWave .flab.r-past b{font-size:12px;color:var(--ink-3)}
-  /* 지금 단계 — 이 화면의 주어다. 숫자를 키우고 라벨을 세운다 */
-  .fpWave .flab.r-now b{font-size:22px;color:var(--ink-1)}
-  .fpWave .flab.r-now i{color:var(--ink-1);font-weight:600;font-size:11px}
+  .fpWave .flab.r-next{opacity:.32}
+  .fpWave .flab.r-past{opacity:.62}
+  .fpWave .flab.r-past b{color:var(--ink-3)}
+  /* 지금 단계 — 색과 무게로만. 크기는 그대로 둔다 */
+  .fpWave .flab.r-now b{color:var(--ink-1)}
+  .fpWave .flab.r-now i{color:var(--ink-1);font-weight:600}
   .fpWave .flab.r-now em{color:var(--od-red)}
-  .fpWave .flab.r-end b{font-size:17px;color:#047857}
+  .fpWave .flab.r-end b{color:#047857}
   .fpWave .flab.r-end i{color:#047857;font-weight:600}
 
-  /* 파도도 같이 물러난다 — 지나간 구간이 지금 구간만큼 짙으면 위계가 없다 */
-  .fpWave .fseg.r-done, .fpWave .fseg.r-next{fill-opacity:calc(var(--o) * .10)}
-  .fpWave .fseg.r-past{fill-opacity:calc(var(--o) * .18)}
-  .fpWave .fseg.r-now {fill-opacity:calc(var(--o) * .52)}
+  /* 농도도 부피를 따른다. 지나간 구간은 아예 산이 없으니 규칙도 필요 없다 */
+  .fpWave .fseg.r-past{fill-opacity:calc(var(--o) * .30)}
+  .fpWave .fseg.r-end {fill-opacity:calc(var(--o) * .42)}
+  .fpWave .fseg.r-now {fill-opacity:calc(var(--o) * .60)}
   .fpWave.on .fseg.r-now{fill-opacity:calc(var(--o) * .09)}
   /* 지나간 단계의 얼굴은 흐리게 — 다시 볼 일이 별로 없는 사람들이다 */
-  .fpWave .fav.r-done, .fpWave .fav.r-next{opacity:.35}
   .fpWave .fav.r-past{opacity:.55}
   .fpWave .fav.r-now{box-shadow:0 0 0 2px #fff, 0 0 0 4px rgba(15,23,42,.14)}
   .fpWave .fhit{position:absolute;top:0;bottom:34px;cursor:pointer;border-radius:var(--r-sm);
@@ -2693,9 +2693,9 @@ const LIVE_ROSTER = [
   { name:'남시연', handle:'@siyeon_nam',    roman:'SIYEON',  disc:10, fol: 25000, er:5.2, cost:150000, due:'08.24', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false },
   { name:'한서율', handle:'@seoyul.log',    roman:'SEOYUL',  disc:10, fol: 23000, er:5.1, cost:150000, due:'08.25', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:true, up:false },
 
-  /* 선정 전 2 — 명단에는 있지만 아직 확정이 아니다 */
-  { name:'정다인', handle:'@dain_kit',      roman:'DAIN',    disc:15, fol: 27000, er:4.6, cost:150000, due:'08.27', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:false, up:false },
-  { name:'오유나', handle:'@yuna_pick',     roman:'YUNA',    disc:10, fol: 22000, er:3.9, cost:150000, due:'08.29', views:0, likes:0, cmts:0, saves:0, extra:[],               sel:false, up:false }
+  /* 마지막에 합류해 올린 둘. 리스트 단계도 이제 비었다 */
+  { name:'정다인', handle:'@dain_kit',      roman:'DAIN',    disc:15, fol: 27000, er:4.6, cost:150000, due:'08.27', views:148000, likes: 5400, cmts: 170, saves:1400, extra:[],               sel:true,  up:true  },
+  { name:'오유나', handle:'@yuna_pick',     roman:'YUNA',    disc:10, fol: 22000, er:3.9, cost:150000, due:'08.29', views:112000, likes: 3900, cmts: 120, saves:1000, extra:[],               sel:true,  up:true  }
 ];
 
 /* 업로드된 콘텐츠의 스틸(STILLS)은 걷어냈다 — 선반이 스토리 링으로 바뀌어
@@ -2727,15 +2727,14 @@ const REPEATS = [4, 2, 1, 3, 1, 2, 1, 5, 1, 2, 1, 1, 3, 1, 1, 2, 1, 1, 1, 2, 1, 
 LIVE_ROSTER.forEach(function (c, i) { c.works = REPEATS[i] || 1; });
 
 /* 이번 캠페인의 사건 기록 — 실제로는 어드민이 찍는다.
-   0~11 올라왔고 · 12~19 만드는 중 · 20~21 아직 고르기 전.
+   0~11 · 20~21 올라왔고 · 12~19 만드는 중.
 
-   앞선 시점에는 선정·배송에도 사람이 남아 있었다. 그러면 다섯 단계에 사람이
-   골고루 흩어져서 "지금 어디까지 왔나" 가 안 읽힌다 — 어느 캠페인이든
-   실제로는 앞 단계가 먼저 비고 뒤가 채워진다. 선정과 배송은 끝났고,
-   제작 8 · 업로드 12 로 무게가 뒤로 넘어간 시점을 보여준다 */
+   앞 단계에 사람이 흩어져 있으면 "지금 어디까지 왔나" 가 안 읽힌다 — 어느
+   캠페인이든 실제로는 앞이 먼저 비고 뒤가 채워진다. 리스트 · 선정 · 배송이
+   전부 끝났고, 제작 8 · 업로드 14 로 무게가 완전히 뒤로 넘어간 시점이다 */
 LIVE_ROSTER.forEach(function (c, i) {
-  if (i <= 11)      { c.upAt  = c.due; c.gotAt = dshift(c.due, -7); c.sentAt = dshift(c.due, -9); }
-  else if (i <= 19) { c.gotAt = dshift(c.due, -7); c.sentAt = dshift(c.due, -9); }
+  if (i >= 12 && i <= 19) { c.gotAt = dshift(c.due, -7); c.sentAt = dshift(c.due, -9); }
+  else { c.upAt = c.due; c.gotAt = dshift(c.due, -7); c.sentAt = dshift(c.due, -9); }
 });
 
 const done = (name, handle, roman, disc, fol, er, cost, due, views, likes, cmts, saves, extra) =>
@@ -3829,12 +3828,20 @@ const fnum = (v, rank) => rank === 'done' ? FCHK : '<b class="num">' + v + '</b>
 
 
 /* ── 진행 흐름 파도 ───────────────────────────────────────────────
-   높이는 인원수에 비례하지 않는다. 비중 순위로만 정한다 — 서로 다른 값이
-   넷이면 단계도 넷이고, 같은 값은 같은 높이에 선다. "얼마나 높아야 맞나" 를
-   고민할 필요가 없어지고, 정확한 수는 아래 숫자가 말한다.
-   막대가 아니라 면이다. 구간마다 따로 세워 하나로 이어 붙지 않게 했다. */
-const FTIER_H = [1, 0.72, 0.46, 0.26, 0.15];
-const FTIER_O = [1, 0.78, 0.56, 0.40, 0.30];
+   높이는 인원수에 비례하지 않는다. 단계의 지위가 정한다.
+
+   처음에는 인원수 순위로 높이를 줬다. 그러면 아무도 없는 단계도 46% 짜리 산을
+   세운다 — 지나간 단계가 지금 단계만큼 자리를 차지하니 '어디까지 왔나' 가
+   모양으로 안 읽혔다. 그걸 글자 크기로 메우려 했던 것이 두 번째 실수다.
+   22px 짜리 숫자는 위계가 아니라 소음이었고, 레이아웃만 흔들었다.
+
+   위계는 부피가 진다. 지나간 곳은 평지, 지금이 산, 쌓인 것이 언덕이다 —
+   옆으로도 넓어진다. 산은 높이만으로 서지 않는다.
+   글자는 원래 크기로 돌려놓는다. 숫자는 정확한 값을 말하는 일만 한다. */
+const RANK_H = { now: 1,    end: 0.58, past: 0.24, done: 0, next: 0 };
+const RANK_O = { now: 1,    end: 0.70, past: 0.30, done: 0, next: 0 };
+/* 지금 단계는 제 칸을 거의 다 쓴다. 나머지는 좁게 서서 자리를 내준다 */
+const RANK_W = { now: 0.94, end: 0.70, past: 0.46, done: 0, next: 0 };
 
 /* 다섯 덩어리가 각각 서 있으면 순서가 안 읽힌다.
    왼쪽 잉크에서 오른쪽 그린으로 색을 건너보내 한 방향으로 흐르게 한다 —
@@ -3887,17 +3894,19 @@ function renderFlow() {
 
   const rank = flowRank(counts);
   const seg = FLOW.map(function (f, i) {
-    const t = uniq.indexOf(counts[i]);
-    return { key: f[0], label: f[1], n: counts[i], one: by[i][0], rank: rank[i],
-             h: FTIER_H[t] || 0.12, o: FTIER_O[t] || 0.3,
+    const r = rank[i];
+    return { key: f[0], label: f[1], n: counts[i], one: by[i][0], rank: r,
+             h: RANK_H[r], o: RANK_O[r], w: RANK_W[r],
              c: fcolor(FLOW.length > 1 ? i / (FLOW.length - 1) : 1) };
   });
 
   box.innerHTML =
       '<svg viewBox="0 0 ' + FW + ' ' + FVH + '" preserveAspectRatio="none" aria-hidden="true">'
     +   seg.map(function (x, i) {
+          if (!x.h) return '';   /* 지나갔거나 안 온 단계에는 산이 없다 */
+          const w = slot * x.w, x0 = i * slot + (slot - w) / 2;
           return '<path class="fseg r-' + x.rank + '" data-seg="' + i + '" style="--o:' + x.o + ';--c:' + x.c + '" d="'
-            + fhump(i * slot + pad, slot * FFILL, x.h) + '"/>';
+            + fhump(x0, w, x.h) + '"/>';
         }).join('')
     + '</svg><div class="fbase"><i></i></div>'
     + seg.map(function (x, i) {
