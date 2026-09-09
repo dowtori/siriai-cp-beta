@@ -5868,6 +5868,10 @@ function demoOpen(e) {
    date · time 도 보내지 않는다. 날짜+시간이 있는 행은 미팅 예약으로 잡혀
    사업소개서 쪽 예약 가능 시간이 막힌다 */
 const INQUIRY_URL = 'https://script.google.com/macros/s/AKfycbwyqgNQDvn7S9AhTrkIQRpm1VzeejjS98fj9Y17lWKMvR7acHuji0WR0TFGMFdYTPRPsQ/exec';
+/* 유입경로 — 이 화면은 이메일로 보낸 링크가 여는 자리다.
+   접수 스크립트는 모르는 값이면 원문을 그대로 남기므로 시트에 '이메일' 로 찍힌다
+   (사업소개서 · 포트폴리오 쪽 신청과 갈라 보려고 이 값을 따로 쓴다) */
+const INQUIRY_SOURCE = '이메일';
 const INQUIRY_MAIL = 'jysiriai@siriai.co.kr';
 
 async function postInquiry(f) {
@@ -5918,7 +5922,7 @@ function demoSend(e) {
   sendInquiry({
     brand: brand, contact: contact, site: link,
     scale: size ? size.v : '',
-    source: '콜드메일',
+    source: INQUIRY_SOURCE,
     memo: '데모 캠페인 신청 · ' + camp().title
   }).then(function (ok) { if (!ok) inquiryFailed(); });
 }
@@ -5965,7 +5969,7 @@ function demoSubmit() {
   sendInquiry({
     brand: v.brand, contact: v.contact, site: link,
     scale: size ? size.v : '',
-    source: '콜드메일',
+    source: INQUIRY_SOURCE,
     memo: '데모 캠페인 신청 · ' + camp().title
   }).then(function (ok) { if (!ok) inquiryFailed(); });
 }
@@ -5979,7 +5983,7 @@ function askNow() {
     + '<br><span class="text-slate-300">영업일 기준 하루 안에 연락드릴게요.</span>');
   sendInquiry({
     brand: v.brand, contact: v.contact,
-    source: '콜드메일',
+    source: INQUIRY_SOURCE,
     memo: '문의하기 · ' + camp().title
   }).then(function (ok) { if (!ok) inquiryFailed(); });
 }
@@ -6005,7 +6009,7 @@ function book(e) {
   /* 규모·링크가 없으니 시트에서 커피챗으로 읽힌다 */
   sendInquiry({
     brand: brand, contact: contact,
-    source: '콜드메일',
+    source: INQUIRY_SOURCE,
     memo: '커피챗 신청 · ' + camp().title
   }).then(function (ok) { if (!ok) inquiryFailed(); });
 }
