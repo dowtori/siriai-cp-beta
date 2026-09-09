@@ -821,6 +821,44 @@
 
 
 
+  /* ══ 진입 — 열람 신청 ═══════════════════════════════════════════
+     '들어가기 전에 거치는 곳' 으로 보이게 만든다: 어두운 막 · 가운데 한 장 ·
+     필수 표시가 붙은 칸 둘 · 폭을 다 쓰는 단추 하나.
+     닫기는 우상단에 둔다 — 관습적인 자리라 찾는 사람은 바로 찾고,
+     안 찾는 사람은 그대로 적는다. 그것이 이 화면이 노리는 전부다 */
+  #gate{background:rgba(15,23,42,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+        transition:opacity .3s ease,visibility .3s ease}
+  #gate.gone{opacity:0;visibility:hidden;pointer-events:none}
+  .gcard{position:relative;width:100%;max-width:452px;background:var(--panel);
+         border-radius:var(--r-lg);padding:34px 34px 26px;text-align:center;
+         box-shadow:var(--lift-over);animation:rise .42s cubic-bezier(.22,.61,.36,1) both}
+  .gx{position:absolute;top:14px;right:14px;width:32px;height:32px;display:grid;place-items:center;
+      border-radius:var(--r-sm);color:#c3cbd6;transition:color .15s ease,background-color .15s ease}
+  .gx svg{width:15px;height:15px}
+  .gx:hover{color:var(--ink-2);background:#f1f5f9}
+  .gEye{font-size:10px;font-weight:700;letter-spacing:var(--tr-label);text-transform:uppercase;
+        color:var(--od-red)}
+  .gT{margin:12px 0 0;font-size:25px;font-weight:700;line-height:1.34;
+      letter-spacing:var(--tr-display);color:var(--ink-1);word-break:keep-all}
+  .gD{margin:12px 0 0;font-size:13px;line-height:1.72;color:var(--ink-3);word-break:keep-all}
+  .gD b{color:var(--ink-1);font-weight:600}
+  .gForm{margin-top:22px;text-align:left}
+  .gL{display:flex;align-items:center;gap:6px;margin:0 0 6px;padding-left:2px;
+      font-size:11px;font-weight:600;color:var(--ink-2)}
+  .gL i{font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:var(--tr-small);
+        color:var(--od-red)}
+  .gIn{width:100%;margin-bottom:14px;padding:13px 14px;border-radius:var(--r-sm);
+       font-size:14px;color:var(--ink-1);background:var(--panel-2);
+       box-shadow:inset 0 0 0 1px rgba(17,19,24,.10);transition:box-shadow .15s ease,background-color .15s ease}
+  .gIn::placeholder{color:#a8b0bd}
+  .gIn:focus{outline:none;background:var(--panel);box-shadow:inset 0 0 0 1.5px rgba(17,19,24,.34)}
+  .gGo{width:100%;margin-top:4px;padding:15px 18px;border-radius:var(--r-sm);
+       font-size:15.5px;font-weight:700;display:inline-flex;align-items:center;
+       justify-content:center;gap:8px}
+  .gGo svg{width:17px;height:17px;flex:none}
+  .gFoot{margin-top:16px;font-size:11px;line-height:1.65;color:var(--ink-4);word-break:keep-all}
+  @media (max-width:520px){ .gcard{padding:28px 22px 22px} .gT{font-size:22px} }
+
   /* ══ 푸터 ════════════════════════════════════════════════════════
      끝이 없으면 한 페이지로 안 읽힌다 — 스크롤이 그냥 멈추는 것과, 끝났다고
      말해 주는 것은 다르다. siriai.co.kr 의 푸터를 그대로 따른다:
@@ -2462,6 +2500,36 @@
   데모 신청 열기
   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
 </button>
+
+<!-- ══ 진입 — 열람 신청 ══
+     안내 모달을 걷은 자리에 이것을 둔다. 하단 데모 신청과 같은 맥락이고 같은
+     시트로 간다 — 다른 것은 순서뿐이다. 저쪽은 다 보고 나서 남기는 자리고,
+     이쪽은 보기 전에 남기는 자리다.
+
+     통과해야 하는 자리처럼 보이게 두되, 실제로는 아니다.
+     우상단 닫기는 진짜로 닫히고 Esc 도 듣는다 — 키보드만 쓰는 사람이 갇히면
+     그건 넛지가 아니라 덫이다. 한 번 닫으면 이 세션에서는 다시 안 묻는다 -->
+<div id="gate" class="fixed inset-0 z-[75] flex items-center justify-center p-5">
+  <div class="gcard" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+    <button class="gx" onclick="gateClose()" aria-label="닫고 먼저 둘러보기" title="닫고 먼저 둘러보기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    <div class="gEye">Access request</div>
+    <h2 id="gateTitle" class="gT">어느 브랜드에서<br>보고 계신가요?</h2>
+    <p class="gD">이 화면은 오드타입이 캠페인을 굴리는 데 실제로 쓰는 운영 화면입니다.
+       남겨 주시면 담당자가 <b>같은 화면을 브랜드에 맞춰 만들어</b> 보내드립니다.</p>
+    <form class="gForm" onsubmit="gateSend(event)">
+      <label class="gL" for="gtBrand">브랜드명 <i>필수</i></label>
+      <input id="gtBrand" class="gIn" placeholder="예 · 오드타입" autocomplete="organization" required>
+      <label class="gL" for="gtContact">연락받으실 곳 <i>필수</i></label>
+      <input id="gtContact" class="gIn" placeholder="전화번호 또는 이메일" required>
+      <button type="submit" class="btn-go press gGo">확인하고 들어가기
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M3 12h18"/></svg>
+      </button>
+    </form>
+    <div class="gFoot">적어 주신 것은 담당자 연락에만 씁니다. 저장 · 내려받기 등 일부 기능은 둘러보기에서 동작하지 않습니다.</div>
+  </div>
+</div>
 
 <!-- ══ 드로어: 캘린더 ══ -->
 <div id="dw-calendar" class="drawer fixed inset-0 z-[65] bg-slate-900/40 flex justify-end" onclick="bgClose(event,'dw-calendar')">
@@ -5903,6 +5971,8 @@ function bgClose(e, id) { if (e.target === e.currentTarget) { $(id).classList.re
 
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
+  /* 열람 신청이 떠 있으면 그것부터 닫는다 — 갇히는 화면은 만들지 않는다 */
+  if ($('gate') && !$('gate').classList.contains('gone')) { gateClose(); return; }
   closePeek();
   const open = document.querySelectorAll('.drawer.open, .sheet.open');
   if (open.length) { open.forEach(d => d.classList.remove('open')); lockBody(false); return; }
@@ -5927,6 +5997,43 @@ function dockYield() {
   const d = $('dock');
   if (d && !d.classList.contains('down')) dock(false);
   DOCK_PIN = false;   /* 내려간 뒤로는 사람이 여는 것만 남는다 */
+}
+
+/* ══════════ 진입 — 열람 신청 ══════════
+   하단 데모 신청과 같은 곳(시트)으로 간다. 다른 것은 순서뿐이다 */
+const GATE_KEY = 'odGate';
+function gateSeen() {
+  try { return sessionStorage.getItem(GATE_KEY) === '1'; } catch (e) { return false; }
+}
+function gateMark() {
+  try { sessionStorage.setItem(GATE_KEY, '1'); } catch (e) {}
+}
+/* 닫히는 길은 둘 다 진짜다 — 우상단 단추와 Esc.
+   한 번 닫으면 이 세션에서는 다시 안 묻는다. 매번 다시 세우면 넛지가 아니라 벽이다 */
+function gateClose() {
+  const g = $('gate');
+  if (!g || g.classList.contains('gone')) return;
+  g.classList.add('gone');
+  gateMark();
+  lockBody(false);
+  armHero();
+}
+function gateSend(e) {
+  e.preventDefault();
+  const brand = $('gtBrand').value.trim(), contact = $('gtContact').value.trim();
+  if (!brand)   { $('gtBrand').focus();   toast('브랜드명을 적어 주세요.');   return; }
+  if (!contact) { $('gtContact').focus(); toast('연락받을 곳을 적어 주세요.'); return; }
+  gateClose();
+  /* 아래 독에도 같은 값을 채워 둔다 — 다 보고 나서 또 적게 만들지 않는다 */
+  if ($('dkBrand'))   $('dkBrand').value = brand;
+  if ($('dkContact')) $('dkContact').value = contact;
+  toast('<strong class="font-semibold">' + esc(brand) + '</strong> 확인했습니다.'
+    + '<br><span class="text-slate-300">담당자가 같은 화면을 브랜드에 맞춰 만들어 보내드립니다.</span>');
+  sendInquiry({
+    brand: brand, contact: contact,
+    source: INQUIRY_SOURCE,
+    memo: '열람 신청 · ' + camp().title
+  }).then(function (ok) { if (!ok) inquiryFailed(); });
 }
 
 /* ══════════ 복사 · 토스트 ══════════ */
@@ -6446,8 +6553,14 @@ if (BOOT.v === 'camp' && $('camBanner').classList.contains('hero')) {
   $('pad').classList.add('heroOn');
   $('camBanner').style.height = heroHeight() + 'px';
 }
-/* 진입 안내를 걷었다. 이 화면이 데모라는 것은 하단 CTA 가 이미 말하고 있고,
-   들어오자마자 모달로 한 번 막는 것이 그 말보다 먼저 오는 것은 순서가 틀렸다.
-   히어로 접기는 안내를 닫을 때 무장하고 있었으므로 여기서 바로 건다 */
-armHero();
+/* 안내 모달 자리에 열람 신청을 세운다. 캠페인 화면일 때만 —
+   홈은 그 자체가 소개라 앞에서 한 번 더 막을 이유가 없다.
+   한 번 닫았거나 적어 준 사람에게는 다시 안 묻는다 */
+if (BOOT.v === 'camp' && !gateSeen()) {
+  lockBody(true);
+  setTimeout(function () { const b = $('gtBrand'); if (b) b.focus(); }, 420);
+} else {
+  $('gate').classList.add('gone');
+  armHero();
+}
 </script>
