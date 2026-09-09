@@ -1143,14 +1143,59 @@
   }
   @media (prefers-reduced-motion:reduce){ .btn-go::after{animation:none;opacity:0} }
 
+  /* ── CTA · 유리 ────────────────────────────────────────────────────
+     유리를 쓸 자리는 여기다. 진행 상태 판에 입혔던 것이 틀렸던 이유는
+     그 판이 '떠 있지 않아서' 였다 — 바닥에 붙은 면 뒤에는 흐릴 것이 없고,
+     없는 것을 만들려고 사진을 깔다 보니 얼룩이 됐다.
+
+     독은 진짜로 떠 있다. 표가 그 밑으로 지나가니 흐릴 것이 계속 바뀌고,
+     그래서 '유리 너머로 화면이 이어진다' 가 성립한다. 애플뮤직의 하단 바와
+     레퍼런스의 floating-bar 가 같은 자리에 같은 재질을 쓰는 이유다.
+
+     다만 알파는 레퍼런스(.32)보다 높인다. 그쪽은 사진 격자 위에 슬로건 한 줄이
+     올라가지만, 여기는 입력칸과 단추가 올라간다 — 뒤 글자가 비쳐 들어오면
+     읽는 데 든다. .78 이면 재질은 남고 글자는 안 흔들린다 */
+  .dockGlass{background:rgba(255,255,255,.78);
+             -webkit-backdrop-filter:blur(26px) saturate(1.25);
+                     backdrop-filter:blur(26px) saturate(1.25);
+             box-shadow:inset 0 1px 0 rgba(255,255,255,.9),
+                        inset 0 0 0 1px rgba(255,255,255,.5),
+                        var(--lift-over)}
+  /* 내려간 독을 다시 부르는 알약. 같은 재질의 어두운 쪽이다 */
+  .dockTabGlass{background:rgba(15,23,42,.82);
+                -webkit-backdrop-filter:blur(18px) saturate(1.3);
+                        backdrop-filter:blur(18px) saturate(1.3);
+                box-shadow:inset 0 1px 0 rgba(255,255,255,.14),
+                           0 8px 26px -10px rgba(15,23,42,.6);
+                transition:background-color .16s ease}
+  .dockTabGlass:hover{background:rgba(30,41,59,.9)}
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    .dockTabGlass{background:#0f172a}
+  }
+
+  /* 유리를 못 쓰는 곳에서는 그냥 흰 면이다 — 반투명만 남으면 글자가 겹쳐 보인다 */
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    .dockGlass{background:#fff}
+  }
+  @media (prefers-reduced-transparency:reduce){
+    .dockGlass{background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none}
+  }
+  /* 유리 위의 회색 입력칸은 탁해 보인다. 같이 비치게 두고 테두리로 세운다 */
+  .dkIn{color:var(--ink-1);background:rgba(255,255,255,.55);
+        box-shadow:inset 0 0 0 1px rgba(17,19,24,.10)}
+  .dkIn::placeholder{color:#94a3b8}
+  .dkIn:focus{background:rgba(255,255,255,.92);
+              box-shadow:inset 0 0 0 1.5px rgba(17,19,24,.28)}
+
   /* 흰 카드 위의 흰 버튼이라 테두리가 연하면 그냥 글자로 보인다.
      입력칸이 이미 회색 면이라 채우는 대신 테두리를 세워서 구분한다 */
-  .btn-ask{color:var(--ink-1);background:#fff;
+  .btn-ask{color:var(--ink-1);background:rgba(255,255,255,.72);
+           -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
            box-shadow:0 0 0 1.5px rgba(15,23,42,.16),
                       0 1px 2px rgba(15,23,42,.06),
                       0 6px 14px -10px rgba(15,23,42,.4);
            transition:box-shadow .16s ease, background-color .16s ease, transform .13s ease}
-  .btn-ask:hover{background:#f8fafc;
+  .btn-ask:hover{background:rgba(255,255,255,.95);
                  box-shadow:0 0 0 1.5px rgba(15,23,42,.30),
                             0 2px 4px rgba(15,23,42,.07),
                             0 10px 20px -12px rgba(15,23,42,.5)}
@@ -2244,7 +2289,7 @@
 
 <!-- ══ 하단 독 ══ -->
 <div id="dock" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[min(1120px,calc(100vw-32px))]">
-  <div class="relative bg-white rd-lg px-6 sm:px-10 pt-8 pb-8 text-center" style="box-shadow:var(--lift-4)">
+  <div class="dockGlass relative rd-lg px-6 sm:px-10 pt-8 pb-8 text-center">
 
     <button onclick="dock(false)" class="absolute top-4 right-4 w-9 h-9 grid place-items-center rd-sm text-slate-300 hover:text-slate-700 hover:bg-slate-100 transition" aria-label="바 내리기" title="잠시 내려두기">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -2254,16 +2299,16 @@
       이 화면, 우리 브랜드로도 보고 싶으신가요?
     </div>
     <div class="text-[13.5px] text-slate-500 keep mt-2">
-      브랜드명만 주시면 담당자가 연락드려 <b class="text-slate-700 font-semibold">데모 페이지를 만들어 보내드립니다</b>
+      브랜드명만 주시면 담당자가, <b class="text-slate-700 font-semibold">선정부터 완료까지 진행해볼 수 있는 데모 페이지</b>를 만들어 보내드립니다
     </div>
 
     <form onsubmit="demoOpen(event)" class="mt-6 flex flex-wrap items-center justify-center gap-2.5">
       <label for="dkBrand" class="sr-only">브랜드명</label>
       <input id="dkBrand" placeholder="브랜드명" autocomplete="organization"
-             class="w-[170px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[14px] px-4 py-4 rd-sm focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
+             class="dkIn w-[170px] text-[14px] px-4 py-4 rd-sm focus:outline-none transition">
       <label for="dkContact" class="sr-only">전화번호 또는 이메일</label>
       <input id="dkContact" placeholder="전화번호 또는 이메일"
-             class="w-[210px] bg-slate-100 text-slate-900 placeholder:text-slate-400 text-[14px] px-4 py-4 rd-sm focus:outline-none focus:bg-slate-50 transition" style="box-shadow:var(--ring)">
+             class="dkIn w-[210px] text-[14px] px-4 py-4 rd-sm focus:outline-none transition">
 
       <!-- 주 버튼. 리드가 할 일이 브랜드명 하나뿐이고 받는 것이 손에 잡힌다 -->
       <button type="submit" class="btn-go press text-[16px] font-bold px-9 py-4 rd-sm whitespace-nowrap inline-flex items-center gap-2">
@@ -2281,7 +2326,7 @@
   </div>
 </div>
 
-<button id="dockTab" onclick="dock(true)" class="fixed bottom-5 left-1/2 z-40 bg-slate-900 text-white text-[13.5px] font-semibold pl-5 pr-4 py-3.5 rd-full flex items-center gap-2 hover:bg-slate-800 press" style="box-shadow:0 4px 24px rgba(0,0,0,.28)">
+<button id="dockTab" onclick="dock(true)" class="dockTabGlass fixed bottom-5 left-1/2 z-40 text-white text-[13.5px] font-semibold pl-5 pr-4 py-3.5 rd-full flex items-center gap-2 press">
   데모 신청 열기
   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
 </button>
@@ -5687,7 +5732,7 @@ function demoSend(e) {
   closeSheet('sh-demo');
   $('dkBrand').value = ''; $('dkContact').value = '';
   na('데모 캠페인 신청', esc(brand) + ' 담당자님, 실제 화면에서는 여기서 바로 접수되고 '
-     + '담당자가 연락드려 ' + (size ? esc(size.v) + ' 규모의 ' : '') + '데모 페이지를 만들어 보내드립니다.');
+     + '담당자가 ' + (size ? esc(size.v) + ' 규모로 ' : '') + '선정부터 완료까지 진행해볼 수 있는 데모 페이지를 만들어 보내드립니다.');
 }
 
 function dockSend(e) {
