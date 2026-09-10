@@ -3042,22 +3042,20 @@ const CHAT_SEED = [
   { who:'brand',  text:'유료 코드 5건만 더 발급 부탁드릴게요. 화면에서 골라서 보냈습니다.', at:'09.06' }
 ];
 
-/* ── 두 화면을 잇는 다리 ──────────────────────────────────
-   같은 주소의 화면이라 localStorage 한 칸을 스레드로 쓰고,
-   BroadcastChannel 로 옆 탭에 바로 알린다. 서버가 없어도 실제로 오간다.
-   (같은 브라우저 안에서만 오간다 — 데모는 한 대에서 두 창을 띄우고 한다) */
-const CHAT_KEY = 'siriai-cp-chat-2608';
-const CHAT_BUS = (function () { try { return new BroadcastChannel('siriai-cp'); } catch (e) { return null; } })();
+/* ── 대화는 이 창에만 남는다 ──────────────────────────────
+   이 주소는 세일즈 메일로 여러 곳에 같이 나간다. 한 사람이 남긴 말이
+   다음 사람 화면에 보이면 안 된다.
 
-function chatLoad() {
-  try { const raw = localStorage.getItem(CHAT_KEY); if (raw) { const a = JSON.parse(raw); if (Array.isArray(a) && a.length) return a; } }
-  catch (e) {}
-  return CHAT_SEED.slice();
-}
-function chatSave() {
-  try { localStorage.setItem(CHAT_KEY, JSON.stringify(CHAT)); } catch (e) {}
-  if (CHAT_BUS) { try { CHAT_BUS.postMessage({ k:'chat', v:CHAT }); } catch (e) {} }
-}
+   localStorage 는 브라우저별로 갈리므로 다른 회사 담당자끼리 섞이지는 않았지만,
+   같은 브라우저에서 다시 열거나 옆 탭을 띄우면 남아 있었다.
+   저장도 방송도 하지 않는다 — 화면을 열 때마다 같은 자리에서 시작한다.
+
+   어드민과 잇는 다리는 서버(client_events)가 붙을 때 다시 놓는다.
+   그때는 브랜드별로 갈린 원장이라 이런 섞임이 없다. */
+const CHAT_BUS = null;
+
+function chatLoad() { return CHAT_SEED.slice(); }
+function chatSave() {}
 /* 저쪽에서 온 대화를 받는다. 내가 보낸 것이 되돌아오는 건 무시한다 */
 function chatAdopt(list, tell) {
   if (!Array.isArray(list)) return;
@@ -3070,12 +3068,6 @@ function chatAdopt(list, tell) {
     chatPing();
   }
 }
-if (CHAT_BUS) CHAT_BUS.onmessage = function (e) { if (e.data && e.data.k === 'chat') chatAdopt(e.data.v, true); };
-addEventListener('storage', function (e) {
-  if (e.key !== CHAT_KEY || !e.newValue) return;
-  try { chatAdopt(JSON.parse(e.newValue), true); } catch (err) {}
-});
-
 let CHAT = chatLoad();
 let CHAT_TOPIC = null;
 
