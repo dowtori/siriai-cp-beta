@@ -19,17 +19,22 @@ const PAGES = [
 const OUT = 'dist'
 
 /* ── 계측 ────────────────────────────────────────────────────────────
- * 키는 코드에 박지 않고 Vercel 환경변수로 받는다. 안 넣으면 아무것도 안 붙어서
- * 로컬에서 열 때 내 클릭이 통계에 섞이지 않는다.
+ * 전달받은 공개 GA4 측정 ID는 운영 배포의 기본값으로 사용한다.
+ * 로컬·프리뷰에서는 GA4_ID를 명시한 경우에만 붙여서 검증 트래픽을 섞지 않는다.
  *
  *   GA4_ID        G-XXXXXXXXXX
  *   BEUSABLE_SRC  뷰저블 대시보드가 주는 스크립트 주소 그대로
  *                 (//rum.beusable.net/script/… 형태. 키 형식을 추측하지 않으려고 통째로 받는다)
  *
- * 두 화면이 한 배포에 있어서 GA4 에서 섞이지 않게 page_title 을 못박아 준다.
+ * 두 화면은 page_title 로 구분하고, 경로는 실제로 열린 주소를 기록한다.
+ * /oddtype/2026-08 도 index.html 을 쓰므로 page.path('/')를 보내면 안 된다.
  */
-const GA4 = (process.env.GA4_ID || '').trim()
+const GA4 = (process.env.GA4_ID ?? (process.env.VERCEL_ENV === 'production' ? 'G-S0JCCGC2SB' : '')).trim()
 const BEU = (process.env.BEUSABLE_SRC || '').trim()
+
+if (GA4 && !/^G-[A-Z0-9]+$/.test(GA4)) {
+  throw new Error('GA4_ID에는 스크립트 전체가 아닌 G-로 시작하는 측정 ID를 넣어 주세요.')
+}
 
 function analytics(page) {
   const out = []
@@ -40,7 +45,7 @@ function analytics(page) {
       '  window.dataLayer = window.dataLayer || [];',
       '  function gtag(){dataLayer.push(arguments)}',
       "  gtag('js', new Date());",
-      `  gtag('config', '${GA4}', { page_title: ${JSON.stringify(page.title)}, page_path: ${JSON.stringify(page.path)} });`,
+      `  gtag('config', '${GA4}', { page_title: ${JSON.stringify(page.title)}, page_path: location.pathname + location.search });`,
       '</script>',
     )
   }

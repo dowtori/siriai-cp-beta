@@ -821,41 +821,30 @@
 
 
 
-  /* ══ 폰으로 열었을 때 ═══════════════════════════════════════════
-     아래에서 올라오는 시트다. 폰에서 모달을 화면 가운데에 띄우면 엄지가 안 닿는
-     자리에 단추가 선다 — 올라오는 시트는 손이 있는 데서 끝난다 */
-  #mob{background:rgba(15,23,42,.6);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
-       transition:opacity .3s ease,visibility .3s ease}
-  #mob.gone{opacity:0;visibility:hidden;pointer-events:none}
-  #mob .mcard{position:relative;width:100%;max-width:520px;background:var(--panel);
-              border-radius:var(--r-lg) var(--r-lg) 0 0;padding:30px 22px calc(22px + env(safe-area-inset-bottom));
-              text-align:center;box-shadow:var(--lift-over);
-              animation:mobUp .4s cubic-bezier(.22,.61,.36,1) both}
-  @keyframes mobUp{ from{transform:translateY(24px);opacity:0} to{transform:none;opacity:1} }
-  @media (prefers-reduced-motion:reduce){ #mob .mcard{animation:none} }
-  .mx{position:absolute;top:12px;right:12px;width:34px;height:34px;display:grid;place-items:center;
-      border-radius:var(--r-sm);color:#c3cbd6}
-  .mx svg{width:15px;height:15px}
-  .mx:active{background:#f1f5f9;color:var(--ink-2)}
+  /* ══ 모바일 전용 안내 — 닫는 모달이 아닌 하나의 화면 ══════════ */
+  #mob{display:none;box-sizing:border-box;background:var(--panel)}
+  #mob *{box-sizing:border-box}
+  .mobContent{width:100%;max-width:360px;margin:auto;text-align:center}
+  .mobBrand{margin:0 0 40px;font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--ink-1)}
   .mIco{display:grid;place-items:center;width:52px;height:52px;margin:0 auto 16px;
         border-radius:var(--r-md);color:var(--ink-1);background:var(--panel-2);
         box-shadow:inset 0 0 0 1px var(--hair)}
   .mIco svg{width:26px;height:26px}
   .mT{margin:0;font-size:21px;font-weight:700;line-height:1.4;
       letter-spacing:var(--tr-display);color:var(--ink-1);word-break:keep-all}
-  .mD{margin:11px 0 0;font-size:13px;line-height:1.72;color:var(--ink-3);word-break:keep-all}
-  .mBtns{margin-top:22px;display:flex;flex-direction:column;gap:8px}
+  .mD{margin:14px 0 0;font-size:14px;line-height:1.8;color:var(--ink-3);word-break:keep-all}
+  .mBtns{margin-top:28px}
   .mGo{width:100%;padding:15px 18px;border-radius:var(--r-sm);font-size:15.5px;font-weight:700;
        display:inline-flex;align-items:center;justify-content:center;gap:8px}
   .mGo svg{width:17px;height:17px;flex:none}
-  .mRow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .mSub{display:inline-flex;align-items:center;justify-content:center;gap:6px;
-        padding:13px 10px;border-radius:var(--r-sm);font-size:13.5px;font-weight:700;
-        color:var(--ink-2);background:var(--panel);box-shadow:var(--lift-ctl)}
-  .mSub svg{width:15px;height:15px;flex:none}
-  .mSub:active{background:var(--panel-2);box-shadow:var(--ring)}
-  .mSkip{margin-top:16px;font-size:12.5px;color:var(--ink-4);text-decoration:underline;
-         text-underline-offset:3px;padding:6px 10px}
+  #mobCopyBtn{border:0;cursor:pointer;font-family:inherit;background:var(--ink-1);color:#fff}
+  #mobCopyBtn:disabled{cursor:wait;opacity:.65}
+  .mobStatus{min-height:44px;margin:14px 0 0;font-size:12px;line-height:1.8;
+             color:var(--ink-3);word-break:keep-all}
+  #mobFallback[hidden]{display:none}
+  #mobFallback{display:block;margin-top:12px;text-align:left;font-size:12px;color:var(--ink-2)}
+  #mobUrl{display:block;width:100%;margin-top:8px;padding:12px;border:1px solid #cbd5e1;
+          border-radius:var(--r-sm);background:var(--panel-2);font-family:inherit;font-size:16px;line-height:1.5;color:var(--ink-1)}
 
   /* ══ 진입 — 열람 신청 ═══════════════════════════════════════════
      '들어가기 전에 거치는 곳' 으로 보이게 만든다: 어두운 막 · 가운데 한 장 ·
@@ -2161,6 +2150,17 @@
   /* #dock 은 더 이상 go() 가 숨기지 않는다. 안전망으로만 남긴다.
      #topStack 은 캠페인의 진행 상태다 — 홈에서 같이 새어 나오고 있었다 */
   #camBanner.hidden, #bodyRow.hidden, #topStack.hidden, #resSec.hidden, #dock.hidden{display:none}
+
+  /* MOBILE_VIEW와 같은 조건. 가로로 돌린 스마트폰도 안내 화면을 유지한다.
+     CSS で本文ごと外すため、再訪・Esc・スクリプトの遅延でも裏の操作は出ない。 */
+  @media (max-width:820px), (max-width:1080px) and (hover:none) and (pointer:coarse){
+    html,body{height:auto;min-height:100%;background:var(--panel)}
+    body{overflow:auto !important}
+    body > :not(#mob):not(script):not(style):not(link){display:none !important}
+    #mob{display:flex;min-height:100vh;min-height:100svh;
+         padding:calc(32px + env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+                 calc(32px + env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left))}
+  }
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════
@@ -2540,45 +2540,28 @@
   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
 </button>
 
-<!-- ══ 폰으로 열었을 때 ══
-     콜드메일 링크는 대부분 폰에서 열린다. 그런데 이 화면의 주인공은 8열짜리
-     인플루언서 표다 — 390px 에 넣으면 값이 서로 멀어져서 '한 시야에 들어오는
-     명단' 이라는 이 화면의 요점이 통째로 사라진다.
-
-     그래서 폰에서는 먼저 큰 화면으로 넘길 길을 준다. 막지는 않는다 —
-     지금 보겠다는 사람은 그대로 보면 된다.
-
-     카카오는 SDK 키 없이 붙인다: navigator.share 가 여는 네이티브 공유 시트에
-     카카오톡이 이미 들어 있다. 키를 심으면 그 키를 관리해야 하고, 안드로이드·iOS ·
-     인앱브라우저마다 다르게 깨진다 — 시트는 OS 가 알아서 한다 -->
-<div id="mob" class="fixed inset-0 z-[80] flex items-end justify-center">
-  <div class="mcard" role="dialog" aria-modal="true" aria-labelledby="mobTitle">
-    <button class="mx" onclick="mobClose()" aria-label="닫고 여기서 보기" title="닫고 여기서 보기">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-    </button>
+<!-- ══ 모바일에서는 PC 안내와 링크 복사 한 가지 행동만 제공한다 ══ -->
+<main id="mob" aria-labelledby="mobTitle">
+  <div class="mobContent">
+    <p class="mobBrand">SIRIAI</p>
     <span class="mIco" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path stroke-linecap="round" d="M8 20.5h8M12 17v3.5"/></svg>
     </span>
-    <h2 id="mobTitle" class="mT">넓은 화면에서 보시면<br>훨씬 잘 보입니다</h2>
-    <p class="mD">인플루언서 명단과 성과가 가로로 긴 표라, 데스크톱에서 열면 한눈에 들어옵니다.
-       링크를 보내 두고 자리에서 여시는 걸 권해 드려요.</p>
+    <h1 id="mobTitle" class="mT">캠페인 워크스페이스는<br>PC에서 확인해 주세요</h1>
+    <p class="mD">크리에이터 명단과 캠페인 성과를<br>한눈에 볼 수 있도록 PC 화면으로 제공해요.</p>
     <div class="mBtns">
-      <button id="mobShareBtn" class="btn-go press mGo" onclick="mobShare()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" aria-hidden="true"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path stroke-linecap="round" d="M8.4 10.8l7.2-4.1M8.4 13.2l7.2 4.1"/></svg>
-        링크 보내기
+      <button id="mobCopyBtn" type="button" class="press mGo" onclick="mobCopy()" aria-describedby="mobStatus">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2.4"/><path stroke-linecap="round" d="M5 15V5a2 2 0 012-2h10"/></svg>
+        <span id="mobCopyLabel">PC에서 볼 링크 복사</span>
       </button>
-      <div class="mRow">
-        <button class="mSub" onclick="mobCopy()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2.4"/><path stroke-linecap="round" d="M5 15V5a2 2 0 012-2h10"/></svg>
-          링크 복사</button>
-        <button class="mSub" onclick="mobMail()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.4"/><path stroke-linecap="round" d="M3 7l9 6 9-6"/></svg>
-          메일로 받기</button>
-      </div>
     </div>
-    <button class="mSkip" onclick="mobClose()">그래도 여기서 볼게요</button>
+    <p id="mobStatus" class="mobStatus" role="status" aria-live="polite">복사한 링크를 나에게 보내 두고<br>PC에서 이어서 열어 주세요.</p>
+    <label id="mobFallback" for="mobUrl" hidden>아래 주소를 길게 눌러 복사해 주세요.
+      <input id="mobUrl" type="text" readonly spellcheck="false" onclick="this.select()">
+    </label>
+    <noscript><p class="mobStatus">주소창의 링크를 복사해 PC에서 열어 주세요.</p></noscript>
   </div>
-</div>
+</main>
 
 <!-- ══ 진입 — 열람 신청 ══
      안내 모달을 걷은 자리에 이것을 둔다. 하단 데모 신청과 같은 맥락이고 같은
@@ -3976,6 +3959,7 @@ function autoCollapse(e) {
 /* 아래로 굴리면 접힌다. 진입 안내를 닫을 때(armHero) 한 번만 걸어 두었더니
    그 경로를 지나지 않은 화면에서는 스크롤도 죽어 있었다 — 상시로 둔다 */
 addEventListener('wheel', function (e) {
+  if (isNarrow()) return;
   const el = $('camBanner');
   if (!el || !el.classList.contains('hero')) return;
   if (e.deltaY <= 0) return;
@@ -6086,8 +6070,8 @@ function bgClose(e, id) { if (e.target === e.currentTarget) { $(id).classList.re
 
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  /* 위에 있는 것부터 닫는다 — 갇히는 화면은 만들지 않는다 */
-  if ($('mob') && !$('mob').classList.contains('gone')) { mobClose(); return; }
+  if (isNarrow()) return;
+  /* PC에서 열린 오버레이를 위에서부터 닫는다. */
   if ($('gate') && !$('gate').classList.contains('gone')) { gateClose(); return; }
   closePeek();
   const open = document.querySelectorAll('.drawer.open, .sheet.open');
@@ -6115,52 +6099,29 @@ function dockYield() {
   DOCK_PIN = false;   /* 내려간 뒤로는 사람이 여는 것만 남는다 */
 }
 
-/* ══════════ 폰으로 열었을 때 ══════════
-   콜드메일 링크는 대부분 폰에서 열린다. 큰 화면으로 넘길 길을 먼저 주되 막지는 않는다 */
-const MOB_KEY = 'odMob';
-/* 폭으로만 본다 — UA 문자열은 거짓말을 하고, 창을 좁힌 데스크톱도 사정은 같다.
-   820 은 인플루언서 표(고정 두 열 320 + 데이터)가 겨우 서는 폭이다 */
-const isNarrow = () => matchMedia('(max-width: 820px)').matches;
-function mobSeen() { try { return sessionStorage.getItem(MOB_KEY) === '1'; } catch (e) { return false; } }
-function mobClose() {
-  const m = $('mob');
-  if (!m || m.classList.contains('gone')) return;
-  m.classList.add('gone');
-  try { sessionStorage.setItem(MOB_KEY, '1'); } catch (e) {}
-  lockBody(false);
-  /* 이 시트를 지나야 열람 신청이 나온다 — 폰에서 모달 둘이 겹치면 둘 다 안 읽힌다 */
-  if (!gateSeen()) { $('gate').classList.remove('gone'); lockBody(true); }
-  else armHero();
-}
-
-const MOB_TITLE = '캠페인 워크스페이스 — SIRIAI';
-const MOB_TEXT  = '브랜드가 캠페인 진행 상황을 한 화면에서 보는 운영 화면입니다. 넓은 화면에서 열어 보세요.';
-
-/* 카카오는 따로 붙이지 않는다. navigator.share 가 여는 OS 공유 시트에 이미 들어
-   있고, 거기에는 '나에게 보내기' 도 있다 — 자리에서 열려고 스스로에게 보내는 것이
-   이 단추가 노리는 첫 번째 쓰임이다 */
-function mobShare() {
-  const data = { title: MOB_TITLE, text: MOB_TEXT, url: location.href };
-  if (navigator.share) {
-    navigator.share(data).catch(function (err) {
-      /* 사용자가 시트를 닫은 것은 실패가 아니다 */
-      if (err && err.name === 'AbortError') return;
-      mobCopy();
-    });
-    return;
+/* ══════════ 모바일 전용 안내 ══════════
+   예전 odMob 저장값은 사용하지 않는다. 재방문해도 같은 간단한 화면을 유지한다. */
+const MOBILE_VIEW = matchMedia('(max-width:820px), (max-width:1080px) and (hover:none) and (pointer:coarse)');
+const isNarrow = () => MOBILE_VIEW.matches;
+async function mobCopy() {
+  const button = $('mobCopyBtn'), label = $('mobCopyLabel'), status = $('mobStatus');
+  if (button.disabled) return;
+  button.disabled = true;
+  try {
+    await navigator.clipboard.writeText(location.href);
+    label.textContent = '링크를 복사했어요';
+    status.textContent = '나에게 보내 두고 PC에서 열어 주세요.';
+    $('mobFallback').hidden = true;
+  } catch (e) {
+    label.textContent = 'PC에서 볼 링크 복사';
+    status.textContent = '자동 복사가 어려워요. 아래 주소를 직접 복사해 주세요.';
+    $('mobFallback').hidden = false;
+    $('mobUrl').value = location.href;
+    $('mobUrl').focus();
+    $('mobUrl').select();
+  } finally {
+    button.disabled = false;
   }
-  mobCopy();
-}
-function mobCopy() {
-  const url = location.href;
-  const ok = () => toast('링크를 복사했어요.<br><span class="text-slate-300">데스크톱 브라우저에 붙여넣어 열어 보세요.</span>');
-  const no = () => toast('복사가 안 됐습니다. 주소창의 링크를 직접 복사해 주세요.', 'na');
-  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(ok, no);
-  else no();
-}
-function mobMail() {
-  location.href = 'mailto:?subject=' + encodeURIComponent(MOB_TITLE)
-    + '&body=' + encodeURIComponent(MOB_TEXT + '\n\n' + location.href);
 }
 
 /* ══════════ 진입 — 열람 신청 ══════════
@@ -6717,26 +6678,27 @@ if (BOOT.v === 'camp' && $('camBanner').classList.contains('hero')) {
   $('pad').classList.add('heroOn');
   $('camBanner').style.height = heroHeight() + 'px';
 }
-/* 안내 모달 자리에 열람 신청을 세운다. 캠페인 화면일 때만 —
-   홈은 그 자체가 소개라 앞에서 한 번 더 막을 이유가 없다.
-   한 번 닫았거나 적어 준 사람에게는 다시 안 묻는다 */
-/* 폰이면 큰 화면으로 넘길 길을 먼저 준다. 열람 신청은 그 뒤에 나온다 —
-   작은 화면에 모달 둘을 겹쳐 세우면 둘 다 안 읽힌다 */
-if (isNarrow() && !mobSeen()) {
-  $('gate').classList.add('gone');
-  lockBody(true);
-  if (navigator.share === undefined) {
-    const b = $('mobShareBtn');
-    if (b) b.remove();   /* 못 하는 것은 안 보여 준다 — 복사와 메일이 남는다 */
+/* 화면 회전·창 크기 변경에도 모바일 안내와 PC 진입 흐름을 맞춘다. */
+function syncEntry() {
+  if (isNarrow()) {
+    stopAuto();
+    $('gate').classList.add('gone');
+    lockBody(false);
+    if (!$('mob').contains(document.activeElement)) document.activeElement.blur();
+    return;
   }
-} else {
-  $('mob').classList.add('gone');
-  if (BOOT.v === 'camp' && !gateSeen()) {
+  if (S.view === 'camp' && !gateSeen()) {
+    $('gate').classList.remove('gone');
     lockBody(true);
-    setTimeout(function () { const b = $('gtBrand'); if (b) b.focus(); }, 420);
+    setTimeout(function () {
+      if (!isNarrow() && !$('gate').classList.contains('gone')) $('gtBrand').focus();
+    }, 420);
   } else {
     $('gate').classList.add('gone');
+    lockBody(!!openPanel());
     armHero();
   }
 }
+MOBILE_VIEW.addEventListener('change', syncEntry);
+syncEntry();
 </script>
